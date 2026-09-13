@@ -3,9 +3,9 @@
 /**
  * Valida si un usuario tiene actividades pendientes (Comunicaciones Externas Recibidas,
  * Comunicaciones Internas, Comunicaciones Externas Enviadas y Prestamos), en cualquier
- * vigencia, para bloquear su deshabilitacion/suspension; y gestiona la reasignacion al
- * jefe de dependencia (o la notificacion de novedad) cuando el usuario es deshabilitado
- * automaticamente por deteccion de LDAP/Directorio Activo.
+ * vigencia, para bloquear su deshabilitacion/suspension; y gestiona la inactivacion +
+ * reasignacion (o la notificacion de novedad) cuando el usuario es inactivado en el
+ * Directorio Activo (detectado en el login o por el job programado de sincronizacion).
  *
  * Los "Copias" nunca cuentan como pendientes.
  */
@@ -17,6 +17,29 @@ class UsuarioPendientesChecker
     const ESTADO_USUARIO_SUSPENDIDO = 5;
 
     const MENSAJE_BLOQUEO = "No es posible deshabilitar o suspender el usuario, debido a que presenta actividades pendientes en el sistema. Verifique las actividades Pendientes.";
+
+    // Usuario de sistema "INTEGRACION ARCHIDHU LEX - GRUPO DE SERVICIO AL CIUDADANO",
+    // registrado como actor de las reasignaciones/inactivaciones automaticas por DA.
+    const USUARIO_SISTEMA_INTEGRACION_ID = 4249;
+
+    const OBSERVACION_REASIGNACION_AUTOMATICA = 'Reasignacion automatica generada por inactivacion de usuario desde Directorio Activo.';
+
+    // TIPO_PROCESO_COM: 3 = Gestor (aplica a ComRecibida y ComEnviada, que tienen esta columna)
+    const TIPOPROCESOCOM_GESTOR = 3;
+
+    // ComRecibida: ROL_USUARIO_RECIBIDA 2 = Destinatario; ESTADO_COM_RECIBIDA 1 = Enviada
+    const RECIBIDA_ROL_DESTINATARIO = 2;
+    const RECIBIDA_ESTADO_ENVIADA = 1;
+
+    // ComInterna no tiene TIPOPROCESOCOM_ID ni "Gestor"; se reasigna con el rol Revision
+    // (ROLUSUARIO_COMINTERNA 5) y se deja en el estado que ya usa la reasignacion manual (5 = Por Responder)
+    const INTERNA_ROL_REVISION = 5;
+    const INTERNA_ESTADO_POR_RESPONDER = 5;
+
+    // ComEnviada: ROLUS_COMENVIADA 5 = Gestiona; no existe estado "Enviada" en su catalogo,
+    // se deja en el mismo estado por defecto que ya usa la reasignacion manual (2 = Por Leer)
+    const ENVIADA_ROL_GESTIONA = 5;
+    const ENVIADA_ESTADO_POR_LEER = 2;
 
     private static $etiquetasBandeja = array(
         'com_recibida' => 'Comunicaciones Externas Recibidas',
@@ -60,9 +83,39 @@ class UsuarioPendientesChecker
     }
 
     /**
-     * Se invoca solo cuando el sistema deshabilita automaticamente a un usuario por
-     * deteccion de LDAP/Active Directory en el momento del login (no aplica al flujo
-     * administrativo de deshabilitar/suspender, que ya quedo bloqueado antes).
+     * Punto unico de entrada cuando se confirma que un usuario fue inactivado en el
+     * Directorio Activo, sin importar quien lo detecto: el login (security/actions.class.php)
+     * o el job programado de sincronizacion con AD. Deshabilita al usuario en Archidhu,
+     * audita el cambio y reasigna (o alerta) sus actividades pendientes.
+     */
+    public static function inactivarPorDirectorioActivo(Usuario $user)
+    {
+        if (in_array($user->getEstadousuarioId(), array(self::ESTADO_USUARIO_DESHABILITADO, self::ESTADO_USUARIO_SUSPENDIDO))) {
+            return; // ya estaba inactivado, no reprocesar
+        }
+
+        $usuario_anterior = clone $user;
+        $user->setEstadousuarioId(self::ESTADO_USUARIO_DESHABILITADO);
+        $user->save();
+        //*********************************************************************************
+        UsuarioPeer::addHistoricoUser($user);
+        AuditLogPeer::guardarAuditoriaLite(
+            UsuarioPeer::OM_CLASS,
+            $usuario_anterior,
+            $user,
+            ModulesEnable::Seguridad,
+            $user->getCedula(),
+            self::USUARIO_SISTEMA_INTEGRACION_ID
+        );
+        //*********************************************************************************
+        self::reasignarOAlertar($user);
+    }
+
+    /**
+     * Reasigna las actividades pendientes del usuario al jefe de dependencia
+     * (RECEPTOR_DEP=1, Activo o Bloqueado) dejando bitacora (Rol Gestor/Revision/Gestiona,
+     * Estado, Observacion fija, actor = usuario de integracion) en cada comunicacion, o
+     * envia el correo de novedad si no hay un jefe valido.
      */
     public static function reasignarOAlertar(Usuario $user)
     {
@@ -86,24 +139,28 @@ class UsuarioPendientesChecker
 
     private static function reasignarRegistros($pendientesPorBandeja, Usuario $jefe, Usuario $usuarioDeshabilitado)
     {
+        $cargousuarioid = self::getCargoUsuarioPrincipalId($jefe->getUsuarioId());
+
         $resumen = array();
         foreach ($pendientesPorBandeja as $bandeja_key => $registros) {
             $resumen[$bandeja_key] = array('cantidad' => count($registros), 'radicados' => array());
             foreach ($registros as $registro) {
-                $anterior = clone $registro;
-                $registro->setUsuarioId($jefe->getUsuarioId());
-                $registro->save();
-                //*****************************************************************************
-                AuditLogPeer::guardarAuditoriaLite(
-                    get_class($registro),
-                    $anterior,
-                    $registro,
-                    ModulesEnable::Seguridad,
-                    $usuarioDeshabilitado->getCedula(),
-                    $usuarioDeshabilitado->getUsuarioId()
-                );
-                //*****************************************************************************
-                $codigo = self::getCodigoRegistro($bandeja_key, $registro);
+                switch ($bandeja_key) {
+                    case 'com_recibida':
+                        $codigo = self::reasignarComRecibida($registro, $jefe, $cargousuarioid);
+                        break;
+                    case 'com_interna':
+                        $codigo = self::reasignarComInterna($registro, $jefe, $cargousuarioid);
+                        break;
+                    case 'com_enviada':
+                        $codigo = self::reasignarComEnviada($registro, $jefe, $cargousuarioid);
+                        break;
+                    case 'prestamo':
+                        $codigo = self::reasignarPrestamo($registro, $jefe);
+                        break;
+                    default:
+                        $codigo = null;
+                }
                 if ($codigo) {
                     $resumen[$bandeja_key]['radicados'][] = $codigo;
                 }
@@ -113,27 +170,184 @@ class UsuarioPendientesChecker
         return $resumen;
     }
 
-    private static function getCodigoRegistro($bandeja_key, $registro)
+    private static function getCargoUsuarioPrincipalId($usuario_id)
     {
-        try {
-            switch ($bandeja_key) {
-                case 'com_recibida':
-                    $header = ComRecibidaPeer::retrieveByPk($registro->getComrecibidaId());
-                    return $header ? $header->getRadicado() : null;
-                case 'com_interna':
-                    $header = ComInternaPeer::retrieveByPk($registro->getCominternaId());
-                    return $header ? $header->getRadicado() : null;
-                case 'com_enviada':
-                    $header = ComEnviadaPeer::retrieveByPk($registro->getComenviadaId());
-                    return $header ? $header->getRadicado() : null;
-                case 'prestamo':
-                    return $registro->getConsecutivoRegional() ? $registro->getConsecutivoRegional() : $registro->getNumeroRadicacion();
-            }
-        } catch (Exception $ex) {
+        $c = new Criteria();
+        $c->add(CargoUsuarioPeer::USUARIO_ID, $usuario_id);
+        $c->add(CargoUsuarioPeer::ES_PRINCIPAL, true);
+        $cargoUsuario = CargoUsuarioPeer::doSelectOne($c);
+
+        return $cargoUsuario ? $cargoUsuario->getPrimaryKey() : null;
+    }
+
+    /**
+     * Reasigna una comunicacion recibida al jefe dejando bitacora: nueva fila
+     * COMRECIBIDA_USUARIO (Rol Destinatario, Tipo Proceso Gestor, Estado Enviada),
+     * observacion fija en la comunicacion y auditoria con actor = usuario de integracion.
+     */
+    private static function reasignarComRecibida(ComrecibidaUsuario $registro, Usuario $jefe, $cargousuarioid)
+    {
+        $com_recibida = ComRecibidaPeer::retrieveByPk($registro->getComrecibidaId());
+        if (!$com_recibida) {
             return null;
         }
+        $com_recibida_anterior = $com_recibida->copy();
+        //*********************************************************************************
+        $codigoReenResp = $com_recibida->getCodigoReenResp() ? $com_recibida->getCodigoReenResp() : $com_recibida->getPrimaryKey();
+        $observaciones = trim($com_recibida->getObsReenResp())
+            ? trim($com_recibida->getObsReenResp()).' | '.self::OBSERVACION_REASIGNACION_AUTOMATICA
+            : self::OBSERVACION_REASIGNACION_AUTOMATICA;
+        $com_recibida->setObsReenResp($observaciones);
+        $com_recibida->setCodigoReenResp($codigoReenResp);
+        $com_recibida->save();
+        //*********************************************************************************
+        ComRecibidaPeer::updateAsignadoCom($com_recibida->getPrimaryKey(), self::RECIBIDA_ROL_DESTINATARIO, 0);
+        ComRecibidaPeer::addUserRolByCom(
+            $com_recibida->getPrimaryKey(),
+            $jefe->getUsuarioId(),
+            $cargousuarioid,
+            self::RECIBIDA_ESTADO_ENVIADA,
+            self::RECIBIDA_ROL_DESTINATARIO,
+            1,
+            self::TIPOPROCESOCOM_GESTOR
+        );
+        //*********************************************************************************
+        AuditLogPeer::guardarAuditoriaLite(
+            'ComRecibida',
+            $com_recibida_anterior,
+            $com_recibida,
+            ModulesEnable::ComRecibida,
+            $com_recibida->getRadicado(),
+            self::USUARIO_SISTEMA_INTEGRACION_ID
+        );
 
-        return null;
+        return $com_recibida->getRadicado();
+    }
+
+    /**
+     * Reasigna una comunicacion interna al jefe dejando bitacora: nueva fila
+     * COMINTERNA_USUARIO (Rol Revision, Estado Por Responder), observacion fija en la
+     * comunicacion y auditoria con actor = usuario de integracion.
+     *
+     * ComInterna no tiene el concepto de "Gestor"/TIPOPROCESOCOM_ID, y no existen
+     * ComInternaPeer::updateAsignadoCom()/addUserRolByCom() en el codigo (esos metodos,
+     * usados por la reasignacion manual de gestor, solo estan implementados para
+     * ComRecibida y ComEnviada) -- se replica el mismo efecto directamente sobre
+     * CominternaUsuarioPeer.
+     */
+    private static function reasignarComInterna(CominternaUsuario $registro, Usuario $jefe, $cargousuarioid)
+    {
+        $com_interna = ComInternaPeer::retrieveByPk($registro->getCominternaId());
+        if (!$com_interna) {
+            return null;
+        }
+        $com_interna_anterior = $com_interna->copy();
+        //*********************************************************************************
+        $codigoReenResp = $com_interna->getCodigoReenResp() ? $com_interna->getCodigoReenResp() : $com_interna->getPrimaryKey();
+        $observaciones = trim($com_interna->getObsReenResp())
+            ? trim($com_interna->getObsReenResp()).' | '.self::OBSERVACION_REASIGNACION_AUTOMATICA
+            : self::OBSERVACION_REASIGNACION_AUTOMATICA;
+        $com_interna->setObsReenResp($observaciones);
+        $com_interna->setCodigoReenResp($codigoReenResp);
+        $com_interna->save();
+        //*********************************************************************************
+        $conexion = Propel::getConnection();
+        $query = sprintf(
+            'UPDATE %s SET %s = 0 WHERE %s = %d',
+            CominternaUsuarioPeer::TABLE_NAME,
+            CominternaUsuarioPeer::ESTA_ASIGNADA,
+            CominternaUsuarioPeer::COMINTERNA_ID,
+            $com_interna->getPrimaryKey()
+        );
+        $conexion->prepare($query)->execute();
+        //*********************************************************************************
+        $nuevaAsignacion = new CominternaUsuario();
+        $nuevaAsignacion->setRolusuariocominternaId(self::INTERNA_ROL_REVISION);
+        $nuevaAsignacion->setEstadocominternaId(self::INTERNA_ESTADO_POR_RESPONDER);
+        $nuevaAsignacion->setEstaAsignada(1);
+        $nuevaAsignacion->setUsuarioId($jefe->getUsuarioId());
+        $nuevaAsignacion->setCominternaId($com_interna->getPrimaryKey());
+        $nuevaAsignacion->setCargousuarioId($cargousuarioid);
+        $nuevaAsignacion->setFechaAsigna(date('Y-m-d G:i:s'));
+        $nuevaAsignacion->save();
+        //*********************************************************************************
+        AuditLogPeer::guardarAuditoriaLite(
+            'ComInterna',
+            $com_interna_anterior,
+            $com_interna,
+            ModulesEnable::ComInterna,
+            $com_interna->getRadicado(),
+            self::USUARIO_SISTEMA_INTEGRACION_ID
+        );
+
+        return $com_interna->getRadicado();
+    }
+
+    /**
+     * Reasigna una comunicacion enviada al jefe dejando bitacora: nueva fila
+     * ENVIADA_USUARIO (Rol Gestiona, Tipo Proceso Gestor, Estado Por Leer), observacion
+     * fija en la comunicacion y auditoria con actor = usuario de integracion.
+     */
+    private static function reasignarComEnviada(EnviadaUsuario $registro, Usuario $jefe, $cargousuarioid)
+    {
+        $com_enviada = ComEnviadaPeer::retrieveByPk($registro->getComenviadaId());
+        if (!$com_enviada) {
+            return null;
+        }
+        $com_enviada_anterior = $com_enviada->copy();
+        //*********************************************************************************
+        $codigoReenResp = $com_enviada->getCodigoReenResp() ? $com_enviada->getCodigoReenResp() : $com_enviada->getPrimaryKey();
+        $observaciones = trim($com_enviada->getObsReenResp())
+            ? trim($com_enviada->getObsReenResp()).' | '.self::OBSERVACION_REASIGNACION_AUTOMATICA
+            : self::OBSERVACION_REASIGNACION_AUTOMATICA;
+        $com_enviada->setObsReenResp($observaciones);
+        $com_enviada->setCodigoReenResp($codigoReenResp);
+        $com_enviada->setTipoprocesocomId(self::TIPOPROCESOCOM_GESTOR);
+        $com_enviada->save();
+        //*********************************************************************************
+        ComEnviadaPeer::updateAsignadoCom($com_enviada->getPrimaryKey(), self::ENVIADA_ROL_GESTIONA, 0);
+        ComEnviadaPeer::addUserRolByCom(
+            $com_enviada->getPrimaryKey(),
+            $jefe->getUsuarioId(),
+            $cargousuarioid,
+            self::ENVIADA_ESTADO_POR_LEER,
+            self::ENVIADA_ROL_GESTIONA,
+            1,
+            self::TIPOPROCESOCOM_GESTOR
+        );
+        //*********************************************************************************
+        AuditLogPeer::guardarAuditoriaLite(
+            'ComEnviada',
+            $com_enviada_anterior,
+            $com_enviada,
+            ModulesEnable::ComEnviada,
+            $com_enviada->getRadicado(),
+            self::USUARIO_SISTEMA_INTEGRACION_ID
+        );
+
+        return $com_enviada->getRadicado();
+    }
+
+    /**
+     * Prestamo no tiene tabla de roles/bitacora (es una sola tabla): se mantiene el
+     * traspaso simple del propietario, con auditoria generica.
+     */
+    private static function reasignarPrestamo(Prestamo $registro, Usuario $jefe)
+    {
+        $anterior = clone $registro;
+        $registro->setUsuarioId($jefe->getUsuarioId());
+        $registro->save();
+        //*********************************************************************************
+        AuditLogPeer::guardarAuditoriaLite(
+            'Prestamo',
+            $anterior,
+            $registro,
+            ModulesEnable::Archivo,
+            $registro->getConsecutivoRegional() ? $registro->getConsecutivoRegional() : $registro->getPrimaryKey(),
+            self::USUARIO_SISTEMA_INTEGRACION_ID
+        );
+
+        return $registro->getConsecutivoRegional() ? $registro->getConsecutivoRegional() : $registro->getNumeroRadicacion();
     }
 
     private static function enviarCorreoResumenJefe(Usuario $jefe, Usuario $usuarioDeshabilitado, $resumen)
@@ -161,7 +375,7 @@ class UsuarioPendientesChecker
         <p>Estimado(a) '.htmlspecialchars(trim($jefe->getNombre().' '.$jefe->getApellido())).',</p>
         <p>El usuario <b>'.htmlspecialchars(trim($usuarioDeshabilitado->getNombre().' '.$usuarioDeshabilitado->getApellido())).' ('.htmlspecialchars($usuarioDeshabilitado->getUserName()).')</b>
         de la dependencia <b>'.htmlspecialchars($dependencia).'</b> fue deshabilitado en el sistema el <b>'.date('Y-m-d H:i:s').'</b>,
-        al detectarse deshabilitado o expirado en el Directorio Activo.</p>
+        al detectarse inactivo en el Directorio Activo.</p>
         <p>Como jefe de esta dependencia, las siguientes actividades pendientes fueron reasignadas automaticamente a su usuario
         y a partir de ahora estan bajo su responsabilidad:</p>
         <table style="border-collapse:collapse;width:100%;font-size:13px;">
@@ -203,7 +417,7 @@ class UsuarioPendientesChecker
         <h3 style="color:#a83232;margin-bottom:4px;">Novedad: usuario deshabilitado sin jefe de dependencia configurado</h3>
         <p>El usuario <b>'.htmlspecialchars(trim($user->getNombre().' '.$user->getApellido())).' ('.htmlspecialchars($user->getUserName()).')</b>
         de la dependencia <b>'.htmlspecialchars($dependencia).'</b> fue deshabilitado automaticamente el <b>'.date('Y-m-d H:i:s').'</b>,
-        al detectarse deshabilitado o expirado en el Directorio Activo.</p>
+        al detectarse inactivo en el Directorio Activo.</p>
         <p>Este usuario presenta actividades pendientes en el sistema, pero no fue posible reasignarlas automaticamente porque
         no hay un jefe de dependencia (Activo o Bloqueado) configurado para <b>'.htmlspecialchars($dependencia).'</b>.</p>
         <p>Las actividades pendientes quedan sin reasignar y deben gestionarse manualmente.</p>

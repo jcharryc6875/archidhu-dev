@@ -181,13 +181,7 @@ class securityActions extends sfActions
 					AccesoLogPeer::addAuditAccess( securityActions::$aFuncVars);
 					//************************************************************************************
 					if(in_array($response_ldap['code'], array("USER_LDAP_ERROR_DISABLED","USER_LDAP_ERROR_EXPIRED"))){
-						$usuario_anterior = clone $user;
-						$user->setEstadousuarioId(4);
-						$user->save();
-						//********************************************************************************
-						UsuarioPeer::addHistoricoUser($user);
-						AuditLogPeer::guardarAuditoriaLite(UsuarioPeer::OM_CLASS, $usuario_anterior, $user, ModulesEnable::Seguridad, $user->getCedula(), $user->getUsuarioId());
-						UsuarioPendientesChecker::reasignarOAlertar($user);
+						UsuarioPendientesChecker::inactivarPorDirectorioActivo($user);
 						//********************************************************************************
 						$resp['error_mensaje'] = "Acceso denegado, error de credenciales8";
 					}
@@ -438,13 +432,7 @@ class securityActions extends sfActions
 				//************************************************************************************
 				// Bit 0x2 = ACCOUNTDISABLE → si está a 1, la cuenta está deshabilitada
 				if ($uac & 0x2) {
-					$usuario_anterior = clone $user;
-					$user->setEstadousuarioId(4);
-					$user->save();
-					//*********************************************************************************
-					UsuarioPeer::addHistoricoUser($user);
-					AuditLogPeer::guardarAuditoriaLite(UsuarioPeer::OM_CLASS, $usuario_anterior, $user, ModulesEnable::Seguridad, $user->getCedula(), $user->getUsuarioId());
-					UsuarioPendientesChecker::reasignarOAlertar($user);
+					UsuarioPendientesChecker::inactivarPorDirectorioActivo($user);
 					//*********************************************************************************
 					$resp['login_status'] = "invalid";
 					$resp['error_mensaje'] = "Acceso denegado, error de credenciales8";
