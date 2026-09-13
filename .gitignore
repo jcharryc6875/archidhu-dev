@@ -45,3 +45,7 @@
 # Sistemas operativos
 .DS_Store
 Thumbs.db
+
+# Configuración e instrucciones de Claude AI
+.claude/
+CLAUDE.md
