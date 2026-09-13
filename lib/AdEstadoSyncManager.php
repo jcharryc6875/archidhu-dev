@@ -46,6 +46,15 @@ class AdEstadoSyncManager
             try {
                 $user_ldap = $auth->findUser($usuario->getUsuarioAd());
                 $estado = $auth->isUserActive($user_ldap);
+                $this->log(sprintf(
+                    'Usuario %d (%s / AD:%s) -> activo=%s codigo=%s razon=%s',
+                    $usuario->getUsuarioId(),
+                    $usuario->getUserName(),
+                    $usuario->getUsuarioAd(),
+                    $estado['activo'] ? 'true' : 'false',
+                    $estado['code'],
+                    $estado['razon']
+                ));
                 if ($estado['activo'] === false && in_array($estado['code'], array('USER_LDAP_ERROR_DISABLED', 'USER_LDAP_ERROR_EXPIRED'))) {
                     $this->log(sprintf(
                         'Usuario %d (%s / AD:%s) inactivo en AD (%s) -> se inactiva y reasigna en Archidhu',
