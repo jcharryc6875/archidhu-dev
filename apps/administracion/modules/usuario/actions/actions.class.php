@@ -613,6 +613,17 @@ class usuarioActions extends sfActions
       $usuario_anterior = clone $usuario;
     }
     //***********************************************************************************************
+    $nuevoEstadoUsuarioId = $this->getRequestParameter('estadousuario_id') ? $this->getRequestParameter('estadousuario_id') : null;
+    $estadosBloqueoAccion = array(UsuarioPendientesChecker::ESTADO_USUARIO_DESHABILITADO, UsuarioPendientesChecker::ESTADO_USUARIO_SUSPENDIDO);
+    if(
+      in_array($nuevoEstadoUsuarioId, $estadosBloqueoAccion)
+      && !in_array($usuario_anterior->getEstadousuarioId(), $estadosBloqueoAccion)
+      && UsuarioPendientesChecker::tienePendientes($usuario->getUsuarioId())
+    ){
+      $this->getUser()->setFlash('messages_error', UsuarioPendientesChecker::getMensajeBloqueo());
+      return $this->redirect($this->getRequest()->getScriptName().'/usuario/edit?usuario_id='.$usuario->getUsuarioId());
+    }
+    //***********************************************************************************************
     if($insertarHistorico){
       //guarda en historico
       $hist = new HistUsuario();
