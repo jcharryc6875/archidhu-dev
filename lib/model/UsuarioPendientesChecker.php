@@ -1,7 +1,5 @@
 <?php
 
-require_once(sfConfig::get('sf_lib_dir').'/fechas.php');
-
 /**
  * Valida si un usuario tiene actividades pendientes (Comunicaciones Externas Recibidas,
  * Comunicaciones Internas, Comunicaciones Externas Enviadas y Prestamos), en cualquier
@@ -319,7 +317,7 @@ class UsuarioPendientesChecker
         $c->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA, 1);
         $c->add(ComRecibidaPeer::IS_LOCKED, 0);
         $c->add(ComRecibidaPeer::MARCA_VINCULACION, 0);
-        $c->add(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA, AddDays(date('Y-m-d'), 3), Criteria::LESS_THAN);
+        $c->add(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA, date('Y-m-d', strtotime('+3 day')), Criteria::LESS_THAN);
         $c->addAnd(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA, date('Y-m-d 00:00:00'), Criteria::GREATER_THAN);
 
         return $c;
