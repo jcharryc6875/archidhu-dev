@@ -6,13 +6,23 @@
  * reasignacion (UsuarioPendientesChecker::inactivarPorDirectorioActivo) para los que
  * el DA reporta deshabilitados o expirados. Es el "job programado" equivalente a
  * EmailSyncManager/SipostSyncJob, invocado desde lib/task/AdEstadoSyncJob.php.
+ *
+ * Cada ejecucion escribe su propio archivo de log en
+ * <sf_log_dir>/ad_sync/<AAAA-MM-DD>/ad_sync_<AAAA-MM-DD_His>.log
  */
 class AdEstadoSyncManager
 {
+    private $logFile;
+
     public function sincronizarEstados()
     {
+        $this->logFile = $this->crearArchivoLog();
+        $this->log('Inicio de sincronizacion de estados AD');
+
         $auth = $this->conectarDirectorioActivo();
         if (!$auth) {
+            $this->log('No se pudo conectar al Directorio Activo, se cancela la ejecucion');
+
             return;
         }
 
@@ -37,16 +47,23 @@ class AdEstadoSyncManager
                 $user_ldap = $auth->findUser($usuario->getUsuarioAd());
                 $estado = $auth->isUserActive($user_ldap);
                 if ($estado['activo'] === false && in_array($estado['code'], array('USER_LDAP_ERROR_DISABLED', 'USER_LDAP_ERROR_EXPIRED'))) {
+                    $this->log(sprintf(
+                        'Usuario %d (%s / AD:%s) inactivo en AD (%s) -> se inactiva y reasigna en Archidhu',
+                        $usuario->getUsuarioId(),
+                        $usuario->getUserName(),
+                        $usuario->getUsuarioAd(),
+                        $estado['code']
+                    ));
                     UsuarioPendientesChecker::inactivarPorDirectorioActivo($usuario);
                     $inactivados++;
                 }
             } catch (Exception $e) {
                 $errores++;
-                error_log('AdEstadoSyncManager: error verificando usuario '.$usuario->getUsuarioId().': '.$e->getMessage());
+                $this->log(sprintf('Error verificando usuario %d (%s): %s', $usuario->getUsuarioId(), $usuario->getUserName(), $e->getMessage()));
             }
         }
 
-        error_log(sprintf('AdEstadoSyncManager: revisados=%d inactivados=%d errores=%d', $revisados, $inactivados, $errores));
+        $this->log(sprintf('Fin de sincronizacion: revisados=%d inactivados=%d errores=%d', $revisados, $inactivados, $errores));
     }
 
     private function conectarDirectorioActivo()
@@ -62,9 +79,28 @@ class AdEstadoSyncManager
             //*****************************************************************************
             return new AdldapAuth($config);
         } catch (Exception $e) {
-            error_log('AdEstadoSyncManager: no se pudo conectar al Directorio Activo: '.$e->getMessage());
+            $this->log('No se pudo conectar al Directorio Activo: '.$e->getMessage());
 
             return null;
+        }
+    }
+
+    private function crearArchivoLog()
+    {
+        $carpetaDia = sfConfig::get('sf_log_dir').DIRECTORY_SEPARATOR.'ad_sync'.DIRECTORY_SEPARATOR.date('Y-m-d');
+        if (!is_dir($carpetaDia)) {
+            @mkdir($carpetaDia, 0755, true);
+        }
+
+        return $carpetaDia.DIRECTORY_SEPARATOR.'ad_sync_'.date('Y-m-d_His').'.log';
+    }
+
+    private function log($mensaje)
+    {
+        if ($this->logFile) {
+            simad_util::writetolog($this->logFile, $mensaje);
+        } else {
+            error_log('AdEstadoSyncManager: '.$mensaje);
         }
     }
 }
