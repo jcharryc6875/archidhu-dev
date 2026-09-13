@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<meta charset="UTF-8">
+<head>
+<title>Centro de Ayuda // Simad</title>
+
+<link href="../CSS/ayudaSIMAD.css" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,600,700,900' rel='stylesheet' type='text/css'>
+
+<!--Scripts-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="../js/animatedcollapse.js"></script>
+
+<script type="text/javascript">
+animatedcollapse.addDiv('temas', 'fade=0,speed=400,group=menu,hide=0')
+animatedcollapse.addDiv('admin', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('comunicaciones', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('archivo', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('documentos', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('servicios', 'fade=0,speed=400,group=menu,hide=1')
+
+
+animatedcollapse.ontoggle=function($, divobj, state){ //fires each time a DIV is expanded/contracted
+	//$: Access to jQuery
+	//divobj: DOM reference to DIV being expanded/ collapsed. Use "divobj.id" to get its ID
+	//state: "block" or "none", depending on state
+}
+
+animatedcollapse.init()
+
+</script>
+
+</head>
+
+
+  
+<body>
+<div class="container">
+<div class="baner"><img src="../images/logo-simad5-blanco.png"/></div>
+<!-- #BeginLibraryItem "/Library/Menu.lbi" -->
+<div class="menu"> <a href="../temas.html"  ><img src="../images/categorias.png"/></a> <a href="../buscador.html" ><img src="../images/palabras.png"/></a> </div>
+<!-- #EndLibraryItem -->
+<div class="seccion"><h1>Centro de Ayuda - Simad</h1></div>
+
+
+
+<div class="seleccion" id="temas">
+  <h1>Comunicaciones - Archivo historico</h1>
+  <div class="menu-lat"><img src="../images/archivos.png" class="cover-peque" /> <img src="../images/archivo-historico.png" class="cover-peque" /><a href="#crear">Crear</a><a href="#consultar">Consultar</a><a href="#listar">listar</a><a href="#adm">Adm. Transferencias</a></div>
+  <div class="content">
+  		<img src="../images/Comunicaciones/Archivos/menu_archivoHistorico.png" class="cover"/>
+      <p>El módulo de Archivo Histórico permite la administración de los archivos de la organización que terminaron su período de retención, pero que tienen algún valor histórico y por lo tanto se deben almacenar y custodiar por un tiempo prudencial.<br>
+      </p>
+	    <br>
+      
+  		
+        
+<!--Ayuda-->        
+        
+<h3 id="crear">Crear<a href="#top" class="btn-ir">ir a inicio</a></h3>
+<img src="../images/Comunicaciones/Archivos/menu_archivoHistorico.png" class="cover" />
+<p>La opción crear permite al usuario crear un archivo en Archivo Histórico para ser procesado en el sistema SIMAD.</p>
+<p>Para crear un Archivo Histórico realice los siguientes pasos:</p>
+<li>Haga clic en el menú superior en archivos/archivo historico/crear.</li><br>
+<img src="../images/Comunicaciones/Archivos/archivoHistorico_crear.png" class="cover" />
+
+
+
+
+<h3 id="consultar">Consultar<a href="#top" class="btn-ir">ir a inicio</a></h3>
+<img src="../images/Comunicaciones/Archivos/menu_archivoHistorico_consultar.png" class="cover" />
+<p>La opción Consultar permite consultar los archivos que se encuentran en Archivo Histórico en el sistema SIMAD.</p>
+<p>Para consultar un Archivo Histórico realice los siguientes pasos:</p>
+<li>Haga clic en el menú superior en archivos/archivos historico/Consultar.</li><br>
+<img src="../images/Comunicaciones/Archivos/archivoHistorico_consultar.png" class="cover" />
+
+
+
+
+<h3 id="listar">Listar<a href="#top" class="btn-ir">ir a inicio</a></h3>
+<img src="../images/Comunicaciones/Archivos/menu_archivoHistorico_listar.png" class="cover" />
+<p>La opción listar muestra el listado de las distintas unidades documentales que se encuentran en Archivo Histórico en el sistema SIMAD 4.0.</p>
+<p>Para ver las unidades documentales de Archivo Histórico realice los siguientes pasos:</p>
+<li>Haga un click en el menu superior en archivos/archivos historico/listar.</li><br>
+<img src="../images/Comunicaciones/Archivos/archivoHistorico_listar.png" class="cover" />
+
+
+
+<h3 id="adm">Administrador de transferencias<a href="#top" class="btn-ir">ir a inicio</a></h3>
+<img src="../images/Comunicaciones/Archivos/menu_archivoHistorico_transferencias.png" class="cover" />
+<p>Permite aceptar o rechazar las transferencias al Archivo Histórico en el sistema SIMAD.</p>
+<p>Para consultar las listas de transferencia en Archivo Histórico realice alguno de los siguientes pasos:</p>
+<li>Haga clic en el menú superior en archivos/archivos historico/Adm. tranferencias.</li><br>
+<img src="../images/Comunicaciones/Archivos/archivoHistorico_transferencia.png" class="cover" />
+
+
+
+
+
+
+    </div>
+    <!--FIN CONTAINER-->
+  		
+    
+</div>
+
+
+</div>
+<!-- #BeginLibraryItem "/Library/Footer.lbi" -->
+<footer>
+  <h2>Todos los derechos reservados © Aurea S.A.S.</h2>
+</footer>
+<!-- #EndLibraryItem -->
+</body>
+</html>

@@ -1,0 +1,14 @@
+fields:
+  file:
+    required:         true
+      msg: Por favor, Escoge El Archivo.
+    file: True
+    sfFileValidator: 
+      mime_types:
+        - 'image/tiff'
+        - 'image/tif'
+        - 'image/TIFF'
+        - 'image/TIF'
+      mime_types_error: El Formato No Es Permitido Solo Archivos TIF.
+      max_size: 10000000
+      max_size_error: El tamaño máximo es de 10MB

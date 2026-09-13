@@ -1,0 +1,11 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Departamento
+    theme:            default
+
+    list:
+      display:        [departamento_id, Pais, nombre]
+    
+      fields:
+        NombPais:     { name: Pais }

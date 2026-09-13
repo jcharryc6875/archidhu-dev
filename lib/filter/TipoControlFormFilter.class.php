@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * TipoControl filter form.
+ *
+ * @package    simad
+ * @subpackage filter
+ * @author     Your name here
+ */
+class TipoControlFormFilter extends BaseTipoControlFormFilter
+{
+  public function configure()
+  {
+  }
+}

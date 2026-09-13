@@ -1,0 +1,14 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Rol
+    theme:            default
+#    css:              /app/theme/neon/assets/css/bootstrap.css
+    list:
+       max_per_page:   10
+       title: Perfiles
+       display:        [descripcion, Entidad]
+       object_actions:
+         _edit:        true
+    edit:
+      title:          Crear/Editar Perfil

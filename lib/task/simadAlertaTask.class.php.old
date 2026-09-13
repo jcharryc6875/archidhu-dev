@@ -1,0 +1,197 @@
+<?php
+
+/**
+ * @javier.charry 
+ * @copyright 2008
+ */
+include_once(sfConfig::get('sf_lib_dir')."/Fechas.class.php");
+?>
+<?php
+class simadAlertaTask extends sfPropelBaseTask
+{
+    
+protected function configure()
+{
+    $this->namespace        = 'simad';
+    $this->name             = 'alerta';
+    //$this->briefDescription = '';
+    //$this->detailedDescription = '';
+    //$this->addArgument('application', sfCommandArgument::REQUIRED, 'The application name');
+    // add other arguments here
+    //$this->addOption('prod', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev');
+    //$this->addOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'propel');
+    // add other options here
+}
+
+protected function execute($arguments = array(), $options = array())
+{
+    // Database initialization
+    //var_dump($this->configuration);
+    $databaseManager = new sfDatabaseManager($this->configuration);    
+    //$connection = $databaseManager->getDatabase(isset($options['connection']) ? $options['connection'] : null)->getConnection();
+    // add code here
+    $this->sendAlertsComRecibida();
+
+}
+/**
+* send_alert::sendAlertsComRecibida()
+* funcion para enviar alertas para las comunicaciones externas recibidas
+* donde falta un dia para vencercen la accion legal
+* @return
+*/
+public function sendAlertsComRecibida()
+{    
+    //$this->writetolog(date("Y-m-d G:i:s")." => Alerta enviada datos: prueba"."\n");    
+    $this->logSection('alertas com_recibida', date("Y-m-d G:i:s")." => Alerta enviada datos: prueba"."\n");
+    /******************************************************************************************************/
+  	echo $fecha = AddDays(date("Y-m-d"),1);  	  	  	
+  	/******************************************************************************************************/	
+	$c  = new Criteria();
+	//$c->setDistinct();	
+	$c->add(TipoComRecibidaPeer::ES_ACCION_LEGAL,1);
+	$c->add(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA, date("Y-m-d") , Criteria::GREATER_EQUAL);
+	$c->addAnd(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA, $fecha , Criteria::LESS_EQUAL);
+	$c->add(ComRecibidaPeer::COMENVIADA_ID,NULL,Criteria::ISNULL);
+	$c->add(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID,2);
+	$c->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA,true);
+	$c->addAscendingOrderByColumn(ComRecibidaPeer::COMRECIBIDA_ID);
+    $c->clearSelectColumns();
+    /****************************************JOINSS*********************************************************/
+    $c->addJoin(ComRecibidaPeer::COMRECIBIDA_ID,ComrecibidaUsuarioPeer::COMRECIBIDA_ID);
+    $c->addJoin(ComRecibidaPeer::TIPOCOMRECIBIDA_ID,TipoComRecibidaPeer::TIPOCOMRECIBIDA_ID);
+    $c->addJoin(ComrecibidaUsuarioPeer::USUARIO_ID,UsuarioPeer::USUARIO_ID);
+    $c->addJoin(ComRecibidaPeer::DIRECTORIOEXTERNO_ID,DirectorioExternoPeer::DIRECTORIOEXTERNO_ID);
+    $c->addJoin(ComRecibidaPeer::ASUNTORECIBIDA_ID,AsuntoRecibidaPeer::ASUNTORECIBIDA_ID);
+    /***************************************SELECT COLUMNAS*************************************************/
+    $c->addSelectColumn(ComRecibidaPeer::RADICADO);//0
+    $c->addSelectColumn(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA);//1
+    $c->addSelectColumn(ComRecibidaPeer::FECHA_CREACION);//2
+    $c->addSelectColumn(DirectorioExternoPeer::NOMBRE);//3
+    $c->addSelectColumn(AsuntoRecibidaPeer::DESCRIPCION);//4
+    $c->addSelectColumn(ComRecibidaPeer::ASUNTO);//5
+    $c->addSelectColumn(TipoComRecibidaPeer::DESCRIPCION);//6
+    $c->addSelectColumn(ComRecibidaPeer::OBSERVACIONES);//7
+    $c->addSelectColumn(UsuarioPeer::EMAIL);//8
+    /*******************************************************************************************************/
+	$resultset = ComrecibidaUsuarioPeer::doSelectStmt($c);    
+	/*******************************************************************************************************/    
+	$cuerpo_emails  = array();
+	$emails_destinos = array();	
+	while($object = $resultset->fetch()){
+	    $email_destino = $object[8];		
+        $cuerpo = '
+        <html>
+        <head>
+        <title></title>
+        </head>
+        <body>
+        <div id="cotenedor">        
+        Este es un mensaje para informarle que tiene una Comunicacion Externa Recibida con Accion Legal que se encuentra proxima a vencer su numero de radicado es: 
+        <br/>        
+        Numero De Radicado: <strong>'.$object[0].'</strong><br/>
+        Fecha Vencimiento Legal: <strong>'.$object[1].'</strong><br/>
+        Fecha Radicacion: <strong>'.$object[2].'</strong><br/>    
+        Remitente: <strong>'.utf8_encode($object[3]).'</strong><br/>
+        Asunto: <strong>'.utf8_decode($object[4]).'</strong><br/>
+        Detalle Del Asunto: <strong>'.utf8_decode($object[5]).'</strong><br/>
+        Tipo De Comunicaci&oacute;n: <strong>'.utf8_decode($object[6]).'</strong><br/>
+        Observaciones: <strong>'.utf8_decode($object[7]).'</strong><br/>
+        <br/>
+        </div>
+        </body></html>';
+        $cabeceras = "Content-type: text/html\r\n";
+    	@mail($email_destino,"CAD :Comunicacion Recibida Vencida" ,$cuerpo,$cabeceras);
+        $cuerpo_emails[]  = $cuerpo;
+        $emails_destinos[] = $email_destino;
+        $this->logSection("Alertas com_recibida","Alerta enviada datos: ".$cuerpo."\n");				
+	}	
+	$this->datos = $cuerpo_emails;
+	$this->cuenta = $emails_destinos;
+    //********************************************CERRAR NAVEGADOR*********************************************
+    /*$work_dir = sfConfig::get("sf_lib_dir");
+    $batch_file = "close_browser.bat";    
+    //system("D:\archivo.bat");
+    $last_line = exec($work_dir."\\".$batch_file);//system($mycmd, $retval);*/								
+	//*********************************************************************************************************
+}
+
+/**
+* send_alert::sendAlertsWorflows()
+* funcion que envia alertas a los workflows
+* pendientes por ejecutar 
+* @return
+*/
+public function sendAlertsWorflows()
+{    
+    /******************************************************************************************************/
+  	$fecha = AddDays(date("Y-m-d"),1);  	  	  	
+  	/******************************************************************************************************/	
+	$c  = new Criteria();
+	$c->add(WfActividadTransicionPeer::WF_ESTADO_ID,1);
+	$c->add(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA, date("Y-m-d") , Criteria::GREATER_EQUAL);
+	$c->addAnd(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA, $fecha , Criteria::LESS_EQUAL);
+	$c->add(ComRecibidaPeer::COMENVIADA_ID,NULL,Criteria::ISNULL);
+	$c->add(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID,2);
+	$c->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA,true);
+	$c->addAscendingOrderByColumn(ComRecibidaPeer::COMRECIBIDA_ID);
+    $c->clearSelectColumns();
+    /****************************************JOINSS*********************************************************/
+    $c->addJoin(ComRecibidaPeer::COMRECIBIDA_ID,ComrecibidaUsuarioPeer::COMRECIBIDA_ID);
+    $c->addJoin(ComRecibidaPeer::TIPOCOMRECIBIDA_ID,TipoComRecibidaPeer::TIPOCOMRECIBIDA_ID);
+    $c->addJoin(ComrecibidaUsuarioPeer::USUARIO_ID,UsuarioPeer::USUARIO_ID);
+    $c->addJoin(ComRecibidaPeer::DIRECTORIOEXTERNO_ID,DirectorioExternoPeer::DIRECTORIOEXTERNO_ID);
+    $c->addJoin(ComRecibidaPeer::ASUNTORECIBIDA_ID,AsuntoRecibidaPeer::ASUNTORECIBIDA_ID);
+    /***************************************SELECT COLUMNAS*************************************************/
+    $c->addSelectColumn(ComRecibidaPeer::RADICADO);//0
+    $c->addSelectColumn(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA);//1
+    $c->addSelectColumn(ComRecibidaPeer::FECHA_CREACION);//2
+    $c->addSelectColumn(DirectorioExternoPeer::NOMBRE);//3
+    $c->addSelectColumn(AsuntoRecibidaPeer::DESCRIPCION);//4
+    $c->addSelectColumn(ComRecibidaPeer::ASUNTO);//5
+    $c->addSelectColumn(TipoComRecibidaPeer::DESCRIPCION);//6
+    $c->addSelectColumn(ComRecibidaPeer::OBSERVACIONES);//7
+    $c->addSelectColumn(UsuarioPeer::EMAIL);//8
+    /*******************************************************************************************************/
+	$com_recibida_mail = ComrecibidaUsuarioPeer::doSelectStmt($c);    
+	/*******************************************************************************************************/    
+	$cuerpo_emails  = array();
+	$emails_destinos = array();	
+	while($object = $resultset->fetch()){		
+	    $email_destino = $object[8];		
+        $cuerpo = '
+        <html>
+        <head>
+        <title></title>
+        </head>
+        <body>
+        <div id="cotenedor">        
+        Este es un mensaje para informarle que tiene una Comunicacion Externa Recibida con Accion Legal que se encuentra proxima a vencer su numero de radicado es: 
+        <br/>        
+        Numero De Radicado: <strong>'.$object[0].'</strong><br/>
+        Fecha Vencimiento Legal: <strong>'.$object[1].'</strong><br/>
+        Fecha Radicacion: <strong>'.$object[2].'</strong><br/>    
+        Remitente: <strong>'.utf8_encode($object[3]).'</strong><br/>
+        Asunto: <strong>'.utf8_decode($object[4]).'</strong><br/>
+        Detalle Del Asunto: <strong>'.utf8_decode($object[5]).'</strong><br/>
+        Tipo De Comunicaci&oacute;n: <strong>'.utf8_decode($object[6]).'</strong><br/>
+        Observaciones: <strong>'.utf8_decode($object[7]).'</strong><br/>
+        <br/>
+        </div>
+        </body></html>';
+        $cabeceras = "Content-type: text/html\r\n";
+    	@mail($email_destino,"CAD :Comunicacion Recibida Vencida" ,$cuerpo,$cabeceras);
+        $cuerpo_emails[]  = $cuerpo;
+        $emails_destinos[] = $email_destino;
+        $this->writetolog(date("Y-m-d G:i:s")." => "."Alerta enviada datos: ".$cuerpo."\n");				
+	}	
+	$this->datos = $cuerpo_emails;
+	$this->cuenta = $emails_destinos;
+    //********************************************CERRAR NAVEGADOR*********************************************
+    /*$work_dir = sfConfig::get("sf_lib_dir");
+    $batch_file = "close_browser.bat";    
+    //system("D:\archivo.bat");
+    $last_line = exec($work_dir."\\".$batch_file);//system($mycmd, $retval);*/								
+	//*********************************************************************************************************
+}
+}
+?>

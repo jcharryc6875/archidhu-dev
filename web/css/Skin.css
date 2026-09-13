@@ -1,0 +1,312 @@
+
+HTML {
+	PADDING-RIGHT: 0px; 
+    PADDING-LEFT: 0px; 
+    PADDING-BOTTOM: 0px;
+     MARGIN: 0px; 
+     WIDTH: 100%;
+      PADDING-TOP: 0px; 
+      BACKGROUND-COLOR: #6186b3
+}
+BODY {
+    HEIGHT: 100%;
+    WEIGHT: 90%;
+    PADDING-RIGHT: 0px; 
+    PADDING-LEFT: 0px; 
+    PADDING-BOTTOM: 0px; 
+    MARGIN: 0px; WIDTH: 100%;                
+    PADDING-TOP: 0px;
+    BACKGROUND-COLOR: white
+}
+mismaBody{
+	  HEIGHT: 100%;
+	  PADDING-RIGHT: 0px; 
+    PADDING-LEFT: 0px; 
+    PADDING-BOTTOM: 0px; 
+    MARGIN: 0px; WIDTH: 100%;                
+    PADDING-TOP: 0px;
+    BACKGROUND-COLOR: white
+}
+
+A:link{
+       text-decoration: none; 
+       color: #39597D; 
+       font-weight: bold;}
+       A:visited{text-decoration: none; color: #39597D; font-weight: bold;}
+A:active{text-decoration: underline; color: #39597D; font-weight: bold;}
+A:hover{text-decoration: underline; color: #39597D; font-weight: bold;}
+.menuFondo{
+	BACKGROUND-COLOR: #cfddee
+	
+}
+.SaltoDePagina{
+PAGE-BREAK-AFTER: always
+}
+
+.menuFondoTitulo{
+	BACKGROUND-COLOR: #ffffff;
+    font-size : 13; 
+    color: #008BCE	
+}
+.fondo{
+	BACKGROUND-COLOR: #cfddee;
+	font-size : 13; 
+}
+.fondo2{
+	BACKGROUND-COLOR: #6186b3;
+	FONT-FAMILY: Arial, Helvetica, sans-serif; 
+	FONT-SIZE: 13px;
+}
+.fondoPiePagina{
+	BACKGROUND-COLOR: #6186b3;
+	FONT-FAMILY: Arial, Helvetica, sans-serif; 
+	FONT-SIZE: 10px;
+	color: #000000;
+}
+.fondoBodyMenu{
+	BACKGROUND-COLOR: #6186b3;
+	FONT-FAMILY: Arial, Helvetica, sans-serif; 
+	FONT-SIZE: 13px;
+}
+.Grilla{
+
+      MARGIN-RIGHT: 2px; 
+      PADDING-TOP: 0px;
+      PADDING-RIGHT: 0px; 
+      PADDING-LEFT: 0px;      
+	BORDER-RIGHT: #DDD 1px solid; 
+	BORDER-TOP: #DDD 1px solid; 
+	FONT-SIZE: 11px; 
+	BORDER-LEFT: #DDD 1px solid; 
+	BORDER-BOTTOM: #DDD 1px solid; 
+	FONT-FAMILY: Arial, Helvetica, sans-serif; 
+	
+	
+}
+.GrillaSinBorde{
+		
+	FONT-SIZE: 11px; 
+	FONT-FAMILY: Arial, Helvetica, sans-serif; 
+	TEXT-ALIGN: middle;  
+}
+
+.GrillaSinBordeCarta{
+		
+	FONT-SIZE: 13px; 
+	FONT-FAMILY: Arial, Helvetica, sans-serif; 
+	TEXT-ALIGN: middle;  
+	
+}
+
+table{
+	FONT-SIZE: 11px; 
+	FONT-FAMILY: Arial, Helvetica, sans-serif; 
+	TEXT-ALIGN: middle;  
+}
+.GrillaTitulo{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	border : 0;
+	
+	FONT-SIZE: 11px; 
+	
+	FONT-FAMILY: Arial, Helvetica, sans-serif; 
+	
+}
+
+
+FORM {
+	
+}
+h1{font-family: Verdana Ref; 
+      color: #808080; 
+      font-size: 20; 			  
+			TEXT-ALIGN: center;  
+      background-color:#FFeeFF; 
+
+}
+
+
+
+.tituloPantalla{
+	TEXT-align : left;
+	width : 100%;
+	size : 5;
+	BACKGROUND-COLOR: #6186b3
+}
+
+.primeraFila{ 
+background-color:#CCF;
+color : #000000;
+TEXT-align : left;
+font-size: 12;
+}
+
+.filaImpar{ 
+
+background-color:#E8E8E8;
+
+}
+
+.filaPar{ 
+
+background-color:#Ffffff;
+
+}
+.menuFondo1{
+    	FONT-SIZE: 10px; 
+    	BACKGROUND-COLOR: #cfddee;
+}
+
+.topmenugroup {
+	BORDER-RIGHT: #808080 0px solid; 
+    PADDING-RIGHT: 2px; 
+    BORDER-TOP: #808080 0px solid; 
+    PADDING-LEFT: 2px; 
+    FONT-SIZE: 11px; 
+    PADDING-BOTTOM: 0px; 
+    BORDER-LEFT: #808080 0px solid; 
+    CURSOR: pointer; 
+    COLOR: #000000; 
+    PADDING-TOP: 0px; 
+    BORDER-BOTTOM: #808080 0px solid; 
+    FONT-FAMILY: Tahoma, Arial, Verdana; 
+    HEIGHT: 24px; 
+    BACKGROUND-COLOR: #ebeadb
+}
+.topmenugroupover {
+	BORDER-RIGHT: #808080 0px solid; 
+    PADDING-RIGHT: 2px; 
+    BORDER-TOP: #808080 0px solid; 
+    PADDING-LEFT: 2px; 
+    FONT-SIZE: 11px;
+     PADDING-BOTTOM: 0px; 
+    BORDER-LEFT: #808080 0px solid; 
+    CURSOR: pointer; 
+    COLOR: #ff0000; 
+    PADDING-TOP: 0px; 
+    BORDER-BOTTOM: #808080 0px solid; 
+    FONT-FAMILY: Tahoma, Arial, Verdana; 
+    HEIGHT: 24px; 
+    BACKGROUND-COLOR: #ebeadb; 
+    TEXT-DECORATION: none
+}
+.treefolderlistitem {
+	PADDING-RIGHT: 2px; 
+    PADDING-LEFT: 2px; 
+	FONT-SIZE: 11px; 
+    CURSOR: pointer; 
+	COLOR: #000000; 
+    FONT-FAMILY: Arial, Sans-Serif; 
+	TEXT-DECORATION: none
+}
+.treefolderlistitemhover {
+	PADDING-RIGHT: 2px; 
+    PADDING-LEFT: 2px; 
+	FONT-SIZE: 12px; 
+	CURSOR: pointer; 
+	COLOR: #000000; 
+	FONT-FAMILY: Arial, Sans-Serif; 
+	BACKGROUND-COLOR: #fffbae; 
+	TEXT-DECORATION: none
+}
+.treefolderlistitemselected {
+	PADDING-RIGHT: 2px; 
+	PADDING-LEFT: 2px; 
+	FONT-SIZE: 11px; 
+    CURSOR: pointer; 
+	COLOR: #ffffff; 
+    FONT-FAMILY: Arial, Sans-Serif; 
+	BACKGROUND-COLOR: #6286b3; 
+	TEXT-DECORATION: none
+}
+.treefolderlistlinkselunread {
+	COLOR: #ffffff
+}
+.treefolderlistlinkselunreadjunk {
+	COLOR: #ffffff
+}
+.treefolderlistlinkunread {
+	COLOR: #0000ff
+}
+.treefolderlistlinkunreadjunk {
+	COLOR: #008000
+}
+/* hasta aqui fmedio funciona*/
+
+.menubreak {
+	PADDING-RIGHT: 0px; 
+    PADDING-LEFT: 0px;
+     PADDING-BOTTOM: 0px; 
+    PADDING-TOP: 0px; 
+    HEIGHT: 0px; 
+    BACKGROUND-COLOR: #ebeadb
+}
+.menubreakdark {
+	PADDING-RIGHT: 0px; 
+    PADDING-LEFT: 0px; 
+    PADDING-BOTTOM: 0px; 
+    PADDING-TOP: 0px; 
+    HEIGHT: 1px; 
+    BACKGROUND-COLOR: #b0b0b0
+}
+.menugroup {
+	BORDER-RIGHT: #808080 1px solid; 
+    BORDER-TOP: #b0b0b0 1px solid; 
+   /* FILTER: progid:DXImageTransform.Microsoft.Shadow(color='dimgray', Direction=135, Strength=3); */
+    BORDER-LEFT: #808080 1px solid; BORDER-BOTTOM: #808080 1px solid; BACKGROUND-COLOR: #ebeadb
+}
+.menuitem {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 15px; FONT-SIZE: 11px; PADDING-BOTTOM: 3px; CURSOR: pointer; COLOR: #000000; PADDING-TOP: 3px; FONT-FAMILY: Tahoma, Arial, Verdana
+}
+.menuitemover {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 15px; FONT-SIZE: 11px; PADDING-BOTTOM: 3px; CURSOR: pointer; COLOR: #000000; PADDING-TOP: 3px; FONT-FAMILY: Tahoma, Arial, Verdana; BACKGROUND-COLOR: #ffffff
+}
+
+.footer {
+  margin: 230px 0 0 0; 
+  padding: 0 0 10px 0;
+  text-align: center;
+  FONT-SIZE: 10px; 
+  position : absolute;
+  left :80px;
+  top : 690px;
+  
+   /* assuming footer of height 100px */
+
+}
+
+/*CONFIGURACION COLORES MENU HORIZONTAL*/
+
+/*COLOR LINEAS*/
+#imenus0 li ul {
+	background-color:#efefef; 
+	border-style:solid; 
+	border-color:#000066; 
+	border-width:1px 0px; 
+	padding:5px; 
+	margin:4px 0px 0px; 
+}
+/*COLORES SELECCION SUBMENU*/
+#imenus0 ul li a.iactive {
+	background-color:#8993EB; 
+}
+
+
+#imenus0 .ulmba{
+	position:absolute;
+	font-size:1px;
+	border-style:solid;
+	border-color:#000066;
+	border-width:1px 0px;
+	background-color:transparent; 
+	border-style:solid; 
+	border-color:#000066; 
+	border-width:1px 0px; 
+}
+
+
+
+
+
+

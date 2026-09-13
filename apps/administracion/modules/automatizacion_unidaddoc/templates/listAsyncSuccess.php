@@ -1,0 +1,1 @@
+<?php include_partial('listPartial',array('pager' => $pager,'parametros' => $parametros)) ?>

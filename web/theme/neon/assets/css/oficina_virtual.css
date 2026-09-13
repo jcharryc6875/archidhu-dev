@@ -1,0 +1,348 @@
+.control-label{
+    font-weight: bold;
+}
+.input-sm {
+    border-color: #a4a1a1;
+}
+.form-wizard > ul > li.active a span, .form-wizard > ul > li.current a span {
+    background: #f40f0f;
+    color: #fdfbfb;        
+}
+.pager li > a, .pager li > span {
+    background-color: #0ab614;
+    color: #ffffff;
+}
+.pager li > a:hover, .pager li > a:focus {
+    text-decoration: none;
+    background-color: #1313e9;
+}
+.pager .disabled li > a, .pager li .disabled > span {
+    background-color: #0ab614;
+    color: #ffffff;
+}
+
+.timeline-container {
+    padding: 20px 10px;
+    /*background: rgba(91, 37, 210);*/
+    /* background: #292c2f; */
+    background: #f4f4f4;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    /*margin: 50px auto;*/
+    max-width: 1200px;
+    /*box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);*/
+}
+
+.timeline-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 50px 0;
+    padding: 0 30px;
+}
+
+/* Línea principal de fondo */
+.timeline-line {
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    right: 50px;
+    height: 6px;
+    background: #e0e0e0;
+    transform: translateY(-50%);
+    border-radius: 3px;
+    z-index: 1;
+}
+
+/* Línea de progreso */
+.timeline-progress {
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    height: 6px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transform: translateY(-50%);
+    border-radius: 3px;
+    z-index: 2;
+    transition: width 1s ease-in-out;
+}
+
+/* Contenedor de cada fase */
+.timeline-phase {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Óvalos de las fases */
+.phase-oval {
+    width: 120px;
+    height: 60px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.2;
+    transition: all 0.4s ease;
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Estado pendiente (no completado) */
+.phase-pending .phase-oval {
+    /*background: #f8f9fa;*/
+    background: #f4f4f4;
+    color: #6c757d;
+    /*border-color: #dee2e6;*/
+    border-color: #ffcd00;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.phase-pending .phase-oval::before {
+    /*content: '';*/
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dee2e6;
+}
+
+/* Estado completado */
+.phase-completed .phase-oval {
+    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    background: linear-gradient(135deg, #00a651 0%, #007d3d 100%);
+    color: white;
+    /* border-color: #667eea; */
+    border-color: #292c2f;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    transform: scale(1.05);
+}
+
+.phase-completed .phase-oval::before {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    top: -25px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    background: #28a745;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: white;
+    border: 2px solid white;
+}
+
+/* Texto descriptivo debajo */
+.phase-description {
+    margin-top: 15px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    max-width: 140px;
+    transition: all 0.3s ease;
+}
+
+.phase-pending .phase-description {
+    color: #aaacae;
+}
+
+.phase-completed .phase-description {
+    /*color: white;*/
+    /* color: #ffcd00; */
+    color: #303641;
+    font-weight: 600;
+}
+
+/* Efectos hover */
+.timeline-phase:hover .phase-oval {
+    transform: scale(1.1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.phase-pending:hover .phase-oval {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.phase-completed:hover .phase-oval {
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+}
+
+/* Números de fase */
+.phase-number {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.phase-pending .phase-number {
+    background: #e6c333;
+    color: #6c757d;
+    border: 1px dashed #f70c06;
+}
+
+.phase-completed .phase-number {
+    /* background: #28a745; */
+    background: #58b0e0;
+    /* color: white; */
+    color: #292c2f;
+    border: 1px dashed black;
+    /* box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4); */
+}
+
+/* Título principal */
+.timeline-title {
+    text-align: center;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.timeline-subtitle {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+}
+
+/* Controles */
+.controls {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.btn-control {
+    margin: 0 10px;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-next {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-next:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    color: white;
+}
+
+.btn-reset {
+    background: #f8f9fa;
+    color: #495057;
+    border: 2px solid #dee2e6;
+}
+
+.btn-reset:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+    color: #495057;
+}
+
+/* Responsivo - Mantener SIEMPRE horizontal */
+@media (max-width: 992px) {
+    .timeline-wrapper {
+        padding: 0 15px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .timeline-line {
+        left: 30px;
+        right: 30px;
+    }
+
+    .timeline-progress {
+        left: 30px;
+    }
+
+    .phase-oval {
+        width: 100px;
+        height: 50px;
+        font-size: 11px;
+    }
+
+    .phase-description {
+        font-size: 11px;
+        max-width: 120px;
+    }
+
+    .timeline-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .timeline-wrapper {
+        min-width: 600px; /* Fuerza el scroll horizontal */
+        padding: 0 10px;
+    }
+
+    .timeline-line {
+        left: 20px;
+        right: 20px;
+    }
+
+    .timeline-progress {
+        left: 20px;
+    }
+
+    .phase-oval {
+        width: 90px;
+        height: 45px;
+        font-size: 10px;
+    }
+
+    .phase-description {
+        font-size: 10px;
+        max-width: 100px;
+    }
+
+    .timeline-container {
+        margin: 20px 10px;
+        padding: 30px 10px;
+        overflow-x: auto;
+    }
+
+    .phase-number {
+        width: 25px;
+        height: 25px;
+        font-size: 11px;
+    }
+}

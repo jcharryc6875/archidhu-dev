@@ -1,0 +1,19 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Usuario
+    theme:            default
+    edit:
+         display: [usuario_id, user_name, apellido, nombre, email, rol_por_usuario] 
+         fields:
+             user_name:        { type: plain }
+             apellido:         { type: plain }
+             nombre:           { type: plain }
+             email:            { type: plain }
+             rol_por_usuario:     { type: admin_double_list, params: through_class=RolPorUsuario }
+          
+
+
+
+
+

@@ -1,0 +1,56 @@
+<?php use_helper('Object','jQuery') ?>
+<div class="row">
+  <div class="col-md-12">
+    <!-- Contenedor Pagina -->
+    <div class="panel panel-gradient" data-collapsed="0">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Crear/Editar Privilegios por Usuario
+        </div>
+      </div>
+      <!-- Contenedor Contenido Formulario-->
+      <div class="panel-body">      
+        <?php 
+        echo form_tag('formas_por_usuario/update', array('name'=>'form1','role' => 'form', 'class' => 'form-horizontal form-groups-bordered validate'));
+        echo object_input_hidden_tag($usuario_privilegio, 'getUsuarioprivilegioId');
+        ?>
+       
+        <div class="form-group">
+          <!-- Modulo: -->
+          <label for="ltipoprocedimiento_id" class="col-sm-2 control-label">Privilegio:</label>
+          <div class="col-sm-10">
+            <select name="forma_id" id="forma_id"  class="form-control input-sm required select2">
+                <option value="0">Seleccione...</option>
+                    <?php 	
+                    	foreach($formas as $forma){
+                    		echo "<option value='".$forma->getFormaId()."'";
+                    		if($forma->getFormaId() == $forma_seleccionada){
+                    			echo " selected ";
+                    		}
+                    		echo ">".$forma->getModulo()->getDescripcion()." - ".$forma->getDescripcion()."</option>";
+                    	}
+                    ?>
+            </select>
+          </div>
+		</div>
+      
+		<div class="form-group">
+          <!-- Nombre: -->
+          <label for="ldependencia_id" class="col-sm-2 control-label">Usuario:</label>
+          <div class="col-sm-10">            
+            <?php echo object_select_tag($usuario_privilegio, 'getUsuarioId', array ('peer_method'=>'getAllUser','related_class' => 'Usuario','class'=>'form-control input-sm required select2','include_custom'=>'Seleccione...',)) ?>   
+          </div>          
+		</div>
+
+		<div class="form-group">
+			<!-- Botonera -->
+			<div class="col-sm-offset-4 col-sm-5">
+				<button type="submit" class="btn btn-success"><?php echo $forma->getPrimaryKey() ? "Guardar Cambios" : "Guardar Registro"?> </button> 
+			</div> 
+		</div>
+		<div class="clear"></div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>

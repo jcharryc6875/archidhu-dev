@@ -1,0 +1,35 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Usuario
+    theme:            default
+
+    list:
+       title: Listado de Usuarios
+       display: [usuario_id, nombre, apellido, =user_name, _carnet, estado, nombre_dependencia]
+       object_actions:
+        _edit: false
+        show: { name: Ver , action: show, icon: /sf/sf_admin/images/filter.png }
+
+    edit:
+       title: Usuario "%%user_name%%"
+       display:
+          "Identificacion": [usuario_id, cedula, apellido, nombre, email, ruta_foto]
+          "Localizacion":   [dependencia_id, regional_id]
+          "Seguridad":      [user_name, password, estadousuario_id, fecha_creacion]
+       fields:
+          user_name:
+               params:
+                  size: 10
+          password:
+               params:
+                  size: 10
+                  type:  password
+                  disabled:  false   
+          usuario_id:     { type: plain }
+          fecha_creacion: { type: plain }
+          ruta_foto:
+              help:       Anexe una foto de 100x100 pix (jpg)
+              type:       admin_input_file_tag
+              upload_dir: imagenes/fotos
+              params:     include_link=imagenes/fotos include_remove=true

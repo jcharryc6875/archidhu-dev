@@ -1,0 +1,10 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      AsuntoRecibida
+    theme:            default
+    list:
+       max_per_page:   10
+       title: 'Asunto de Recibida'
+    edit:
+       title: 'Editar/Crear Asunto de Recibida'

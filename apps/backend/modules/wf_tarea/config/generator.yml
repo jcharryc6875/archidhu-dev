@@ -1,0 +1,10 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      WfTarea
+    theme:            default
+#    edit:
+#           display:   [ tarea_id, descripcion, wftarea_wftareatransicion ]
+#           fields:
+#                       descripcion:      { type: plain }
+#                       wftarea_wftareatransicion: { type: admin_double_list, params: through_class=WfTareaTransicion 

@@ -1,0 +1,37 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      ServicioReceptor
+    theme:            default
+    list:
+      display:        [TipoServicio, Dependencia, Usuario ]
+      filters:        [tiposervicio_id, usuario_id, dependencia_id ]
+      fields:
+        tiposervicio_id:   { name: TipoServicio, params: include_custom=Seleccione... }
+        dependencia_id:
+          params: 
+            include_custom=Seleccione...
+        usuario_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getAllUserActive
+      title:          Listado receptores Servicios
+      max_per_page:   25
+      object_actions:
+        _edit:        -
+        _delete:      -
+      actions:
+        _create:      ~
+    edit:
+      title:          Usuario Receptor
+      fields:
+        tiposervicio_id:   { name: TipoServicio, params: include_custom=Seleccione... }
+        dependencia_id:
+          params: 
+            include_custom: Seleccione...
+            class: required select2
+        usuario_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getAllUserActive
+            class: required select2

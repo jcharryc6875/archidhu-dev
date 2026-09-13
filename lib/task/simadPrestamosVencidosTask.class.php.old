@@ -1,0 +1,89 @@
+<?php
+
+class simadPrestamosVencidosTask extends sfPropelBaseTask 
+{
+  protected function configure()
+  {
+    
+    $this->namespace        = 'simad';
+    $this->name             = 'prestamosvencidos';
+    $this->briefDescription = '';
+    $this->detailedDescription = <<<EOF
+Tarea para enviar email de prestamos vencidos
+EOF;
+
+ $this->addArgument('application', sfCommandArgument::REQUIRED, 'The application name');
+    // add other arguments here
+    $this->addOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev');
+    $this->addOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'propel');
+  }
+
+  protected function execute($arguments = array(), $options = array())
+  {
+    
+	$databaseManager = new sfDatabaseManager($this->configuration);
+    $connection = Propel::getConnection($options['connection'] ? $options['connection'] : '');
+	
+	
+	// Database initialization
+    //var_dump($this->configuration);
+	
+	//$databaseManager = new sfDatabaseManager(sfContext::getInstance()->getConfiguration());
+    //$databaseManager->initialize(sfContext::getInstance()->getConfiguration());
+
+	//$databaseManager = new sfDatabaseManager();
+   //$databaseManager->initialize();
+    $databaseManager = new sfDatabaseManager($this->configuration);    
+    //$connection = $databaseManager->getDatabase(isset($options['connection']) ? $options['connection'] : null)->getConnection();
+    // add code here
+    $this->sendAlertsPrestamosVencidos();
+    
+  }
+  
+  public function sendAlertsPrestamosVencidos()
+    {
+        $this->logSection('alertas prestamos vencidos', date("Y-m-d G:i:s")." => Alerta de prestamos vencidos"."\n");
+        
+        echo $fecha = AddDays(date("Y-m-d"),1);  
+        
+        $c  = new Criteria();
+  	$parametros = '';
+  	/**************************************************************************************************************************************/
+	if($this->getRequestParameter('vencidos')){
+		$c->setDistinct();
+		$c->addJoin(PrestamoPeer::PRESTAMO_ID,DetallePrestamoPeer::PRESTAMO_ID);						
+		$c->add(PrestamoPeer::FECHA_VENCIMIENTO, $this->getRequestParameter('vencidos'),Criteria::LESS_THAN);		
+		$c->add(DetallePrestamoPeer::ESTADOPRESTAMO_ID,1);
+        $c->add(PrestamoPeer::FECHA_DEVOLUCION, null ,Criteria::ISNULL);
+		$parametros .= "&vencidos=".$this->getRequestParameter('vencidos');								
+	}
+	/**************************************************************************************************************************************/
+	$c->addAscendingOrderByColumn(PrestamoPeer::PRESTAMO_ID);
+	$resp          = PrestamoPeer::doSelect($c);
+	$parametro     = ParametroPeer::retrieveByPK(35);
+	$cuerpo        = $parametro->getValortexto();
+	$datos  = array();
+	$cuenta = array();
+	$texto ='';
+	$e_mail='';
+	foreach($resp as $resul){
+		$a = new Criteria();
+		$a->add(DetallePrestamoPeer::PRESTAMO_ID,$resul->getPrestamoId());
+		$obj = DetallePrestamoPeer::doSelect($a);
+		$texto ='';
+		$e_mail='';
+		foreach($obj as $detalle){
+		  $texto .= $detalle->getSolicitudprestamo()->getUnidaddocumentalId().'-'.$detalle->getSolicitudprestamo()->getUnidaddocumental().', ';
+		  $e_mail = $detalle->getSolicitudprestamo()->getUsuario()->getEmail(); 	
+		}
+		$datos[]  = $cuerpo.$texto;
+		$cuenta[] = $e_mail;		
+		@mail( $e_mail,utf8_encode("Oficina de Gestión Documental: Prestamo de documentos") ,$cuerpo.$texto);	
+        @mail( "luisgabrielquiceno@gmail.com",utf8_encode("Oficina de Gestión Documental: Prestamo de documentos") ,$cuerpo.$texto);			
+	}	
+	$this->datos = $datos;
+	$this->cuenta = $cuenta;
+        
+    
+    }
+}

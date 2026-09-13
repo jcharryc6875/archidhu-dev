@@ -1,0 +1,1 @@
+php.exe -f C:\inetpub\wwwroot\sgdeapruebas\lib\task\cleanup_php_sessions.php

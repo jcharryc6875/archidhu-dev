@@ -1,0 +1,35 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      TipoComRecibida
+    theme:            default
+    list:
+      display:        [descripcion, dias_respuesta, es_accion_legal, es_visible, dias_habiles, TipoDistribucion, TipoDocumentalAndCodigo]
+      filters:        [ descripcion, tipodistribucion_id, tipodocumental_id ]
+      title:          Tipo Correspondencia Recibida
+      fields:
+        tipodistribucion_id:
+          name: Tipo Distribucion
+          params:
+            include_custom: Seleccione...
+            class: required select2
+        tipodocumental_id:
+          name: Tipo Documental
+          params:
+            include_custom: Seleccione...
+            class: required select2
+      max_per_page:   25
+      object_actions:
+        _edit:        -
+        _delete:      -
+      actions:
+        _create:      ~
+    edit:
+      title:          Tipo Correspondencia Recibida
+      fields:
+        tipodistribucion_id:   { name: Tipo Distribucion, params: include_custom=Seleccione... }
+        tipodocumental_id:
+          name: Tipo Documental
+          params:
+            include_custom: Seleccione...
+            class: required select2

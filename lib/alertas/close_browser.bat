@@ -1,0 +1,2 @@
+taskkill /im iexplore.exe
+ 

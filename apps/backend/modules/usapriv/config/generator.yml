@@ -1,0 +1,10 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Usuario
+    theme:            default
+    edit:
+         display: [usuario_id, cedula, apellido, nombre, email, usuario_privilegio] 
+         fields:
+          usuario_privilegio:     { type: admin_double_list, params: through_class=UsuarioPrivilegio }
+          

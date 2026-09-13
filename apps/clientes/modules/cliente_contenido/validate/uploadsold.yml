@@ -1,0 +1,11 @@
+fields:
+  file:
+    required:         true
+      msg: Por favor, Escoge El Archivo.
+    file: True
+    sfFileValidator:    
+      mime_types:
+        - 'application/pdf'        
+      mime_types_error: !Error! Solo Se Permite PDF.                                                         
+      max_size: 20480000
+      max_size_error: El Tamaño Maximo Es De 20MB       

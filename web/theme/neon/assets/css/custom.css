@@ -1,0 +1,429 @@
+/**
+ *
+ * Apply Here your Custom CSS
+ *
+*/
+
+body {
+	
+}
+
+.page-container.horizontal-menu header.navbar {
+	display: block !important;
+}
+
+.page-container.horizontal-menu .navbar{
+	display: block;
+}
+
+
+.breadcrumb.bc-2{
+	background-color: white;
+	margin-bottom: 10px;
+}
+
+.form-groups-bordered > .form-group{
+	padding-bottom: 12px;
+	padding-top: 12px;
+}
+
+/* Ajustes a Fancybox */
+.fancybox-overlay{
+	z-index: 10001;
+}
+
+/* Ajustar Color Titulos Tablas */
+table.table thead tr th{
+	color:#303641;
+	font-weight: bold;
+    font-size: 9pt;
+}
+
+/* Ajustar contenido de la celda que expande la tabla por fuera del size */
+table.table{
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+/* Ajuste borde del nav-bar */
+.navbar-brand{
+    border-radius: 8px;
+}
+/* Ajuste espacio del texto de la imagen en los botones */
+.btn-white img{
+    float: left;
+    margin-right: 5px;
+}
+/* Ajuste color labels */
+.control-label{
+    color: #303641;
+}
+/* ajustes tama�o del login */
+.login-header{
+    padding: 70px !important;
+}
+.login-content {
+    padding: 2px 0 !important;
+}
+.login-bottom-links {
+    /*padding-bottom: 30px;*/
+    padding-top: 10px !important;
+}
+/* Ajustes para el div del drag and drop **/
+.dropzone {
+    color: #ccc;
+    border: 3px dashed rgba(0,0,0,0.06);
+    min-height: 200px;
+    background: rgba(0,0,0,0.03);
+    padding: 0;
+    margin: 20px 0;
+    text-align: center;
+    
+}
+.dropzone h2 {
+    margin-top: 40px;
+}
+/* ajuste tamanio letra y estilo panel-title*/
+.panel-title {
+    font-size: 16px !important;
+    font-weight: bold;
+}
+/* ajuste tamanio multiselect*/
+.ms-selectable .ms-list {
+    width: 300px;
+}
+.ms-selection .ms-list {
+    width: 300px;
+}
+
+/** color navbar **/
+.navbar-default .navbar-brand {
+    /*background-color: #00a651;*/
+}
+.navbar-default .navbar-brand:hover {
+    /*background-color: #00a651;*/    
+}
+/** modificar estilo botones de administracion ****/
+.sf_admin_action_list {
+    /*background: #981b1b none repeat scroll 0 0 !important;*/
+    background: #981b1b !important;
+    border-color: #981b1b !important;
+    color: #fff !important;
+    padding: 7px 30px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    background-image: url("../images/sub-menu/ico_list.svg") !important;
+    background-repeat: no-repeat !important;
+    background-position: 3px !important;
+    /*background-image: url(../images/ico_list.svg) no-repeat 3px 2px !important;*/
+}
+.sf_admin_action_save {
+    /*background: #981b1b none repeat scroll 0 0 !important;*/
+    background: #00a651 !important;
+    border-color: #00a651 !important;
+    color: #fff !important;
+    padding: 7px 30px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    background-image: url("../images/sub-menu/ico_crear.svg") !important;
+    content: "+";
+    background-repeat: no-repeat !important;
+    background-position: 3px !important;
+    border-right: 4px solid #00a651 !important;    
+}
+.sf_admin_action_save_and_add {
+    /*background: #981b1b none repeat scroll 0 0 !important;*/
+    background: #00a651 !important;
+    border-color: #00a651 !important;
+    color: #fff !important;
+    padding: 7px 30px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    background-image: url("../images/sub-menu/ico_crear.svg") !important;
+    content: "+";
+    background-repeat: no-repeat !important;
+    background-position: 3px !important;
+    border-right: 4px solid #00a651 !important;    
+}
+.sf_admin_action_delete {
+    /*background: #981b1b none repeat scroll 0 0 !important;*/
+    background: #d42020 !important;
+    border-color: #d42020 !important;
+    color: #fff !important;
+    padding: 7px 30px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    background-image: url("../images/sub-menu/ico_borrador.svg") !important;
+    content: "+";
+    background-repeat: no-repeat !important;
+    background-position: 3px !important;
+    border-right: 4px solid #d42020 !important;    
+}
+.sf_admin_action_create {
+    /*background: #981b1b none repeat scroll 0 0 !important;*/
+    background: #00a651 !important;
+    border-color: #00a651 !important;
+    color: #fff !important;
+    padding: 7px 30px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    background-image: url("../images/sub-menu/ico_crear.svg") !important;
+    content: "+";
+    background-repeat: no-repeat !important;
+    background-position: 3px !important;
+    border-right: 4px solid #00a651 !important;    
+}
+footer.main {
+    clear: both;
+}
+strong {
+  /*color:#981b1b;*/
+  color:#504f4e;
+}
+.col-sm-12 .row {
+  border-bottom:solid 1px #ccc;
+  margin-bottom:5px;
+}
+.navbar-brand {
+  padding: 13.5px 15px !important; 
+}
+.navbar-default .navbar-brand {
+  background-color:#FFCD00 !important;
+  color: #504f4e !important;
+  font-size:1.5em !important;
+}
+.navbar-default .navbar-brand:before {
+	content:url('../images/sub-menu/logo.svg');
+	margin-right:10px;
+	vertical-align:middle;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+  background-color:#E89B49;
+  color: white;
+  font-size:1.5em;
+}
+/*table { table-layout: fixed !important; }
+table th, table td { overflow: hidden !important; }*/
+div#indicatorsmall {
+    position:fixed;
+    width:20px;
+    height:20px;
+    right:2%;
+    /*top:22%;*/
+    z-index:900;
+    background:url('../images/loading-small.gif') no-repeat 0 0
+}
+.select2-container-multi .select2-choices {    
+    height: 30px !important;
+}
+
+.select2-container-multi .select2-choices .select2-search-choice {
+    margin: 0 3px 3px 5px !important;
+    border: 1px solid #aaaaaa !important;
+}
+.select2-search-choice-close {
+    background: rgba(0, 0, 0, 0) url("../js/select2/select2.png") no-repeat scroll right top !important;
+    display: block;
+    font-size: 1px;
+    height: 13px;
+    outline: medium none;
+    position: absolute;
+    right: 3px;
+    top: 4px;
+    width: 12px;
+}
+.select2-container-multi .select2-choices {
+    height: auto !important;
+}
+
+.tile-stats.tile-grey {
+    background: #e7e6e6;
+}
+.tile-stats p {
+    color: #a84141 !important;    
+}
+.tile-stats.tile-gray .num{
+    color: #981b1b !important;
+}
+input.data-readonly {
+  pointer-events: none;
+  background-color: #e9ecef;
+  opacity: 1;
+}
+.page-body .select2-container .select2-choice {
+    height: 30px !important;
+    line-height: 30px !important;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+    /*overflow-wrap: break-word;*/
+    word-wrap: break-word;
+}
+
+#notfound {
+  position: relative;
+  height: 100vh;
+}
+
+#notfound .notfound {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
+.notfound {
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.notfound .notfound-404 {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0px auto 50px;
+}
+
+.notfound .notfound-404>div:first-child {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #ffa200;
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+  border: 5px dashed #000;
+  border-radius: 5px;
+}
+
+.notfound .notfound-404>div:first-child:before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  top: -5px;
+  -webkit-box-shadow: 0px 0px 0px 5px rgba(0, 0, 0, 0.1) inset;
+          box-shadow: 0px 0px 0px 5px rgba(0, 0, 0, 0.1) inset;
+  border-radius: 5px;
+}
+
+.notfound .notfound-404 h1 {
+  font-family: 'Cabin', sans-serif;
+  color: #000;
+  font-weight: 700;
+  margin: 0;
+  font-size: 90px;
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  left: 50%;
+  text-align: center;
+  height: 40px;
+  line-height: 40px;
+}
+
+.notfound h2 {
+  font-family: 'Cabin', sans-serif;
+  font-size: 33px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 7px;
+}
+
+.notfound p {
+  font-family: 'Cabin', sans-serif;
+  font-size: 16px;
+  color: #000;
+  font-weight: 400;
+}
+
+.notfound a {
+  font-family: 'Cabin', sans-serif;
+  display: inline-block;
+  padding: 10px 25px;
+  background-color: #8f8f8f;
+  border: none;
+  border-radius: 40px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  -webkit-transition: 0.2s all;
+  transition: 0.2s all;
+}
+
+.notfound a:hover {
+  background-color: #2c2c2c;
+}
+
+span.input-group-addon{
+    background-color:#FFCD00 !important;
+}
+
+.form-control{
+    color: #000000 !important;
+    border: 1px solid #a2a0a0 !important;
+}
+
+label.control-label{
+  font-weight: bold !important;  
+}
+
+.submenu-data{
+	z-index: 10001;
+}
+
+li.ms-elem-selection{padding:2px 2px !important;font-size:10px !important}
+li.ms-elem-selectable{padding:2px 2px !important;font-size:10px !important}
+
+span.ctrlreq{
+  color: #cc2424 !important;
+  vertical-align: middle;
+}
+.has-switch span.switch-right.switch-right {
+  background-color: #db5514;
+  color: #fff;
+}
+.select2-container.select2{
+  border: solid 1px #a98a8a !important;
+}
+.select2-container.select2-input {
+  width:100%!important;
+}
+span.aciTreeText{
+  font-size: 7px !important;
+  color: #981b1b !important;
+  font-weight: bold !important;
+}
+/*.aciTree .aciTreeEntry {
+    overflow:visible;
+}
+.aciTree .aciTreeItem {
+    white-space:nowrap;
+    margin-right:12px;
+}*/
+
+.form-control.select2-container {
+  max-height: 100px !important;
+  overflow-y: scroll;
+}

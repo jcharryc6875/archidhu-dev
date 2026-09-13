@@ -1,0 +1,37 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title></title>
+			<style type="text/css">body {font-family:calibri,sans-serif;font-size: 11pt;}</style>
+			<!--style>body { font-family: Arial, Helvetica, sans-serif; font-size: 15pt; color: black; }</style-->
+	</head>
+	<body>
+		<pd4ml:page.footer>
+			<div>
+				<h1 style="text-align:center;text-indent:0pt;margin:3pt 35pt 0pt 35pt;">
+				<span style="color:#002060;background-color:transparent;font-family:Arial;font-size:10pt;font-weight:bold;font-style:normal;">PGD PROCESOS DE GESTI&Oacute;N DOCUMENTAL S.A.S. NIT 900.998.531 &ndash; 7</span></h1>
+				<p style="text-align:center;text-indent:0pt;margin:0pt 81pt 0pt 82pt;"><span style="color:#002060;background-color:transparent;font-family:Arial;font-size:10pt;font-weight:bold;font-style:normal;">Tel. 732 49 44 Cel. 320 8064602 Colombia &ndash; Bogot&aacute;</span></p>
+				<p style="text-align:center;text-indent:0pt;margin:0pt 81pt 0pt 82pt;"><span style="color:#000000;background-color:transparent;font-family:Calibri;font-size:11pt;font-weight:normal;font-style:normal;">&nbsp;</span></p>
+				<p style="width:100%;text-align:left;text-indent:0pt;margin:0pt 0pt 0pt 0pt;">
+					<span style="color:#000000;background-color:transparent;font-family:Arial;font-size:10pt;font-weight:normal;font-style:normal;">Fecha de aprobaci&oacute;n: 20/05/2021 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Proceso: Gesti&oacute;n del Talento Humano &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C&oacute;digo: FR-PGD-TH-016 &nbsp;&nbsp;Versi&oacute;n: 01 &nbsp;</span>
+				</p>
+			</div>
+			<table border="0" width="100%" style="pd4ml-display: table;">
+			<tr><td width="100%" align="right"><font size="2">$[page]/$[total]</font></td></tr>
+			</table>
+		</pd4ml:page.footer>
+		<pd4ml:page.header>
+			<div width="100%" style="text-align:right;"><img style="width:150px;height=150px" src="#.#$logo_empresa#.#"/></div>
+			<div width="100%" style="text-align:center;font-family:Arial, serif;font-size: 20px;font-weight: 700;"><b>PGD PROCESOS DE GESTION DOCUMENTAL S.A.S.</b></div>
+			<div width="100%" style="text-align:center;font-family: Arial, serif;font-size: 20px;font-weight: 700;"><b>NIT 900.998.531-7</b></div>
+			<br/><br/><br/>
+		</pd4ml:page.header>
+		<div style="text-align:left">#.#$fecha_carta#.#</div><br/><br/>
+		<div style="text-align:center;font-family: Arial, serif;font-size: 18px;font-weight: 700;"><h4><b>#.#$tipo_comunicacion#.#</b></h4></div><br/><br/><br/>
+		<div style="text-align:justify">#.#$contenido_carta#.#</div>
+		<div width="100%" style="text-align:left;">
+			#.#$firmas_comunicacion#.#
+		</div>
+		<br/><div width="100%" style="text-align:left; font-size: 9pt;">Con copia Hoja de vida</div>
+	</body>
+</html>

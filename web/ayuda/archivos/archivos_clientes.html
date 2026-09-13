@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<meta charset="UTF-8">
+<head>
+<title>Centro de Ayuda // Simad</title>
+
+<link href="../CSS/ayudaSIMAD.css" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,600,700,900' rel='stylesheet' type='text/css'>
+
+<!--Scripts-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="../js/animatedcollapse.js"></script>
+
+<script type="text/javascript">
+animatedcollapse.addDiv('temas', 'fade=0,speed=400,group=menu,hide=0')
+animatedcollapse.addDiv('admin', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('comunicaciones', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('archivo', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('documentos', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('servicios', 'fade=0,speed=400,group=menu,hide=1')
+
+
+animatedcollapse.ontoggle=function($, divobj, state){ //fires each time a DIV is expanded/contracted
+	//$: Access to jQuery
+	//divobj: DOM reference to DIV being expanded/ collapsed. Use "divobj.id" to get its ID
+	//state: "block" or "none", depending on state
+}
+
+animatedcollapse.init()
+
+</script>
+
+</head>
+
+
+  
+<body>
+<div class="container">
+<div class="baner"><img src="../images/logo-simad5-blanco.png"/></div>
+<!-- #BeginLibraryItem "/Library/Menu.lbi" -->
+<div class="menu"> <a href="../temas.html"  ><img src="../images/categorias.png"/></a> <a href="../buscador.html" ><img src="../images/palabras.png"/></a> </div>
+<!-- #EndLibraryItem -->
+<div class="seccion"><h1>Centro de Ayuda - Simad</h1></div>
+
+
+
+<div class="seleccion" id="temas">
+  <h1>Archivos - Archivos Clientes</h1>
+  <div class="menu-lat"><img src="../images/archivos.png" class="cover-peque" /> <img src="../images/archivo-cliente.png" class="cover-peque" /><a href="#crear">Crear</a><a href="#consultar">Consultar</a><a href="#listar">Listar</a></div>
+  <div class="content">
+  		<img src="../images/Comunicaciones/Clientes/menu_clientes.png" class="cover"/>
+      <p>El módulo de Archivo Clientes permite la administración de los archivos de clientes que se encuentran en período de retención y consulta activos en la organización y que constituyen soporte legal, comercial, técnico, económico de cada uno de los clientes de la organización.<br>
+      </p>
+	    <br>
+      <h2>&nbsp;</h2>
+  		
+        
+<!--Ayuda-->        
+        
+<h3 id="crear">Crear<a href="#top" class="btn-ir">ir a inicio</a></h3>
+<img src="../images/Comunicaciones/Clientes/menu_crear.png" class="cover" />
+<p>La opción crear permite al usuario crear un cliente en Archivo Clientes para ser procesado en el sistema SIMAD.</p>
+<p>Para crear un Cliente realice los siguientes pasos:</p>
+<li>Haga clic en el menú superior en archivos/archivo clientes/crear.</li><br>
+<img src="../images/Comunicaciones/Clientes/crear.png" class="cover" />
+
+
+
+
+<h3 id="consultar">Consultar<a href="#top" class="btn-ir">ir a inicio</a></h3>
+<img src="../images/Comunicaciones/Clientes/menu_consultar.png" class="cover" />
+<p>Para hacer la consulta de un Cliente realice alguno de los siguientes pasos</p>
+<p>Para hacer la consulta de un Cliente realice alguno de los siguientes pasos:</p>
+<li>Haga clic en el menú superior en archivos/archivo clientes//consultar.</li><br>
+<img src="../images/Comunicaciones/Clientes/consultar.png" class="cover" />
+
+
+
+
+<h3 id="listar">Listar<a href="#top" class="btn-ir">ir a inicio</a></h3>
+<img src="../images/Comunicaciones/Clientes/menu_listar.png" class="cover" />
+<p>Permite mostrar el listado de los clientes que se encuentran en Archivo Clientes en el sistema SIMAD.</p>
+<p>Para listar los clientes almacenados en Archivo Clientes realice los siguientes pasos:</p>
+<li>Haga clic en el menú superior en archivos/archivo clientes/listar.</li><br>
+<img src="../images/Comunicaciones/Clientes/listar.png" class="cover" />
+
+
+    </div>
+    <!--FIN CONTAINER-->
+  		
+    
+</div>
+
+
+</div>
+<!-- #BeginLibraryItem "/Library/Footer.lbi" -->
+<footer>
+  <h2>Todos los derechos reservados © Aurea S.A.S.</h2>
+</footer>
+<!-- #EndLibraryItem -->
+</body>
+</html>

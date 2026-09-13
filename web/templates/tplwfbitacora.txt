@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+		table,th,td {
+		  border:1px solid black;
+		  border-collapse: collapse;
+		}
+
+		.table_title { 
+		  display: table-caption;
+		  text-align: center;
+		  border:1px solid black;		  
+		  font-size: 14px;
+		  font-style: italic;
+		  width:100%
+		}
+		</style>
+	</head>
+	<body style="font: normal 9px Verdana, Arial, sans-serif;">
+		<table style="width:100%;">
+			<tr>
+				<th class="text-center">REPORTE DE BIT&Aacute;CORA WORKFLOW</th>
+				<td class="text-center">#.#$logo_entidad#.#</td>
+			</tr>
+			<tr>
+				<th>Regional Reporte:</th>
+				<td>#.#$regional_reporte#.#</td>
+			</tr>
+			<tr>
+				<th>Fecha Reporte:</th>
+				<td>#.#$fecha_reporte#.#</td>
+			</tr>			
+			<tr>
+				<th>Funcionario Reporte:</th>
+				<td>#.#$funcionario_reporte#.#</td>
+			</tr>
+		</table>
+		<br>
+		<div class="table_title" style="background-color:lightgray;"><b>Detalles Comunicaci&oacute;n</b></div>
+		<table id="data" style="width:100%;">
+			<tr>
+				<td><p><strong>Remitente:</strong></p></td>
+				<td><p>#.#$remitente_name#.#</p></td>	
+				<td><p><strong>Destinatario:</strong></p></td>
+				<td><p>#.#$destinatario_name#.#</p></td>
+			</tr>
+			<tr>
+				<td><p><strong>Radicado:</strong></p></td>
+				<td><p>#.#$radicado_com#.#</p></td>
+				<td><p><strong>Asunto:</strong></p></td>
+				<td><p>#.#$asunto_com#.#</p></td>
+			</tr>
+			<tr>
+				<td><p><strong>Tipo Comunicaci&oacute;n:</strong></p></td>
+				<td><p>#.#tipo_com#.#</p></td>
+				<td><p><strong>Fecha Radicado:</strong></p></td>
+				<td><p>#.#$fecha_radicado#.#</p></td>
+			</tr>
+			<tr>
+				<td><p><strong>Regional:</strong></p></td>
+				<td><p>#.#$regional_com#.#</p></td>
+				<td><p><strong>Dependencia:</strong></p></td>
+				<td><p>#.#$dependencia_com#.#</p></td>
+			</tr>
+            <tr>
+				<td><p><strong>Estado Flujo:</strong></p></td>
+				<td><p>#.#estado_flujo#.#</p></td>
+				<td><p><strong>&nbsp;</strong></p></td>
+				<td><p>&nbsp;</p></td>
+			</tr>
+		</table>
+		<hr/>
+		<div class="table_title" style="background-color:#f4eeb7;"><b>Bit&aacute;cora de Actividades</b></div>
+		<table id="databitacora" style="width:100%;">                        				
+			<thead>
+				<tr style="background-color:lightgray;">
+                    <th class="text-center">Acci&oacute;n</th>
+					<th class="text-center">Actividad</th>
+					<th class="text-center">Usuario Ejecuto</th>
+					<th class="text-center">Fecha Inicial</th>
+					<th class="text-center">Fecha Final</th>
+					<th class="text-center">Observaciones</th>
+					<th class="text-center">Estado</th>
+				</tr>
+			</thead>
+			<tbody>
+				#.#$detalles_bitacora#.#
+			</tbody>
+		</table>
+	</body>
+</html>

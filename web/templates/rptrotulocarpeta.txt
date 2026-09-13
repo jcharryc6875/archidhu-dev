@@ -1,0 +1,143 @@
+<table width="80px" style="border-collapse:collapse;border: solid 1px black;">
+	<tbody>
+		<tr height="24" style="height:18.0pt">
+			<td colspan="2" rowspan="4" width="114" height="79" class="xl219" style="width:80pt;height:19.25pt"><img width="80px" height="20px" src="#.#$path_logo#.#"/></td>
+			<td colspan="10" width="241" height="24" class="xl228" style="width:101pt;height:18.0pt">FORMATO R&Oacute;TULO DE CARPETA</td>
+			<td colspan="2" width="100" height="24" class="xl216" style="width:75pt;height:18.0pt">C&oacute;digo: #.#$codigo_formato#.#</td>
+		</tr>
+		<tr height="14" style="height:18.75pt">
+			<td colspan="10" width="241" height="14" class="xl231" style="width:101pt;height:18.75pt">PROCESO DE GESTI&Oacute;N DOCUMENTAL</td>
+			<td colspan="2" width="100" height="14" class="xl210" style="width:75pt;height:18.75pt">Versi&oacute;n:<span style="mso-spacerun:yes">&nbsp; </span>#.#$version_formato#.#</td>
+		</tr>
+		<tr height="14" style="height:14.75pt">
+			<td colspan="10" rowspan="2" width="241" height="41" class="xl234" style="width:101pt;height:14.75pt">MANUAL PARA LA ORGANIZACI&Oacute;N DE DOCUMENTOS F&Iacute;SICOS Y ELECTR&Oacute;NICOS</td>
+			<td colspan="2" width="100" height="14" class="xl210" style="width:75pt;height:14.75pt">Fecha: #.#$fecha_formato#.#</td>
+		</tr>
+		<tr height="27" style="height:8.25pt">
+			<td colspan="3" width="100" height="27" class="xl213" style="width:75pt;height:8.25pt">P&aacute;gina<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>1 de 1</td>
+		</tr>
+		<tr height="30" style="height:16.00pt">
+			<td height="30" class="xl18" style="height:16.00pt">&nbsp;</td>
+			<td colspan="2" width="119" height="30" class="xl261" style="width:89pt;height:16.00pt">SECCI&Oacute;N - UNIDAD ADMINISTRATIVA :<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;</span>
+			</td>
+			<td colspan="8" width="330" height="30" class="xl243" style="width:120pt;height:16.00pt">
+				<span style="mso-spacerun:yes">#.#$ofproductora_nombre#.#</span>
+			</td>
+			<td width="42" class="xl75" style="width:32pt">C&Oacute;DIGO:</td>
+			<td width="51" class="xl76" style="width:38pt">
+				<span style="mso-spacerun:yes">#.#$ofproductora_codigo#.#</span>
+			</td>
+		</tr>
+		<tr height="32" style="height:16.0pt">
+			<td height="32" class="xl18" style="height:16.0pt">&nbsp;</td>
+			<td colspan="2" width="119" height="32" class="xl242" style="width:89pt;height:16.0pt">SUBSECCI&Oacute;N - OFICINA PRODUCTORA :<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;</span>
+			</td>
+			<td colspan="8" width="120" height="32" class="xl243" style="width:120pt;height:16.0pt">
+				<span style="mso-spacerun:yes">#.#$dependencia_nombre#.#</span>
+			</td>
+			<td width="42" class="xl75" style="width:32pt">C&Oacute;DIGO:</td>
+			<td width="51" class="xl76" style="width:38pt">
+				<span style="mso-spacerun:yes">#.#$dependencia_codigo#.#</span>
+			</td>
+		</tr>
+		<tr height="24" style="height:16.0pt">
+			<td height="24" class="xl18" style="height:16.0pt">&nbsp;</td>
+			<td colspan="2" width="119" height="24" class="xl244" style="width:89pt;height:16.0pt">SERIE:</td>
+			<td colspan="8" width="330" height="24" class="xl243" style="max-width:120pt;height:16.0pt">
+				<span style="mso-spacerun:yes">#.#$serie_nombre#.#</span>
+			</td>
+			<td width="42" class="xl75" style="width:32pt">C&Oacute;DIGO:</td>
+			<td width="51" class="xl76" style="width:38pt">
+				<span style="mso-spacerun:yes">#.#$serie_codigo#.#</span>
+			</td>
+		</tr>
+		<tr height="32" style="height:16.0pt">
+			<td height="32" class="xl18" style="height:16.0pt">&nbsp;</td>
+			<td colspan="2" width="119" height="32" class="xl244" style="width:89pt;height:16.0pt">SUBSERIE:</td>
+			<td colspan="8" width="330" height="32" class="xl243" style="width:120pt;height:16.0pt">
+				<span style="mso-spacerun:yes">#.#$subserie_nombre#.#</span>
+			</td>
+			<td width="42" class="xl75" style="width:32pt">C&Oacute;DIGO:</td>
+			<td width="51" class="xl76" style="width:38pt">
+				<span style="mso-spacerun:yes">#.#$subserie_codigo#.#</span>
+			</td>
+		</tr>
+		<tr height="24" style="height:16.0pt">
+			<td height="24" class="xl18" style="height:16.0pt">&nbsp;</td>
+			<td colspan="2" width="119" height="24" class="xl244" style="width:89pt;height:16.0pt">MARCO LEGAL:</td>
+			<td colspan="10" width="271" height="24" class="xl245" style="width:120pt;height:16.0pt">#.#$exp_marcolegal#.#</td>
+		</tr>
+		<tr height="32" style="height:18.0pt">
+			<td height="32" class="xl18" style="height:18.0pt">&nbsp;</td>
+			<td colspan="2" width="119" height="32" class="xl248" style="width:89pt;height:18.0pt">NOMBRE DEL EXPEDIENTE:</td>
+			<td colspan="10" width="423" height="32" class="xl74 xl19" style="width:120pt;height:18.0pt"><span style="mso-spacerun:yes">#.#$exp_titulo#.#</span></td>
+		</tr>
+		<tr height="25" style="height:18.00pt">
+			<td height="25" class="xl18" style="height:18.00pt">&nbsp;</td>
+			<td colspan="2" width="119" height="25" class="xl248" style="width:89pt;height:18.00pt">No. EXPEDIENTE:</td>
+			<td colspan="8" width="271" height="25" class="xl245" style="width:150px;height:18.00pt">
+				<span style="mso-spacerun:yes">#.#$exp_codigobarras#.#</span>
+			</td>
+			<td colspan="4" rowspan="7" width="152" height="184" class="xl250 xl19" style="">
+				<img width="90px" height="90px" src="#.#$qrcodigo#.#"/>
+			</td>
+		</tr>
+		
+		<tr height="27" style="height:12.25pt">
+			<td height="27" class="xl18" style="height:12.25pt">&nbsp;</td>
+			<td class="xl17">FECHA INICIAL:</td>
+			<td class="xl17">&nbsp;</td>
+			<td colspan="2" width="89" height="27" class="xl76" style="width:67pt;height:12.25pt">
+				<span style="mso-spacerun:yes">#.#$exp_fechainicial#.#</span>
+			</td>
+			<td width="38" class="xl75" style="width:29pt">FECHA FINAL:</td>						
+			<td colspan="3" width="117" height="27" class="xl243" style="width:88pt;height:12.25pt">
+				<span style="mso-spacerun:yes">#.#$exp_fechafinal#.#</span>
+			</td>
+		</tr>
+		
+		<tr height="21" style="height:12.25pt">
+			<td height="21" class="xl18" style="height:12.25pt">&nbsp;</td>
+			<td width="72" class="xl27" style="width:54pt">CARPETA No.</td>
+			<td width="47" class="xl27" style="width:35pt">&nbsp;</td>
+			<td colspan="5" width="117" height="27" class="xl74 xl19" style="text-align:center;width:88pt;height:12.25pt">
+				<span style="mso-spacerun:yes">#.#$numero_carpeta#.#</span>
+			</td>
+		</tr>
+		
+		<tr height="21" style="height:12.25pt">
+			<td height="21" class="xl18" style="height:12.25pt">&nbsp;</td>
+			<td width="72" class="xl27" style="width:54pt">CORRELATIVO:</td>
+			<td width="47" class="xl27" style="width:35pt">&nbsp;</td>
+			<td colspan="2" width="117" height="27" class="xl243" style="width:88pt;height:12.25pt">
+				<span style="mso-spacerun:yes">#.#$numvolumen#.#</span>
+			</td>
+			<td width="38" class="xl75" style="width:39pt">&nbsp;&nbsp;&nbsp;&nbsp;DE:</td>
+			<td colspan="2" width="117" height="27" class="xl243" style="width:88pt;height:12.25pt">
+				<span style="mso-spacerun:yes">#.#$numvolumen#.#</span>
+			</td>
+		</tr>
+		
+		<tr height="21" style="height:12.25pt">
+			<td height="21" class="xl18" style="height:12.25pt">&nbsp;</td>
+			<td width="72" class="xl27" style="width:54pt">FOLIOS:</td>
+			<td width="47" class="xl27" style="width:35pt">&nbsp;</td>
+			<td colspan="2" width="117" height="27" class="xl243" style="width:88pt;height:12.25pt">
+				<span style="mso-spacerun:yes">#.#$total_folios#.#</span>
+			</td>
+			<td width="38" class="xl75" style="width:29pt">TOTAL FOLIOS:</td>
+			<td colspan="3" width="117" height="27" class="xl243" style="width:88pt;height:12.25pt">
+				<span style="mso-spacerun:yes">#.#$total_folios#.#</span>
+			</td>
+		</tr>
+		
+		<tr height="32" style="height:25.0pt">
+			<td colspan="2" width="119" height="32" class="xl248" style="width:89pt;height:25.0pt">CAJA No.:</td>
+			<td colspan="10" width="423" height="32" class="xl74 xl19" style="width:120pt;height:25.0pt">						
+				<img style="width: 230px;height: 60px;" src="#.#$exp_ubicacion#.#"/>
+			</td>
+		</tr>
+		
+	</tbody>
+</table>
+<h6 style="page-break-after: always;">&nbsp;</h6>

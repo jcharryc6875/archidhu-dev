@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * EstadoComInterna form base class.
+ *
+ * @method EstadoComInterna getObject() Returns the current form's model object
+ *
+ * @package    ##PROJECT_NAME##
+ * @subpackage form
+ * @author     ##AUTHOR_NAME##
+ */
+abstract class BaseEstadoComInternaForm extends BaseFormPropel
+{
+  public function setup()
+  {
+    $this->setWidgets(array(
+      'ESTADOCOMINTERNA_ID' => new sfWidgetFormInputHidden(),
+      'DESCRIPCION'         => new sfWidgetFormInputText(),
+    ));
+
+    $this->setValidators(array(
+      'ESTADOCOMINTERNA_ID' => new sfValidatorChoice(array('choices' => array($this->getObject()->getEstadocominternaId()), 'empty_value' => $this->getObject()->getEstadocominternaId(), 'required' => false)),
+      'DESCRIPCION'         => new sfValidatorString(array('max_length' => 250, 'required' => false)),
+    ));
+
+    $this->widgetSchema->setNameFormat('estado_com_interna[%s]');
+
+    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
+
+    parent::setup();
+  }
+
+  public function getModelName()
+  {
+    return 'EstadoComInterna';
+  }
+
+
+}

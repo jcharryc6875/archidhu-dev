@@ -1,0 +1,14 @@
+recuperarPassword:
+  is_secure: false
+
+updateRecuperarPassword:
+  is_secure: false
+
+cambioPassword:
+  is_secure: false
+
+updateCambioPassword:
+  is_secure: false
+
+digitStatus:
+  is_secure: false

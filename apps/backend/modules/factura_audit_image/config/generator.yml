@@ -1,0 +1,15 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      FacturaAuditImage
+    theme:            default
+    list:
+      display:        [Factura, Usuario, fecha_creacion, filename, type_action ]
+      filters:        [usuario_id, fecha_creacion, filename, type_action ]
+      fields:
+        usuario_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getAllUser
+      title:          Auditoria Imagenes Facturas      
+      max_per_page:   25         

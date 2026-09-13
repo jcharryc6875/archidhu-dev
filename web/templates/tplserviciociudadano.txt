@@ -1,0 +1,37 @@
+
+<pd4ml:page.header>
+<div style="text-align: right;"><span style="font-size:12pt"><strong><span style="font-size:7.0pt">F-OAP-018-CAR</span></strong></span></div>
+<div style="text-align: right;"><span style="font-size:12pt"><span style="font-size:18.0pt">{{$codigo_barras_radicado}}</span></span></div>
+<div style="text-align: right;"><span style="font-size:12pt"><strong><span style="font-size:8.0pt">Al contestar por favor cite estos datos:</span></strong></div>
+<div style="text-align: right;"><span style="font-size:8.0pt">Radicado No.: </span><strong><span style="font-size:9.0pt">{{$radicado_salida}}</span></strong></span></div>
+<div style="text-align: right;"><span style="font-size:12pt"><span style="font-size:8.0pt">Fecha: </span><span style="font-size:9.0pt"><strong>{{$fecha_carta}}</strong></span></span><br /></div>
+<br />
+</pd4ml:page.header>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title></title>
+<style type="text/css">body {font-family:arial,sans-serif;font-size: 12pt;}</style>
+</head>
+<body>
+<span style="font-size:12pt"><span style="font-size:10.0pt">{{$ciudad_carta}}</span></span><br />
+<br />
+{{$prefijo_destinatario}}<br />
+{{$destinatario}}<br />
+{{$direccion_destinatario}}<br />
+{{$municipio_destinatario}} &ndash; {{$departamento_destinatario}}<br />
+{{$radicado_salida}}<br />
+TEL&Eacute;FONO(S): {{$telefono_destinatario}}<br />
+<br />
+<span style="font-size:12pt"><strong><span style="font-size:10.0pt">Asunto: </span></strong><span style="font-size:10.0pt">{{$asunto_comunicacion}} <strong>&nbsp;No {{$radicado_entrada}}</strong></span></span><br />
+<span style="font-size:12pt"><strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</strong><span style="font-size:10.0pt">D.I #:</span> <strong><span style="font-size:10.0pt">{{$identificacion_destinatario}}</span></strong></span><br />
+<br />
+<br />
+{{$contenido_text_merge}}
+<br />
+<span style="font-size:12pt"><span style="font-size:10.0pt">Atentamente,</span></span>
+{{$firmas_respuesta}}
+<br />
+<span style="font-size:12pt"><span style="font-size:10.0pt">Analiz&oacute; y Proyect&oacute;: {{$usuario_creador}}</span></span>
+</body>
+</html>

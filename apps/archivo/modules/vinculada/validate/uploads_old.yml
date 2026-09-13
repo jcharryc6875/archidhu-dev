@@ -1,0 +1,23 @@
+fields:
+  file:
+    required:         true
+    file: True
+    sfFileValidator: 
+      mime_types:
+        - 'image/jpeg'
+        - 'image/png'
+        - 'image/x-png'
+        - 'image/pjpeg'
+        - 'image/gif'
+        - 'application/pdf'
+        - 'application/vnd.ms-excel'
+        - 'application/msword'
+        - 'application/vnd.ms-powerpoint'
+        - 'application/zip'
+        - 'text/rtf'
+        - 'text/plain'
+        - 'text/html'
+        - 'text/php'
+      mime_types_error: El Formato No Es Permitido.
+      max_size: 10000000
+      max_size_error: El tamaño máximo es de 10MB

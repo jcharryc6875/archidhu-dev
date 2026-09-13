@@ -1,0 +1,11 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Regional
+    theme:            default
+    
+    list:
+      display:        [regional_id, ciudad, descripcion, direccion, Entidad, es_visible]
+    
+      fields:
+        NombEntidad:   { name: Entidad }

@@ -1,0 +1,30 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      FacturaDevolucion
+    theme:            default
+    list:
+      display:        [FacturaProcesoRelatedByFaprocesoactualId, FacturaEstadoRelatedByFaestadoactualId, FacturaProcesoRelatedByFaprocesodestinoId, FacturaEstadoRelatedByFaestadodestinoId, FacturaTipo ]
+      filters:        [faprocesoactual_id, faprocesodestino_id, faestadoactual_id, faestadodestino_id, facturatipo_id ]
+      title:          Listado Devoluciones Facturas
+      fields:
+        faprocesoactual_id:   { name: Proceso Origen, params: include_custom=Seleccione... }
+        faestadoactual_id:   { name: Estado Origen, params: include_custom=Seleccione... }
+        faprocesodestino_id:   { name: Proceso Destino, params: include_custom=Seleccione... }
+        faestadodestino_id:   { name: Estado Destino, params: include_custom=Seleccione... }
+        facturatipo_id:   { name: Factura Tipo, params: include_custom=Seleccione... }
+      max_per_page:   25
+      object_actions:
+        _edit:        -
+        _delete:      -
+      actions:
+        _create:      ~
+    edit:
+      title:          Devoluciones Facturas
+      fields:
+        faprocesoactual_id:   { name: Proceso Origen, params: include_custom=Seleccione... }
+        faestadoactual_id:   { name: Estado Origen, params: include_custom=Seleccione... }
+        faprocesodestino_id:   { name: Proceso Destino, params: include_custom=Seleccione... }
+        faestadodestino_id:   { name: Estado Destino, params: include_custom=Seleccione... }
+        facturatipo_id:   { name: Factura Tipo, params: include_custom=Seleccione... }
+

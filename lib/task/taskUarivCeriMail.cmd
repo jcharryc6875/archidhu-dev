@@ -1,0 +1,1 @@
+php.exe -f C:\inetpub\wwwroot\sgdeapruebas\lib\WsEnviosMasivos.php comcertimail_actas

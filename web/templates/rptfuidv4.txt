@@ -1,0 +1,482 @@
+<html>
+    <head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><title></title></head>
+    <style>
+        body { font-family: Work Sans; font-size: 12pt; color: black; }
+    </style>
+    <body>
+        <pd4ml:page.header>
+        <div>
+            <!--table width="1005px" cellspacing="0" cellpadding="0" border="0"-->
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+                <tbody>
+                    <tr>
+                        <td nowrap="nowrap" style="border:solid black 0.5pt;" rowspan="4" colspan="4">
+                            <table cellspacing="0" cellpadding="0" align="center">
+                                <tbody>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td><img width="130" height="21" src="#.#$logo_entidad#.#"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td style="border-top:solid windowtext 0.5pt;border-left:none;border-bottom:solid black 0.5pt;border-right:solid black 0.5pt;" rowspan="4" colspan="8">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal;background-color: gray;color: white;" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','serif';">FORMATO &Uacute;NICO DE INVENTARIO DOCUMENTAL </span></b>
+                            </p>
+                            <p align="center" style="margin-top:2px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal;margin-top:5px;" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','serif';">PROCESO GESTI&Oacute;N DOCUMENTAL</span></b>
+                            </p>
+                            <p align="center" style="margin-top:2px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal;margin-top:5px;" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','serif';">MANUAL PARA LA ORGANIZACI&Oacute;N DE DOCUMENTOS F&Iacute;SICOS Y ELECTR&Oacute;NICOS</span></b>
+                            </p>
+                        </td>
+                        <td style="border-top:solid windowtext 0.5pt;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:none;" colspan="2">
+                            <p align="center" style="margin-top:2px;margin-left:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:left;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">C&oacute;digo:</span>
+                            </p>
+                        </td>
+                        <td style="border-top:solid windowtext 0.5pt;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-top:2px;margin-right:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:right;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">162.14.15-3</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:none;"
+                            colspan="2">
+                            <p align="center" style="margin-left:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:left;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">Versi&oacute;n:</span>
+                            </p>
+                        </td>
+                        <td style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-right:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:right;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">04</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:none;" colspan="2">
+                            <p align="center" style="margin-top:2px;margin-left:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:left;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">Fecha de Aprobaci&oacute;n:</span>
+                            </p>
+                        </td>
+                        <td style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-top:2px;margin-right:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:right;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">3/12/2024</span>
+                            </p>
+                        </td>
+                    </tr>
+					
+					<tr>
+                        <td style="margin-top:5px;border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:none;" colspan="2">
+                            <p align="center" style="margin-top:2px;margin-left:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:left;line-height:normal" class="">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">Pág:</span>
+                            </p>
+                        </td>
+                        <td style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-top:2px;margin-right:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:right;line-height:normal" class="">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">$[page] de $[total]</span>
+                            </p>
+                        </td>
+                    </tr>
+					
+					<tr>
+                        <td colspan="11" nowrap="nowrap" style="border:none;border-top:none;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">&nbsp;</span>
+                            </p>
+                        </td>                        
+                    </tr>
+					
+                    <tr>
+						<td nowrap="nowrap" style="border:none;border-right:solid windowtext 0.5pt;">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';"><span>&nbsp;</span></span></b>
+                            </p>
+                        </td>
+						<td align="center" nowrap="nowrap" style="border-top:solid windowtext 0.5pt;border-left:none;border-bottom:none;border-right:none;">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif'">C&Oacute;DIGO DEPENDENCIA</span></b>
+                            </p>
+                        </td>
+                        <td colspan="5" nowrap="nowrap" height="10" style="border-top:solid windowtext 0.5pt;border-left:solid windowtext 0.5pt;border-bottom:none;border-right:solid windowtext 0.5pt;height: 10px;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">NOMBRE</span></b>
+                            </p>
+                        </td>
+                        <td colspan="5" height="10" nowrap="nowrap" style="border:none;border-top:none;padding:0cm 3.5pt 0cm 3.5pt;height: 10px;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border:none;" >
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','serif';">PRIMARIA</span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border:none;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','serif';">SECUNDARIA</span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" colspan="2">&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td nowrap="nowrap" height="10" style="border-top:solid windowtext 0.5pt;border-left:solid windowtext 0.5pt;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">ENTIDAD PRODUCTORA:<span>&nbsp;&nbsp;</span></span></b>
+                            </p>
+                        </td>
+						<td nowrap="nowrap" style="border-top:solid windowtext 0.5pt;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;" colspan="3">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif'">N/A</span>
+                            </p>
+                        </td>
+						<td nowrap="nowrap" style="border-top:solid windowtext 0.5pt;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;" colspan="3">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif'">UNIDAD PARA LAS V&Iacute;CTIMAS</span>
+                            </p>
+                        </td>
+                        <td colspan="5" height="10" nowrap="nowrap" style="border:none;padding:0cm 3.5pt 0cm 3.5pt;height: 10px;">
+                            <p align="right" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:right;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">TRANSFERENCIA:</span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border:solid windowtext 0.5pt;border-right: none;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','serif';">&nbsp;</span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border:solid windowtext 0.5pt;border-left: solid windowtext 0.5pt; padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','serif';">&nbsp;</span></b>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td nowrap="nowrap" style="border-top:none;border-left:solid windowtext 0.5pt;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">UNIDAD ADMINISTRATIVA:<span>&nbsp;&nbsp;</span></span></b>
+                            </p>
+                        </td>
+						<td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;" colspan="3">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif'">#.#$codigo_unidadadministrativa#.#</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;" colspan="3">						
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif'">#.#$unidad_administrativa#.#</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td nowrap="nowrap" style="border-top:none;border-left:solid windowtext 0.5pt;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">OFICINA PRODUCTORA:<span>&nbsp;&nbsp; </span></span></b>
+                            </p>
+                        </td>
+						<td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;" colspan="3">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">#.#$codigo_oficinaproductora#.#</span>
+                            </p>
+                        </td>
+						<td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;" colspan="3">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">#.#$oficina_productora#.#</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:none;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;" colspan="4">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','serif';">&nbsp;</span>
+                            </p>
+                        </td>
+						<td nowrap="nowrap" style="margin-top: 10px;border-top:solid windowtext 0.5pt;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;" colspan="3">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','serif';">REGISTRO DE ENTRADA</span></b>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td nowrap="nowrap" style="border-top:none;border-left:solid windowtext 0.5pt;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <b><span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">OBJETO:<span>&nbsp;</span></span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;" colspan="6">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;padding-top:2px" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">&nbsp;</span>
+                            </p>
+                        </td>
+						<td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:none;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;" colspan="4">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','serif';">&nbsp;</span>
+                            </p>
+                        </td>
+						<td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">MES</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">DIA</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">N.T.</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+						<td colspan="11" nowrap="nowrap" style="border:none;border-top:none;border-right: solid windowtext 0.5pt;">
+                            <p align="center">
+                                <span style="font-size:4.0pt;">&nbsp;</span>
+                            </p>
+                        </td>
+						<td nowrap="nowrap" style="border-top:none;border-left: none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="text-align:center;">
+                                <span style="font-size:4.0pt;">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="text-align:center;">
+                                <span style="font-size:4.0pt;">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center">
+                                <span style="font-size:4.0pt;">&nbsp;</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="10" nowrap="nowrap" style="border:none;border-top:none;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:none;border-right: solid windowtext 0.5pt;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">&nbsp;</span>
+                            </p>
+                        </td>
+						<td nowrap="nowrap" colspan="3" style="border-top:none;border-left: none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="left" style="text-align:left;vertical-align:center;">
+                                <span style="font-size:4.0pt;font-family:'Arial Narrow','sans-serif';">N. T. = N&uacute;mero de Transferencia</span>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </pd4ml:page.header>
+
+        <pd4ml:page.footer>
+            <!--table width="1005px" cellspacing="0" cellpadding="0" border="0"-->
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                    <tr style="height:10px;">
+                        <td colspan="8" nowrap="nowrap" style="border-top:solid windowtext 0.5pt;border-left:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Entregado Por:</span></b>
+                            </p>
+                        </td>                
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;border-top:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Recibido Por:</span></b>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr style="height:10px;">
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Cargo:</span></b>
+                            </p>
+                        </td>                
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Cargo:</span></b>
+                            </p>
+                        </td>               
+                    </tr>
+
+                    <tr style="height:10px;">
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Firma:</span></b>
+                            </p>
+                        </td>                
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Firma:</span></b>
+                            </p>
+                        </td>                
+                    </tr>
+
+                    <tr style="height:10px;">
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Lugar:</span></b>
+                            </p>
+                        </td>
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Lugar:</span></b>
+                            </p>
+                        </td>                
+                    </tr>
+
+                    <tr style="height:10px;">
+                        <td colspan="8" nowrap="nowrap" style="border-top:none;border-left:solid windowtext 0.5pt;border-right:none;padding:0cm 3.5pt 0cm 3.5pt;border-bottom:solid windowtext 0.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Fecha:</span></b>
+                            </p>
+                        </td>                
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;border-bottom:solid windowtext 0.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Fecha:</span></b>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </pd4ml:page.footer>
+
+        <div style="margin-top: 0px;">
+			<table style="border-collapse:collapse;width:100%" border="0" cellpadding="0" cellspacing="0">
+				<tbody>
+					<tr>
+						<td style="background-color:white;border-bottom-color:black;border-bottom:.5pt solid black;border-top:.5pt solid black;border-left:.5pt solid black;border-bottom-width:1.0pt;border-left-color:windowtext;border-left-width:1pt;border-right-color:windowtext;border-right-width:0.5pt;border-top-color:windowtext;border-top-width:1pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:54pt;" rowspan="3" width="72">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><strong>N&Uacute;MERO DE ORDEN</strong></span>
+						</td>
+						<td style="background-color:white;border-bottom-color:black;border-bottom-width:.5pt;border-top:.5pt solid black;border-top:.5pt solid black;border-left:.5pt solid black;border-left-color:windowtext;border-left-width:0.5pt;border-right-color:black;border-right-width:.5pt;border-top-color:windowtext;border-top-width:1pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:237pt;" colspan="3" rowspan="2" width="316">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><strong>C&Oacute;DIGO</strong></span>
+						</td>
+						<td style="background-color:white;border-bottom:1.0pt solid black;border-left:0.5pt solid windowtext;border-right:0.5pt solid windowtext;border-top:1pt solid windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:137pt;" rowspan="3" width="183">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><strong>NOMBRE DE LA SERIE</strong></span>
+						</td>
+						<td style="border-bottom:1.0pt solid black;border-top:1.0pt solid black;border-right:1.0pt solid black;background-color:white;border-bottom-color:black;border-bottom-width:1.0pt;border-left-color:windowtext;border-left-width:0.5pt;border-right-color:windowtext;border-right-width:0.5pt;border-top-color:windowtext;border-top-width:1pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:167pt;" rowspan="3" width="223">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><strong>NOMBRE DE LA SUBSERIE DOCUMENTAL</strong></span>
+						</td>
+						<td style="border-bottom:1.0pt solid black;border-top:1.0pt solid black;border-right:1.0pt solid black;background-color:white;border-bottom-color:black;border-bottom-width:1.0pt;border-left-color:windowtext;border-left-width:0.5pt;border-right-color:windowtext;border-right-width:0.5pt;border-top-color:windowtext;border-top-width:1pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:163pt;" rowspan="3" width="218">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><strong>NOMBRE DEL EXPEDIENTE</strong></span>
+						</td>
+						<td style="border-bottom:1.0pt solid black;border-top:1.0pt solid black;border-right:1.0pt solid black;background-color:white;border-bottom-color:black;border-bottom-width:.5pt;border-left-color:windowtext;border-left-width:0.5pt;border-right-color:black;border-right-width:.5pt;border-top-color:windowtext;border-top-width:1pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:144pt;" colspan="3" rowspan="2" width="192">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><strong>TIPO DE EXPEDIENTE</strong></span><br>
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><strong>F= F&Iacute;SICO</strong></span><br>
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><strong>H=H&Iacute;BRIDO</strong></span><br>
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><strong>E= ELECTR&Oacute;NICO/DIGITAL</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom:0.5pt solid windowtext;border-left:0.5pt none windowtext;border-right:.5pt solid black;border-top:1pt solid windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:594pt;" colspan="8" width="793">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp; </strong></span><strong>EXPEDIENTES F&Iacute;SICOS</strong></span>
+						</td>
+						<td style="background-color:yellow;border-right:0.5pt solid windowtext;border-bottom:0.5pt solid windowtext;border-left:0.5pt solid windowtext;border-top:1pt solid windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:348pt;" colspan="3" width="464">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp; </strong></span><strong>EXPEDIENTES ELECTR&Oacute;NICOS</strong></span>
+						</td>
+						<td style="border-left:none;border-bottom:1.0pt solid black;border-top:1.0pt solid black;border-right:1.0pt solid black;background-color:white;border-bottom-color:black;border-bottom-width:1.0pt;border-left-color:windowtext;border-left-width:0.5pt;border-right-color:windowtext;border-right-width:0.5pt;border-top-color:windowtext;border-top-width:1pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:87pt;" rowspan="3" width="116">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><strong>EXPEDIENTES DE</strong></span><br>
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><strong>DDHH / DIH</strong></span><br>
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><strong>(X)</strong></span>
+						</td>
+						<td style="background-color:white;border-bottom-style:solid;border-bottom-width:0.5pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:solid;border-top-width:1pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:272pt;" colspan="4" width="364">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><span><strong>&nbsp; </strong></span><strong>UBICACI&Oacute;N TOPOGR&Aacute;FICA</strong></span>
+						</td>
+						<td style="border-left:0.5pt solid windowtext;border-bottom:1.0pt solid black;border-top:1.0pt solid black;border-right:1.0pt solid black;background-color:white;border-bottom-color:black;border-bottom-width:1.0pt;border-left-color:windowtext;border-left-width:0.5pt;border-right-color:windowtext;border-right-width:1pt;border-top-color:windowtext;border-top-width:1pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:127pt;" rowspan="3" width="169">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><span><strong>&nbsp; </strong></span><strong>OBSERVACIONES</strong></span>
+						</td>
+					</tr>
+					<tr>
+						<td style="background-color:rgb(0, 176, 80);border-bottom:0.5pt solid windowtext;border-left:0.5pt none windowtext;border-right:.5pt solid black;border-top-style:none;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:124pt;" colspan="2" width="166">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp; </strong></span><strong>FECHAS EXTREMAS&nbsp;</strong></span><br>
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><font style="font-style:normal;"><strong>(dd-mm-aaaa)</strong></font></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom:0.5pt solid windowtext;border-left:0.5pt none windowtext;border-right:.5pt solid black;border-top-style:none;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:291pt;" colspan="4" width="387">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp;</strong></span><strong>UNIDAD DE CONSERVACI&Oacute;N</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom:0.5pt solid windowtext;border-left:0.5pt none windowtext;border-right:.5pt solid black;border-top-style:none;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:179pt;" colspan="2" width="240">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><strong>N° FOLIOS</strong><span><strong>&nbsp;</strong></span></span>
+						</td>
+						<td style="background-color:yellow;border-bottom:1.0pt solid black;border-left:0.5pt solid windowtext;border-right:0.5pt solid windowtext;border-top:0.5pt none windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:169pt;" rowspan="2" width="225">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp; </strong><strong>NOMBRE REPOSITORIO / APLICATIVO / SISTEMA DEL &Aacute;REA / CD_USB / RUTA UBICACI&Oacute;N</strong></span>
+						</td>
+						<td style="background-color:yellow;border-bottom:1.0pt solid black;border-left-style:none;border-right:0.5pt solid windowtext;border-top:0.5pt none windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:92pt;" rowspan="2" width="123">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp; </strong><strong>CANTIDAD DE DOCUMENTOS</strong></span>
+						</td>
+						<td style="background-color:yellow;border-bottom:1.0pt solid black;border-left:0.5pt solid windowtext;border-right:0.5pt solid windowtext;border-top:0.5pt none windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:87pt;" rowspan="2" width="116">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp; </strong><strong>TAMA&Ntilde;O DE LOS EXPEDIENTES</strong></span>
+						</td>
+						<td style="background-color:white;border-bottom:1.0pt solid black;border-left:0.5pt solid windowtext;border-right:0.5pt solid windowtext;border-top:0.5pt none windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:48px;" rowspan="2" width="71">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><span><strong>&nbsp;</strong></span><strong>BODEGA</strong></span>
+						</td>
+						<td style="background-color:white;border-bottom:1.0pt solid black;border-left:0.5pt solid windowtext;border-right:0.5pt solid windowtext;border-top:0.5pt none windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:48px;" rowspan="2" width="91">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><span><strong>&nbsp;</strong></span><strong>CUERPO</strong></span>
+						</td>
+						<td style="background-color:white;border-bottom:1.0pt solid black;border-left:0.5pt solid windowtext;border-right:0.5pt solid windowtext;border-top:0.5pt none windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:48px;" rowspan="2" width="91">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><span><strong>&nbsp;</strong></span><strong>TORRE</strong></span>
+						</td>
+						<td style="background-color:white;border-bottom:1.0pt solid black;border-left:0.5pt solid windowtext;border-right:0.5pt solid windowtext;border-top:0.5pt none windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:48px;" rowspan="2" width="91">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><span><strong>&nbsp;</strong></span><strong>PISO</strong></span>
+						</td>
+					</tr>
+					<tr>
+						<td style="background-color:white;border-left:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left-style:solid;border-left-width:0.5pt;border-right:0.5pt solid windowtext;border-top:0.5pt solid windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:81pt;" width="108">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp;</strong></span><strong>DEPENDENCIA</strong></span>
+						</td>
+						<td style="background-color:white;border-bottom:1pt solid windowtext;border-left-style:none;border-right:0.5pt solid windowtext;border-top:0.5pt solid windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:67pt;" width="89">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp;</strong></span><strong>SERIE</strong></span>
+						</td>
+						<td style="background-color:white;border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right:none;border-top-style:solid;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:89pt;" width="119">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp;</strong></span><strong>SUBSERIE</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:none;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:48pt;" width="64">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><span><strong>&nbsp;</strong></span><strong>F</strong></span>
+						</td>
+						<td style="background-color:yellow;border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:none;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:48pt;" width="64">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><span><strong>&nbsp;</strong></span><strong>E</strong></span>
+						</td>
+						<td style="background-color:rgb(226, 107, 10);border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:none;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:48pt;" width="64">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:2.0pt;"><span><strong>&nbsp;</strong></span><strong>H</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:none;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:62pt;" width="83">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp;</strong></span><strong>INICIAL</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:none;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:62pt;" width="83">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp;</strong></span><strong>FINAL</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:none;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:58pt;" width="77">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp;</strong></span><strong>N° CAJA</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:none;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:70pt;" width="93">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><strong>N°</strong><span><strong>&nbsp; </strong></span><strong>CARPETA</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:none;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:75pt;" width="100">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><strong>N°</strong><span><strong>&nbsp; </strong></span><strong>EXPEDIENTE</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:0.5pt solid windowtext;border-top:0.5pt solid windowtext;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:88pt;" width="117">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp;</strong></span><strong>CORRELATIVO</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:solid;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:none;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:88pt;" width="118">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp;</strong></span><strong>Desde</strong></span>
+						</td>
+						<td style="background-color:rgb(0, 176, 80);border-bottom-style:solid;border-bottom-width:1pt;border-color:windowtext;border-left-style:none;border-left-width:0.5pt;border-right-style:solid;border-right-width:0.5pt;border-top-style:none;border-top-width:0.5pt;font-style:normal;padding:0px;text-align:center;text-decoration-line:none;text-wrap-mode:wrap;vertical-align:middle;white-space-collapse:collapse;width:91pt;" width="122">
+							<span style="color:windowtext;font-family:'Arial Narrow', sans-serif;font-size:3.0pt;"><span><strong>&nbsp;</strong></span><strong>Hasta</strong></span>
+						</td>
+					</tr>
+					#.#body_content#.#
+				</tbody>
+			</table>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+		table,th,td {
+		  border:1px solid black;
+		  border-collapse: collapse;
+		}
+
+		.table_title { 
+		  display: table-caption;
+		  text-align: center;
+		  border:1px solid black;		  
+		  font-size: 14px;
+		  font-style: italic;
+		  width:100%
+		}
+		</style>
+	</head>
+	<body style="font: normal 9px Verdana, Arial, sans-serif;">
+		<table style="width:100%;">
+			<tr>
+				<th class="text-center">REPORTE DE BIT&Aacute;CORA FACTURAS</th>
+				<td class="text-center">#.#$logo_entidad#.#</td>
+			</tr>
+			<tr>
+				<th>Regional Reporte:</th>
+				<td>#.#$regional_reporte#.#</td>
+			</tr>
+			<tr>
+				<th>Fecha Reporte:</th>
+				<td>#.#$fecha_reporte#.#</td>
+			</tr>			
+			<tr>
+				<th>Funcionario Reporte:</th>
+				<td>#.#$funcionario_reporte#.#</td>
+			</tr>
+		</table>
+		<br>
+		<div class="table_title" style="background-color:lightgray;">Detalles de la Factura</div>
+		<table id="data" style="width:100%;">
+			<tr>
+				<td><p><strong>Proveedor:</strong></p></td>
+				<td><p>#.#$proveedor_name#.#</p></td>	
+				<td><p><strong>Estado:</strong></p></td>
+				<td><p>#.#$estado_factura#.#</p></td>
+			</tr>
+			<tr>
+				<td><p><strong>Radicado:</strong></p></td>
+				<td><p>#.#$radicado_factura#.#</p></td>
+				<td><p><strong>Asunto:</strong></p></td>
+				<td><p>#.#$concepto_factura#.#</p></td>
+			</tr>
+			<tr>
+				<td><p><strong>Numero Factura:</strong></p></td>
+				<td><p>#.#$numero_factura#.#</p></td>
+				<td><p><strong>Tipo Factura:</strong></p></td>
+				<td><p>#.#$tipo_factura#.#</p></td>
+			</tr>
+			<tr>
+				<td><p><strong>C&oacute;digo barras:</strong></p></td>
+				<td><p>#.#$codigo_barras#.#</p></td>
+				<td><p><strong>Documento Causaci&oacute;n:</strong></p></td>
+				<td><p>#.#$documento_causacion#.#</p></td>
+			</tr>
+			<tr>
+				<td><p><strong>Fecha radicado:</strong></p></td>
+				<td><p>#.#$fecha_radicado#.#</p></td>
+				<td><p><strong>Fecha recibido:</strong></p></td>
+				<td><p>#.#$fecha_recibido#.#</p></td>
+			</tr>
+			<tr>
+				<td><p><strong>Valor factura:</strong></p></td>
+				<td><p>#.#$valor_factura#.#</p></td>	
+				<td><p><strong>Regional:</strong></p></td>
+				<td><p>#.#$nombre_regional#.#</p></td>
+			</tr>
+			<tr>
+				<td><p><strong>Observaci&oacute;nes:</strong></p></td>
+				<td colspan="3"><p>#.#$obs_factura#.#</p></td>
+			</tr>
+		</table>
+		<hr/>
+		<div class="table_title" style="background-color:#f4eeb7;">Bitacora de la Factura</div>
+		<table id="databitacora" style="width:100%;">                        				
+			<thead>
+				<tr style="background-color:lightgray;">
+					<th class="text-center">Proceso</th>
+					<th class="text-center">Estado</th>
+					<th class="text-center">Fecha Inicial</th>
+					<th class="text-center">Fecha Final</th>
+					<th class="text-center">Origen</th>
+					<th class="text-center">Destino</th>
+					<th class="text-center">Observaciones</th>
+					<th class="text-center">Estado</th>
+				</tr>
+			</thead>
+			<tbody>
+				#.#$detalles_bitacora#.#
+			</tbody>
+		</table>
+	</body>
+</html>

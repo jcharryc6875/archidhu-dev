@@ -1,0 +1,14 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Parametro
+    theme:            default
+#    css:              /app/theme/neon/assets/css/bootstrap.css
+    list:
+       max_per_page:   10
+       title: Parametro
+       display:        [codigo, descripcion,valortexto,valor_numerico]
+       object_actions:
+         _edit:        true
+    edit:
+      title:          Crear/Editar Parametro

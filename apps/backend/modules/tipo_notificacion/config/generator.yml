@@ -1,0 +1,9 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      TipoNotificacion
+    theme:            default
+    list:
+      display:        [tiponotificacion_id, modulo, descripcion, esta_activa, mensaje_body]
+      filters:        [modulo_id, descripcion, esta_activa]
+      title:          Lista Tipos Notificacion

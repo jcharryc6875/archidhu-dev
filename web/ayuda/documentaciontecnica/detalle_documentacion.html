@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Comunicaciones Internas</title>
+
+<script type="text/javascript">
+<!--
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>
+<link href="../CSS/ayudaSIMAD.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+
+button.adelante_btn {
+	background-image: url(../images/Ico_Actualizar.png);
+	background-repeat: no-repeat;
+}
+a:link {
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #666666;
+	padding-bottom: 0px;
+	padding-left: 5px;
+	cursor: help;
+}
+a:visited {
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #990000;
+	padding-left: 5px;
+}
+a:hover {
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #000000;
+	padding-left: 0px;
+}
+a:active {
+	text-decoration: none;
+}
+.style3 {
+	font-weight: bold;
+	color: #6D2526;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 9px;
+}
+.style6 {font-size: 16px}
+.style7 {font-size: 15px; color: #6D2526; font-family: Arial, Helvetica, sans-serif;}
+-->
+</style>
+</head>
+
+<body onload="MM_preloadImages('file:///D|/Trabajo/Aurea/images/Btn_Mod_Administrar2.png','file:///D|/Trabajo/Aurea/images/Btn_Mod_Comunicaciones2.png','file:///D|/Trabajo/Aurea/images/Btn_Mod_Archivo2.png','file:///D|/Trabajo/Aurea/images/Btn_Mod_Procedimientos2.png','file:///D|/Trabajo/Aurea/images/Btn_Mod_Servicios2.png','../images/Btn_Mod_Administrar_inicio2.png','../images/BtnBk2.png','../images/BtnGo2.png','../images/BtnHome2.png','../images/Btn_Com/Btn_Com_ExtRec2.png','../images/BtnBrws.png')">
+<table align="left" cellspacing="8">
+  <tr>
+    <td width="130" align="center" valign="top" background="../images/fdo_lateral.png"><table width="150" border="0" cellspacing="5" cellpadding="0">
+      
+      <tr>
+        <td height="63" align="left" valign="top" class="TituloSeccion"><a name="menu" id="menu"></a>Seleccione la opción sobre la que necesita ayuda</td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><p><a href="#crear"></a></p>          </td>
+      </tr>
+      
+      <tr>
+        <td align="left" valign="top"><a href="#editar">Editar</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#duplicar">Duplicar</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#anular">Anular</a></td>
+      </tr>
+      
+      
+      <tr>
+        <td align="left" valign="top"><a href="#verimagenes">Ver Imágenes</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#solicitarprestado">Solicitar Prestado</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#vincularalarchivo">Vincular al Archivo</a></td>
+      </tr>
+    </table>      
+    <p align="center" class="LineaAbajo">&nbsp;</p>
+    <p align="center" class="BodyText"><img src="../images/Signadmira.png" alt="Atención" width="18" height="19" />Para que los cambios sean realizados en el archivo usted deberá hacer clic en el icono Cerrar al finalizar los procedimientos en la ventana Detalle de Comunicación.</p>
+    <p class="LineaAbajo"><img src="../images/IconosGrales/Ico_Cerrar.png" alt="Cerrar" width="40" height="40" /><br />
+      <br />
+    </p>    </td>
+    <td width="955" align="left" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="4" class="LineaAbajo">
+      <tr>
+        <td width="89%"><span class="Titulo"><span class="style6">Comunicaciones</span> <br />
+          Detalle de Documentación Técnica</span></td>
+        <td width="5%"><a href="../buscador.htm" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('Buscador','','../images/BtnBrws.png',1)"><img src="../images/BtnBrws_BN.png" alt="Buscador" name="Buscador" width="40" height="40" border="0" id="Buscador" /></a></td>
+        <td width="1%"><a href="javascript:history.back()" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('BtnBk','','../images/BtnBk2.png',1)"><img src="../images/BtnBk1.png" alt="Atrás" name="BtnBk" width="14" height="20" border="0" id="BtnBk" /></a></td>
+        <td width="1%"><a href="javascript:history.forward()" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('BtnGo','','../images/BtnGo2.png',1)"><img src="../images/BtnGo1.png" alt="Adelante" name="BtnGo" width="14" height="20" border="0" id="BtnGo" /></a></td>
+        <td width="4%"><a href="../Contenido.html" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('BtnHome','','../images/BtnHome2.png',1)"><img src="../images/BtnHome.png" alt="Home" name="BtnHome" width="28" height="25" border="0" id="BtnHome" /></a></td>
+      </tr>
+    </table>
+    <p class="BodyText_Intro">Detalle de Documentación Técnica le guiará paso a paso en la ejecución de las diferentes opciones que aparecen en el detalle de la documentación de cada uno de los Módulos de Documentación Técnica.</p>
+    <p class="LineaAbajo">&nbsp;</p>
+    <p class="TituloITEM">      <img src="../images/IconosGrales/Ico_Editar.png" width="40" height="40" align="absmiddle" /><a name="editar" id="editar"></a>Editar</p>
+    <p class="BodyText"><!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Para ver el detalle de la carpeta y ser impreso realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Reporte.</li>
+      <li>      Imprima el resultado.<br />
+      </li>
+    </ul>
+    <p class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/Editar.png" alt="Editar" width="420" height="200" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM">      <img src="../images/IconosGrales/Ico_Duplicar.png" width="40" height="40" align="absmiddle" /><a name="duplicar" id="editar2"></a>Duplicar</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Permite hacer un duplicado de Documentación Técnica que ya ha sido creada. </p>
+    <p class="BodyText">Para duplicar un documento técnico realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Duplicar.</li>
+      <li> Haga clic o edite donde desea realizar los cambios.</li>
+      <li> Haga clic en Guardar.</li>
+    </ul>
+    <p class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/Duplicar.png" alt="Duplicar" width="420" height="200" /></p>
+    <p class="Nota"><!-- #BeginLibraryItem "/Library/Comentario.lbi" --><span class="Nota"><img src="../images/Signnota.png" alt="Nota" width="18" height="18" align="absmiddle" /></span><!-- #EndLibraryItem -->- El sistema lo enviara de nuevo al detalle de la documentación.<br />
+      - Haga clic en cerrar para finalizar y guardar definitivamente los cambios.</p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_Anular.png" width="40" height="40" align="absmiddle" /><a name="anular" id="editar3"></a>Anular</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Permite eliminar Documentación Técnica creada anteriormente. </p>
+    <p class="BodyText">Para Anular un documento técnico realice los siguientes pasos:</p>
+    <p class="BodyText">Haga clic en el icono Anular.</p>
+    <p class="BodyText">      Haga cerrar para finalizar y anular definitivamente la documentación.</p>
+    <p class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/Anular.png" alt="Anular" width="420" height="200" /></p>
+    <p class="Nota"><!-- #BeginLibraryItem "/Library/Comentario.lbi" --><span class="Nota"><img src="../images/Signnota.png" alt="Nota" width="18" height="18" align="absmiddle" /></span><!-- #EndLibraryItem -->- El sistema eliminará la documentación de la lista.</p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"> <img src="../images/IconosGrales/Ico_VerAdj.png" width="40" height="40" align="absmiddle" /><a name="verimagenes" id="editar4"></a>Ver imágenes</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Permite ver las imágenes adjuntas a la Documentación Técnica creada anteriormente. </p>
+    <p class="BodyText">Para ver las imágenes adjuntas a un documento técnico realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Ver imágenes.</li>
+      <li> Haga clic en Ruta en el nombre del archivo.</li>
+    </ul>
+    <p class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/VerImagen.png" alt="Ver Imágenes" width="420" height="200" /></p>
+    <p class="Nota"><!-- #BeginLibraryItem "/Library/Comentario.lbi" --><span class="Nota"><img src="../images/Signnota.png" alt="Nota" width="18" height="18" align="absmiddle" /></span><!-- #EndLibraryItem -->- El sistema mostrará en una ventana aparte la imagen que usted seleccionó.<br />
+      - Una documentación técnica puede tener más de una imagen.<br />
+      - Para editar la imagen haga clic en el icono editar en opciones.</p>
+    <p class="BodyText">Para adicionar una nueva imagen realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en crear.</li>
+      <li> Digite la Descripción.</li>
+      <li> Haga clic en el icono adjuntar (clip).</li>
+      <li> Digite el número de folios.</li>
+      <li> Haga clic en Guardar.</li>
+      </ul>
+    <p><span class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/VerImagen_Lista.png" alt="Lista" width="420" height="89" /></span></p>
+    <p><span class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/AdjuntarImagen.png" alt="Crear Imagen" width="420" height="113" /></span></p>
+    <p class="BodyText">      Para adjuntar un archivo de imagen realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono adjuntar.</li>
+      <li> Haga clic en el icono Examinar para ubicar el archivo a adjuntar.</li>
+      <li> Haga clic en Adjuntar.</li>
+      <li> Haga clic en Finalizar.</li>
+      </ul>
+    <p><span class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/VerImagen_Anexo.png" alt="Anexo" width="420" height="80" /></span></p>
+    <p class="Nota"><!-- #BeginLibraryItem "/Library/Comentario.lbi" --><span class="Nota"><img src="../images/Signnota.png" alt="Nota" width="18" height="18" align="absmiddle" /></span><!-- #EndLibraryItem -->- Para finalizar la visulaización de imagenes haga clic en el icono Volver.</p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM">      <img src="../images/IconosGrales/Ico_Solicitar.png" width="40" height="40" align="absmiddle" /><a name="solicitarprestado" id="editar5"></a>Solicitar Prestado</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Permite a los usuarios solicitar al CAD una documentación técnica en calidad de préstamo. </p>
+    <p class="BodyText">Para hacer una solicitud realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Solicitar Préstamo.</li>
+      </ul>
+    <p><span class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/Solicitar.png" alt="Solicitar Prestado" width="420" height="200" /></span></p>
+    <p><span class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/Solicitar2.png" alt="Detalle" width="420" height="172" /></span></p>
+    <p class="Nota"><!-- #BeginLibraryItem "/Library/Comentario.lbi" --><span class="Nota"><img src="../images/Signnota.png" alt="Nota" width="18" height="18" align="absmiddle" /></span><!-- #EndLibraryItem -->- En la ventana de detalles cambiará el icono de solicitud por Está en tu lista.</p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM">      <img src="../images/IconosGrales/Ico_Vincular.png" width="40" height="40" align="absmiddle" /><a name="vincularalarchivo" id="editar6"></a>Vincular  al archivo</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Permite vincular la documentación al archivo de clientes, archivos Central o Histórico. </p>
+    <p class="BodyText">Para vincular una documentación técnica a los archivos realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Vincular al Archivo.</li>
+      </ul>
+    <p><span class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/VincularArchivo.png" alt="" width="420" height="200" /></span></p>
+    <ul>
+      <li> Haga clic en el icono Archivo Clientes o Archivo Central/Histórico.</li>
+      <li> Haga clic en Consultar para hacer una búsqueda del Cliente o Unidad Documental.</li>
+      <li> Haga clic en guardar.</li>
+    </ul>
+    <p><span class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/VincularArchivo2.png" alt="Editar" width="420" height="109" /></span></p>
+    <p><span class="BodyText"><img src="../images/DocumentacionTecnica/Detalle/VincularArchivo_Detalle.png" alt="Editar" width="420" height="118" /></span></p>
+    <p class="Nota"><!-- #BeginLibraryItem "/Library/Comentario.lbi" --><span class="Nota"><img src="../images/Signnota.png" alt="Nota" width="18" height="18" align="absmiddle" /></span><!-- #EndLibraryItem -->- El sistema mostrará el detalle de la transferencia de la documentación al cliente o unidad documental seleccionada.<br />
+    - Haga clic en Cerrar para guardar los cambios y salir.</p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

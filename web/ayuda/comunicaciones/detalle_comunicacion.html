@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Comunicaciones Internas</title>
+
+<script type="text/javascript">
+<!--
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>
+<link href="../CSS/ayudaSIMAD.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+
+button.adelante_btn {
+	background-image: url(../images/Ico_Actualizar.png);
+	background-repeat: no-repeat;
+}
+a:link {
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #666666;
+	padding-bottom: 0px;
+	padding-left: 5px;
+	cursor: help;
+}
+a:visited {
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #990000;
+	padding-left: 5px;
+}
+a:hover {
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #000000;
+	padding-left: 0px;
+}
+a:active {
+	text-decoration: none;
+}
+.style3 {
+	font-weight: bold;
+	color: #6D2526;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 9px;
+}
+.style5 {color: #993300}
+.style6 {font-size: 16px}
+-->
+</style>
+</head>
+
+<body onload="MM_preloadImages('file:///D|/Trabajo/Aurea/images/Btn_Mod_Administrar2.png','file:///D|/Trabajo/Aurea/images/Btn_Mod_Comunicaciones2.png','file:///D|/Trabajo/Aurea/images/Btn_Mod_Archivo2.png','file:///D|/Trabajo/Aurea/images/Btn_Mod_Procedimientos2.png','file:///D|/Trabajo/Aurea/images/Btn_Mod_Servicios2.png','../images/Btn_Mod_Administrar_inicio2.png','../images/BtnBk2.png','../images/BtnGo2.png','../images/BtnHome2.png','../images/Btn_Com/Btn_Com_ExtRec2.png','../images/BtnBrws.png')">
+<table align="left" cellspacing="8">
+  <tr>
+    <td width="130" align="center" valign="top" background="../images/fdo_lateral.png"><table width="150" border="0" cellspacing="5" cellpadding="0">
+      
+      <tr>
+        <td height="63" align="left" valign="top" class="TituloSeccion"><a name="menu" id="menu"></a>Seleccione la opción sobre la que necesita ayuda</td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><p><a href="#crear"></a></p>          </td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#vincular">Vincular</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#reenviar">Reenviar</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#historial">Historial</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#duplicar">Duplicar</a></td>
+      </tr>
+      
+      
+      <tr>
+        <td align="left" valign="top"><a href="#generarsolicitud">Generar Solicitud</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#responder">Responder</a></td>
+      </tr>
+      
+      <tr>
+        <td align="left" valign="top"><a href="#guia">Guía</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#seguimientodelaguia">Seguimiento de la guía</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#adjuntardigitalizacion">Adjuntar digitalización</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#sticker">Sticker</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#anular">Anular</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#radicar">Radicar</a></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top"><a href="#editar">Editar</a></td>
+      </tr>
+    </table>      
+    <p align="center" class="LineaAbajo">&nbsp;</p>
+    <p align="center" class="BodyText"><img src="../images/Signadmira.png" alt="Atención" width="18" height="19" />Para que los cambios sean realizados en el archivo usted deberá hacer clic en el icono Cerrar al finalizar los procedimientos en la ventana Detalle de Comunicación.</p>
+    <p class="LineaAbajo"><img src="../images/IconosGrales/Ico_Cerrar.png" alt="Cerrar" width="40" height="40" /><br />
+      <br />
+    </p>    </td>
+    <td width="955" align="left" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="4" class="LineaAbajo">
+      <tr>
+        <td width="89%"><span class="Titulo"><span class="style6">Comunicaciones</span> <br />
+          Detalle de Comunicaciones</span></td>
+        <td width="5%"><a href="../buscador.htm" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('Buscador','','../images/BtnBrws.png',1)"><img src="../images/BtnBrws_BN.png" alt="Buscador" name="Buscador" width="40" height="40" border="0" id="Buscador" /></a></td>
+        <td width="1%"><a href="javascript:history.back()" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('BtnBk','','../images/BtnBk2.png',1)"><img src="../images/BtnBk1.png" alt="Atrás" name="BtnBk" width="14" height="20" border="0" id="BtnBk" /></a></td>
+        <td width="1%"><a href="javascript:history.forward()" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('BtnGo','','../images/BtnGo2.png',1)"><img src="../images/BtnGo1.png" alt="Adelante" name="BtnGo" width="14" height="20" border="0" id="BtnGo" /></a></td>
+        <td width="4%"><a href="../Contenido.html" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('BtnHome','','../images/BtnHome2.png',1)"><img src="../images/BtnHome.png" alt="Home" name="BtnHome" width="28" height="25" border="0" id="BtnHome" /></a></td>
+      </tr>
+    </table>
+    <p class="BodyText_Intro">&nbsp;</p>
+    <p class="BodyText_Intro">Detalle de Comunicación le guiará paso a paso en la ejecución de las diferentes opciones que aparecen en el detalle de la Comunicación de cada uno de los Módulos de Comunicaciones.</p>
+    <p class="LineaAbajo">&nbsp;</p>
+    <p class="TituloITEM">      <img src="../images/IconosGrales/Ico_Transferencias.png" alt="Transferir" width="40" height="40" align="absmiddle" /><a name="vincular" id="vincular"></a>Vincular</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Para vincular una comunicación a un archivo determinado realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Vincular.</li>
+      <li>        Haga clic en el icono de la unidad documental a la que va a tranferir la comunicación.</li>
+      <li>        Haga clic en el icono Unidad Documental y realice la búsqueda del cliente o archivo Central o Histórico al que desea vincular la comunicación.</li>
+      <li>        Seleccione el tipo documental.</li>
+      <li>        Haga clic en guardar para realizar la vinculación y cerrar.<br />
+      </li>
+    </ul>
+    <p><img src="../images/Comunicaciones/Detalle/Vincular.png" alt="Vincular" width="420" height="200" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_ReenvMail.png" alt="Reenviar" width="40" height="40" align="absmiddle" /><a name="reenviar" id="reenviar"></a>Reenviar</p>
+    <p class="BodyText"><!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Para reenviar una comunicación a otro usuario del sistema realice los siguientes pasos: </p>
+    <ul>
+      <li>Haga clic en el icono Reenviar.</li>
+      <li> Seleccione el tipo.</li>
+      <li> Seleccione el destinatario  y Copia a haciendo clic en la lupa.</li>
+      <li> Escriba el asunto del comunicado.</li>
+      <li> Escriba las observaciones de reenvío.</li>
+      <li> Anexe los documentos que desea enviar. </li>
+      <li>Escriba el número de folios.</li>
+      <li>Haga una descripción de los documentos anexos.</li>
+      <li> Para seleccionar firma haga clic en la lupa.</li>
+      <li> Haga clic en guardar para reenviar o deshacer para borrar el formulario. </li>
+      <li> Haga clic en la lupa para seleccionar otros destinatarios a los que desee reenviar la comunicación.</li>
+      <li> Haga clic en guardar destino.</li>
+      </ul>
+    <p><img src="../images/Comunicaciones/Detalle/Reenviar.png" alt="Reenviar" width="420" height="200" /></p>
+    <p><img src="../images/Comunicaciones/Detalle/Radicacion.png" alt="Guardar Destino" width="420" height="175" /></p>
+    <p class="Nota"><!-- #BeginLibraryItem "/Library/Comentario.lbi" --><span class="Nota"><img src="../images/Signnota.png" alt="Nota" width="18" height="18" align="absmiddle" /></span><!-- #EndLibraryItem -->- Una vez guardado el borrador puede realizar cualquier modificación al formato.</p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_Historial.png" alt="Reenviar" width="40" height="40" align="absmiddle" /><a name="historial" id="reenviar2"></a>Historial</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Muestra el listado de comunicaciones que guardan una relación de reenvió o respuesta de las comunicaciones internas.</p>
+    <p class="BodyText">Para visualizar el historial de las comunicaciones internas realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Historial.</li>
+      <li> Seleccione cualquiera de las opciones.</li>
+    </ul>
+    <p class="TituloOpc"><!-- #BeginLibraryItem "/Library/Lista.lbi" --><span class="TituloOpc"><img src="../images/Signlista.png" alt="Lista" width="18" height="18" align="absmiddle" /></span><!-- #EndLibraryItem -->Opciones lista de Historial</p>
+    <ul>
+      <li> Guardar marca: Marque la correspondencia que desea guardar, haga clic en guardar para luego ser consultada.</li>
+      <li> Marcar todos: Haga clic en marcar para guardar, borrar, entregar o exportar la correspondencia.</li>
+      <li> Desmarcar todos: Haga clic en desmarcar para quitar las marcas de la correspondencia que el usuario guardo anteriormente.</li>
+      <li> Borrar: Marque la correspondencia que desea borrar, haga clic en borrar para la correspondencia que desea quitar de la bandeja.</li>
+      <li> Restaurar: Haga clic en restaurar para traer nuevamente las comunicaciones borradas.</li>
+      <li> Exportar: Marque la correspondencia que desea exportar, haga clic en exportar para  enviar los registros a un archivo de Excel para ser impresos. </li>
+    </ul>
+    <p><img src="../images/Comunicaciones/Detalle/Historial.png" alt="Historial" width="420" height="200" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_Duplicar.png" width="40" height="40" align="absmiddle" /><a name="duplicar" id="reenviar3"></a>Duplicar</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Crear una nueva comunicación interna,  basándose en una comunicación ya creada y realizando solo los cambios que sean necesarios.</p>
+    <p class="BodyText">      Para duplicar comunicaciones internas realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Duplicar. </li>
+      <li> Haga clic en las casillas en las cuales usted desea realizar cambios.</li>
+      <li> Haga clic en guardar para dejar un borrador de la comunicación o restablecer para borrar los cambios.</li>
+      <li> Seleccione radicar para generar el consecutivo de la nueva comunicación interna y el envió. </li>
+      <li> Si va a enviar a otros destinatarios la misma comunicación haga clic en la lupa.</li>
+      <li> Haga clic en guardar destino para finalizar el envió de la comunicación interna.</li>
+      </ul>
+    <p><img src="../images/Comunicaciones/Detalle/Duplicar.png" alt="Duplicar" width="420" height="200" /></p>
+    <p><img src="../images/Comunicaciones/Detalle/Radicacion.png" alt="Guardar Destino" width="420" height="175" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_SoliSrv.png" width="40" height="40" align="absmiddle" /><a name="generarsolicitud" id="reenviar4"></a>Generar solicitud</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Crea una solicitud de servicio, a partir de una comunicación interna.</p>
+    <p class="BodyText">Para generar una solicitud realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Generar Solicitud. </li>
+      <li> Diligencie los campos en el formulario.</li>
+      <li> Clic en guardar solicitud.</li>
+    </ul>
+    <p class="BodyText">En el listado de solicitudes realice los siguientes pasos:</p>
+    <ul>
+        <li>        Haga clic en imprimir marcados para generar la solicitud de servicio CAD e imprimir.</li>
+      <li> O haga clic en exportar para generar un reporte de servicios en un archivo Excel.</li>
+    </ul>
+    <p><img src="../images/Comunicaciones/Detalle/GenerarSolicitud.png" alt="Generar Solicitud" width="420" height="200" /></p>
+    <p><img src="../images/Comunicaciones/Detalle/ListaSolicitud.png" alt="Lista Solicitud" width="420" height="150" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_RespMail.png" width="40" height="40" align="absmiddle" /><a name="responder" id="reenviar5"></a>Responder </p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Dar respuesta a las comunicaciones internas que llegan a la bandeja de entrada .</p>
+    <p class="BodyText"> Para responder comunicaciones internas realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Responder.</li>
+      <li> Seleccione el tipo de comunicación.</li>
+      <li> Para seleccionar el destinatario haga clic en la lupa.</li>
+      <li> Seleccione a quien desea enviar la copia, haga clic en la lupa.</li>
+      <li> El asunto del comunicado aparecerá automáticamente. </li>
+      <li> Escriba el contenido de la comunicación interna. </li>
+      <li> Anexe los documentos que desea enviar adjuntos.</li>
+      <li> Escriba el número de folios.</li>
+      <li> Haga una descripción de los documentos anexos.</li>
+      <li> Seleccionar firma de quien envía la comunicación.</li>
+      <li> Haga clic en guardar para dejar un borrador de la comunicación interna.</li>
+    </ul>
+    <p class="BodyText">      A continuación:</p>
+    <ul>
+      <li> Seleccione radicar para generar el consecutivo de la nueva comunicación y el envió. </li>
+      <li> Haga clic en guardar destino.</li>
+    </ul>
+    <p><img src="../images/Comunicaciones/Detalle/Responder.png" alt="Responder" width="420" height="200" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_GuiaEstablecer.png" width="40" height="40" align="absmiddle" /><a name="guia" id="reenviar6"></a>Guía</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Establecer una guía en la comunicación interna, la cual ha sido enviada por correo físico.</p>
+    <p class="BodyText">Para establecer la guía de una comunicación interna realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Guía. </li>
+      <li> Seleccione la empresa de mensajería por la cual fue enviada la correspondencia física.</li>
+      <li> Digite el numero de la guía.</li>
+      <li> Seleccione la fecha en que se envió la comunicación. </li>
+      <li> Digite el valor del envió.</li>
+      <li> Haga clic en guardar.</li>
+    </ul>
+    <p class="BodyText">A continuación el sistema le mostrará el detalle de la comunicación interna con el icono de Seguimiento Guía.</p>
+    <p><img src="../images/Comunicaciones/Detalle/Guia.png" alt="Guia" width="420" height="200" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="BodyText"><span class="TituloITEM">      <img src="../images/IconosGrales/Ico_GuiaIr.png" width="40" height="40" align="absmiddle" /><a name="seguimientodelaguia" id="reenviar7"></a>Seguimiento de la guía</span></p>
+    <p class="BodyText"><span class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Le permite hacer un seguimiento una vez creada la guía remitiéndolo a la página web del proveedor de servicio de mensajería y saber si su comunicación ha sido entregada al lugar de destino.</span></p>
+    <p class="BodyText">Para hacer un seguimiento realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono seguimiento de guía. </li>
+    </ul>
+    <p><img src="../images/Comunicaciones/Detalle/SeguimientoGuia.png" alt="Seguimiento de la Guia" width="420" height="114" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_Insertar.png" width="40" height="40" align="absmiddle" /><a name="adjuntardigitalizacion" id="reenviar8"></a>Adjuntar digitalización</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Permite adjuntar una archivo que previamente ha sido digitalizado mediante un scanner. </p>
+    <p class="BodyText">Para adjuntar el archivo digitalizado correspondiente a la comunicación con la cual se esta trabajando realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Adjuntar Digitalización . </li>
+      <li> Haga clic en examinar para buscar el archivo digitalizado</li>
+      <li> Clic en adjuntar.</li>
+      <li> Haga clic en cerrar para ver el detalle de la comunicación interna y el número de adjuntos. </li>
+    </ul>
+    <p><img src="../images/Comunicaciones/Detalle/AdjuntarDigitalizacion.png" alt="Seguimiento de la Guia" width="420" height="200" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_AddSticker.png" width="40" height="40" align="absmiddle" /><a name="sticker" id="reenviar9"></a>Sticker</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Genera el número de stickers según el numero de destinatarios a los cuales les fue enviado la correspondencia interna. </p>
+    <p class="BodyText">      Para generar un sticker realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Sticker.</li>
+    </ul>
+    <p class="BodyText"> <img src="../images/Comunicaciones/Detalle/Sticker.png" alt="Sticker" width="420" height="200" /></p>
+    <p class="Nota"><!-- #BeginLibraryItem "/Library/Comentario.lbi" --><span class="Nota"><img src="../images/Signnota.png" alt="Nota" width="18" height="18" align="absmiddle" /></span><!-- #EndLibraryItem -->- Simad genera el número de stickers de acuerdo a los destinatarios que se les envió la correspondencia interna, imprima los stickers y luego péguelos a la comunicación.</p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM">      <img src="../images/IconosGrales/Ico_Anular.png" width="40" height="40" align="absmiddle" /><a name="anular" id="reenviar10"></a>Anular</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Elimina las comunicaciones que se creen que no son necesarias.</p>
+    <p class="BodyText">      Para adjuntar anular una comunicación realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Anular. </li>
+      <li> Seleccione la fecha en que se elimina la comunicación. </li>
+      <li> Digite el motivo por el cual se hace la anulación.</li>
+      <li> Haga clic en guardar para ver el detalle de la comunicación anulada o restaurar para borrar el formulario.</li>
+    </ul>
+    <p><img src="../images/Comunicaciones/Detalle/Anulada.png" alt="Anular" width="420" height="200" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_Radicar.png" width="40" height="40" align="absmiddle" /><a name="radicar" id="reenviar11"></a>Radicar</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Genera el consecutivo de la nueva comunicación y el envió.</p>
+    <p class="BodyText">Para radicar una comunicación realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Radicar . </li>
+      <li> Si va a enviar a otros destinatarios la misma comunicación haga clic en la lupa.</li>
+      <li> Haga clic en guardar destino para finalizar el envió de la comunicación interna.</li>
+    </ul>
+    <p><img src="../images/Comunicaciones/Detalle/Radicar.png" alt="Radicar" width="420" height="200" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>
+    <p class="TituloITEM"><img src="../images/IconosGrales/Ico_Editar.png" width="40" height="40" align="absmiddle" /><a name="editar" id="reenviar12"></a>Editar</p>
+    <p class="BodyText">      <!-- #BeginLibraryItem "/Library/Mouse.lbi" --><img src="../images/SignMouse.png" alt="Procedimiento" width="18" height="17" align="absmiddle" /><!-- #EndLibraryItem -->Permite hacer cambios a una comunicación que ya esta creada y aún no se ha radicado. </p>
+    <p class="BodyText">Para editar una comunicación interna realice los siguientes pasos:</p>
+    <ul>
+      <li>Haga clic en el icono Editar.</li>
+      <li> Haga clic donde desea realizar los cambios.</li>
+      <li> Haga clic en guardar para dejar un borrador de la comunicación.</li>
+      <li> Seleccione radicar para generar el consecutivo de la nueva comunicación y el envió. </li>
+      <li> Si va a enviar a otros destinatarios la misma comunicación haga clic en la lupa.</li>
+      <li> Haga clic en guardar destino para finalizar el envió de la comunicación.</li>
+      </ul>
+    <p><img src="../images/Comunicaciones/Detalle/Editar.png" alt="Editar" width="420" height="200" /></p>
+    <p align="right" class="LineaAbajo"><a href="#menu" class="class"><span class="style3">Volver Arriba <img src="../images/SignUp.png" alt="Arriba" width="23" height="15" border="0" align="absmiddle" /></span></a></p>    </td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,9 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Serie
+    theme:            default
+    list:
+        object_actions:
+             show: { name: Ver , action: showSubserie, icon: /sf/sf_admin/images/filter.png }
+

@@ -1,0 +1,14 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      FactProcesoPorTipo
+    theme:            default
+    list:
+      display:        [ FacturaTipo, FacturaProceso, FacturaEstado ]
+      title:          Facturas Tipo Por Porceso
+      max_per_page:   15
+      object_actions:
+        _edit:        -
+        _delete:      -
+      actions:
+        _create:      ~

@@ -1,0 +1,24 @@
+proveedor_firma_digital:
+  class: sfPropelORMRouteCollection
+  options:
+    model:                ProveedorFirmaDigital
+    module:               proveedor_firma_digital
+    prefix_path:          /proveedor_firma_digital
+    column:               PROVEEDORFIRMADIGITAL_ID
+    with_wildcard_routes: true
+
+# default rules
+homepage:
+  url:   /
+  param: { module: default, action: index }
+
+default_symfony:
+  url:   /symfony/:action/*
+  param: { module: default }
+
+default_index:
+  url:   /:module
+  param: { action: index }
+
+default:
+  url:   /:module/:action/*

@@ -1,0 +1,37 @@
+methods:
+  post: [username, oldpassword, newpassword1, newpassword2]
+names:
+  username:
+    required:     true
+    required_msg: debe digitar un nombre de usuario
+    validators:   userValidator
+  oldpassword:
+    required:     true
+    required_msg: debe digitar la clave anterior
+  newpassword1:
+    required:     true
+    required_msg: debe digitar una clave nueva
+    validators:   wordValidator
+  newpassword2:
+    required:     true
+    required_msg: debe digitar de nuevo la clave nueva
+    validators:   ruleValidator
+userValidator:
+    class:         myPasswdValidator
+    param:
+      password:    oldpassword
+      login_error: NO existe esta cuenta 
+      passw_error: La clave anterior no es correcta
+      difer_error: Las clave nueva no coincide con su copia
+      rules_error: La nueva clave no cumple con las reglas de seguridad
+ruleValidator:
+    class:         myPasswdRuleValidator
+    param:
+      login_error: NO existe esta cuenta 
+      rules_error: La nueva clave no cumple con las reglas de seguridad
+      long_error:  la clave debe ser de 8 caracteres minimo
+wordValidator:
+    class:         sfStringValidator
+    param:
+      min:         8
+      min_error:   la clave debe tener por lo menos 8 caracteres            

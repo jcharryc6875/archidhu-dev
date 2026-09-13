@@ -1,0 +1,257 @@
+<pd4ml:page.header>
+	<table align="center" width="98%" cellspacing="0" cellpadding="0" border="0">
+        <tbody>
+			<tr>
+				<td nowrap="nowrap" style="border:solid black 1.0pt;" rowspan="3" >				
+					<table cellspacing="0" cellpadding="0" align="center">
+						<tbody>						
+							<tr
+								<td>
+									<img width="150px" height="40px" src="#.#$path_logo#.#">
+								</td>
+							</tr>
+						</tbody>
+					</table>												
+				</td>
+				<td style="border-top:solid windowtext 1.0pt;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;" rowspan="3" colspan="11">
+					<p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" >
+						<b><span style="font-size:5.0pt;font-family:&quot;Helvetica Condensed&quot;,&quot;serif&quot;;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-bidi-font-family:Arial;">FORMATOS GESTI&Oacute;N DOCUMENTAL </span></b>
+					</p>
+				</td>
+				<td style="border:solid windowtext 1.0pt;border-left:none;" colspan="3">
+					<p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" >
+						<b><span style="font-size:5.0pt;font-family:&quot;Arial Narrow&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-bidi-font-family:Arial;">&nbsp;</span></b>
+					</p>
+				</td>
+			</tr>
+			
+			<tr>
+				<td style="border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid black 1.0pt;" colspan="2">
+					<p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" >
+						<span style="font-size:5.0pt;font-family:&quot;Arial Narrow&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-bidi-font-family:Arial;">Fecha del &Iacute;ndice:</span>
+					</p>
+				</td>
+				<td style="border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;">
+					<p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" >
+						<span style="font-size:5.0pt;font-family:&quot;Arial Narrow&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-bidi-font-family:Arial;">&nbsp;</span>
+					</p>
+				</td>
+			</tr>
+			
+			<tr>
+				<td style="border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid black 1.0pt;" colspan="2">
+					<p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" >
+						<span style="font-size:5.0pt;font-family:&quot;Arial Narrow&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-bidi-font-family:Arial;">#.#$fecha_reporte#.#</span>
+					</p>
+				</td>
+				<td style="border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;">
+					<p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" >
+					<span style="font-size:5.0pt;font-family:&quot;Arial Narrow&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-bidi-font-family:Arial;">001</span></p>
+				</td>
+			</tr>			
+        </tbody>
+	</table>
+</pd4ml:page.header>
+<table border="1" cellspacing="0" style="border-collapse:collapse; border:0.5pt solid black; height:100%; width:100%">
+	<tbody>
+		<tr>
+			<td colspan="13" style="background-color:#f2f2f2;border-color:black;text-align:center; vertical-align:bottom; white-space:nowrap; width:665pt">
+				<span style="font-size:11.0pt"><span style="color:black"><strong>&Iacute;ndice Electr&oacute;nico del Expediente</strong></span></span>
+			</td>
+		</tr>		
+		<tr>
+			<td style="background-color:#d8e4bc; border-color:black; text-align:left; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">
+						<strong><span>Codigo</span> Barras:</strong>
+					</span>
+				</span>
+			</td>
+			<td colspan="12" style="text-align:left;border-color:black;vertical-align:bottom; white-space:normal; width:569pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">#.#$codigo_barras#.#</span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color:#d8e4bc; border-color:black; text-align:left; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">
+						<strong><span>Localizaci&oacute;n</span>:</strong>
+					</span>
+				</span>
+			</td>
+			<td colspan="12" style="text-align:left;border-color:black;vertical-align:bottom; white-space:normal; width:569pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">#.#$tipo_archivo#.#</span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color:#d8e4bc; border-color:black; text-align:left; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Titulo:</strong></span>
+				</span>
+			</td>
+			<td colspan="12" style="text-align:left;border-color:black;vertical-align:bottom; white-space:normal; width:569pt">
+				<span style="font-size:5.0pt"><span style="color:black">
+				<span style="color:black">#.#$titulo_expediente#.#</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color:#d8e4bc; border-color:black; text-align:left; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Fecha Incial:</strong></span>
+				</span>
+			</td>
+			<td colspan="12" style="text-align:left;border-color:black;vertical-align:bottom; white-space:normal; width:569pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">#.#$fecha_inicial#.#</span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color:#d8e4bc; border-color:black; text-align:left; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Fecha Final:</strong></span>
+				</span>
+			</td>
+			<td colspan="12" style="text-align:left;border-color:black;vertical-align:bottom; white-space:normal; width:569pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">#.#$fecha_final#.#</span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color:#d8e4bc; border-color:black; text-align:left; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Responsable Expediente</strong></span>
+				</span>
+			</td>
+			<td colspan="12" style="text-align:left;border-color:black;vertical-align:bottom; white-space:normal; width:569pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">#.#$responsable_expediente#.#</span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color:#d8e4bc; border-color:black; text-align:left; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>No. Folios</strong></span>
+				</span>
+			</td>
+			<td colspan="12" style="text-align:left;border-color:black;vertical-align:bottom; white-space:normal; width:569pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">#.#$folios_expediente#.#</span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color:#d8e4bc; border-color:black; text-align:left; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Dependencia</strong></span>
+				</span>
+			</td>
+			<td colspan="12" style="text-align:left;border-color:black;vertical-align:bottom; white-space:normal; width:569pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">#.#$dependencia_expediente#.#</span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color:#d8e4bc; border-color:black; text-align:left; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Serie</strong></span>
+				</span>
+			</td>
+			<td colspan="12" style="text-align:left;vertical-align:bottom;border-color:black;white-space:normal; width:569pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">#.#$serie_expediente#.#</span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color:#d8e4bc; border-color:black; text-align:left; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Subserie</strong></span>
+				</span>
+			</td>
+			<td colspan="12" style="text-align:left;border-color:black;vertical-align:bottom; white-space:normal; width:569pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black">#.#$subserie_expediente#.#</span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="13" style="border-color:black;vertical-align:bottom; white-space:nowrap">&nbsp;<br></td>			
+		</tr>
+		<tr>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:60pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>ID</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:120pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Nombre Documento</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:96pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Tipo Documental</strong></span>
+				</span>
+			</td>			
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:50pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Fecha Documento</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:50pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Fecha Inserci&oacute;n</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:60pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Valor Huella</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:33pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Funci&oacute;n Resumen</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:33pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Pagina Inicial</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:33pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Pagina Final</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:33pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Orden</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:33pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Formato</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:33pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Tama&ntilde;o</strong></span>
+				</span>
+			</td>
+			<td style="background-color:#b8cce4; border-color:black; text-align:center; vertical-align:middle; white-space:normal; width:33pt">
+				<span style="font-size:5.0pt">
+					<span style="color:black"><strong>Origen</strong></span>
+				</span>
+			</td>
+		</tr>
+		#.#$detalles_expediente#.#
+	</tbody>
+</table>

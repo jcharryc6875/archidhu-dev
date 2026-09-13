@@ -1,0 +1,10 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      FrecConsultaCliente
+    theme:            default
+    list:
+       max_per_page:   10
+       title: 'Frecuencia de Consulta de Cliente'
+    edit:
+       title: 'Editar/Crear Frecuencia de Consulta de Cliente'

@@ -1,0 +1,1 @@
+<?php include_partial('listEmailTable',array('pager' => $pager,'parametros' => $parametros)) ?>

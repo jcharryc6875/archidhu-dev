@@ -1,0 +1,12 @@
+rendering: ~
+
+# insert your own filters here
+usuario_sessions:
+  class: UniqueSessionFilter
+
+security:  ~
+
+cache:     ~
+common:
+  class: sfCommonFilter
+execution: ~

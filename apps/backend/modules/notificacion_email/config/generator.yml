@@ -1,0 +1,33 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      NotificacionEmail
+    theme:            default
+    list:
+      display:        [Dependencia, host_smtp, email_login, certimail ]
+      filters:        [dependencia_id ]
+      fields:
+        dependencia_id:
+          params: 
+            include_custom=Seleccione...
+      title:          Listado Emails para Notificaciones
+      max_per_page:   25
+      object_actions:
+        _edit:        ~
+        _delete:      ~
+      actions:
+        _create:      ~
+    edit:
+      title:          Email para Notificaciones
+      fields:
+        dependencia_id: { name: Dependencia, params: include_custom=Seleccione... class=required select2 }
+        email_body:  { name: Cuerpo Correo, type: textarea_tag, params: size=120x5 class=required ckeditor1 }
+        host_smtp:  { params: class=required }
+        email_login:  
+          params: 
+            class: required email
+          attributes:
+            data-alloweddomain: true
+        email_pass:  { params: class=required type=password }
+        puerto:  { params: class=required }
+        auth_smtp:  { params: class=required }

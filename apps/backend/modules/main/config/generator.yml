@@ -1,0 +1,19 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Forma
+    theme:            default
+    create:
+       credentials:   [admin]
+    list:
+       max_per_page:   10
+       actions: 
+         _list: -
+         _create:
+             credentials:   [admin, superuser]
+       title: Panel de Control
+       display: [nombre_modulo, nombre, descripcion]
+       object_actions:
+          show: { name: Ver , action: Show, icon: /sf/sf_admin/images/filter.png }
+          _edit:
+		      credentials:    [admin, superuser]

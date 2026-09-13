@@ -1,0 +1,121 @@
+<table class="tableizer-table">
+    <tbody>
+        <tr>
+            <td style="width: 2.4752%;" rowspan="17"></td>
+            <td colspan="2" rowspan="4" style="width: 24%; background-color: rgb(112, 112, 112); border-top: 3px solid rgb(0, 0, 0); border-left: 3px solid rgb(0, 0, 0);">
+                <div style="text-align: center; color: white;"><img width="80px" height="20px" src="#.#$path_logo#.#"/></div>
+            </td>
+            <td colspan="10" style="width: 32%; vertical-align: middle; background-color: rgb(112, 112, 112); border-top: 3px solid rgb(0, 0, 0);">
+                <div style="text-align: center; color: white;"><strong>FORMATO R&Oacute;TULO DE CAJA</strong></div>
+            </td>
+            <td style="width: 18.0198%; vertical-align: top; background-color: rgb(255, 255, 255); border-top: 3px solid rgb(0, 0, 0); border-right: 3px solid rgb(0, 0, 0);" colspan="4">C&oacute;digo: #.#$codigo_formato#.#</td>
+            <td style="width: 1.4851%;" rowspan="17"></td>
+        </tr>
+        <tr>
+            <td colspan="10" style="width: 32%;">
+                <div style="text-align: center;"><strong>PROCESO GESTI&Oacute;N DOCUMENTAL</strong></div>
+            </td>
+            <td style="width: 18.0198%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0);" colspan="4">Versi&oacute;n: #.#$version_formato#.#</td>
+        </tr>
+        <tr>
+            <td colspan="10" style="width: 32%;" rowspan="2">
+                <div style="text-align: center;"><strong>MANUAL PARA LA ORGANIZACI&Oacute;N DE DOCUMENTOS F&Iacute;SICOS Y ELECTR&Oacute;NICOS</strong></div>
+            </td>
+            <td style="width: 18.0198%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0);" colspan="4">Fecha: #.#$fecha_formato#.#</td>
+        </tr>
+        <tr>
+            <td style="width: 18.0198%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0);" colspan="4">Pagina 1 de 1</td>
+        </tr>
+        <tr>
+            <td colspan="16" style="width: 95.9406%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0); border-right: 3px solid rgb(0, 0, 0);">
+                <div style="text-align: center;"><strong>UNIDAD PARA LA ATENCI&Oacute;N Y REPARACI&Oacute;N INTEGRAL A LAS V&Iacute;CTIMAS</strong></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width: 23.7623%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0);">SECCI&Oacute;N-UNIDAD ADMINISTRATIVA Y C&Oacute;DIGO:</td>
+            <td style="width: 73.0693%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0);" colspan="14">#.#$array_ofproductora_string#.#</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width: 23.7623%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0);">SUBSECCI&Oacute;N-OFICINA PRODUCTORA Y C&Oacute;DIGO:</td>
+            <td style="width: 73.0693%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0);" colspan="14">#.#$array_dependencia_string#.#</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width: 23.7623%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0);">SERIE Y C&Oacute;DIGO:</td>
+            <td style="width: 73.0693%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0);" colspan="14">#.#$array_serie_string#.#</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width: 23.7623%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0);">SUBSERIE Y C&Oacute;DIGO:</td>
+            <td style="width: 73.0693%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0);" colspan="14">#.#$array_subserie_string#.#</td>
+        </tr>
+        <tr>
+            <td colspan="16" style="width: 95.9406%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0); border-right: 3px solid rgb(0, 0, 0);">
+                <div style="text-align: center;"><strong>No. DE CAJA</strong></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width: 23.7623%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0);"><br></td>
+            <td style="width: 60.125%;" colspan="11">
+                <div data-empty="true" style="text-align: center;"><img style="width: 230px;height: 60px;" src="#.#$numero_caja#.#"/></div>
+            </td>
+            <td style="width: 14.0594%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0);" colspan="3"><br></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width: 23.7623%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0);" rowspan="2">
+                <div style="text-align: center;">&nbsp;UBICACI&Oacute;N TOPOGR&Aacute;FICA (AC)</div>&nbsp;
+            </td>
+            <td style="width: 13.3848%;" colspan="2">
+                <div style="text-align: center;">BODEGA</div>
+            </td>
+            <td style="width: 8.75%;">
+                <div style="text-align: center;">CUERPO</div>
+            </td>
+            <td colspan="2" style="width: 13.375%;">
+                <div style="text-align: center;">TORRE</div>
+            </td>
+            <td style="width: 6.5%;" colspan="2">
+                <div style="text-align: center;">PISO</div>
+            </td>
+            <td style="width: 7.625%;" colspan="2">
+                <div style="text-align: center;">NIVEL</div>
+            </td>
+            <td style="width: 8.125%;" colspan="2">
+                <div style="text-align: center;">PASILLO</div>
+            </td>
+            <td style="width: 14.0594%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0);" colspan="3">
+                <div style="text-align: center;">POSICI&Oacute;N CJ</div>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 13.25%;" colspan="2"><br></td>
+            <td style="width: 8.75%;"><br></td>
+            <td style="width: 13.375%;" colspan="2"><br></td>
+            <td style="width: 6.625%;" colspan="2"><br></td>
+            <td style="width: 7.625%;" colspan="2"><br></td>
+            <td style="width: 8.125%;" colspan="2"><br></td>
+            <td style="width: 14.0594%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0);" colspan="3"><br></td>
+        </tr>
+        <tr>
+            <td colspan="16" style="width: 95.9406%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0); border-right: 3px solid rgb(0, 0, 0);">
+                <div style="text-align: center;"><img width="300px" height="300px" src="#.#$qrcodigo#.#"/></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width: 23.7623%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0); border-right: 0px;"><br></td>
+            <td style="width: 4.1348%; border-right: 0px; border-left: 0px;">FECHAS EXTREMAS</td>
+            <td style="width: 26.125%; border-right: 0px; border-left: 0px;" colspan="4">#.#$ext_fechainicio#.#</td>
+            <td style="width: 4.75%; border-right: 0px; border-left: 0px;">A</td>
+            <td style="width: 30.9901%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0); border-left: 0px;" colspan="8">#.#$ext_fechafin#.#</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="width: 23.7623%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0); border-right: 0px;">&nbsp;</td>
+            <td style="width: 4.1348%; border-right: 0px; border-left: 0px;">A&Ntilde;OS</td>
+            <td style="width: 26.125%; border-right: 0px; border-left: 0px;" colspan="4">&nbsp;#.#$ext_anioinicial#.#</td>
+            <td style="width: 4.75%; border-right: 0px; border-left: 0px;">A</td>
+            <td style="width: 30.9901%; background-color: rgb(255, 255, 255); border-right: 3px solid rgb(0, 0, 0); border-left: 0px;" colspan="8">&nbsp;#.#$ext_aniofinal#.#</td>
+        </tr>
+        <tr style="height: 5px;">
+            <td colspan="16" style="width: 95.9406%; background-color: rgb(255, 255, 255); border-left: 3px solid rgb(0, 0, 0); border-right: 3px solid rgb(0, 0, 0); border-bottom: 3px solid rgb(0, 0, 0);">&nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+<h6 style="page-break-after: always;">&nbsp;</h6>

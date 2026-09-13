@@ -1,0 +1,22 @@
+methods:
+  post: [username, email]
+names:
+  username:
+    required:     true
+    required_msg: debe digitar un nombre de usuario
+    validators:   userValidator
+  email:
+    required:     true
+    required_msg: debe digitar un correo a donde se enviara la clave
+    validators:   wordValidator
+wordValidator:
+    class:         sfStringValidator
+    param:
+      min:         8
+      min_error:   debe tener por lo menos 8 caracteres
+userValidator:
+    class:         myRecuperarValidator
+    param:
+      login_error: NO existe este usuario 
+      base_error:  El email no se encontro en la base.
+      email_error: El email debe contener el caracter arroba           

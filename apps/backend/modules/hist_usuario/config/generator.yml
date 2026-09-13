@@ -1,0 +1,9 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      HistUsuario
+    theme:            default
+    list:
+      title:          Historico de Cambios
+      display:        [user_name, fecha_modificacion, nombre, apellido, cedula, email, iniciales, intentos, prefijo, ruta_foto]
+      filters:        [user_name, fecha_modificacion]

@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<xliff version="1.0">
+  <file orginal="global" source-language="en_US" datatype="plaintext">
+    <body>
+      <trans-unit id="1">
+        <source>create</source>
+        <target>crear</target>
+      </trans-unit>
+      <trans-unit id="2">
+        <source>list</source>
+        <target>listar</target>
+      </trans-unit>
+      <trans-unit id="3">
+        <source>result</source>
+        <target>Registro</target>
+      </trans-unit>
+      <trans-unit id="4">
+        <source>results</source>
+        <target>Registros</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+ 

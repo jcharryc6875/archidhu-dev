@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * ProvListaDocs form base class.
+ *
+ * @method ProvListaDocs getObject() Returns the current form's model object
+ *
+ * @package    ##PROJECT_NAME##
+ * @subpackage form
+ * @author     ##AUTHOR_NAME##
+ */
+abstract class BaseProvListaDocsForm extends BaseFormPropel
+{
+  public function setup()
+  {
+    $this->setWidgets(array(
+      'PROV_LISTA_DOCS_ID' => new sfWidgetFormInputHidden(),
+      'NOMBRE'             => new sfWidgetFormInputText(),
+      'DESCRIPCION'        => new sfWidgetFormInputText(),
+    ));
+
+    $this->setValidators(array(
+      'PROV_LISTA_DOCS_ID' => new sfValidatorChoice(array('choices' => array($this->getObject()->getProvListaDocsId()), 'empty_value' => $this->getObject()->getProvListaDocsId(), 'required' => false)),
+      'NOMBRE'             => new sfValidatorString(array('max_length' => 100, 'required' => false)),
+      'DESCRIPCION'        => new sfValidatorString(array('max_length' => 250, 'required' => false)),
+    ));
+
+    $this->widgetSchema->setNameFormat('prov_lista_docs[%s]');
+
+    $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
+
+    parent::setup();
+  }
+
+  public function getModelName()
+  {
+    return 'ProvListaDocs';
+  }
+
+
+}

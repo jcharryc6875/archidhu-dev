@@ -1,0 +1,68 @@
+@charset "UTF-8";
+
+#estado {
+	background-image: url(../images/secuencia_01.png);
+	/*height: 139px;
+	width: 198px;
+	float: left;
+	margin-right: 202px;*/
+    float: left;
+    height: 140px;
+    margin-left: -152px;
+    margin-right: 196px;
+    margin-top: 158px;
+    width: 205px;
+}
+.ok {
+}
+.no {
+	filter:alpha(opacity=75);
+}
+#actividades {
+	background-image: url(../images/secuencia_02.png);
+    float: left;
+    height: 139px;
+    margin-left: 240px;
+    margin-top: -306px;
+    width: 200px;
+	/*float: left;
+	height: 139px;
+	width: 200px;
+    margin-left: 240px;
+    margin-top: -147px;*/
+}
+#workflow {
+	background-image: url(../images/secuencia_03.png);
+    background-repeat: no-repeat;
+    background-size: 150px auto;
+    float: left;
+    height: 150px;
+    margin-left: 520px;
+    margin-right: 196px;
+    margin-top: -150px;
+    width: 200px;
+}
+#permisos {
+	float: left;
+	height: 160px;
+	width: 195px;
+}
+#acciones {
+	/*float: left;
+	height: 150px;
+	width: 160px;
+	margin-left: 120px;*/
+	background-image: url(../images/secuencia_05.png);
+    float: left;
+    height: 160px;
+    margin-left: 110px;
+    margin-top: -70px;
+    width: 160px;
+}
+#base {
+    margin-top: 100px;
+    margin-left: 120px;
+	height: 400px;
+	width: 600px;
+	background-image: url(../images/workflow.png);
+}

@@ -1,0 +1,51 @@
+/* COLOR PICKER */
+
+.djs-popup.color-picker .entry {
+    margin: 0;
+}
+
+.djs-popup.color-picker .djs-popup-group {
+  display: grid;
+  grid: auto-flow / 1fr 1fr 1fr;
+}
+
+#canvas {
+    width: 100%;
+    /*height: calc(100vh - 180px);*/
+    border: 1px solid #f3adadff;
+    box-sizing: border-box;
+    overflow: hidden;
+    pointer-events: auto !important;
+}
+
+.diagram-note {
+    background-color: rgba(66, 180, 21, 0.7);
+    color: White;
+    border-radius: 5px;
+    font-family: Arial;
+    font-size: 12px;
+    padding: 5px;
+    min-height: 16px;
+    width: 50px;
+    text-align: center;
+}
+
+.needs-discussion:not(.djs-connection) .djs-visual > :nth-child(1) {
+    stroke: rgba(66, 180, 21, 0.7) !important; /* color elements as red */
+}
+
+#save-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+}
+
+.bpmn-icon-color {
+    width: 22px !important;
+    height: 22px !important;
+}
+
+.bpmn-icon-color svg {
+    width: 100%;
+    height: 100%;
+}

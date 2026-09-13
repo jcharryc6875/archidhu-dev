@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title></title>
+			<style type="text/css">body {font-family:calibri,sans-serif;font-size: 11pt;}</style>
+			<!--style>body { font-family: Arial, Helvetica, sans-serif; font-size: 15pt; color: black; }</style-->
+	</head>
+	<body>
+		<pd4ml:page.footer>
+			<div style="width:100%">
+				<p style="tab-stops:center 220.95pt right 441.9pt;text-align:center;text-indent:0pt;margin:0pt 0pt 0pt 0pt;"><span style="color:#38761D;background-color:#FFFFFF;font-family:'Microsoft Sans Serif';font-size:8pt;font-weight:normal;font-style:italic;">Perm&iacute;tanos&nbsp;Ser Un Aliado Estrat&eacute;gico, Para Hacer De La Gesti&oacute;n Documental&nbsp;Un Valor Agregado En Su&nbsp;Organizaci&oacute;n.</span></p>
+				<p style="tab-stops:center 220.95pt right 441.9pt;text-align:center;text-indent:0pt;margin:0pt 0pt 0pt 0pt;"><span style="color:#000000;background-color:transparent;font-family:'Microsoft Sans Serif';font-size:8pt;font-weight:normal;font-style:normal;">PGD PROCESOS DE GESTION DOCUMENTAL S.A.S. &nbsp;&nbsp;</span></p>
+				<p style="tab-stops:center 220.95pt right 441.9pt;text-align:center;text-indent:0pt;margin:0pt 0pt 0pt 0pt;"><span style="color:#000000;background-color:transparent;font-family:'Microsoft Sans Serif';font-size:8pt;font-weight:normal;font-style:normal;">NIT 900.998.531 &ndash; 7</span></p>
+				<p style="tab-stops:center 220.95pt right 441.9pt;text-align:center;text-indent:0pt;margin:0pt 0pt 0pt 0pt;"><span style="color:#000000;background-color:transparent;font-family:'Microsoft Sans Serif';font-size:8pt;font-weight:normal;font-style:normal;">Calle 17&ordf; No 69 76 &nbsp;&nbsp;Tel. 732 49 44 Cel. 320 8064602 Colombia &ndash; Bogot&aacute;</span></p>
+			</div>
+			<br/>
+			<div style="width:100%">				
+				<p style="width:100%;text-align:left;text-indent:0pt;margin:0pt 0pt 0pt 0pt;">
+					<span style="color:#000000;background-color:transparent;font-family:Arial;font-size:10pt;font-weight:normal;font-style:normal;">Fecha de aprobaci&oacute;n: 20/05/2021 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Proceso: Gesti&oacute;n del Talento Humano &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C&oacute;digo: FR-PGD-TH-016 &nbsp;&nbsp;Versi&oacute;n: 01 &nbsp;</span>
+				</p>
+			</div>
+			<table border="0" width="100%" style="pd4ml-display: table;">
+			<tr><td width="100%" align="right"><font size="2">$[page]/$[total]</font></td></tr>
+			</table>
+		</pd4ml:page.footer>		
+		
+		<pd4ml:page.header>
+			<div width="100%" style="text-align:right;"><img style="width:150px;height=150px" src="#.#$logo_empresa#.#"/></div>
+			<br/><br/><br/>
+		</pd4ml:page.header>
+		
+		<div style="text-align:left">#.#$fecha_carta#.#</div><br/><br/>
+		<div style="text-align:left;">Se&ntilde;ores</div>
+		<div style="text-align:left;"><b>FONDO DE PENSIONES Y CESANTI&acute;AS</b></div>
+		<div style="text-align:left;">Ciudad</div><br/>
+		
+		<div style="text-align:left;"><b>Asunto:</b>&nbsp;#.#$asunto_com#.#</div><br/><br/>
+		
+		<div style="text-align:justify">#.#$contenido_carta#.#</div>
+
+		<div width="100%" style="text-align:left;">
+			#.#$firmas_comunicacion#.#
+		</div>
+		<br/><div width="100%" style="text-align:left; font-size: 9pt;">Con copia Hoja de vida</div>
+	</body>
+</html>

@@ -1,0 +1,48 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      ReceptorComunicaciones
+    theme:            default
+    list:
+      display:        [ Modulo, Usuario, Regional, TipoComRecibida, Dependencia, cantidad, variacion, esta_activo ]
+      filters:        [ modulo_id, usuario_id, tipocomrecibida_id, dependencia_id, esta_activo ]
+      title:          Listado Receptores Comunicaciones
+      fields:
+        modulo_id:   { name: Modulo, params: include_custom=Seleccione... }
+        usuario_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getAllUserActive
+        tipocomrecibida_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getTipoComRecibida
+        dependencia_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getDependenciaUserLoadList
+      max_per_page:   25
+      object_actions:
+        _edit:        -
+        _delete:      -
+      actions:
+        _create:      ~
+    edit:
+      title:          Receptores Comunicaciones
+      fields:
+        modulo_id:   { name:  Modulo, params: include_custom=Seleccione... }
+        usuario_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getAllUserActive
+            class: required select2
+        tipocomrecibida_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getTipoComRecibida
+            class: required select2
+        dependencia_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getDependenciaUserLoadList
+            class: required select2

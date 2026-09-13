@@ -1,0 +1,703 @@
+<!doctype html>
+<html>
+<meta charset="UTF-8">
+<head>
+<title>Centro de Ayuda // SIMAD</title>
+
+<link href="../CSS/ayudaSIMAD.css" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,600,700,900' rel='stylesheet' type='text/css'>
+
+<!--Scripts-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="../js/animatedcollapse.js"></script>
+
+<script type="text/javascript">
+animatedcollapse.addDiv('temas', 'fade=0,speed=400,group=menu,hide=0')
+animatedcollapse.addDiv('admin', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('comunicaciones', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('archivo', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('documentos', 'fade=0,speed=400,group=menu,hide=1')
+animatedcollapse.addDiv('servicios', 'fade=0,speed=400,group=menu,hide=1')
+
+
+animatedcollapse.ontoggle=function($, divobj, state){ //fires each time a DIV is expanded/contracted
+	//$: Access to jQuery
+	//divobj: DOM reference to DIV being expanded/ collapsed. Use "divobj.id" to get its ID
+	//state: "block" or "none", depending on state
+}
+
+animatedcollapse.init()
+
+</script>
+
+</head>
+
+
+  
+<body>
+<div class="container">
+<div class="baner"><img src="../images/logo-simad5-blanco.png"/></div>
+<!-- #BeginLibraryItem "/Library/Menu.lbi" -->
+<div class="menu"> <a href="../temas.html"  ><img src="../images/categorias.png"/></a> <a href="../buscador.html" ><img src="../images/palabras.png"/></a> </div>
+<!-- #EndLibraryItem -->
+<div class="seccion"><h1>Centro de Ayuda - Simad</h1></div>
+
+
+
+<div class="seleccion" id="temas">
+  <h1>Administrar - Configuracion</h1>
+  <div class="menu-lat">
+  	<img src="../images/administrar.png" class="cover-peque" /> 
+    <img src="../images/config.png" class="cover-peque" />
+    <a href="#panel">Panel de Control</a>
+    <a href="#usuario">Usuarios</a>
+    <a href="#cargo">Cargos</a>
+    <a href="#rol">Roles</a>
+    <a href="#rol_usuario">Roles por Usuario</a>
+    <a href="#formas">Formas</a>
+    <a href="#for_usuario">Formas por Usuario</a>
+    <a href="#for_rol">Formas por Rol</a>
+    <a href="#usuario">Subseries por Usuario</a>
+    <a href="#tablas">Tabla de Retenciones</a>
+ 	</div>
+  	
+    <div class="content">
+  		<img src="../images/Administrar/Configuracion/Config.png" class="cover"/>
+  		<h2> El módulo de Configuración permite administrar los diferentes usuarios, permisos y listados del sistema </h2>
+  		
+        
+<!--Ayuda-->        
+        
+<h3 id="panel">Panel de Control<a href="#top" class="btn-ir">Ir al Inicio</a></h3>
+<img src="../images/Administrar/Configuracion/panelControl1.jpg" class="cover" />
+<p>Procedimiento de  consulta e ingreso a módulos de administración</p>
+<p> a. Ingrese al módulo de administración en menú principal<br><br>
+ b. Haga clic sobre el submenú panel de control<br><br>
+ c. En este momento el sistema le mostrara una lista de registros que componen en panel de control</p>
+<img src="../images/Administrar/Configuracion/panelControl2.jpg" class="cover" />
+  <p>d.	Como se puede observar en este listado la última columna es un acceso directo a cada uno de módulos de administración del sistema SIMAD, al hacer clic sobre alguno de estos iconos el sistema automáticamente nos llevara al respectivo módulo de administración y parametrización de nuestro sistema de gestión documental.</p>
+<img src="../images/Administrar/Configuracion/panelControl3.jpg" class="cover" /> 
+<p><strong>1.	País - Configurar países</strong>, Este me permite configurar los países a los cuales se requiere enviar comunicaciones internas, externas o envió de mensajería para muchas de la funcionalidades en lista desplegable. 
+Ejemplo: Colombia, Estados Unidos, Ecuador, México, Italia,  etc.</p>
+<img src="../images/Administrar/Configuracion/panelControl4.jpg" class="cover" /> 
+<img src="../images/Administrar/Configuracion/panelControl5.jpg" class="cover" />
+<p>De esta mera obtendremos este resultado.</p>
+<img src="../images/Administrar/Configuracion/panelControl6.jpg" class="cover" />
+<p><strong>2.	Ciudad - Configurar Ciudades</strong>, Las ciudades principales o municipios para que al momento de seleccionar o crear comunicaciones envíos se pueda seleccionar la ciudad de destino, tanto para los internos como el directorio externo. De igual manera debe ser visible en la lista desplegable.</p>
+<img src="../images/Administrar/Configuracion/panelControl7.jpg" class="cover" />
+<p>Clic en el botón crear, luego seleccionar departamento y digitar la ciudad.</p>
+<img src="../images/Administrar/Configuracion/panelControl8.jpg" class="cover" />
+<p>La vista previa de la ciudad creada.</p>
+<img src="../images/Administrar/Configuracion/panelControl9.jpg" class="cover" />
+<p><strong>3.	Regional - Configurar regionales</strong>, Las regiones son creadas las principales ciudades o puntos internos de la compañía a la cual se tiene un vínculo interno estas están dadas bajo un consecutivo o prefijo según política de la compañía. De igual manera al momento de imprimir o hacer las comunicación salga membretada la dirección de origen. <br><br>
+Clic en botón de opciones
+</p>
+<img src="../images/Administrar/Configuracion/panelControl10.jpg" class="cover" />
+<p>Clic en boton crear</p>
+<img src="../images/Administrar/Configuracion/panelControl11.jpg" class="cover" />
+<p>Digitar campos del formulario</p>
+<img src="../images/Administrar/Configuracion/panelControl12.jpg" class="cover" />
+<p>Desde panel de control se vería así,</p>
+<img src="../images/Administrar/Configuracion/panelControl13.jpg" class="cover" />
+<p>Para una comunicación enviada.</p>
+<img src="../images/Administrar/Configuracion/panelControl14.jpg" class="cover" />
+<p><strong>4.	Dependencia - Configurar dependencias</strong>, Se crean las Dependencia o áreas de la compañía según la necesidad para temas de control de correspondencia, archivos y procesos  relacionados con la compañía. Tales como Jurídica, Gestión Humana, Mercadeo. (adicional se debe de tener en cuenta ciertos campos que son importantes Nombre: Jurídica, Código: 001, Tiempo de Préstamo: los días o los meses que el documento va a estar en poder del usuario o colaborador de la compañía., Estado: este se refiere a si es un documento en estado activo o inactivo, Tipo de Tabla: de acuerdo a la ley general de archivo si para el documento aplica la TRD o TVD, Subccion: hace referencia a la oficina o dependencia que supervisa el proceso.</p>
+<img src="../images/Administrar/Configuracion/panelControl15.jpg" alt="#" class="cover" />
+<p>Completar el formulario con la información solicitada</p>
+<img src="../images/Administrar/Configuracion/panelControl16.jpg" alt="#" class="cover" />
+<p>Para un usuario final o Administrados se reflejaría así,</p>
+<img src="../images/Administrar/Configuracion/panelControl17.jpg" alt="#" class="cover" />
+<p><strong>5.	Parámetro - Configurar Parámetros de la Aplicación</strong>, El parámetro esta dado para configurar aquellos funcionalidades tales como las calves de acceso a la plataforma de manera que podamos tener un código:  SEG_PERIODO_CAMBIO_CLAVE; la Descripción: Periodo cambio de clave; Valor del Texto: 180  y Valor Numérico: 180. los anteriores campos de deben diligenciar en su totalidad con el fin de tener un control sobre la información o restricción que se maneje y sobre el módulo correspondiente.</p>
+<img src="../images/Administrar/Configuracion/panelControl18.jpg" alt="#" class="cover" />
+<img src="../images/Administrar/Configuracion/panelControl19.jpg" alt="#" class="cover" />
+<p>De igual forma esta funcionalidad puede usarse para distintas actividades desde administrador SIMAD.</p>
+<img src="../images/Administrar/Configuracion/panelControl20.jpg" alt="#" class="cover" />
+<p><strong>6.	Tipo_correspondencia_recibida/list - Tipos de Correspondencia Recibidas</strong>, tipo de correspondencia hace referencia al módulo de comunicaciones externas recibidas en el tipo de documento que se decepciona a la hora de radícalo en lista desplegable me permite seleccionar el tipo de documento recibido; en otras palabras identificar que es: 
+Descripción: Carta, Extracto, Cuenta de cobro, factura, en fin todo lo que radiquemos lo podamos identificar de forma fácil.
+</p>
+<img src="../images/Administrar/Configuracion/panelControl21.jpg" alt="#" class="cover" />
+<img src="../images/Administrar/Configuracion/panelControl22.jpg" alt="#" class="cover" />
+<p>En productivo lo veremos así:</p>
+<img src="../images/Administrar/Configuracion/panelControl23.jpg" alt="#" class="cover" />
+<p><strong>7.	Autorizaciones</strong>, Este no permite selección un usuario con el fin que pueda realizar sus consultas sobre el módulo de correspondencia de manera que pueda no solo visualizar lo que tiene en su usuario sino lo que se ha radicado en un periodo especifico; para que este permiso sea exitoso debemos seleccionar las fechas en que se utiliza y quien lo utilizara; “quien autoriza la consulta y la persona autorizada.”.</p>
+<img src="../images/Administrar/Configuracion/panelControl24.jpg" alt="#" class="cover" />
+<p><strong>8.	 Forma_Recepción - Formas de Recepción</strong>, a través de este podemos configurar para los módulos de comunicaciones la forma de recepción de los documentos para los cuales habilitaremos,  si es por Ventanilla, Correo Certificado, Mensajero Interno,  Email entre tantas formas de recepción o cualquiera que maje la compañía. este  ayuda a filtrar o hacer un reporte estadístico sobre los documentos entrantes a la compañía.</p>
+<img src="../images/Administrar/Configuracion/panelControl25.jpg" alt="#" class="cover" />
+<p>Clic en botón crear</p>
+<img src="../images/Administrar/Configuracion/panelControl26.jpg" alt="#" class="cover" />
+<p>Formas de recepción creadas.</p>
+<img src="../images/Administrar/Configuracion/panelControl27.jpg" alt="#" class="cover" />
+<p>Lista desplegable para el módulo de externas recibidas.</p>
+<img src="../images/Administrar/Configuracion/panelControl28.jpg" alt="#" class="cover" />
+<p><strong>9.	Tipo_Com_Interna - Tipos de Comunicación Interna</strong>, El tipo de comunicación interna aplica para configurar en el módulo de comunicaciones_ Internas que tipo de “comunicado” quiere enviar si como memorando o como un comunicado interno cualquier otra que considere pertinente de acuerdo a criterios y necesidades.</p>
+<img src="../images/Administrar/Configuracion/panelControl29.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear, diligenciar el formulario y luego clic en el botón Guardar</p>
+<img src="../images/Administrar/Configuracion/panelControl30.jpg" alt="#" class="cover" />
+<p>Lista tipos de comunicación recibida</p>
+<img src="../images/Administrar/Configuracion/panelControl31.jpg" alt="#" class="cover" />
+<p>Lista desplegable desde comunicación interna.</p>
+<img src="../images/Administrar/Configuracion/panelControl32.jpg" alt="#" class="cover" />
+<p><strong>10.	Asunto_Recibida - Asuntos de Recibida</strong>, Los asuntos para el módulo de correspondencia externa recibida hace referencia al tipo de documento que se está radicado o que ingresa a la compañía tales como: 
+Acciones de tutela, Acta, Anticipo; cualquier documento que se pueda identificar de manera física y sea relevante para la compañía.</p>
+<img src="../images/Administrar/Configuracion/panelControl33.jpg" alt="#" class="cover" />
+<p>Clic en crear</p>
+<img src="../images/Administrar/Configuracion/panelControl34.jpg" alt="#" class="cover" />
+<p>Diligenciar formulario y luego hacer clic en guardar<br><br>Lista de registros creados</p>
+<img src="../images/Administrar/Configuracion/panelControl35.jpg" alt="#" class="cover" />
+<p><strong>11.	Unidad_Conservadora - Unidades Conservadoras de Archivo</strong>, la unidad de conservación hace referencia a la carpeta, AZ, bolsa, Fuelle donde se almacenaran los documentos para custodia y conservación de los  mismos en un archivo determinado.</p>
+<img src="../images/Administrar/Configuracion/panelControl36.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar</p>
+<img src="../images/Administrar/Configuracion/panelControl37.jpg" alt="#" class="cover" />
+<p>Se pueden ingresar todas las que se ajusten a la necesidad del cliente.</p>
+<img src="../images/Administrar/Configuracion/panelControl38.jpg" alt="#" class="cover" />
+<p><strong>12.	Soporte_Unidad_Documental - Soportes de Archivo</strong>, soporte de conservación donde se almacena la información; se puede considerar como Papel, CD.</p>
+<img src="../images/Administrar/Configuracion/panelControl38.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar</p>
+<img src="../images/Administrar/Configuracion/panelControl40.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl41.jpg" alt="#" class="cover" />
+<p><strong>13.	Estado_Unidad_Documental - Estado de Archivo</strong>, Estos estados son aplican para el módulo de archivo;  cunado la unidad documental se encuentra en estado ACTIVO, INACTIVO, ANULADO; o cualquier otro estado que se considere relevante para el expediente.</p>
+<img src="../images/Administrar/Configuracion/panelControl42.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl43.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl44.jpg" alt="#" class="cover" />
+<p><strong>14.	Frecuencia_Consulta - Frecuencia de Consulta de Archivos</strong>, Esta funcionalidad aplica para crear la frecuencia con que se va a consultar o se requiere la información si es Alta, baja, media, prioritario o cualquier otra que requiera  teniendo en cuenta el nivel de consulta Vs el tipo de información para el módulo de archivo.</p>
+<img src="../images/Administrar/Configuracion/panelControl45.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl46.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl47.jpg" alt="#" class="cover" />
+<p><strong>15.	Soporte_Cliente - Soportes de Cliente</strong>, el soporte magnético o físico en que el cliente quiere almacenar la información para este caso se podría tomar como Papel, CD, entre otros. Aplica para el módulo de archivó clientes. </p>
+<img src="../images/Administrar/Configuracion/panelControl48.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl49.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl50.jpg" alt="#" class="cover" />
+<p><strong>16.	UnidConservadora - Unidades Conservadoras de Clientes</strong>, Unidad en que el cliente para el módulo de archivos –Clientes puede almacenar o agrupar la información física carpeta, AZ, bolsa, Fuelle; esta se podrá crear de acuerdo a la necesidad o tipo que escoja o requiera el cliente.</p>
+<img src="../images/Administrar/Configuracion/panelControl51.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl52.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl53.jpg" alt="#" class="cover" />
+<p><strong>17. Tipo_Procedimiento - Tipos de Procedimiento</strong>, para el módulo de Servicios Formatos y Procedimientos permite cargar todos los instructivos o formatos que se consultan a menudo como pueden ser Formulario, - Proceso, - Procedimiento para el caso en que corresponda. Esta será la lista desplegable para configurar según Dependencia, nombre del instructivo, la descripción del mismo, el código, la extensión del texto, y la ruta para adjuntarlo.</p>
+<img src="../images/Administrar/Configuracion/panelControl54.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl55.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl56.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl57.jpg" alt="#" class="cover" />
+<p><strong>18.	Prioridad_Solicitud_Servicio - Prioridades Solicitudes de Servicio</strong>, esta funcionalidad aplica para  el módulo de solicitudes del servicio al créalo en la lista desplegable por la prioridad se podrá crear la requerida en este caso puede ser Baja, Media, Urgente. Entre otras.</p>
+<img src="../images/Administrar/Configuracion/panelControl58.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl59.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl60.jpg" alt="#" class="cover" />
+<p><strong>19.	Tipo_Servicio - Tipos de Servicios</strong>, Para el Modulo de Solitudes de servicio, desde el panel de control podemos configurar con esta opción el tipo de mensajería que utiliza la entidad, por lo regular si es de tipo local. Nacional, internacional otras funcionalidades y servicios que requieran ser contemplados por la compañía. </p>
+<img src="../images/Administrar/Configuracion/panelControl61.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl62.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl63.jpg" alt="#" class="cover" />
+<p><strong>20.	Prioridad_PQR - Prioridad de PQR</strong>,  Para este módulo  podemos configurar todas las preguntas referentes quejas y reclamos respecto a los procedimientos del CAD y a los inconvenientes presentados con la herramienta; de tal manera nos permite por panel de control crear y hacer la descripción de la lista desplegable según su urgencia así: 
+-Baja - Respuesta Inmediata No necesaria 
+-Normal - Inquietudes generales sobre el CAD 
+-Urgente - Fallas urgentes
+</p>
+<img src="../images/Administrar/Configuracion/panelControl64.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl65.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl66.jpg" alt="#" class="cover" />
+<p><strong>21.	Categoria_PQR - Categorías de PQR</strong>, Este módulo es de apoyo para el usuario ya que atreves de su funcionalidad se facilita montar las Peticiones, quejas y reclamos respecto a los procedimientos del CAD y a los inconvenientes que tengan con el SIMAD; a través del panel de control esta nos permite hacer la lista desplegable la categoría de estas como pueden ser, los servicios prestados la empresa prestados de los PGD y/o servicios que estos contemplan. </p>
+<img src="../images/Administrar/Configuracion/panelControl67.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl68.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl69.jpg" alt="#" class="cover" />
+<p><strong>22.	Descarte_Final_Subserie - Descartes Finales</strong>, Para el descarte final Subserie obedece a los disposición final de los documentos según la TRD, ciclo vital del documento y aplica para cada una de las unidades documentales creadas y custodiadas en archivo, adicional permite crear otros disposiciones finales por según subserie. </p>
+<img src="../images/Administrar/Configuracion/panelControl70.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl71.jpg" alt="#" class="cover" />
+<p>Lista de registros</p>
+<img src="../images/Administrar/Configuracion/panelControl72.jpg" alt="#" class="cover" />
+<p>Las disposiciones finales se puede crear las que el cliente considere pertinente, pero estas deben estar sujetas a la ley general de archivos. </p>
+<p><strong>23.	Auditoria – Auditoria</strong>, La auditoria permite visualizar el estado de las diferentes actividades realizados por los usuarios para todos los módulos, es decir al consultar por panel de control me arroja el total de registros credos y existentes dentro del aplicativo. </p>
+<img src="../images/Administrar/Configuracion/panelControl73.jpg" alt="#" class="cover" />
+<p>De igual manera permite exportar la información. </p>
+<img src="../images/Administrar/Configuracion/panelControl74.jpg" alt="#" class="cover" />
+<p><strong>24.	Código MARC - Administrar  Coditos MARC</strong>, este código obedece al formato MARC-21 muy conocido para editar el acervo bibliográfico, se incorporan gradualmente las actualizaciones del Formato según se van publicando.  Se puede aplicar para todos los módulos según la necesidad del cliente y el modulo que lo requiera. </p>
+<img src="../images/Administrar/Configuracion/panelControl75.jpg" alt="#" class="cover" />
+<p><strong>25.	Permisos_por_carpeta - Permisos por carpeta</strong>, Por panel de control, puede habilitar un permiso a un colaborador para que pueda visualizar la unidad documental para este es impórtate conocer el código de barras, el título de la unidad documental,  el cobrador cuente con un permiso o autorización por parte del área o el administrador SIMAD este en capacidad de habilitar el préstamo teniendo en cuenta la confidencialidad de la información allí albergada.</p>
+<img src="../images/Administrar/Configuracion/panelControl76.jpg" alt="#" class="cover" />
+<p>Lista de registros actuales</p>
+<img src="../images/Administrar/Configuracion/panelControl77.jpg" alt="#" class="cover" />
+<p><strong>26.	Receptor de Facturas - Receptores de Facturas</strong>, por la funcionalidad Recep, permite configurar diferentes permisos para cada uno de los grupos de los distintos módulos para que puedan causar, radicar, o simplemente seleccionar un colaborador para un proceso específico.</p>
+<img src="../images/Administrar/Configuracion/panelControl78.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl79.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl80.jpg" alt="#" class="cover" />
+<p><strong>27.	prov_via_pago - Vías de Pago de Aprobación de proveedores</strong>, para el módulo de proveedores en la lista desplegable se pueden crear o modificar la forma en que el proveedor requiere su pago, esta se da por diferentes formas para los cuales podemos destacar Cheque, contado, transferencia entre tantas.</p>
+<img src="../images/Administrar/Configuracion/panelControl81.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl82.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl83.jpg" alt="#" class="cover" />
+<p><strong>28.	prov_usuario_area - Usuarios por área para proveedores</strong>, para poder ingresar, configurar permisos para que colaboradores del área puedan dar sus respectivas aprobaciones de acuerdo a los procesos y políticas para la creación y activación de un proveedor.</p>
+<img src="../images/Administrar/Configuracion/panelControl84.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl85.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl86.jpg" alt="#" class="cover" />
+<p><strong>29.	prov_tipo_retencion - Tipos de retención para proveedores</strong>, se crean y se configuran las diferentes retenciones que por ley debe tener cada uno de los proveedores en cuanto a impuestos.</p>
+<img src="../images/Administrar/Configuracion/panelControl87.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl88.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl89.jpg" alt="#" class="cover" />
+<p><strong>30.	prov_tipo_industria - Tipos de industria para proveedores</strong>, El tipo de proveedor que es y el servicio que prestara para efectos de control es importante conocer cuál tipo tales como filtros,  Mantenimientos zonas verdes, lubricantes, maquinaria y equipo; lo anterior para la lista desplegable al momento de aplicarlas respectivas validaciones y lo relacionado a lo concerniente a retenciones.</p>
+<img src="../images/Administrar/Configuracion/panelControl90.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl91.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl92.jpg" alt="#" class="cover" />
+<p><strong>31.	prov_tipo_contribuyente - Tipos de contribuyente para proveedores</strong>, podemos configurar, crear el tipo de contribuyente  que es el proveedor para que al momento de verificar, hacer las validaciones del mismo la lista desplegable me muestra las distintos tipos;  seleccionar el que aplica según su régimen. </p>
+<img src="../images/Administrar/Configuracion/panelControl93.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl94.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl95.jpg" alt="#" class="cover" />
+<p><strong>32.	prov_moneda_pedido - Monedas para proveedores</strong>, el proveedor deberá facturar de acuerdo a la moneda de su país es por ello que esta funcionalidad me permite crear en lista desplegable para configurar según corresponda. </p>
+<img src="../images/Administrar/Configuracion/panelControl96.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl97.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl98.jpg" alt="#" class="cover" />
+<p><strong>33.	prov_lista_docs - Lista documentos para proveedores</strong>, en la creación del proveedor y la validación que hace el área encargada esta opción nos permite visualizar la lista desplegable de los documentos que se adjuntan o se requieren para la creación del mismo.</p>
+<img src="../images/Administrar/Configuracion/panelControl99.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl100.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl101.jpg" alt="#" class="cover" />
+<p><strong>34.	prov_item_flujo – ítem de flujo de proveedores</strong>, para las validación y creación del proveedor se hace necesario crear un flujo donde pueda intervenir las diferentes áreas, para valar, liberar, rechazar o en su defecto bloquear el proveedor. </p>
+<img src="../images/Administrar/Configuracion/panelControl102.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl103.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl104.jpg" alt="#" class="cover" />
+<p><strong>35.	prov_grupo_tesoreria - grupos de tesorería de proveedores</strong>, para el área de tesorería es importante conocer porque se está creado el proveedor y con qué finalidad de servicio es por ello que esta funcionalidad nos permite crear una lista desplegable que nos indique el servicio que prestara y el área responsable del proveedor.</p>
+<img src="../images/Administrar/Configuracion/panelControl105.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl106.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl107.jpg" alt="#" class="cover" />
+<p><strong>36.	prov_grupo_esquema - grupos de esquema de proveedores</strong>, para el módulo de proveedores es importe poder determinar el tipo de compra que hará la entidad, tener claridad sobre el tipo de servicio y en que modalidad se obtendrá es primordial para temas legales e impuestos sobre los servicios. </p>
+<img src="../images/Administrar/Configuracion/panelControl108.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl109.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl110.jpg" alt="#" class="cover" />
+<p><strong>37.	prov_correspondiente_autofacturacion - grupos de autofacturacion de proveedores</strong>, se asocia automáticamente a la versión del aplicativo SIMAD.</p>
+<img src="../images/Administrar/Configuracion/panelControl111.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl112.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl113.jpg" alt="#" class="cover" />
+<p><strong>38.	prov_condicion_pago - grupos de pago de proveedores</strong>, al momento de generar la creación y de común acuerdo con el proveedor es importe tener claro la forma de pago y el tiempo en se liberara la consignación por el servicio prestado por lo regular esto aplica para facturas en forma de pago de contado, 15, 30 días y otros  con que este recibirá por los servicios prestados.</p>
+<img src="../images/Administrar/Configuracion/panelControl114.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl115.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl116.jpg" alt="#" class="cover" />
+<p><strong>39.	prov_check_list_pregunta - lista de preguntas de proveedores</strong>, Para el área de proveedores es importante conocer las posibles preguntas, dudas, y verificación en centrales de riesgo,  es por ello que esta funcionalidad permite en lista desplegable crear y configurar preguntas que se consideren relevantes o importantes tanto para el área o la compañía.  adicional permite controlar que todo lo requerido se cumpla o esté en orden.</p>
+<img src="../images/Administrar/Configuracion/panelControl117.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl118.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl119.jpg" alt="#" class="cover" />
+<p><strong>40.	prov_area_aprobadora - área aprobadora de proveedores</strong>, crear un proveedor implica contar con muchos requisitos validaciones y autorizaciones no solo del área sino de las áreas que aprueban o se ven involucradas para obtener servicio de forma efectiva y confiable para la compañía. Esta funcionalidad nos permite configurar las dependencias que intervengan en el proceso adicional configurar para que generen un alerta por cada uno de las actividades ejecutadas para conocimiento del involucrado. </p>
+<img src="../images/Administrar/Configuracion/panelControl120.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl121.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl122.jpg" alt="#" class="cover" />
+<p><strong>41.	Asignación Cargos Secundarios - Administrar la asignación de otros cargos para los usuario</strong>, este permiso funciona para los colaboradores que tiene un cargo doble, es decir pueden firmar sus comunicaciones como Gerentes, o Apoderado General según aplique; al momento de generar las comunicaciones le dará la opción de seleccionar el cargo amarrado a su firma. Adicional el periodo por el que tendrá el permiso. </p>
+<img src="../images/Administrar/Configuracion/panelControl123.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl124.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl125.jpg" alt="#" class="cover" />
+<p><strong>42.	Periodo - Administración de los periodos</strong>, según normatividad legal vigente y ley general de archivo nos dice que los radicados para los diferentes tipos de comunicaciones debe ser único y en consecutivo, razón por la cual el periodo nos permite crear un consecutivo cada año, es decir el primero de cada año debemos crear el periodo para que el sistema arranque desde cero para los radicados. </p>
+<img src="../images/Administrar/Configuracion/panelControl126.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl127.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl128.jpg" alt="#" class="cover" />
+<p><strong>43.	Tipo Control - Administración de los Tipos De Control Aplicados</strong>, esta funcionalidad permite ejecutar y crear controles sobre cada uno de los módulos según su necesidad, se alimentan las novedades por medio del modulo de novedades.</p>
+<img src="../images/Administrar/Configuracion/panelControl129.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl130.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl131.jpg" alt="#" class="cover" />
+<p><strong>44.	Entidad - Administración de entidades</strong>, permite crear las pequeñas y nuevas sociedades que adquiere la compañía mayoritaria, lo anterior con el fin de manejar fondos documentales por aparte y manejar un control sobre la información recibida y ejecutada.</p>
+<img src="../images/Administrar/Configuracion/panelControl132.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl133.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl134.jpg" alt="#" class="cover" />
+<p><strong>45.	Verificacion_Cont_Unidad_Doc - Verificación Contenidos Unidadad Documental</strong>, esta funcionalidad está diseñada para realizar validaciones a la hora de hacer o no la verificación de una  unidad documental en transferida. </p>
+<img src="../images/Administrar/Configuracion/panelControl135.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl136.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl137.jpg" alt="#" class="cover" />
+<p><strong>46.	 Grupos Correspondencia - Crear Grupos Para Correspondencia</strong>, configurar desde panel de control los grupos para radicación de correspondencia para que este genere un alerta a cada uno de los colaboradores que estén configurados dentro de este “Grupo”; de acuerdo al grupo creado se pueden ingresar los x colaboradores que requiera. </p>
+<img src="../images/Administrar/Configuracion/panelControl138.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl139.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl140.jpg" alt="#" class="cover" />
+<p><strong>47.	Configuración De Usuario Por Grupos - Adicionar Usuarios A un Grupo Específico</strong>, una vez creado el grupo se procede a ingresar los colaboradores para el área de destino se pueden ingresar los que el área considere que deban estar enterados de las comunicaciones externas recibidas. </p>
+<img src="../images/Administrar/Configuracion/panelControl141.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl142.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl143.jpg" alt="#" class="cover" />
+<p><strong>48.	prov_aduana_entrada - aduana de entrada de proveedores,</strong> </p>
+<img src="../images/Administrar/Configuracion/panelControl144.jpg" alt="#" class="cover" />
+<p>Clic en el botón crear y diligenciar el formulario, luego clic en guardar.</p>
+<img src="../images/Administrar/Configuracion/panelControl145.jpg" alt="#" class="cover" />
+<p>Lista registros</p>
+<img src="../images/Administrar/Configuracion/panelControl146.jpg" alt="#" class="cover" />
+<p>Para ver el Detalle de una de las listas realice los siguientes pasos:</p>
+<li>Haga clic en el número consecutivo de la lista.</li>
+<li>Haga clic en editar para realizar cambios.</li>
+<img src="../images/Administrar/Configuracion/Formas_Editar1.png" class="cover" />
+
+<p>Para configurar una de estas listas realice los siguientes pasos:</p>
+<li>Haga clic en el icono ir de la columna opciones</li>
+<img src="../images/Administrar/Configuracion/Formas_Crear.png" class="cover" />
+
+<p>Para configurar una de estas listas realice los siguientes pasos:</p>
+<li>Haga clic en el icono ir de la columna opciones.</li>
+<img src="../images/Administrar/Configuracion/Configuracion_PanelControl_Opciones.png" class="cover" />
+<p class="Nota">- El sistema lo llevara a la lista de documentos que pertenecen a esa búsqueda.</p>
+<h4>Configuración listas general</h4>
+<p>Configuración listas general hace referencia a las listas que poseen el mismo método para su configuración.</p>
+<p>Para configurar listas realice los siguientes pasos:</p>
+<h4>Para editar:</h4>
+<li>Haga clic en el número de verificación documental.</li>
+<li>Realice los cambios que crea necesarios.</li>
+<li>Haga clic en guardar para almacenar los cambios.</li>
+<li>Haga clic en guardar y adicionar para crear uno nuevo.</li>
+<li>Haga clic en listar para regresar a la ventana anterior.</li>
+<li>Haga clic en eliminar para borrar la verificación.</li>
+<img src="../images/Administrar/Configuracion/Formas_Editar1.png" alt="" class="cover" />
+<h4>Para crear:</h4>
+<li>Haga clic en el icono crear.</li>
+<li>Digite la descripción.</li>
+<li>Haga clic en guardar.</li>
+<img src="../images/Administrar/Configuracion/Formas_Crear.png" alt="" class="cover" />
+<p class="Nota">- Para verificar la creación de su nuevo item de la lista haga clic en listar.</p>
+
+
+
+<h3 id="usuario">Usuarios<a href="#top" class="btn-ir">Ir al Inicio</a></h3>
+<p>Son todos los usuarios que tiene acceso al sistema simad y de igual forma permite manejar todos los módulos del sistema dependiendo de los permisos que se le asigna a cada usuario.:</p>
+<img src="../images/Administrar/Configuracion/Config_FormasXUsuario.png" class="cover" />
+<p>Para ingresar a Usuarios en el sistema SIMAD, realice alguno de los siguientes pasos:</p>
+
+<li>Haga clic en el menú lateral, icono Usuarios.</li>
+
+<p class="Nota">- Si desea imprimir la lista de los usuarios que se encuentran creados en el sistema haga clic en exportar, el sistema llevara esta lista a una hoja de Excel para poder ser impresos o guardados..</p>
+    
+<p>Para crear un nuevo usuario realice los siguientes pasos:</p>
+<li>Haga clic en crear nuevo.</li>
+<li>Haga clic en Estado usuario y seleccione el estado.</li>
+<li>Haga clic en Dependencia y seleccione una opción.</li>
+<li>Haga clic En Regional y seleccione la regional donde se encuentra el usuario.</li>
+<li>Digite el nombre del nuevo usuario.</li>
+<li>Digite el Password de la nueva cuenta.</li>
+<li>Haga clic en Fecha de actualización y elija el día de creación de la cuenta.</li>
+<li>Digite, nombre, apellido, cedula, e-mail, iniciales.</li>
+<li>Escriba la extensión telefónica del dpto. donde se ubica el usuario.</li>
+<li>Escriba el número de intentos incorrectos permitidos al tratar de ingresar a la cuenta.</li>
+<li>En Prefijos digite las siglas del cargo que el usuario tiene en la empresa.</li>
+<li>Haga clic en Cargo y seleccione el cargo del nuevo usuario.</li>
+<li>Haga clic en Foto / Anexar para ubicar la fotografía del nuevo usuario.</li>
+<li>Haga clic guardar para la creación del nuevo usuario.</li>  
+<img src="../images/Administrar/Configuracion/Config_usuarios.png" class="cover" /> 
+<p class="Nota">- El sistema mostrara los detalles del nuevo usuario creado.<br>
+- El administrador debe ingresar su contraseña al momento de crear la cuenta.<br>
+- El usuario deberá cambiar su password al ingresar por primera vez al sistema SIMAD.</p>
+<p>Para consultar un nuevo usuario realice alguno de los siguientes pasos:</p>
+<li>Haga clic en el icono consultar usuario.</li>
+<li>Selecciones Estado.</li>
+<li>Seleccione Dependencia.</li>
+<li>Seleccione Regional.</li>
+<li>Digite nombre, apellido, user name y/o cédula.</li>
+<li>Escija la fecha de creación del usuario.</li>
+<li>Escoja ordenar por nombre o apellido.</li>
+<li>Haga clic en Consultar.</li>
+<img src="../images/Administrar/Configuracion/Config_RolesXUsuario.png" class="cover" />
+<p class="Nota">- El sistema lew mostrará un listado con los usuarios de su consulta.<br>
+- Si desea borrar los datos registrados haga clic en limpiar para escribir nuevos datos.</p>
+<p>Para Editar un usuario realice alguno de los siguientes pasos:</p>
+<li>Haga clic en la imagen del usuario en la columna foto.</li>
+<li>Haga clic en editar.</li>
+<li>Realice los cambios que crea necesarios.</li>
+<li>Haga clic en guardar.</li>
+<img src="../images/Administrar/Configuracion/Panelde-Control_Usuario_Editar_detalle.png" class="cover" />
+<p>Para revisar el historial de cambios realizados a un usuario realice los siguientes pasos:</p>
+<li>Haga clic en la imagen del usuario en la columna foto.</li>
+<li>Haga clic en el Icono Historial.</li>
+<img src="../images/Administrar/Configuracion/Panelde-Control_Usuario_Historial.png" class="cover" />
+<p class="Nota">- El sistema mostrará una lista con los cambios que se hayan realizado al usuario seleccionado</p>
+    
+ <h3 id="cargo">CARGOS<a href="#top" class="btn-ir">Ir al Inicio</a></h3>
+ <p>Permite crear, editar y verificar el listado de cargos de la administración.</p>
+<img src="../images/Administrar/Configuracion/Config_Cargos.png" class="cover" />
+<p>Para ingresar a Cargos en el sistema SIMAD, realice alguno de los siguientes pasos:</p>
+
+<li>Haga clic en el menú lateral, icono Cargos.</li>
+<p>Para crear un nuevo cargo realice los siguientes pasos:</p>
+<li>Haga clic en el icono crear.</li>
+<li>En Descripción digite el nombre del cargo que desea crear.</li>
+<li>Haga clic en guardar.</li>
+<img src="../images/Administrar/Configuracion/Panelde-Control_Cargos_Editar.png" class="cover" />
+
+<p class="Nota">- Para dejar de redireccionar la cuenta haga clic en Estado de redirección y seleccione inactiva, haga clic en guardar y el sistema dejara de redireccionar sus comunicaciones.</p>
+
+<h3 id="rol">ROLES<a href="#top" class="btn-ir">Ir al Inicio</a></h3>
+ <p>Permite definir un grupo de permisos determinado.</p>
+<img src="../images/Administrar/Configuracion/Config_Roles.png" class="cover" />
+<p>Para ingresar a Roles en el sistema SIMAD, realice alguno de los siguientes pasos:</p>
+<li>Haga clic en el menú lateral/icono Roles.</li>
+<p>Para crear un nuevo role realice los siguientes pasos:</p>
+<li>Haga clic en el icono crear.</li>
+<li>En Descripción digite el nombre del role que desea crear.</li>
+<li>Haga clic en guardar.</li>
+<img src="../images/Administrar/Configuracion/Panelde-Control_Roles_Crear.png" class="cover" /> 
+<p class="Nota">- Si desea crear varios roles debe hacer clic en guardar y adicionar y el sistema guardar el role creado y lo llevara a crear un nuevo role.<br>
+- Si desea ver los roles que se encuentran creados haga clic en listar..</p>
+<p>Para editar un role realice los siguientes pasos:</p>
+<li>Haga clic en el número consecutivo del role que desea editar.</li>
+<li>Realice los cambios en descripción.</li>
+<li>Haga clic en guardar.</li> 
+<img src="../images/Administrar/Configuracion/Panelde-Control_Roles_Editar.png" class="cover" /> 
+
+
+<h3 id="rol_usuario">ROLES POR USUARIO<a href="#top" class="btn-ir">Ir al Inicio</a></h3>
+ <p>Permite asignar el rol a un determinado usuario con el cual tiene todos los permisos que se le asignan.</p>
+<img src="../images/Administrar/Configuracion/Config_RolesXUsuario2.png" class="cover" />
+<p>Para ingresar a Roles por usuario en el sistema SIMAD, realice alguno de los siguientes pasos:</p>
+<li>Haga clic en el menú lateral, icono Roles por usuario.</li>
+<p class="Nota">- El sistema mostrará el listado de los Roles por usuario creados.<br>
+- Haga clic en exportar para imprimir los listados desde una archivo Excel.</p>
+
+<p>Para consultar un Role por usuario realice alguno de los siguientes pasos:</p>
+<li>Haga clic en el icono Consultar.</li>
+<li>Haga clic en Rol y seleccione una opción.</li>
+<li>Haga clic en Usuario y seleccione el usuario.</li>
+<li>Haga clic en Ordenar por y seleccione una opción.</li>
+<li>Haga clic en Consultar.</li>
+<img src="../images/Administrar/Configuracion/Formas_Consultar.png" class="cover" />
+<p class="Nota">- El sistema le mostrará un listado con los criterios de consulta ingresados por usted.</p>
+<p>Para crear un nuevo Role por usuario realice los siguientes pasos:</p>
+<li>Haga clic icono crear nuevo.</li>
+<li>Seleccione el usuario.</li>
+<li>Seleccione el Role.</li>
+<li>Haga clic en guardar.</li>
+<img src="../images/Administrar/Configuracion/Panelde-Control_RolesXUsuario_Crear.png" class="cover" />
+<p>Para editar un Role por usuario realice los siguientes pasos:</p>
+<li>Haga clic en el icono en el número consecutivo del role.</li>
+<li>Haga clic en el icono Editar.</li>
+<li>Realice lios cambios necesarios.</li>
+<li>Haga clic en Guardar.</li>
+<img src="../images/Administrar/Configuracion/SubseriePorUsuario_Detalle.png" class="cover" />
+<img src="../images/Administrar/Configuracion/Panelde-Control_RolesXUsuario_Editar2.png" class="cover" />
+<p class="Nota">- Si desea borrar un Role por usuario creado haga clic en el icono Borrar.</p>
+
+
+
+<h3 id="formas">FORMAS<a href="#top" class="btn-ir">Ir al Inicio</a></h3>
+ <p>Permite Ver todas las formas creadas en los diferentes módulos del sistema SIMAD.</p>
+<img src="../images/Administrar/Configuracion/Config_RolesXUsuario2.png" class="cover" />
+<p>Para ver el listado de las Formas realice los siguientes pasos:</p>
+<li>Haga clic en el menú lateral/icono Formas.</li>
+<p class="Nota">- Para ver el detalle de las Formas haga clic en el número de la forma en la columna consecutivo.<br>
+- Haga clic en exportar para imprimir los listados desde una archivo Excel.</p>
+<p>Para consultar una forma realice los siguientes pasos:</p>
+<li>Haga clic en el icono Consultar.</li>
+<li>Haga clic en Módulo y seleccione una opción.</li>
+<li>Digite el nombre y la descripción.</li>
+<li>Haga clic en ordenar por y seleccione una opción.</li>
+<li>Haga clic en el icono Consultar.</li>
+<img src="../images/Administrar/Configuracion/FormasPorRol_Consultar.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Limpiar.</p>
+<p>Para crear una nueva forma realice los siguientes pasos:</p>
+<li>Haga clic en el icono Crear Nueva.</li>
+<li>Haga clic en Módulo y seleccione una opción.</li>
+<li>Digite el nombre y la descripción.</li>
+<li>Haga clic en ruta y digite la localización de la forma.</li>
+<li>Haga clic en el icono Guardar.</li>
+<img src="../images/Administrar/Configuracion/Configuracion_PanelControl_CrearGral_Editar_Nuevo.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Restaurar.</p>
+<p>Para editar una forma realice los siguientes pasos:</p>
+<li>Haga clic en el número consecutivo de la forma en la columna Consecutivo.</li>
+<li>Haga clic en el icono Editar.</li>
+<li>Haga clic en Módulo.</li>
+<li>Digite nombre , descripción y ruta.</li>
+<li>Haga clic en el icono Guardar.</li>
+<img src="../images/Administrar/Configuracion/FormasPorRol_Detalle.png" class="cover" />
+<img src="../images/Administrar/Configuracion/Formas_Crear.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Restaurar.</p>
+
+
+
+<h3 id="for_usuario">FORMAS POR USUARIO<a href="#top" class="btn-ir">Ir al Inicio</a></h3>
+ <p>Permite Ver todas las formas por Usuario creadas en los diferentes módulos del sistema SIMAD.</p>
+<img src="../images/Administrar/Configuracion/Config_FormasXUsuario3.png" class="cover" />
+<p>Para ver el listado de las Formas por Usuario realice los siguientes pasos:</p>
+<li>Haga clic en el menú lateral/icono Formas por Usuario.</li>
+<p class="Nota">- Para ver el detalle de las Formas haga clic en el número de la forma en la columna consecutivo.<br>
+- Haga clic en exportar para imprimir los listados desde una archivo Excel.</p>
+<p>Para consultar una forma por usuario realice los siguientes pasos:</p>
+<li>Haga clic en el icono Consultar.</li>
+<li>Haga clic en Usuario y seleccione una opción.</li>
+<li>Haga clic en Forma y seleccione una opción.</li>
+<li>Haga clic en ordenar por y seleccione una opción.</li>
+<li>Haga clic en el icono Consultar.</li>
+<img src="../images/Administrar/Configuracion/Formas_Consultar.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Limpiar.</p>
+<p>Para crear una nueva forma por usuario realice los siguientes pasos:</p>
+<li>Haga clic en el icono Crear Nueva.</li>
+<li>Haga clic en Forma y seleccione una opción.</li>
+<li>Haga clic en Usuario y seleccione una opción.</li>
+<li>Haga clic en el icono Guardar.</li>
+<img src="../images/Administrar/Configuracion/FormasPorUsuario_Crear.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Restaurar.</p>
+<p>Para editar una forma por usuario realice los siguientes pasos:</p>
+<li>Haga clic en el número consecutivo de la forma en la columna Consecutivo.</li>
+<li>Haga clic en el icono Editar.</li>
+<li>Haga clic en Forma y seleccione una opción.</li>
+<li>Haga clic en usuario y seleccione una opción.</li>
+<li>Haga clic en el icono Guardar.</li>
+<img src="../images/Administrar/Configuracion/FormasPorUsuario_Detalle.png" class="cover" />
+<img src="../images/Administrar/Configuracion/FormasPorUsuario_Editar.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Restaurar.</p>
+
+
+
+<h3 id="for_rol">FORMAS POR ROL<a href="#top" class="btn-ir">Ir al Inicio</a></h3>
+ <p>Permite Ver todas las formas por Rol creadas en los diferentes módulos del sistema SIMAD.</p>
+<img src="../images/Administrar/Configuracion/Config_FormasXRol.png" class="cover" />
+<p>Para ver el listado de las Formas por rol realice los siguientes pasos:</p>
+<li>Haga clic en el menú lateral/icono Formas por Rol.</li>
+<p class="Nota">- Para ver el detalle de las Formas haga clic en el número de la forma en la columna consecutivo.<br>
+- Haga clic en exportar para imprimir los listados desde una archivo Excel.</p>
+<p>Para consultar una forma por rol realice los siguientes pasos:</p>
+<li>Haga clic en el icono Consultar.</li>
+<li>Haga clic en Rol y seleccione una opción.</li>
+<li>Haga clic en Forma y seleccione una opción.</li>
+<li>Haga clic en ordenar por y seleccione una opción.</li>
+<li>Haga clic en el icono Consultar.</li>
+<img src="../images/Administrar/Configuracion/Config_FormasXRol_Consultar.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Limpiar.</p>
+<p>Para crear una nueva forma por rol realice los siguientes pasos:</p>
+<li>Haga clic en el icono Crear Nueva.</li>
+<li>Haga clic en Rol y seleccione una opción.</li>
+<li>Haga clic en Forma y seleccione una opción.</li>
+<li>Haga clic en el icono Guardar.</li>
+<img src="../images/Administrar/Configuracion/FormasPorRol_Editar.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Restaurar.</p>
+<p>Para editar una forma por rol realice los siguientes pasos:</p>
+<li>Haga clic en el número consecutivo de la forma en la columna Consecutivo.</li>
+<li>Haga clic en el icono Editar.</li>
+<li>Haga clic en Rol.</li>
+<li>Haga clic en Forma y seleccione una opción.</li>
+<li>Haga clic en el icono Guardar.</li>
+<img src="../images/Administrar/Configuracion/formaPorRol_detalle.png" class="cover" />
+<img src="../images/Administrar/Configuracion/FormasPorRol_Editar.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Restaurar.</p>
+
+
+
+<h3 id="usuario">SUBSERIES POR USUARIO<a href="#top" class="btn-ir">Ir al Inicio</a></h3>
+ <p>Permite ver todas las Subseries por usuario por Rol creadas en los diferentes módulos del sistema SIMAD.</p>
+<img src="../images/Administrar/Configuracion/Config_SubseriesXUsuario.png" class="cover" />
+<p>Para ver el listado de las Subseries por usuario por rol realice los siguientes pasos:</p>
+<li>Haga clic en el menú lateral/icono Subseries por usuario.</li>
+<p class="Nota">- Para ver el detalle de las Formas haga clic en el número de la forma en la columna consecutivo.<br>
+- Haga clic en exportar para imprimir los listados desde una archivo Excel.</p>
+<img src="../images/Administrar/Configuracion/SubseriePorUsuario_Consultar.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Limpiar.</p>
+<p>Para crear una nueva subserie por usuario realice los siguientes pasos:</p>
+<li>Haga clic en el icono Crear Nueva.</li>
+<li>Haga clic en Subserie y seleccione una opción.</li>
+<li>Haga clic en Usuario y seleccione una opción</li>.
+<li>Haga clic en el icono Guardar.</li>
+<img src="../images/Administrar/Configuracion/SubseriePorUsuario_Crear.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Restaurar.</p>
+<p>Para editar una Subserie por usuario realice los siguientes pasos:</p>
+<li>Haga clic en el número consecutivo de la subserie en la columna Consecutivo.</li>
+<li>Haga clic en el icono Editar.</li>
+<li>Haga clic en Subserie.</li>
+<li>Haga clic en Usuario y seleccione una opción.</li>
+<li>Haga clic en el icono Guardar.</li>
+<img src="../images/Administrar/Configuracion/SubseriePorUsuario_Detalle2.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Restaurar.</p>
+
+
+<h3 id="tablas">TABLAS DE RETENCION DOCUMENTAL<a href="#top" class="btn-ir">Ir al Inicio</a></h3>
+ <p>Permite ver todas la lista de las dependencias creadas en el sistema SIMAD.</p>
+<img src="../images/Administrar/Configuracion/11-ADMINISTRAR-CONFIGURACION-TABLAS-DE-RETENCION-DOCUMENTAL.png" class="cover" />
+<p>Para ver el listado de las Dependencias realice los siguientes pasos:</p>
+<li>Haga clic en el menú lateral/icono Tablas de Retención Documental.</li>
+<p class="Nota">- Haga clic en exportar para imprimir el reporte TRD desde una archivo Excel.</p>
+<p>Para ver las opciones de una dependencia realice los siguientes pasos:</p>
+<li>Haga clic en el icono Ir a, de la columna opciones.</li>
+<img src="../images/Administrar/Configuracion/TRD_Opciones.png" class="cover" />
+<p class="Nota">- Haga clic en el icono Regresar para volver al listado de Dependencias.</p>
+<p>Para consultar una serie realice los siguientes pasos:</p>
+<li>Haga clic en el icono Consultar.</li>
+<li>Digite el código de serie.</li>
+<li>Digite la Descripción Serie.</li>
+<li>Haga clic en el icono Consultar.</li>
+<img src="../images/Administrar/Configuracion/TRD_Consultar.png" class="cover" />
+<p class="Nota">- Si desea eliminar los datos registrados haga clic en el icono Restaurar.<br>
+- El sistema lo llevará al listado de las series encontradas según los criterios registrados.</p>
+<p>Para Crear una serie realice los siguientes pasos:</p>
+<li>Haga clic en el icono Crear.</li>
+<li>Digite el código de serie.</li>
+<li>Digite la Descripción.</li>
+<li>Haga clic en el icono Guardar.</li>
+<img src="../images/Administrar/Configuracion/TRD_Crear.png" class="cover" />
+<p class="Nota">- El sistema lo llevara al detalle de la serie creada.</p>
+<p>Para Editar una serie realice los siguientes pasos:</p>
+<li>Haga clic en el código de la serie en la columna Gódigo.</li>
+<li>Haga clic en el icono Editar.</li>
+<li>Realice los cambios que crea necesarios.</li>
+<li>Haga clic en el icono Guardar.</li>
+<img src="../images/Administrar/Configuracion/TRD_Crear.png" class="cover" />
+<p class="Nota">- Si desea eliminar la serie haga clic en el icono Eliminar, el sistema preguntara si está seguro de eliminar, elija una opción.</p>
+
+
+
+    </div>
+    <!--FIN CONTAINER-->
+  		
+    
+</div>
+
+
+</div>
+<!-- #BeginLibraryItem "/Library/Footer.lbi" -->
+<footer>
+  <h2>Todos los derechos reservados © Aurea S.A.S.</h2>
+</footer>
+<!-- #EndLibraryItem -->
+</body>
+</html>

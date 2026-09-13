@@ -1,0 +1,8 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      ComPermisoRegional
+    theme:            default
+    
+    list:
+      display:        [compermisoregional_id, usuario, regional]

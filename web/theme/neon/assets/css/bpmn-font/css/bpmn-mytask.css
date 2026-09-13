@@ -1,0 +1,733 @@
+/**
+ * Estilos para el Diseñador BPMN seccion de myTask run
+ * Ubicación: web/theme/neon/assets/css/bpmn-font/css/bpmn-mytask.css
+*/
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, #e3e3e3, #292c2f);
+    color: white;
+    padding: 10px 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.header p {
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.header-actions a {
+    color: e6c333;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: rgba(230, 195, 51, 0.6);
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.header-actions a:hover {
+    background: rgba(169, 195, 250, 0.3);
+    font-weight: 500;
+    color: black;
+    border-style: dashed;
+    border-width: 1px;
+    border-color: black;
+}
+
+.header-actions a.active {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Layout principal */
+.main-layout {
+    display: flex;
+    height: calc(100vh - 330px);
+}
+
+/* Panel izquierdo - Lista de tareas */
+.tasks-panel {
+    width: 400px;
+    background: white;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tasks-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.tasks-header h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.tasks-filters {
+    display: flex;
+    gap: 8px;
+}
+
+.filter-tab {
+    padding: 8px 16px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-tab:hover {
+    background: #e8e8e8;
+    border-style: dashed;
+    border-width: 1px;
+    border-color: black;
+}
+
+.filter-tab.active {
+    background: rgba(230, 195, 51, 0.6);
+    border-radius: 20px;
+    color: black;
+    font-weight: 600;
+}
+
+.filter-tab .badge {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+}
+
+.filter-tab.active .badge {
+    background-color: #cc2424;
+    color: #ffffff;
+}
+
+.tasks-search {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.tasks-search input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.tasks-search input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.tasks-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.task-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.task-item:hover {
+    background: #f8f9fa;
+}
+
+.task-item.active {
+    background: #f0f4ff;
+    border-left: 3px solid #667eea;
+}
+
+.task-item.overdue {
+    border-left: 3px solid #dc3545;
+}
+
+.task-item.high-priority {
+    border-left: 3px solid #ffc107;
+}
+
+.task-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.task-item-title {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.task-item-priority {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.priority-urgent {
+    background: #dc3545;
+    color: white;
+}
+
+.priority-high {
+    background: #ffc107;
+    color: #333;
+}
+
+.priority-normal {
+    background: #e9ecef;
+    color: #666;
+}
+
+.priority-low {
+    background: #d4edda;
+    color: #155724;
+}
+
+.task-item-process {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.task-item-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: #888;
+}
+
+.task-item-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.task-item-meta .overdue-text {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+/* Panel derecho - Detalle de tarea */
+.task-detail-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.task-detail-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.task-detail-empty i {
+    font-size: 64px;
+    color: #ddd;
+    padding-top: 20px;
+}
+
+.task-detail-header {
+    padding: 25px 30px;
+    border-bottom: 1px solid #eee;
+    background: white;
+}
+
+.task-detail-header h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.task-detail-header h2 i {
+    color: #667eea;
+}
+
+.task-detail-info {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: #666;
+}
+
+.task-detail-info span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.task-detail-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 25px 30px;
+    background: #fafbfc;
+}
+
+/* Secciones del formulario */
+.form-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.form-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-section-title i {
+    color: #667eea;
+}
+
+/* Campos del formulario */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-group label .required {
+    color: #dc3545;
+    margin-left: 4px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 5px;
+    color: #888;
+    font-size: 12px;
+}
+
+.form-group.has-error input,
+.form-group.has-error textarea,
+.form-group.has-error select {
+    border-color: #dc3545;
+}
+
+.form-group .error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* Checkbox y Radio */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.form-check input[type="checkbox"],
+.form-check input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.form-check label {
+    margin: 0;
+    cursor: pointer;
+}
+
+/* Variables del workflow (readonly) */
+.workflow-variables {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.variable-item {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border-left: 3px solid #667eea;
+}
+
+.variable-item-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.variable-item-value {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Archivos adjuntos */
+.attachments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.attachment-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.attachment-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.attachment-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #667eea;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.attachment-icon.pdf {
+    background: #dc3545;
+}
+
+.attachment-icon.doc {
+    background: #2b579a;
+}
+
+.attachment-icon.xls {
+    background: #217346;
+}
+
+.attachment-icon.img {
+    background: #7c3aed;
+}
+
+.attachment-details h4 {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 3px;
+}
+
+.attachment-details span {
+    font-size: 12px;
+    color: #888;
+}
+
+.attachment-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.attachment-actions button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.3s;
+}
+
+.attachment-actions .btn-download {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.attachment-actions .btn-download:hover {
+    background: #bbdefb;
+}
+
+/* Upload de archivos */
+.file-upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.file-upload-area:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.file-upload-area.dragover {
+    border-color: #667eea;
+    background: #f0f4ff;
+}
+
+.file-upload-area i {
+    font-size: 40px;
+    color: #ccc;
+    margin-bottom: 15px;
+}
+
+.file-upload-area p {
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.file-upload-area small {
+    color: #999;
+}
+
+.uploaded-files {
+    margin-top: 15px;
+}
+
+.uploaded-file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: #e8f5e9;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.uploaded-file-item .file-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.uploaded-file-item .remove-file {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Footer de acciones */
+.task-detail-footer {
+    padding: 20px 30px;
+    background: white;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-left {
+    display: flex;
+    gap: 10px;
+}
+
+.footer-right {
+    display: flex;
+    gap: 10px;
+}
+
+/* Loading */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    color: #666;
+    font-size: 14px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Historial de la tarea */
+.task-history {
+    margin-top: 20px;
+}
+
+.history-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e3f2fd;
+    color: #1976d2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.history-content {
+    flex: 1;
+}
+
+.history-content p {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.history-content small {
+    color: #888;
+    font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .main-layout {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .tasks-panel {
+        width: 100%;
+        height: 300px;
+    }
+
+    .task-detail-panel {
+        height: calc(100vh - 400px);
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        padding: 15px;
+    }
+
+    .header-actions {
+        flex-wrap: wrap;
+    }
+
+    .tasks-header {
+        padding: 15px;
+    }
+
+    .task-detail-header,
+    .task-detail-body,
+    .task-detail-footer {
+        padding: 15px;
+    }
+}

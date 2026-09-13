@@ -1,0 +1,21 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Usuario
+    theme:            default
+    list:
+        display: [usuario_id, user_name, apellido, nombre, dependencia_id] 
+        filters: [usuario_id, user_name, apellido, nombre, dependencia_id]
+    edit:
+         display: [usuario_id, user_name, apellido, nombre, email, dependencia_id, subserie_por_usuario] 
+         fields:
+             user_name:        { type: plain }
+             apellido:         { type: plain }
+             nombre:           { type: plain }
+             email:            { type: plain }
+             dependencia_id:   
+             subserie_por_usuario:     { type: admin_select_list, params: through_class=SubseriePorUsuario }
+          
+
+
+

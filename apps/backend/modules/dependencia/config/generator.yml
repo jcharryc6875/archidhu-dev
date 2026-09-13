@@ -1,0 +1,9 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Dependencia
+    theme:            default
+    list:
+      display:        [dependencia_id, entidad, oficinaproductora,nombre,codigo,tiempo_prestamo,es_actual,tipo_tabla]
+      filters:        [entidad_id, oficinaproductora_id, nombre, codigo,tipo_tabla]
+      title:          Lista De Dependencias

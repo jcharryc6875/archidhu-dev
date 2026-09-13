@@ -1,0 +1,10 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Unidconservadora
+    theme:            default
+    list:
+       max_per_page:   10
+       title: 'Unidad de Almacenamiento Clientes'
+    edit:
+       title: 'Editar/Crear Unidad de Almacenamiento Clientes'

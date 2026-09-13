@@ -1,0 +1,94 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<style type="text/css" style="display:none;"> P {margin-top:0;margin-bottom:0;} </style>
+		<style type="text/css">
+
+		h4 
+		{
+			text-align: left;
+		}
+
+	@media screen 
+	{
+
+		.headerLineTitle
+		{
+			width:1.5in;
+			display:inline-block;
+			margin:0in;
+			margin-bottom:.0001pt;
+			font-size:11.0pt;
+			font-family:"Calibri","sans-serif";
+			font-weight:bold;
+		}
+
+		.headerLineText
+		{
+			display:inline;
+			margin:0in;
+			margin-bottom:.0001pt;
+			font-size:11.0pt;
+			font-family:"Calibri","sans-serif";
+			font-weight:normal;
+		}
+
+	   .pageHeader
+	   {
+			font-size:14.0pt;
+			font-family:"Calibri","sans-serif";
+			font-weight:bold;
+			visibility:hidden;
+			display:none;
+	   }   
+	}
+
+	@media print 
+	{
+		.headerLineTitle
+		{
+			width:1.5in;
+			display:inline-block;
+			margin:0in;
+			margin-bottom:.0001pt;
+			font-size:11.0pt;
+			font-family:"Calibri","sans-serif";
+			font-weight:bold;
+		}
+
+		.headerLineText
+		{
+			display:inline;
+			margin:0in;
+			margin-bottom:.0001pt;
+			font-size:11.0pt;
+			font-family:"Calibri","sans-serif";
+			font-weight:normal;
+		}
+
+	   .pageHeader
+	   {
+			font-size:14.0pt;
+			font-family:"Calibri","sans-serif";
+			font-weight:bold;
+			visibility:visible;
+			display:block;
+	   }
+
+	}
+	</style>
+	</head>
+	<body dir="ltr">
+		<span style="font-size:15.0pt;font-weight:bold;">{[#EMAIL_REMITENTE_NAME#]}</span><br/>
+		<hr style="display:inline-block;width:100%;height:2px; background-color:black; border:none;" tabindex="-1">
+		<font face="Calibri, sans-serif" style="font-size:11pt" color="#000000">
+			<span class="headerLineTitle"><b>De: </b></span><span class="headerLineText">{[#EMAIL_REMITENTE#]}</span><br/>
+			<span class="headerLineTitle"><b>Enviado: </b></span><span class="headerLineText">{[#EMAIL_FECHA_RECEPCION#]}</span><br/>
+			<span class="headerLineTitle"><b>Para: </b></span><span class="headerLineText">{[#EMAIL_DESTINATARIOS#]}</span><br/>
+			<span class="headerLineTitle"><b>Cc: </b></span><span class="headerLineText">{[#EMAIL_COPIAS#]}</span><br/>
+			<span class="headerLineTitle"><b>Asunto: </b></span><span class="headerLineText">{[#EMAIL_ASUNTO#]}</span><br/>
+			<span class="headerLineTitle"><b>Adjuntos: </b></span><span class="headerLineText">{[#EMAIL_ADJUNTOS#]}</span><br/><br/>
+		</font>
+		{[#BODY_EMAIL#]}
+	</body>
+</html>

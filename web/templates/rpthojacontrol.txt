@@ -1,0 +1,143 @@
+
+<pd4ml:page.header>
+	<table border="0" cellpadding="0" cellspacing="0" id="sheet11" class="" style="margin-left:8px;margin-right:8px;width:100%">
+		<tbody>
+		  <tr class="row0">
+			<td class="column0 style14 style115 null " colspan="2" rowspan="4">
+				<img style="margin-top: 1px;width: 40px; height: 40px;" src="#.#$path_logo#.#" border="0"/>
+			</td>
+			<td class="column9 style46 s style51" colspan="17" rowspan="2">HOJA DE CONTROL ARCHIVOS DE GESTI&Oacute;N</td>
+			<td class="column33 style52 s style52" colspan="6">C&oacute;digo:  #.#$codigo_formato#.#</td>
+		  </tr>
+		  <tr class="row1">
+			<td class="column33 style52 s style52" colspan="6">Versión:  #.#$version_formato#.#</td>
+		  </tr>
+		  <tr class="row2">
+			<td class="column9 style87 s style88" colspan="17">PROCESO GESTIÓN DOCUMENTAL</td>
+			<td class="column33 style52 s style52" colspan="6">Fecha:  #.#$fecha_formato#.#</td>
+		  </tr>
+		  <tr class="row3">
+			<td class="column9 style87 s style88" colspan="17">MANUAL PARA LA ORGANIZACIÓN DE DOCUMENTOS FÍSICOS Y ELECTRÓNICOS</td>
+			<td class="column33 style52 s style52" colspan="6">Pag: $[page] de $[total]</td>
+		  </tr>
+		</tbody>
+	</table>
+</pd4ml:page.header>
+<table border="0" cellpadding="0" cellspacing="0" id="sheet00" class="" style="margin-top:-10px;width:100%">
+	<tbody>
+	  <tr class="row7">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column37 style90 null" colspan="10">&nbsp;</td>
+		<td class="column37 style90 null" colspan="10">&nbsp;</td>
+		<td class="column37 style90 null" colspan="16">&nbsp;</td>
+		<td class="column37 style90 null" colspan="24">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row0">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column1 style92 s"colspan="8">Hoja de Control No.</td>
+		<td class="column9 style42 null style44" colspan="12">1</td>
+		<td class="column12 style106 s style105" colspan="1">&nbsp;de</td>
+		<td class="column14 style90 null">&nbsp;</td>
+		<td class="column15 style42 null style44" colspan="6">&nbsp;</td>
+		<td class="column88 style90 null" colspan="32">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row7">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column37 style90 null" colspan="10">&nbsp;</td>
+		<td class="column37 style90 null" colspan="10">&nbsp;</td>
+		<td class="column37 style90 null" colspan="16">&nbsp;</td>
+		<td class="column37 style90 null" colspan="24">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row8">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column1 style95 s style96" colspan="8">Carpeta o Expediente No.</td>
+		<td class="column9 style42 null style44" colspan="12">#.#$codigo_barras#.#</td>
+		<td class="column21 style97 null">&nbsp;</td>
+		<td class="column22 style97 null">&nbsp;</td>
+		<td class="column23 style97 null">&nbsp;</td>
+		<td class="column24 style97 null">&nbsp;</td>
+		<td class="column25 style98 s style98" colspan="5">Caja No.</td>
+		<td class="column30 style45 null" colspan="7">#.#$ubicacion_expediente#.#</td>
+		<td class="column38 style90 null" colspan="24">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row9">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column37 style90 null" colspan="10">&nbsp;</td>
+		<td class="column37 style90 null" colspan="10">&nbsp;</td>
+		<td class="column37 style90 null" colspan="16">&nbsp;</td>
+		<td class="column37 style90 null" colspan="24">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row10">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column1 style95 s style96" colspan="8">Nombre o asunto del expediente.</td>
+		<td class="column9 style42 null style44" colspan="48">#.#$titulo_expediente#.#</td>
+		<td class="column38 style90 null" colspan="4">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row11">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column37 style90 null" colspan="10">&nbsp;</td>
+		<td class="column37 style90 null" colspan="10">&nbsp;</td>
+		<td class="column37 style90 null" colspan="16">&nbsp;</td>
+		<td class="column37 style90 null" colspan="24">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row13">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column1 style102 s style102" colspan="8">Fecha de apertura hoja de control :</td>
+		<td class="column12 style22 null" colspan="15">#.#$fecha_elaboracion#.#</td>
+		<td class="column13 style21 null">&nbsp;</td>
+		<td class="column14 style67 s style67" colspan="8">Dependencia:</td>
+		<td class="column20 style68 null style70" colspan="26">#.#$dependencia_nombre#.#</td>
+		<td class="column38 style90 null" colspan="2">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row14">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column37 style90 null" colspan="10">&nbsp;</td>
+		<td class="column37 style90 null" colspan="10">&nbsp;</td>
+		<td class="column37 style90 null" colspan="16">&nbsp;</td>
+		<td class="column37 style90 null" colspan="24">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row15">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column1 style40 s" colspan="60" rowspan="3">Nota:  <span style="color:#000000; font-family:'Arial'; font-size:5.0pt;">Al momento de ingresar los documentos, éstos deberan foliarse de acuerdo con el consecutivo que se esté llevando.  Identificar el documento a ingresar,  Ejemplo: Contrato, constancias de desembolso, constancia de liquidación, acta de liquidación, declaración, caracterización, recurso de reposición, notificación, resurso de reposición entre otros.</span></td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row16">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  <tr class="row17">
+		<td class="column0 style15 null">&nbsp;</td>
+		<td class="column38 style91 null">&nbsp;</td>
+	  </tr>
+	  
+	  <tr class="row19">
+		<td class="column0 style53 s style54" rowspan="2">Ítem</td>
+		<td class="column1 style55 s style60" colspan="2" rowspan="2">No folios que contiene</td>
+		<td class="column4 style55 s style60" colspan="24" rowspan="2">Tipo Documental</td>
+		<td class="column13 style61 s style63" colspan="4">Rango de folios</td>
+		<td class="column17 style55 s style60" colspan="4" rowspan="2">Fecha del documento<br>&nbsp;(dd/mm/aaaa)</td>
+		<td class="column21 style55 s style59" colspan="15" rowspan="2">Archivado por</td>
+		<td class="column27 style55 s style60" colspan="4" rowspan="2">Fecha de Ingreso del documento</td>
+		<td class="column33 style55 s style60" colspan="7" rowspan="2">Observaciones</td>
+		<td class="column38 style103 null"></td>
+	  </tr>
+	  <tr class="row20">
+		<td class="column13 style71 s style72" colspan="2">Desde</td>
+		<td class="column15 style71 s style72" colspan="2">Hasta</td>
+		<td class="column38 style103 null"></td>
+	  </tr>
+	  #.#body_content#.#
+	  <tr class="row49">
+		<td class="column0 style112 s style114" colspan="62">Nota<span style="color:#000000; font-family:'Arial'; font-size:5.0pt;">: Los campos sombreados son para uso exclusivo del Grupo de Gestión Administrativa y Documental - área de Archivo</span></td>            
+	  </tr>
+	</tbody>
+</table>

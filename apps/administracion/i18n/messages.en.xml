@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<xliff version="1.0">
+  <file orginal="global" source-language="es_ES" datatype="plaintext">
+    <body>
+      <trans-unit id="1">
+        <source>create</source>
+        <target>crear</target>
+      </trans-unit>
+      <trans-unit id="2">
+        <source>list</source>
+        <target>listar</target>        
+      </trans-unit>
+      <trans-unit id="3">
+        <source>save</source>
+        <target>Guardar</target>
+      </trans-unit>
+      <trans-unit id="5">
+        <source>save and add</source>
+        <target>Guardar Y Adicionar</target>
+      </trans-unit>
+      <trans-unit id="6">
+        <source>delete</source>
+        <target>Eliminar</target>
+      </trans-unit>
+      <trans-unit id="7">
+        <source>results</source>
+        <target>Registros encontrados</target>
+      </trans-unit>
+      <trans-unit id="8">
+        <source>Your modifications have been saved</source>
+        <target>Cambios Gurdados Satisfactoriamente</target>
+      </trans-unit>	  
+      <trans-unit id="9">
+        <source>results</source>
+        <target>Registros Encontrados</target>
+      </trans-unit>	  
+    </body>
+  </file>
+</xliff>
+ 

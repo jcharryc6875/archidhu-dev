@@ -1,0 +1,164 @@
+/* CSS Document */
+body {
+	font-family: Arial, Helvetica, sans-serif;	
+}
+A:link{
+       text-decoration: none; 
+       color: #333333; 
+       font-weight: bold;
+}
+
+A:visited{
+	text-decoration: none; 
+	color: #333333; 
+	font-weight: bold;
+}
+A:active{
+	text-decoration: underline; 
+	color:#333333; 
+	font-weight: bold;
+}
+A:hover{
+	text-decoration: underline; 
+	color: #333333; 
+	font-weight: bold;
+}
+
+.texto{
+	color: #B62F42;
+	font-weight:bold;
+	font-size:18px;
+}
+.fondo{
+	background-color: #B62F42;
+}
+
+button {
+	font-size: 8pt; 
+	color:#FFFFFF; 
+	background-color: #B62F42; 
+	border-color:#E0E0E0;
+}
+
+.all_texto{
+	font-size: 12px;
+	color: gray;
+}
+
+/* NUEVO ESTILO DE TABLAS*/
+
+.fondo_gris {
+	BORDER-RIGHT: #999999 1px; 
+	BORDER-TOP: #999999 1px; 
+	BORDER-LEFT: #999999 1px; 
+	BORDER-BOTTOM: #999999 1px; 
+	BACKGROUND-COLOR: #f5f5f5;
+}
+
+.fondo_tabla {
+	FONT-WEIGHT: bold; 
+	FONT-SIZE: 12px; 
+	TEXT-TRANSFORM: capitalize; 
+	COLOR: #ffffff; 
+	FONT-STYLE: normal;  
+	BACKGROUND-COLOR: #B62F42;
+}
+.titulo {
+	FONT-WEIGHT: bold; 
+	FONT-SIZE: 12px; 
+	WORD-SPACING: normal; 
+	VERTICAL-ALIGN: middle; 
+	TEXT-TRANSFORM: capitalize; 
+	COLOR: #ffffff; 
+	TEXT-INDENT: 0pt; 
+	WHITE-SPACE: normal; 
+	TEXT-ALIGN: left;
+}
+
+/* OJO UNIR SELECT CON INPUT, TEXTBOX CHECK BOX */
+select {
+	FONT-WEIGHT: normal; 
+	FONT-SIZE: 11px; 
+	WORD-SPACING: normal; 
+	TEXT-TRANSFORM: none; 
+	COLOR: #333333; 
+	TEXT-INDENT: 0pt; 
+	FONT-STYLE: normal; 
+	LETTER-SPACING: normal; 
+	TEXT-ALIGN: left;
+}
+input {
+	FONT-WEIGHT: normal; 
+	FONT-SIZE: 11px; 
+	WORD-SPACING: normal; 
+	TEXT-TRANSFORM: none; 
+	COLOR: #333333; 
+	TEXT-INDENT: 0pt; 
+	FONT-STYLE: normal; 
+	LETTER-SPACING: normal; 
+	TEXT-ALIGN: left;
+}
+.encabezado_tabla {
+	FONT-WEIGHT: bold; 
+	BORDER-LEFT-WIDTH: 1px; 
+	FONT-SIZE: 10px; 
+	TEXT-TRANSFORM: capitalize; 
+	COLOR: #ffffff; 
+	FONT-STYLE: normal; 
+	BACKGROUND-COLOR: #999999; 
+	TEXT-ALIGN: center;
+}
+.par {
+	BORDER-RIGHT: #cccccc 1px; 
+	BACKGROUND-POSITION: 50% top; 
+	BORDER-TOP: #cccccc 1px; 
+	FONT-WEIGHT: normal; 
+	FONT-SIZE: 10px; 
+	VERTICAL-ALIGN: middle; 
+	TEXT-TRANSFORM: none; 
+	BORDER-LEFT: #cccccc 1px; 
+	COLOR: #000000; 
+	TEXT-INDENT: 0pt; 
+	BORDER-BOTTOM: #cccccc 1px; 
+	FONT-STYLE: normal; 
+	WHITE-SPACE: normal; 
+	BACKGROUND-COLOR: #ebebeb; 
+	TEXT-ALIGN: left; 
+	FONT-VARIANT: normal;
+}
+.impar {
+	BORDER-RIGHT: #cccccc 1px; 
+	BACKGROUND-POSITION: 50% top; 
+	BORDER-TOP: #cccccc 1px; 
+	FONT-WEIGHT: normal; 
+	FONT-SIZE: 10px; 
+	VERTICAL-ALIGN: middle; 
+	TEXT-TRANSFORM: none; 
+	BORDER-LEFT: #cccccc 1px; 
+	COLOR: #000000; 
+	TEXT-INDENT: 0pt; 
+	BORDER-BOTTOM: #cccccc 1px; 
+	FONT-STYLE: normal; 
+	WHITE-SPACE: normal; 
+	BACKGROUND-COLOR: #ffffff; 
+	TEXT-ALIGN: left; 
+	FONT-VARIANT: normal;
+}
+img{
+	border:none;
+}
+
+.izquierda {
+	BACKGROUND-POSITION: 50% top; 
+	FONT-SIZE: 11px; 
+	BACKGROUND-ATTACHMENT: scroll; 
+	COLOR: #333333;  
+	WHITE-SPACE: normal;
+	text-align: left;
+}
+.derecha {
+	FONT-WEIGHT: bold; 
+	FONT-SIZE: 11px; 
+	COLOR: #666666; 
+	text-align: left;
+}

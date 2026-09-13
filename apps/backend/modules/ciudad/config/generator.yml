@@ -1,0 +1,22 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Ciudad
+    theme:            default
+    list:
+      display:        [Departamento, nombre]
+      title:          Listado Ciudades
+      max_per_page:   15
+      object_actions:
+        _edit:        false
+        _delete:      false
+      actions:
+        _create:      ~
+    edit:
+      title:          Crear/Editar Ciudad
+      fields:
+        NombDepar:     { name: Departamento }       
+        departamento_id:
+          params:
+            include_custom: Seleccione Departamento...
+            peer_method: getOrderDepartamento

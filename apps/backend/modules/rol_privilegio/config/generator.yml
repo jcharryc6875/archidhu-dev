@@ -1,0 +1,14 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Rol
+    theme:            default
+    edit:
+         display: [rol_id, descripcion, rol_privilegio] 
+         fields:
+           descripcion:        { type: plain }
+           rol_privilegio:     { type: admin_double_list, params: through_class=RolPrivilegio }
+          
+
+
+

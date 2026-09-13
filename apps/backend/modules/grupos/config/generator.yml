@@ -1,0 +1,11 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      GrupoUsuario
+    theme:            default
+    list:
+       max_per_page:   10
+       title: 'Lista Grupos De Correspondencia'
+    edit:
+       title: 'Crear/Editar Grupo'
+    

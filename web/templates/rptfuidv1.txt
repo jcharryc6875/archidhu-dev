@@ -1,0 +1,323 @@
+<html>
+    <head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><title></title></head>
+    <style>
+        body { font-family: Work Sans; font-size: 15pt; color: black; }
+    </style>
+    <body>
+        <pd4ml:page.header>
+        <div>
+            <!--table width="1005px" cellspacing="0" cellpadding="0" border="0"-->
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+                <tbody>
+                    <tr>
+                        <td nowrap="nowrap" style="border:solid black 0.5pt;" rowspan="3" colspan="4">
+                            <table cellspacing="0" cellpadding="0" align="center">
+                                <tbody>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td><img width="130" height="21" src="#.#$logo_entidad#.#"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td style="border-top:solid windowtext 0.5pt;border-left:none;border-bottom:solid black 0.5pt;border-right:solid black 0.5pt;" rowspan="3" colspan="8">
+                            <p align="center"
+                                style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal;background-color: blue;color: white;"
+                                class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">FORMATO &Uacute;NICO DE INVENTARIO DOCUMENTAL </span></b>
+                            </p>
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal;margin-top:5px;" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">PROCESO GESTI&Oacute;N DOCUMENTAL</span></b>
+                            </p>
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal;margin-top:5px;" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">MANUAL PARA LA ORGANIZACI&Oacute;N DE DOCUMENTOS F&Iacute;SICOS Y ELECTR&Oacute;NICOS</span></b>
+                            </p>
+                        </td>
+                        <td style="border:solid windowtext 0.5pt;" colspan="3">
+                            <p align="center" style="margin-left:5px;margin-bottom:.0001pt;text-align:left;line-height:normal"
+                                class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">C&oacute;digo: 710,14,15-3</span></b>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border-top:none;border-left:solid windowtext 0.5pt;border-bottom:solid windowtext 0.5pt;border-right:none;"
+                            colspan="2">
+                            <p align="center" style="margin-left:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:left;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Versi&oacute;n:</span>
+                            </p>
+                        </td>
+                        <td style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-right:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:right;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">03</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:none;" colspan="2">
+                            <p align="center" style="margin-left:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:left;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Fecha de Aprobaci&oacute;n:</span>
+                            </p>
+                        </td>
+                        <td style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-right:5px;margin-bottom:0cm;margin-bottom:.0001pt;text-align:right;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">27/07/2022</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="12" height="10" nowrap="nowrap" style="border:none;border-top:none;padding:0cm 3.5pt 0cm 3.5pt;height: 10px;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border:none;" >
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">PRIMARIA</span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border:none;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">SECUNDARIA</span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" colspan="2">&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td nowrap="nowrap" height="10" style="border-top:none;border-left:none;border-bottom:none;border-right:none;height: 10px;">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">ENTIDAD PRODUCTORA:<span>&nbsp;&nbsp;</span></span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" colspan="6">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif'">UNIDAD PARA LAS V&Iacute;CTIMAS</span>
+                            </p>
+                        </td>
+                        <td colspan="5" height="10" nowrap="nowrap" style="border:none;border-top:none;padding:0cm 3.5pt 0cm 3.5pt;height: 10px;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;" colspan="1">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">&nbsp;</span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border:solid windowtext 0.5pt;border-left: solid windowtext 0.5pt; padding:0cm 3.5pt 0cm 3.5pt;" colspan="1">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">&nbsp;</span></b>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td nowrap="nowrap">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">UNIDAD ADMINISTRATIVA:<span>&nbsp;&nbsp;</span></span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" colspan="6">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif'">#.#$unidad_administrativa#.#</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td nowrap="nowrap">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">OFICINA PRODUCTORA:<span>&nbsp;&nbsp; </span></span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">#.#$oficina_productora#.#</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border:none;padding:0cm 3.5pt 0cm 3.5pt;" colspan="3">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">&nbsp;</span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="padding:0cm 3.5pt 0cm 3.5pt;" colspan="5">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="margin-top: 10px; border:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;" colspan="4">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Helvetica Condensed','serif';">REGISTRO DE ENTRADA</span></b>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td nowrap="nowrap">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">OBJETO:<span>&nbsp;</span></span></b>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" colspan="10">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">TP-TRANSFERENCIA PRIMARIA</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border:solid windowtext 0.5pt;border-top:none;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">A&Ntilde;O</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">MES</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">DIA</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">N.T.</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="11" height="10" nowrap="nowrap" style="border:none;border-top:none;height: 10px;height: 10px;">
+                            <p align="center">
+                                <span style="font-size:5.0pt;">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" height="10" style="border:solid windowtext 0.5pt;border-top:none;height: 10px;">
+                            <p align="center">
+                                <span style="font-size:5.0pt;">#.#$fecha_anio#.#</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" height="10" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;">
+                            <p align="center">
+                                <span style="font-size:5.0pt;">#.#$fecha_mes#.#</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" height="10" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;">
+                            <p align="center">
+                                <span style="font-size:5.0pt;">#.#$fecha_dia#.#</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" height="10" style="border-top:none;border-left:none;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;">
+                            <p align="center">
+                                <span style="font-size:5.0pt;">&nbsp;</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="11" height="10" nowrap="nowrap" style="border:none;border-top:none;height: 10px;height: 10px;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" height="10" style="border-top:none;border-left:none;border-bottom:none;border-right:none;height: 10px;">
+                            <p align="center" style="margin-bottom:0cm;margin-bottom:.0001pt;text-align:center;line-height:normal" class="MsoNormal">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">&nbsp;</span>
+                            </p>
+                        </td>
+                        <td nowrap="nowrap" height="10" colspan="3" style="border-top:none;border-left:solid windowtext 0.5pt;border-bottom:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;height: 10px;">
+                            <p align="left">
+                                <span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">N. T. = N&uacute;mero de Transferencia</span>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </pd4ml:page.header>
+
+        <pd4ml:page.footer>
+            <!--table width="1005px" cellspacing="0" cellpadding="0" border="0"-->
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                    <tr style="height:10px;">
+                        <td colspan="8" nowrap="nowrap" style="border-top:solid windowtext 0.5pt;border-left:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Entregado Por:</span></b>
+                            </p>
+                        </td>                
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;border-top:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Recibido Por:</span></b>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr style="height:10px;">
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Cargo:</span></b>
+                            </p>
+                        </td>                
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Cargo:</span></b>
+                            </p>
+                        </td>               
+                    </tr>
+
+                    <tr style="height:10px;">
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Firma:</span></b>
+                            </p>
+                        </td>                
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Firma:</span></b>
+                            </p>
+                        </td>                
+                    </tr>
+
+                    <tr style="height:10px;">
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Lugar:</span></b>
+                            </p>
+                        </td>
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Lugar:</span></b>
+                            </p>
+                        </td>                
+                    </tr>
+
+                    <tr style="height:10px;">
+                        <td colspan="8" nowrap="nowrap" style="border-top:none;border-left:solid windowtext 0.5pt;border-right:none;padding:0cm 3.5pt 0cm 3.5pt;border-bottom:solid windowtext 0.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Fecha:</span></b>
+                            </p>
+                        </td>                
+                        <td colspan="8" nowrap="nowrap" style="border:none;border-left:solid windowtext 0.5pt;border-right:solid windowtext 0.5pt;padding:0cm 3.5pt 0cm 3.5pt;border-bottom:solid windowtext 0.5pt;">
+                            <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal;border-bottom:solid windowtext 0.5pt;">
+                                <b><span style="font-size:5.0pt;font-family:'Arial Narrow','sans-serif';">Fecha:</span></b>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </pd4ml:page.footer>
+
+        <div style="margin-top: 0px;">
+            #.#body_content#.#
+        </div>
+    </body>
+</html>

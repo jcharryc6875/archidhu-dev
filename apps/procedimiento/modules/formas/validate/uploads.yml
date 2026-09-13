@@ -1,0 +1,7 @@
+fields:
+  file:
+    required:         true
+    file: True
+    sfFileValidator:
+      max_size: 10240000
+      max_size_error: El tamano maximo es de 10MB

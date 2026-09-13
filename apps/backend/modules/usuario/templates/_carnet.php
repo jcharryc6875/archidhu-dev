@@ -1,0 +1,2 @@
+<?php echo image_tag('/'.sfConfig::get('sf_upload_dir_name').'/imagenes/fotos/'. $usuario->getRutaFoto(), Array( 'alt' => $usuario->getUserName(), 'width' => 50, 'height' => 50 )   ) ?>
+<?php //echo $usuario->getUserName() ?>

@@ -1,0 +1,10 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Modulo
+    theme:            default
+    list:
+       max_per_page:   10
+       title: Modulo
+    edit:
+       title: 'Editar/Crear Modulo'

@@ -1,0 +1,19 @@
+generator:
+  class: sfPropelAdminGenerator
+  param:
+    model_class:      ProveedorFirmaDigital
+    theme:            default
+    list:
+      display:        [proveedorfirmadigital_id, descripcion, esta_activo, enum_name]
+      filters:        [descripcion, esta_activo, enum_name]
+      title:          Lista Proveedores Firma Digital
+    edit:
+       title: 'Editar/Crear Tipo Comunicacion Interna'
+    config:
+      actions: ~
+      fields:  ~
+      list:    ~
+      filter:  ~
+      form:    ~
+      edit:    ~
+      new:     ~

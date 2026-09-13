@@ -1,0 +1,35 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      FacturaReceptor
+    theme:            default
+    list:
+      display:        [FacturaProceso, Regional, Usuario ]
+      filters:        [facturaproceso_id, usuario_id, regional_id ]
+      fields:
+        facturaproceso_id:   { name: Proceso, params: include_custom=Seleccione... }
+        regional_id:
+          params: 
+            include_custom=Seleccione regional...
+        usuario_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getAllUserActive
+      title:          Listado receptores facturas
+      max_per_page:   25
+      object_actions:
+        _edit:        -
+        _delete:      -
+      actions:
+        _create:      ~
+    edit:
+      title:          Usuarios Receptor
+      fields:
+        facturaproceso_id:   { name: Proceso, params: include_custom=Seleccione... }
+        regional_id:
+          params: 
+            include_custom=Seleccione regional...
+        usuario_id:
+          params:
+            include_custom: Seleccione...
+            peer_method: getAllUserActive
