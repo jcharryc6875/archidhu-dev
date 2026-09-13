@@ -1,0 +1,47 @@
+# ==========================================
+# Archivos específicos de Symfony 1.4
+# ==========================================
+# Caché y logs generados por el framework
+/log/*
+/web/uploads/*
+/cache/*
+
+# Mantener las carpetas en Git pero vacías (opcional, si usas archivos .gitkeep)
+!/log/.gitkeep
+!/web/uploads/.gitkeep
+!/cache/.gitkeep
+
+# Archivos de configuración local (bases de datos locales, credenciales)
+/config/databases.yml
+/config/properties.ini
+
+# Archivos de configuración e ingeniería inversa generados
+/config/auth.txt
+/config/databases.xml
+/config/propel.ini
+
+# ==========================================
+# Dependencias y Herramientas (PHP / Composer)
+# ==========================================
+# Si el proyecto usa Composer (raro en Symfony 1.4 puro, pero posible en PHP 7)
+/vendor/
+
+# Archivos de configuración de entornos (.env local)
+.env
+.env.local
+
+# ==========================================
+# Archivos del Sistema Operativo e IDEs
+# ==========================================
+# Editores de código
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Sistemas operativos
+.DS_Store
+Thumbs.db
