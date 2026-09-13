@@ -49,3 +49,10 @@ Thumbs.db
 # Configuración e instrucciones de Claude AI
 .claude/
 CLAUDE.md
+
+# Archivos comprimidos
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z

@@ -218,8 +218,8 @@ class usuarioActions extends sfActions
           UsuarioPeer::addHistoricoUser($usuario);
           //*************************************************************************
           $baseMail = new BaseMailSimad();
-          $baseMail->SetSubject('SGDEA: Actualizaci&oacute;n Usuario');
-          $baseMail->SetMsgHTML("Cordial saludo.<br>SGDEA le informa que la informaci&oacute;n de su certificado de firma digital se registr&oacute; correctamente en su cuenta de usuario.<br>Un saludo.<br><br>");
+        $baseMail->SetSubject('SGDEA .::. Actualización Usuario');
+        $baseMail->SetMsgHTML("Cordial saludo.<br>SGDEA le informa que la información de su certificado de firma digital se registró correctamente en su cuenta de usuario.<br>Un saludo.<br><br>");
           $baseMail->SetAddAddress($usuario->getEmail(), $usuario->getEmail());
           if($baseMail->InitSend() === true){
               $baseMail->writetolog("Alerta enviada: " . $usuario->getUsuarioId() . " Enviado a: " . $usuario->getEmail());
@@ -232,8 +232,8 @@ class usuarioActions extends sfActions
       //*****************************************************************************
       return $this->redirect($this->getRequest()->getScriptName().'/usuario/configSingStamp?qvars='.md5("qvars1"));
 	  }else{
-		  $this->getRequest()->setError("Error","No se puede actualizar la informaci&oacute;n del usuario, por favor intente de nuevo");	
-		  $this->forward('usuario', 'efirmaPin');
+      $this->getRequest()->setError("Error", "No se puede actualizar la informaci&oacute;n del usuario, la contraseña esta errada, por favor intente de nuevo");
+      $this->forward('usuario', 'configSingStamp');
 	  }
 	  //*******************************************************************************
 	  $this->forward404Unless($this->usuario);    
@@ -355,12 +355,554 @@ class usuarioActions extends sfActions
 	   return $result->getUsuario()->getNombre()." ".$result->getUsuario()->getApellido();
   }
 
+  public function executeReasignarUsuarioGestor()
+  {
+    //$laPeticion = $this->getRequest()->getGetParameters(); var_dump($laPeticion); exit();
+
+    // TABLA COM_RECIBIDA    null !== expression
+    //if(isset($this->getRequestParameter('comrecibida_id')))
+    if($this->getRequestParameter('comrecibida_id') != null)
+    {
+      $this->tipoprocesocom_id = trim($this->getRequestParameter('tipoprocesocom_id'));
+
+      $this->comrecibida_id = trim($this->getRequestParameter('comrecibida_id'));
+      $this->com_recibida = ComRecibidaPeer::retrieveByPk($this->comrecibida_id);
+
+      $this->listcom_users = $this->com_recibida->getUsuariosListCom();
+    }
+
+    // TABLA COM_INTERNA
+    //if(isset($this->getRequestParameter('cominterna_id')))
+    if($this->getRequestParameter('cominterna_id') != null)
+    {
+      //$this->tipoprocesocom_id = 0; // este campo no existe en TABLA COM_INTERNA
+
+      $this->cominterna_id = trim($this->getRequestParameter('cominterna_id'));
+      $this->com_interna = ComInternaPeer::retrieveByPk($this->cominterna_id);
+
+      $this->listcom_users = $this->com_interna->getUsuariosListCom();
+    }
+
+    // TABLA COM_ENVIADA
+    //if(isset($this->getRequestParameter('comenviada_id')))
+    if($this->getRequestParameter('comenviada_id') != null)
+    {
+      $this->tipoprocesocom_id = trim($this->getRequestParameter('tipoprocesocom_id'));
+
+      $this->comenviada_id = trim($this->getRequestParameter('comenviada_id'));
+      $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->comenviada_id);
+
+      $this->listcom_users = $this->com_enviada->getUsuariosListCom();
+    }
+
+        
+  }
+
+  public function executeReasignarUsuarioGestorMasivo()
+  {
+    
+  }
+
+  public function executeReasignarGestor()
+  {
+    $data_resp = array();
+    try
+    {
+          //$laPeticion = $this->getRequest()->getPostParameters(); var_dump($laPeticion); exit();
+          $currentForm = "COM_RECIBIDA_ASIGNAR_DISTRIBUIDOR";
+          $this->verificaPrilegioCerrar($currentForm);
+          //******************************************************************************************************
+          $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+          $newuser = trim($this->getRequestParameter('idUser'));
+          if(empty($newuser))
+          {
+            $data_resp['status'] = 400;
+            $data_resp['message'] = 'No se suministro el nuevo usuario asignado';
+            $this->getResponse()->setContentType('application/json');
+            //****************************************************************************************************
+            $array = json_encode($data_resp);
+            return $this->renderText($array); 
+          }
+
+          //if(isset($this->getRequestParameter('comrecibida_id')))
+          if($this->getRequestParameter('comrecibida_id') != null)
+          {
+              $com_recibida = ComRecibidaPeer::retrieveByPk($this->getRequestParameter('comrecibida_id'));
+              $tipoprocesocomId = $com_recibida->getTipoprocesocomId();
+
+              $com_recibida_anterior = $com_recibida->copy();
+              $CodigoReenResp = $com_recibida->getCodigoReenResp() ? $com_recibida->getCodigoReenResp() : $com_recibida->getPrimaryKey();
+              $observaciones = trim($this->getRequestParameter('detalles'));
+              //$tipoprocesocomId = 2;
+              //******************************************************************************************************
+              //if (trim($com_recibida->getObsRemitir())) { $observaciones = trim($com_recibida->getObsReenResp()) . ' | ' . $observaciones; }
+              $observaciones = $observaciones != null ? (trim($com_recibida->getObsReenResp()) ? trim($com_recibida->getObsReenResp()) . ' | ' . $observaciones : $observaciones) : trim($com_recibida->getObsReenResp());
+              //******************************************************************************************************
+              $com_recibida->setObsReenResp($observaciones);
+              $com_recibida->setCodigoReenResp($CodigoReenResp);
+              $com_recibida->setTipoprocesocomId($tipoprocesocomId);
+              $com_recibida->save();
+              //******************************************************************************************************
+              $cargousuarioid = trim($this->getRequestParameter('cargousuarioId'));
+              $estadocomrecibida_id = 1; //estado por defecto de la comunicacion
+              //******************************************************************************************************
+              $ucurrent_asignado = ComrecibidaUsuarioPeer::getCurrentUserAsig($com_recibida->getPrimaryKey());
+              //******************************************************************************************************
+              ComRecibidaPeer::updateAsignadoCom($com_recibida->getPrimaryKey(), 2, 0);
+              $result = ComRecibidaPeer::addUserRolByCom($com_recibida->getPrimaryKey(), $newuser, $cargousuarioid, $estadocomrecibida_id, 2, 1, $tipoprocesocomId);
+
+              if(!$result)
+              {
+                $ucurrent_asignado->setEstaAsignada(1);
+                $ucurrent_asignado->save();
+                //break;
+              }
+              /******************************************* SEND EMAIL ***********************************************/
+              // $encabezado_email = "Este es un mensaje para informarle que se le ha asignado una comunicaci&oacute;n externa recibida y la puede consultar en SIMAD con la siguiente informaci&oacte;n: ";
+              // ComRecibidaPeer::envioEmail($com_recibida->getPrimaryKey(), $newuser, $encabezado_email);
+              /******************************************************************************************************/
+              AuditLogPeer::guardarAuditoriaLite('ComRecibida', $com_recibida_anterior, $com_recibida, 3, $com_recibida->getRadicado(),$usuariologuiado);
+              //$this->redirect($this->getRequest()->getScriptName() . '/usuario/finAsignado');
+          }
+
+          //if(isset($this->getRequestParameter('cominterna_id')))
+          if($this->getRequestParameter('cominterna_id') != null)
+          {
+              //$laPeticion = $this->getRequest()->getPostParameters(); var_dump($laPeticion); exit();
+              $com_interna = ComInternaPeer::retrieveByPk($this->getRequestParameter('cominterna_id')); 
+              //$tipoprocesocomId = $com_recibida->getTipoprocesocomId(); //var_dump($com_interna); // exit();
+
+              $com_interna_anterior = $com_interna->copy();
+              $CodigoReenResp = $com_interna->getCodigoReenResp() ? $com_interna->getCodigoReenResp() : $com_interna->getPrimaryKey();
+              $observaciones = trim($this->getRequestParameter('detalles'));
+              //$tipoprocesocomId = 2;
+              //******************************************************************************************************
+              //if (trim($com_recibida->getObsRemitir())) { $observaciones = trim($com_recibida->getObsReenResp()) . ' | ' . $observaciones; }
+              $observaciones = $observaciones != null ? (trim($com_interna->getObsReenResp()) ? trim($com_interna->getObsReenResp()) . ' | ' . $observaciones : $observaciones) : trim($com_interna->getObsReenResp());
+              //******************************************************************************************************
+              $com_interna->setObsReenResp($observaciones);
+              $com_interna->setCodigoReenResp($CodigoReenResp);
+              $com_interna->save();   
+              //******************************************************************************************************
+              //var_dump($com_interna); exit();
+              $cargousuarioid = trim($this->getRequestParameter('cargousuarioId')); 
+              //$estadocominterna_id = $com_interna->getEstadocominternaId();
+              //$estadocominterna_id = 3; // QUEMARLO?? PERO TOCARIA EN 5 PARA Q APAREZCA EN: POR RESPONDER
+              $estadocominterna_id = 5; 
+
+              $cominterna_id = $com_interna->getPrimaryKey();
+              $cominterna_usuario = CominternaUsuarioPeer::getCurrentUserAsig($cominterna_id);
+              $rolusuariocominterna_id = $cominterna_usuario->getRolusuariocominternaId();
+              //CominternaUsuario
+
+              //******************************************************************************************************
+              // $ucurrent_asignado = CominternaUsuarioPeer::getCurrentUserAsig($com_interna->getPrimaryKey()); 
+              $ucurrent_asignado = $cominterna_usuario; 
+              /*
+              {  
+                //echo 'TIPOPROCESOCOM_ID:' . $tipoprocesocomId . '<br>';
+                echo 'CARGOUSUARIO_ID:' . $cargousuarioid . '<br>';
+                echo 'ESTADOCOMINTERNA_ID:' . $estadocominterna_id . '<br>';
+                echo 'ROLUSUARIOCOMINTERNA_ID:' . $rolusuariocominterna_id . '<br>';
+                echo '<hr>';
+                var_dump($ucurrent_asignado);
+                echo '<hr>';
+                exit();
+              }
+              */
+              //******************************************************************************************************
+              ComInternaPeer::updateAsignadoCom($com_interna->getPrimaryKey(), 2, 0);
+              $result = ComInternaPeer::addUserRolByCom($com_interna->getPrimaryKey(), $newuser, $cargousuarioid, $estadocominterna_id, $rolusuariocominterna_id, 1); 
+              if(!$result)
+              {
+                $ucurrent_asignado->setEstaAsignada(1);
+                $ucurrent_asignado->save();
+                //break;
+              }
+              /******************************************* SEND EMAIL ***********************************************/
+              // $encabezado_email = "Este es un mensaje para informarle que se le ha asignado una comunicaci&oacute;n externa recibida y la puede consultar en SIMAD con la siguiente informaci&oacte;n: ";
+              // ComRecibidaPeer::envioEmail($com_recibida->getPrimaryKey(), $newuser, $encabezado_email);
+              /******************************************************************************************************/
+              AuditLogPeer::guardarAuditoriaLite('ComInterna', $com_interna_anterior, $com_interna, 3, $com_interna->getRadicado(),$usuariologuiado);
+              //$this->redirect($this->getRequest()->getScriptName() . '/usuario/finAsignado');
+          }
+
+          //if(isset($this->getRequestParameter('comenviada_id')))
+          if($this->getRequestParameter('comenviada_id') != null)
+          {
+              $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
+
+              $enviada_usuario = EnviadaUsuarioPeer::getCurrentUserAsig($this->getRequestParameter('comenviada_id'));
+              $tipoprocesocomId = $enviada_usuario->getTipoprocesocomId();
+              //$tipoprocesocomId = $com_enviada->getTipoprocesocomId();   // esto da null
+              $com_enviada_anterior = $com_enviada->copy();
+              //$CodigoReenResp = $com_recibida->getCodigoReenResp() ? $com_recibida->getCodigoReenResp() : $com_recibida->getPrimaryKey();
+              $observaciones = trim($this->getRequestParameter('detalles')) ? trim($this->getRequestParameter('detalles')) : null;
+              //$tipoprocesocomId = 2;
+              //******************************************************************************************************
+              $enviada_usuario->setTipoprocesocomId($tipoprocesocomId); 
+              $com_enviada->setTipoprocesocomId($tipoprocesocomId); // toca es en otra tabla en ENVIADA_USUARIO
+              $enviada_usuario->save();
+              $com_enviada->save();
+              
+              //******************************************************************************************************
+              $cargousuarioid = trim($this->getRequestParameter('cargousuarioId'));
+              // $estadocomenviada_id = 1; //estado por defecto de la comunicacion
+              // $estadocomenviada_id = $com_enviada->getEstadocomenviadaId();
+              $estadocomenviada_id = 2;
+              $rolusuariocomenviada_id = $enviada_usuario->getRoluscomenviadaId();
+              //******************************************************************************************************
+              //$ucurrent_asignado = EnviadaUsuarioPeer::getCurrentUserAsig($com_enviada->getPrimaryKey());
+              $ucurrent_asignado = $enviada_usuario;
+              //******************************************************************************************************
+              
+              /*
+              {
+                echo 'TIPOPROCESOCOM_ID:' . $tipoprocesocomId . '<br>';
+                echo 'CARGOUSUARIO_ID:' . $cargousuarioid . '<br>';
+                echo 'ESTADOCOMENVIADA_ID:' . $estadocomenviada_id . '<br>';
+                echo 'ROLUSUARIOCOMENVIADA_ID:' . $rolusuariocomenviada_id . '<br>';
+                echo '<hr>';
+                var_dump($ucurrent_asignado);
+                echo '<hr>';
+                exit();
+              }
+              */
+              //******************************************************************************************************
+              
+              ComEnviadaPeer::updateAsignadoCom($com_enviada->getPrimaryKey(), 2, 0);
+              //if($resultado == False){  echo 'AQUI PROBLEMA';  exit(); }  // LO ESTA HACIENDO BIEN... ENTONCES PQ ENTRA AL CONDICIONAL??? NO ENTIENDO...
+              $result = ComEnviadaPeer::addUserRolByCom($com_enviada->getPrimaryKey(), $newuser, $cargousuarioid, $estadocomenviada_id, $rolusuariocomenviada_id, 1, $tipoprocesocomId);
+
+              //var_dump($result); exit();
+
+              if(!$result)
+              {
+                $ucurrent_asignado->setEstaAsignada(1);
+                $ucurrent_asignado->save();
+                //break;
+              }
+              /******************************************* SEND EMAIL ***********************************************/
+              // $encabezado_email = "Este es un mensaje para informarle que se le ha asignado una comunicaci&oacute;n externa recibida y la puede consultar en SIMAD con la siguiente informaci&oacte;n: ";
+              // ComRecibidaPeer::envioEmail($com_recibida->getPrimaryKey(), $newuser, $encabezado_email);
+              /******************************************************************************************************/
+              AuditLogPeer::guardarAuditoriaLite('ComEnviada', $com_enviada_anterior, $com_enviada, 3, $com_enviada->getRadicado(),$usuariologuiado);  
+          }
+
+          $data_resp['status'] = 200;
+          $data_resp['message'] = 'Comunicación reasignada exitosamente';
+    }
+    catch(PropelException $ex)
+    {
+      $data_resp['status'] = 400;
+      $data_resp['message'] = 'Error relacionado con la Base de Datos';
+    }
+    catch(Exception $ex)
+    {
+      $data_resp['status'] = 500;
+      $data_resp['message'] = $ex->getMessage();
+    }
+    //********************************************************************************************************
+    $this->getResponse()->setContentType('application/json');
+    //********************************************************************************************************
+    $array = json_encode($data_resp);
+    return $this->renderText($array); 
+  }
+  
+  public function executeUpdateReasignarGestorMasivo()
+  {
+    $data_resp = array();
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    //********************************************************************************************************
+    try
+    {
+      // RECOGEMOS LAS VARIABLES DE SESION 
+      $dta_usuario_id = trim($this->getUser()->getAttribute('sess_usuario_id'));
+      $dta_periodo_id = trim($this->getUser()->getAttribute('sess_periodo_id'));
+      $dta_cant_regsts = trim($this->getUser()->getAttribute('sess_cant_regsts'));
+      $dta_concepto = trim($this->getUser()->getAttribute('sess_concepto'));
+      //******************************************************************************************************
+      if((empty($dta_usuario_id) || empty($dta_periodo_id)) || empty($dta_concepto))
+      {
+        $data_resp['status'] = 400;
+        $data_resp['message'] = 'Error interno de session';
+        $this->getResponse()->setContentType('application/json');
+        //****************************************************************************************************
+        $array = json_encode($data_resp);
+        return $this->renderText($array); 
+      }
+      //******************************************************************************************************
+      $process_usuario = UsuarioPeer::getAllProcesoComList();
+      $losRegistrosPendientes = UsuarioPeer::getTotalRegPend($dta_periodo_id, $dta_usuario_id, $process_usuario, $dta_concepto, true);
+      //******************************************************************************************************
+      $currentForm = "REASIGNAR_COMUNICACIONES_MASIVAMENTE";
+      $this->verificaPrilegioCerrar($currentForm);
+      //******************************************************************************************************
+      $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+      $newuser = trim($this->getRequestParameter('idUser'));
+      //******************************************************************************************************
+      if(empty($newuser))
+      {
+        $data_resp['status'] = 400;
+        $data_resp['message'] = 'No se suministro el nuevo usuario asignado';
+        $this->getResponse()->setContentType('application/json');
+        //****************************************************************************************************
+        $array = json_encode($data_resp);
+        return $this->renderText($array); 
+      }
+      //******************************************************************************************************
+      $c = new Criteria();
+      $c = $losRegistrosPendientes['criteria'];
+	  //****************************************TABLA COM_RECIBIDA********************************************
+	  if($losRegistrosPendientes['modelo'] == 'ComRecibida')
+    {
+		$regsFinales = ComRecibidaPeer::doSelect($c);
+		foreach($regsFinales as $com_recibida)
+		{
+			$tipoprocesocomId = $com_recibida->getTipoprocesocomId();
+			$com_recibida_anterior = $com_recibida->copy();
+			$CodigoReenResp = $com_recibida->getCodigoReenResp() ? $com_recibida->getCodigoReenResp() : $com_recibida->getPrimaryKey();
+			$observaciones = trim($this->getRequestParameter('detalles')) ? trim($this->getRequestParameter('detalles')) : null;
+			//*************************************************************************************************
+			$observaciones = $observaciones != null ? (trim($com_recibida->getObsReenResp()) ? trim($com_recibida->getObsReenResp()) . ' | ' . $observaciones : $observaciones) : trim($com_recibida->getObsReenResp());
+			//*************************************************************************************************
+			$com_recibida->setObsRemitir($observaciones);
+			$com_recibida->setCodigoReenResp($CodigoReenResp);
+			$com_recibida->setTipoprocesocomId($tipoprocesocomId);
+			$com_recibida->save();
+			//*************************************************************************************************
+			$cargousuarioid = trim($this->getRequestParameter('cargousuarioId'));
+			$estadocomrecibida_id = 1; //estado por defecto de la comunicacion
+			//*************************************************************************************************
+			$ucurrent_asignado = ComrecibidaUsuarioPeer::getCurrentUserAsig($com_recibida->getPrimaryKey());
+			//*************************************************************************************************
+			ComRecibidaPeer::updateAsignadoCom($com_recibida->getPrimaryKey(), 2, 0);
+			$result = ComRecibidaPeer::addUserRolByCom($com_recibida->getPrimaryKey(), $newuser, $cargousuarioid, $estadocomrecibida_id, 2, 1, $tipoprocesocomId/*, $fecha_reasigna*/);
+			//*************************************************************************************************
+			if(!$result)
+			{
+			  $ucurrent_asignado->setEstaAsignada(1);
+			  $ucurrent_asignado->save();
+			  break;
+			}
+			//*************************************************************************************************
+			AuditLogPeer::guardarAuditoriaLite('ComRecibida', $com_recibida_anterior, $com_recibida, 3, $com_recibida->getRadicado(),$usuariologuiado);
+		}
+	  }
+	  //****************************************TABLA COM_INTERNA**********************************************
+	  if($losRegistrosPendientes['modelo'] == 'ComInterna')
+	  {
+		  $regsFinales = ComInternaPeer::doSelect($c);
+		  foreach($regsFinales as $com_interna)
+		  {              
+        $com_interna_anterior = $com_interna->copy();
+        $CodigoReenResp = $com_interna->getCodigoReenResp() ? $com_interna->getCodigoReenResp() : $com_interna->getPrimaryKey();
+        $observaciones = trim($this->getRequestParameter('detalles')) ? trim($this->getRequestParameter('detalles')) : null;
+        //**************************************************************************************************
+        $observaciones = $observaciones != null ? (trim($com_interna->getObsReenResp()) ? trim($com_interna->getObsReenResp()) . ' | ' . $observaciones : $observaciones) : trim($com_interna->getObsReenResp());
+        //**************************************************************************************************
+        $com_interna->setObsReenResp($observaciones);
+        $com_interna->setCodigoReenResp($CodigoReenResp);
+        $com_interna->save();
+        //**************************************************************************************************
+        $cargousuarioid = trim($this->getRequestParameter('cargousuarioId'));
+        $estadocominterna_id = 5; // QUEMARLO?? PERO TOCARIA EN 5 PARA Q APAREZCA EN: POR RESPONDER
+
+        $cominterna_id = $com_interna->getPrimaryKey();
+        $cominterna_usuario = CominternaUsuarioPeer::getCurrentUserAsig($cominterna_id);
+        $rolusuariocominterna_id = $cominterna_usuario->getRolusuariocominternaId();
+        //**************************************************************************************************
+        $ucurrent_asignado = $cominterna_usuario;
+        //**************************************************************************************************
+        ComInternaPeer::updateAsignadoCom($com_interna->getPrimaryKey(), 2, 0);
+        $result = ComInternaPeer::addUserRolByCom($com_interna->getPrimaryKey(), $newuser, $cargousuarioid, $estadocominterna_id, $rolusuariocominterna_id, 1); 
+        //**************************************************************************************************
+        if(!$result)
+        {
+          $ucurrent_asignado->setEstaAsignada(1);
+          $ucurrent_asignado->save();
+          break;
+        }
+        //**************************************************************************************************
+        AuditLogPeer::guardarAuditoriaLite('ComInterna', $com_interna_anterior, $com_interna, 3, $com_interna->getRadicado(),$usuariologuiado);
+		  }
+	  }
+	  //*************************************************TABLA COM_ENVIADA**************************************
+	  if($losRegistrosPendientes['modelo'] == 'ComEnviada')
+	  {
+		  $regsFinales = ComEnviadaPeer::doSelect($c);
+		  foreach($regsFinales as $com_enviada)
+		  {     
+
+			$enviada_usuario = EnviadaUsuarioPeer::getCurrentUserAsig($com_enviada->getPrimaryKey());
+
+			$tipoprocesocomId = $com_enviada->getTipoprocesocomId();         
+			$com_enviada_anterior = $com_enviada->copy();
+			$observaciones = trim($this->getRequestParameter('detalles')) ? trim($this->getRequestParameter('detalles')) : null;
+			//**************************************************************************************************
+			$com_enviada->setTipoprocesocomId($tipoprocesocomId);
+			$com_enviada->save();
+			//**************************************************************************************************
+			$cargousuarioid = trim($this->getRequestParameter('cargousuarioId'));
+			$estadocomenviada_id = 2;
+			$rolusuariocomenviada_id = $enviada_usuario->getRoluscomenviadaId();
+			//**************************************************************************************************
+			$ucurrent_asignado = $enviada_usuario;               
+			//**************************************************************************************************
+			ComEnviadaPeer::updateAsignadoCom($com_enviada->getPrimaryKey(), 2, 0);
+			$result = ComEnviadaPeer::addUserRolByCom($com_enviada->getPrimaryKey(), $newuser, $cargousuarioid, $estadocomenviada_id, $rolusuariocomenviada_id, 1, $tipoprocesocomId);
+			//**************************************************************************************************
+			if(!$result)
+			{
+			  $ucurrent_asignado->setEstaAsignada(1);
+			  $ucurrent_asignado->save();
+			  break;
+			}
+			//**************************************************************************************************
+			AuditLogPeer::guardarAuditoriaLite('ComEnviada', $com_enviada_anterior, $com_enviada, 3, $com_enviada->getRadicado(),$usuariologuiado);
+		  }
+	  }
+      //********************************************************************************************************
+      //ELIMINAR LOS DATOS DE LA SESSION PARA EVITAR QUE SE ASIGNEN A UN USUARIO SELECCIONADO EN UN PROCESO MASIVO ANTERIOR
+      // AQUI MUEREN LAS VARIABLES DE SESION, SE ASIGNA SUS VALORES A NULL Y ASI SE ELIMINAN.
+      $this->getUser()->setAttribute('sess_usuario_id', null);
+      $this->getUser()->setAttribute('sess_periodo_id', null);
+      $this->getUser()->setAttribute('sess_cant_regsts', null);
+      $this->getUser()->setAttribute('sess_concepto', null);
+	  //********************************************************************************************************
+      $data_resp['status'] = 200;
+      $data_resp['message'] = 'Comunicaciones reasignadas exitosamente';
+    }catch(PropelException $ex){
+      $data_resp['status'] = 400;
+      $data_resp['message'] = 'Error relacionado con la Base de Datos';
+    }catch(\Exception $ex){
+      $data_resp['status'] = 500;
+      $data_resp['message'] = $ex->getMessage();
+    }
+    //**********************************************************************************************************
+    $this->getResponse()->setContentType('application/json');
+    $array = json_encode($data_resp);
+    return $this->renderText($array); 
+  }
+  
+  public function executeDetallePendientes()
+  {
+    $usuario_id = trim($this->getRequestParameter('usuario_id'));
+    $periodo_id = trim($this->getRequestParameter('periodo_id'));
+    $cant_regsts = trim($this->getRequestParameter('cant_regsts'));
+    $concepto = trim($this->getRequestParameter('concepto')); 
+
+    $this->getUser()->setAttribute('sess_usuario_id', $usuario_id);
+    $this->getUser()->setAttribute('sess_periodo_id', $periodo_id);
+    $this->getUser()->setAttribute('sess_cant_regsts', $cant_regsts);
+    $this->getUser()->setAttribute('sess_concepto', $concepto);
+
+    $process_usuario = UsuarioPeer::getAllProcesoComList();
+    $losRegistrosPendientes = UsuarioPeer::getTotalRegPend($periodo_id, $usuario_id, $process_usuario, $concepto, true);
+
+    $pager = new sfPropelPager($losRegistrosPendientes['modelo'], 10);
+    $pager->setCriteria($losRegistrosPendientes['criteria']);
+    $pager->setPage($this->getRequestParameter('page',1));
+    $pager->init();
+    $this->pager = $pager;
+
+    $this->parametros = '&usuario_id=' . $usuario_id . '&periodo_id=' . $periodo_id . '&cant_regsts=' . $cant_regsts . '&concepto=' . $concepto . '&a=1';
+  }
+
+  public function executeListarPendientesAsync()
+  {
+    $usuario_id = trim($this->getRequestParameter('usuario_id'));
+    $periodo_id = trim($this->getRequestParameter('periodo_id'));
+    $cant_regsts = trim($this->getRequestParameter('cant_regsts'));
+    $concepto = trim($this->getRequestParameter('concepto'));
+
+    $process_usuario = UsuarioPeer::getAllProcesoComList();
+    $losRegistrosPendientes = UsuarioPeer::getTotalRegPend($periodo_id, $usuario_id, $process_usuario, $concepto, true);
+
+    $pager = new sfPropelPager($losRegistrosPendientes['modelo'], 10);
+    $pager->setCriteria($losRegistrosPendientes['criteria']);
+    $pager->setPage($this->getRequestParameter('page',1)); 
+    $pager->init();
+    $this->pager = $pager;
+
+    $page = trim($this->getRequestParameter('page')) ;
+    $this->setLayout(false); 
+    $this->parametros = '&usuario_id=' . $usuario_id . '&periodo_id=' . $periodo_id . '&cant_regsts=' . $cant_regsts . '&concepto=' . $concepto . '&a=1';
+
+  }
+
+  public function executeListarPendientesComRecibidaAsync()
+  {
+    $usuario_id = trim($this->getRequestParameter('usuario_id'));
+    $periodo_id = trim($this->getRequestParameter('periodo_id'));
+    $cant_regsts = trim($this->getRequestParameter('cant_regsts'));
+    $concepto = trim($this->getRequestParameter('concepto'));
+
+    $process_usuario = UsuarioPeer::getAllProcesoComList();
+    $losRegistrosPendientes = UsuarioPeer::getTotalRegPend($periodo_id, $usuario_id, $process_usuario, $concepto, true);
+
+    $pager = new sfPropelPager($losRegistrosPendientes['modelo'], 10);
+    $pager->setCriteria($losRegistrosPendientes['criteria']);
+    $pager->setPage($this->getRequestParameter('page',1)); 
+    $pager->init();
+    $this->pager = $pager;
+
+    $page = trim($this->getRequestParameter('page')) ;
+    $this->setLayout(false); 
+    $this->parametros = '&usuario_id=' . $usuario_id . '&periodo_id=' . $periodo_id . '&cant_regsts=' . $cant_regsts . '&concepto=' . $concepto . '&a=1';
+
+  }
+
+  public function executeListarPendientesComInternaAsync()
+  {
+    $usuario_id = trim($this->getRequestParameter('usuario_id'));
+    $periodo_id = trim($this->getRequestParameter('periodo_id'));
+    $cant_regsts = trim($this->getRequestParameter('cant_regsts'));
+    $concepto = trim($this->getRequestParameter('concepto'));
+
+    $process_usuario = UsuarioPeer::getAllProcesoComList();
+    $losRegistrosPendientes = UsuarioPeer::getTotalRegPend($periodo_id, $usuario_id, $process_usuario, $concepto, true);
+
+    $pager = new sfPropelPager($losRegistrosPendientes['modelo'], 10);
+    $pager->setCriteria($losRegistrosPendientes['criteria']);
+    $pager->setPage($this->getRequestParameter('page',1)); 
+    $pager->init();
+    $this->pager = $pager;
+
+    $page = trim($this->getRequestParameter('page')) ;
+    $this->setLayout(false); 
+    $this->parametros = '&usuario_id=' . $usuario_id . '&periodo_id=' . $periodo_id . '&cant_regsts=' . $cant_regsts . '&concepto=' . $concepto . '&a=1';
+
+  }
+
+  public function executeListarPendientesComEnviadaAsync()
+  {
+    $usuario_id = trim($this->getRequestParameter('usuario_id'));
+    $periodo_id = trim($this->getRequestParameter('periodo_id'));
+    $cant_regsts = trim($this->getRequestParameter('cant_regsts'));
+    $concepto = trim($this->getRequestParameter('concepto'));
+
+    $process_usuario = UsuarioPeer::getAllProcesoComList();
+    $losRegistrosPendientes = UsuarioPeer::getTotalRegPend($periodo_id, $usuario_id, $process_usuario, $concepto, true);
+
+    $pager = new sfPropelPager($losRegistrosPendientes['modelo'], 10);
+    $pager->setCriteria($losRegistrosPendientes['criteria']);
+    $pager->setPage($this->getRequestParameter('page',1)); 
+    $pager->init();
+    $this->pager = $pager;
+
+    $page = trim($this->getRequestParameter('page')) ;
+    $this->setLayout(false); 
+    $this->parametros = '&usuario_id=' . $usuario_id . '&periodo_id=' . $periodo_id . '&cant_regsts=' . $cant_regsts . '&concepto=' . $concepto . '&a=1';
+  }
+  
   public function executeShow()
   {  
   	$this->verificaPrilegio("usuario/show");
     $user=$this->usuario = UsuarioPeer::retrieveByPk($this->getRequestParameter('usuario_id'));
     $crCargo=new Criteria();
 	$crCargo->add(CargoUsuarioPeer::USUARIO_ID, $this->getRequestParameter('usuario_id'));
+    $crCargo->add(CargoUsuarioPeer::ES_ACTUAL, 1);
     $this->objCargoUsuario = CargoUsuarioPeer::doSelect($crCargo);
     if(!$this->objCargoUsuario)
        $this->objCargoUsuario =new CargoUsuario();
@@ -489,12 +1031,16 @@ class usuarioActions extends sfActions
   public function executeCambioPassword()
   {
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+    if(empty($usuariologuiado)){
+      return $this->redirect('/backend.php/security/login');
+    }
+    //*************************************************************************************************
     $this->usuario = UsuarioPeer::retrieveByPk($usuariologuiado);
     $this->form_source = $this->getRequestParameter('porfechaactualizacion') ? $this->getRequestParameter('porfechaactualizacion') : 0;
     //*************************************************************************************************
     if($this->form_source){
         $this->setLayout(false);    
-        //*********************************************************************************************
+      //***********************************************************************************************
         $this->getUser()->setAuthenticated(false);
         $this->getUser()->clearCredentials();
         $this->getUser()->getAttributeHolder()->removeNamespace('subscriber');
@@ -510,6 +1056,9 @@ class usuarioActions extends sfActions
   
   public function executeUpdateRecuperarPassword()
   { 
+    $this->setLayout(false);
+    $this->getUser()->setAttribute('recoverpass', 'init', 'subscriber');
+    //*******************************************************************************
   	$userName = $this->getRequestParameter('username');
   	$cedula = $this->getRequestParameter('cedula');
     $error = 0;
@@ -518,20 +1067,41 @@ class usuarioActions extends sfActions
     $c->add(UsuarioPeer::USER_NAME, $userName);
     $c->add(UsuarioPeer::CEDULA, $cedula);
     $usuario = UsuarioPeer::doSelectOne($c);
-    //*******************************************************************************
+    //*******************************************************************************************************
     $nuevoPassword="";
-    if($usuario){
-      if($usuario->getEmail()!=""){		
+    if ($usuario) 
+    {
+        if($usuario->getTipoautenticacionId() != UserAuthType::Nativa){
+          $mensaje = "Opps!, ha ocurrido un error, debido al metodo de autenticacion configurado para tu cuenta, no puedes cambiar la contraseña en este aplicativo";
+          //*************************************************************************************************
+          $error = 1;
+          $status = 400;
+          //*************************************************************************************************
+          $data_resp['submitted_data']['email'] = $usuario->getEmail();
+          $data_resp['submitted_data']['mensaje'] = $mensaje;
+          $data_resp['submitted_data']['error'] = $error;
+          $nuevoPassword = "";
+          //*************************************************************************************************
+          $this->getResponse()->setStatusCode($status);
+          $this->getResponse()->setContentType('application/json');
+          //*************************************************************************************************
+          $array = json_encode($data_resp);
+          return $this->renderText($array);
+        }
+        //***************************************************************************************************
       	for($i=0;$i<8;$i++){
-          srand((double)microtime()*1000000);
+          srand((float)microtime() * 1000000);
           $random =rand(0,25)+65;
           $characte=chr($random);
           $nuevoPassword.=$characte;
       	}
       	
+        $nuevoPassword = md5($nuevoPassword);
         $formato_mensaje="Para usuario: %s <br>
-        Este mensaje es para informarle que su nueva contraseña en el gestor documental es la siguiente: <br><b>%s</b>";
+        Este mensaje es para informarle que su nueva contraseña en el gestor documental ArchiDHu es la siguiente: <br><b>%s</b><br>
+        ,por favor ingresarla en campo contraseña";
         $texto_mensaje=sprintf($formato_mensaje,$userName, $nuevoPassword );
+        $mensaje = "";
         //****************************************************************************************************
         $email = $usuario->getEmail();
         $this->setSha1Password($usuario->getUsuarioId(), $nuevoPassword);
@@ -540,38 +1110,42 @@ class usuarioActions extends sfActions
         //****************************************************************************************************
         try{
           $baseMail = new BaseMailSimad();
-          $baseMail->SetSubject('ArchiDHU .::. Recuperación Acceso Cuenta');
+          $baseMail->SetSubject('ARCHIDHU .::.. Recuperación Acceso Cuenta');
           $baseMail->SetMsgHTML($texto_mensaje);
           $baseMail->SetAddAddress($usuario->getEmail(), $usuario->getEmail());
           $baseMail->SetEnableService($usuario->getActivarAlertas());
+          //**************************************************************************************************
           if($baseMail->InitSend() === true){
               $usuario->save();
               $mensaje = "La contraseña fue actualizada y se ha notificado al correo registrado";
               $baseMail->writetolog("Alerta enviada => UsuarioId: " . $usuario->getUsuarioId() . " Enviado a: " . $email . " Mensaje: " . $mensaje);
-              //**********************************************************************************************
+            //************************************************************************************************
               UsuarioNotificacionPeer::notifyUserTask(array($usuario->getUsuarioId()),ModuleEnableNotify::Seguridad,null,RolComTypeNotify::RecuperacionPassword);
           }else{
-              $baseMail->writetolog("Error al enviar alerta: " . $usuario->getUsuarioId() . " Cuenta correo: " . $usuario->getEmail());
-              $email = $usuario->getEmail();
-              $mensaje="Opps!, ha ocurrido un error, no se ha podido enviar el email por favor intenta de nuevo";
+            $baseMail->writetolog("Error al enviar alerta: " . $usuario->getUsuarioId() . " Cuenta correo: " . $email);
+            $mensaje = "Opps!, ha ocurrido un error, por favor intenta de nuevo";
               $nuevoPassword = "";
               $error = 1;
           }
-        }catch(Exception $ex){
+        } catch (PropelException $ex) {
           $email = $usuario->getEmail();
-          $mensaje="Opps!, ha ocurrido un error, por favor intenta de nuevo jajaja";
-          //$mensaje="Opps!, ha ocurrido un error, no se ha podido enviar el email por favor intenta de nuevo";
+          $mensaje = "Exception!, ha ocurrido un error, por favor intenta de nuevo";
           $nuevoPassword = "";
           $error = 1;
-        }          
-       }else{
-        $email = '';
-      	$mensaje="Ha ocurrido un error al intentar enviar el email. La informacion que suministro es erronea.";
+        } catch (\Exception $ex) {
+          $email = $usuario->getEmail();
+          $mensaje = "Exception!, ha ocurrido un error, por favor intenta de nuevo";
+          $nuevoPassword = "";
         $error = 1;
+        } catch (\Throwable $ex) {
+          $email = $usuario->getEmail();
+          $mensaje = "Exception!, ha ocurrido un error, por favor intenta de nuevo";
+          $nuevoPassword = "";
+          $error = 1;
       }
     }else{
       $email = '';
-	    $mensaje = "Ha ocurrido un error al intentar enviar el email. La informacion que suministro es erronea.";
+      $mensaje = "Opps!, ha ocurrido un error, por favor intenta de nuevo";
       $error = 1;
     }
     //********************************************************************************************************
@@ -595,7 +1169,6 @@ class usuarioActions extends sfActions
   { 
    
 	$this->usuario = new Usuario();
-    
   }
     
   public function executeUpdate()
@@ -751,9 +1324,6 @@ class usuarioActions extends sfActions
     //***********************************************************************************************
     AuditLogPeer::guardarAuditoriaLite(UsuarioPeer::OM_CLASS,$usuario_anterior,$usuario,ModulesEnable::Seguridad,$usuario->getCedula(),$usuariologuiado);
     //***********************************************************************************************
-    //Verificacion Active Directory
-	  //$activeDirectory = ParametroPeer::retrieveByPK(47);
-    //***********************************************************************************************
 	$verificacion = 0;$msg = 0;
   	if($usuario->getTipoautenticacionId() === UserAuthType::LdapNativo){
       $verificacion = UsuarioPeer::verificarActiveDirectory(trim($this->getRequestParameter('usuario_ad')));  	
@@ -771,6 +1341,28 @@ class usuarioActions extends sfActions
       $usuario->save();
       //*********************************************************************************************
       AuditLogPeer::guardarAuditoriaLite(UsuarioPeer::OM_CLASS,$usuario_anterior,$usuario,ModulesEnable::Seguridad,$usuario->getCedula(),$usuariologuiado);
+    }
+    //***********************************************************************************************
+    if ($insertarHistorico == 0) {
+      //guarda en historico
+      $hist = new HistUsuario();
+      $hist->fromArray($usuario->toArray());
+      $hist->setFechaModificacion(date('Y-m-d G:i:s'));
+      $hist->save();
+      //*********************************************************************************************
+      $hist_id = $hist->getHistusuarioId();
+      $usuario_id = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+      $rolhist = new UsUsHistorico();
+      $rolhist->setUsuarioId($usuario_id);
+      $rolhist->setRolushistoricoid(1);
+      $rolhist->setHistusuarioId($hist_id);
+      $rolhist->save();
+      //*********************************************************************************************
+      $rolhist = new UsUsHistorico();
+      $rolhist->setUsuarioId($usuario->getPrimaryKey());
+      $rolhist->setRolushistoricoid(2);
+      $rolhist->setHistusuarioId($hist_id);
+      $rolhist->save();
     }
     //***********************************************************************************************
     $userprcom = $this->getRequestParameter('tipoprocesocom_id');
@@ -801,6 +1393,7 @@ class usuarioActions extends sfActions
 	  if($objCargoUsuario){
       $newcargo_id = $this->getRequestParameter('cargo_id');
       if($newcargo_id != $objCargoUsuario->getCargoId()){
+        //*******************************************************************************************
         $new_ucargo = $objCargoUsuario->copy();
           //*****************************************************************************************
         $new_ucargo->setCargoId($newcargo_id);
@@ -810,6 +1403,7 @@ class usuarioActions extends sfActions
         $objCargoUsuario->setEsActual(false);
         $objCargoUsuario->setFechaFin(date("Y-m-d G:i:s"));
         $objCargoUsuario->save();
+        //*******************************************************************************************
       }
 	  }else{
       $objCargoUsuario = new CargoUsuario();
@@ -821,7 +1415,7 @@ class usuarioActions extends sfActions
       $objCargoUsuario->setEsActual(true);      
       $objCargoUsuario->save();
 	}
-  //*******************************ENVIAR PASSWORD AL CORREO *****************************************
+    //*******************************ENVIAR PASSWORD AL CORREO *********************************************//
 	if (!$this->getRequestParameter('usuario_id')){
 		$formato_mensaje = "Este mensaje es para informarle que su usuario en SIMAD ha sido creado: "."\n\n\n";
 		$formato_mensaje .= "El nombre usuario es: %s"."\n\n\n";
@@ -829,7 +1423,7 @@ class usuarioActions extends sfActions
 		$texto_mensaje = sprintf($formato_mensaje,$this->getRequestParameter('user_name'), $this->getRequestParameter('password') );
 		$this->envioEmail($this->getRequestParameter('email'),"Su nueva cuenta en SIMAD WEB",$texto_mensaje);
 	}
-	//**************************************************************************************************
+    //******************************************************************************************************//
     return $this->redirect($this->getRequest()->getScriptName().'/usuario/show?usuario_id='.$usuario->getUsuarioId().'&msg='.$msg);
   }
   
@@ -852,8 +1446,7 @@ class usuarioActions extends sfActions
     $baseMail->SetSubject('Nuevo Usuario SIMAD :: '.$subject);
     $baseMail->SetMsgHTML($cuerpo);
     $baseMail->SetAddAddress($email,$email);        
-    if($baseMail->InitSend() === true)
-    {
+    if ($baseMail->InitSend() === true) {
        $baseMail->writetolog("Alerta enviada: Nuevo Usuario ==> Enviado a: " . $email);
     }else{
        $baseMail->writetolog("Error al enviar alerta: Cuenta correo ===> " . $email);
@@ -904,7 +1497,6 @@ class usuarioActions extends sfActions
         }else{
             return false;
         }
-		
   }
   
 
@@ -935,6 +1527,16 @@ class usuarioActions extends sfActions
   		$this->parametros.="&estadousuario_id=".$this->getRequestParameter('estadousuario_id');
   	}
   	//**********************************************************************************************
+    if ($this->getRequestParameter('proveedorfirmadigital_id')) {
+      $c->add(UsuarioPeer::PROVEEDORFIRMADIGITAL_ID, $this->getRequestParameter('proveedorfirmadigital_id'));
+      $this->parametros .= "&proveedorfirmadigital_id=" . $this->getRequestParameter('proveedorfirmadigital_id');
+    }
+    //**********************************************************************************************
+    if (!empty($this->getRequestParameter('firma_desatendida'))) {
+      $c->add(UsuarioPeer::FIRMA_DESATENDIDA, trim($this->getRequestParameter('firma_desatendida')));
+      $this->parametros .= "&firma_desatendida=" . trim($this->getRequestParameter('firma_desatendida'));
+    }
+    //**********************************************************************************************
   	if($this->getRequestParameter('dependencia_id')){
   		$c->add(UsuarioPeer::DEPENDENCIA_ID,$this->getRequestParameter('dependencia_id'));
   		$this->parametros.="&dependencia_id=".$this->getRequestParameter('dependencia_id');
@@ -1092,7 +1694,8 @@ class usuarioActions extends sfActions
         UsuarioNotificacionPeer::notifyUserTask(array($user->getUsuarioId()),ModuleEnableNotify::Seguridad,null,RolComTypeNotify::CambioPassword);
       }
       //****************************************************************************
-      $this->form_actions = 'backend.php/security/logout';
+      $_SESSION['idCode'] = SED::encryption('RSD501');
+      $this->form_actions = '/backend.php/security/logout';
     }
   }
 
@@ -1109,6 +1712,15 @@ class usuarioActions extends sfActions
    return "";      	
 }
   
+  public function verificarActiveDirectory($Username)
+  {
+    require_once(sfConfig::get('sf_lib_dir') . "/adLDAP.php");
+    $adldap = new adLDAP();
+    $informacion = $adldap->user_info($Username);
+
+    return $informacion['count'];
+  }
+
   public function executeDelete()
   {
     $usuario = UsuarioPeer::retrieveByPk($this->getRequestParameter('usuario_id'));
@@ -1118,5 +1730,118 @@ class usuarioActions extends sfActions
     $usuario->delete();
 
     return $this->redirect($this->getRequest()->getScriptName().'/usuario/list');
+  }
+  
+  public function executeListhist()
+  { 
+      $c=new Criteria();
+      $this->parametros="&a=1";
+      $usuariologuiado=$this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        // modulo_id usuario_id fecha_creacion codigo_principal
+
+        
+            if($this->getRequestParameter('dependencia_id'))
+            {	
+                $c->add(HistUsuarioPeer::DEPENDENCIA_ID, $this->getRequestParameter('dependencia_id'));
+                $this->parametros.="&dependencia_id=".$this->getRequestParameter('dependencia_id');			 	
+			}
+            
+            if($this->getRequestParameter('regional_id'))
+            {	
+                $c->add(HistUsuarioPeer::REGIONAL_ID, $this->getRequestParameter('regional_id'));
+                $this->parametros.="&regional_id=".$this->getRequestParameter('regional_id');			 	
+            }
+
+            if($this->getRequestParameter('cargo_id'))
+            {	
+                $c->add(HistUsuarioPeer::CARGO_ID, $this->getRequestParameter('cargo_id'));
+                $this->parametros.="&cargo_id=".$this->getRequestParameter('cargo_id');			 	
+            }
+
+            if($this->getRequestParameter('estadousuario_id'))
+            {	
+                $c->add(HistUsuarioPeer::ESTADOUSUARIO_ID, $this->getRequestParameter('estadousuario_id'));
+                $this->parametros.="&estadousuario_id=".$this->getRequestParameter('estadousuario_id');			 	
+            }
+
+            if($this->getRequestParameter('tipousuario_id'))
+            {	
+                $c->add(HistUsuarioPeer::TIPOUSUARIO_ID, $this->getRequestParameter('tipousuario_id'));
+                $this->parametros.="&tipousuario_id=".$this->getRequestParameter('tipousuario_id');			 	
+            }
+
+            if($this->getRequestParameter('tipoprocesocom_id'))
+            {	
+                $c->add(HistUsuarioPeer::TIPOPROCESOCOM_ID, $this->getRequestParameter('tipoprocesocom_id'));
+                $this->parametros.="&tipoprocesocom_id=".$this->getRequestParameter('tipoprocesocom_id');			 	
+            }
+
+            if($this->getRequestParameter('nombre'))
+            {	
+                $c->add(HistUsuarioPeer::NOMBRE, $this->getRequestParameter('nombre'));
+                $this->parametros.="&nombre=".$this->getRequestParameter('nombre');			 	
+            }
+
+            if($this->getRequestParameter('apellido'))
+            {	
+                $c->add(HistUsuarioPeer::APELLIDO, $this->getRequestParameter('apellido'));
+                $this->parametros.="&apellido=".$this->getRequestParameter('apellido');			 	
+            }
+
+            if($this->getRequestParameter('cedula'))
+            {	
+                $c->add(HistUsuarioPeer::CEDULA, $this->getRequestParameter('cedula'));
+                $this->parametros.="&cedula=".$this->getRequestParameter('cedula');			 	
+            }
+            if ($this->getRequestParameter('fecha_creacion')) 
+            {
+                $c->add(HistUsuarioPeer::FECHA_CREACION, $this->getRequestParameter('fecha_creacion'),Criteria::GREATER_EQUAL);
+                $this->parametros .= "&fecha_creacion=" . str_replace("/","-",$this->getRequestParameter('fecha_creacion'));
+            }
+            else
+            {
+                $c->addDescendingOrderByColumn(HistUsuarioPeer::HISTUSUARIO_ID);
+            }
+
+            //$resultado = HistUsuarioPeer::doSelect($c);
+            //var_dump($resultado); exit();
+
+
+      
+        
+      $pager=new sfPropelPager('HistUsuario',25);
+      $pager->setCriteria($c);
+      $pager->setPage($this->getRequestParameter('page',1));
+      $pager->init();
+      
+      $this->pager=$pager;   
+      $this->controlPaginacion = 1;	
+        
+        //$this->hist_usuario = HistUsuarioPeer::doSelect(new Criteria());
+  }
+
+  public function executeShowhist()
+  {
+      $this->hist_usuario = HistUsuarioPeer::retrieveByPk($this->getRequestParameter('histusuario_id'));
+      $this->forward404Unless($this->hist_usuario);
+  }
+
+  //Este metodo compara por PK las tablas USUARIO vs HIST_USUARIO campo por campo.
+  public function executeCompareuserhist()
+  {
+      $this->usuarioUsuario = UsuarioPeer::retrieveByPk($this->getRequestParameter('usuario_id'));
+      $this->usuarioHistUsuario = HistUsuarioPeer::retrieveByPk($this->getRequestParameter('histusuario_id'));
+
+      $this->forward404Unless($this->usuarioUsuario);
+  }
+
+  public function executeRenderPartialNoVista($periodo_id = null, $usuario_id = null)
+  {
+    $el_periodo_id = $this->getRequestParameter('periodo_id') ?  $this->getRequestParameter('periodo_id') : date('Y');
+    $el_usuario_id = $this->getRequestParameter('usuario_id') ?  $this->getRequestParameter('usuario_id') : 0;
+    $process_usuario = UsuarioPeer::getAllProcesoComList(); 
+    $usuario = UsuarioPeer::retrieveByPk($el_usuario_id);  
+    $totalRegPend = UsuarioPeer::getTotalRegPend($el_periodo_id, $el_usuario_id, $process_usuario); 
+    return $this->renderPartial('regPendCont', array('periodo_id'=>$el_periodo_id, 'usuario'=>$usuario, 'totalRegPend'=>$totalRegPend));
   }
 }
