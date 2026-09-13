@@ -21,9 +21,13 @@ use_helper('jQuery','Object');
       <div class="panel-body">
         <?php 
             echo form_tag('usuario/update', array('name'=>'form1','role' => 'form', 'class' => 'form-horizontal form-groups-bordered validate'));
-            echo object_input_hidden_tag($usuario, 'getUsuarioId');        
+            echo object_input_hidden_tag($usuario, 'getUsuarioId');
         ?>
-        
+
+        <?php if ($sf_user->hasFlash('messages_error')): ?>
+            <div class="alert alert-danger"><strong>Opps! </strong><?php echo $sf_user->getFlash('messages_error') ?></div>
+        <?php endif; ?>
+
         <div class="form-group">
           <ul>
             <?php foreach($sf_request->getErrors() as $nombre => $error): ?>
