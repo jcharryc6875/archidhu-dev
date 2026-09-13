@@ -228,12 +228,6 @@ class UsuarioPendientesChecker
      * Reasigna una comunicacion interna al jefe dejando bitacora: nueva fila
      * COMINTERNA_USUARIO (Rol Revision, Estado Por Responder), observacion fija en la
      * comunicacion y auditoria con actor = usuario de integracion.
-     *
-     * ComInterna no tiene el concepto de "Gestor"/TIPOPROCESOCOM_ID, y no existen
-     * ComInternaPeer::updateAsignadoCom()/addUserRolByCom() en el codigo (esos metodos,
-     * usados por la reasignacion manual de gestor, solo estan implementados para
-     * ComRecibida y ComEnviada) -- se replica el mismo efecto directamente sobre
-     * CominternaUsuarioPeer.
      */
     private static function reasignarComInterna(CominternaUsuario $registro, Usuario $jefe, $cargousuarioid)
     {
@@ -251,25 +245,15 @@ class UsuarioPendientesChecker
         $com_interna->setCodigoReenResp($codigoReenResp);
         $com_interna->save();
         //*********************************************************************************
-        $conexion = Propel::getConnection();
-        $query = sprintf(
-            'UPDATE %s SET %s = 0 WHERE %s = %d',
-            CominternaUsuarioPeer::TABLE_NAME,
-            CominternaUsuarioPeer::ESTA_ASIGNADA,
-            CominternaUsuarioPeer::COMINTERNA_ID,
-            $com_interna->getPrimaryKey()
+        ComInternaPeer::updateAsignadoCom($com_interna->getPrimaryKey(), self::INTERNA_ROL_REVISION, 0);
+        ComInternaPeer::addUserRolByCom(
+            $com_interna->getPrimaryKey(),
+            $jefe->getUsuarioId(),
+            $cargousuarioid,
+            self::INTERNA_ESTADO_POR_RESPONDER,
+            self::INTERNA_ROL_REVISION,
+            1
         );
-        $conexion->prepare($query)->execute();
-        //*********************************************************************************
-        $nuevaAsignacion = new CominternaUsuario();
-        $nuevaAsignacion->setRolusuariocominternaId(self::INTERNA_ROL_REVISION);
-        $nuevaAsignacion->setEstadocominternaId(self::INTERNA_ESTADO_POR_RESPONDER);
-        $nuevaAsignacion->setEstaAsignada(1);
-        $nuevaAsignacion->setUsuarioId($jefe->getUsuarioId());
-        $nuevaAsignacion->setCominternaId($com_interna->getPrimaryKey());
-        $nuevaAsignacion->setCargousuarioId($cargousuarioid);
-        $nuevaAsignacion->setFechaAsigna(date('Y-m-d G:i:s'));
-        $nuevaAsignacion->save();
         //*********************************************************************************
         AuditLogPeer::guardarAuditoriaLite(
             'ComInterna',
