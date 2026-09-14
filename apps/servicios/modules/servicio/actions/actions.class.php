@@ -551,7 +551,11 @@ class servicioActions extends sfActions
 	    }
 	    //***************************************************************************************
 		if(!$this->getUser()->checkPerm('VER_TODOS_LOS_SERVICIOS', $usuariologuiado)){
-			if(!$this->getUser()->checkPerm('VER_SERVICIOS_REGIONAL', $usuariologuiado)){ 
+			if($this->getUser()->checkPerm('VER_SERVICIOS_ENTIDAD', $usuariologuiado)){
+				$entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
+				$c->addJoin(ServicioPeer::REGIONAL_ID, RegionalPeer::REGIONAL_ID);
+				$c->add(RegionalPeer::ENTIDAD_ID, $entidad_conectado);
+			}elseif(!$this->getUser()->checkPerm('VER_SERVICIOS_REGIONAL', $usuariologuiado)){
 				$c->addJoin(ServicioPeer::SERVICIO_ID,AsignarServicioPeer::SERVICIO_ID);
 				$c->addJoin(AsignarServicioPeer::ASIGNARSERVICIO_ID,UsuarioAsignadoSolicitudPeer::ASIGNARSERVICIO_ID);	       		     
 				$c->add(UsuarioAsignadoSolicitudPeer::USUARIO_ID,$usuariologuiado);	
@@ -567,6 +571,12 @@ class servicioActions extends sfActions
 	    $pager->setPage($this->getRequestParameter('page', 1));
 	    $pager->init();
 	    $this->pager = $pager;
+	    //***************************************************************************************
+	    $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+	    if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('radicado'))) {
+	    	$countSinPermiso = ServicioPeer::doCount((new Criteria())->add(ServicioPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
+	    	$this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+	    }
 		//*************************************************************************************************
         $cadSolicitudes   = $this->getUser()->getAttribute('solicitudes','','servicios');
         $this->list_marcados =  preg_split("/[,]+/",trim($cadSolicitudes), -1, PREG_SPLIT_NO_EMPTY);
@@ -588,12 +598,47 @@ class servicioActions extends sfActions
    *
    * @return
    */
+    /**
+     * Replica, para un registro puntual, la misma jerarquia de permisos que executeList()
+     * aplica a la lista (VER_TODOS_LOS_SERVICIOS > VER_SERVICIOS_ENTIDAD > VER_SERVICIOS_REGIONAL
+     * > usuario asignado), para distinguir "no existen registros" de "existe pero sin permiso".
+     */
+    private function usuarioTieneAccesoServicio(Servicio $servicio, $usuario_id)
+    {
+        if ($this->getUser()->checkPerm('VER_TODOS_LOS_SERVICIOS', $usuario_id)) {
+            return true;
+        }
+        if ($this->getUser()->checkPerm('VER_SERVICIOS_ENTIDAD', $usuario_id)) {
+            $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
+            $regional = RegionalPeer::retrieveByPk($servicio->getRegionalId());
+
+            return $regional && $regional->getEntidadId() == $entidad_conectado;
+        }
+        if ($this->getUser()->checkPerm('VER_SERVICIOS_REGIONAL', $usuario_id)) {
+            $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
+
+            return $servicio->getRegionalId() == $regional_conectado;
+        }
+        $c = new Criteria();
+        $c->add(ServicioPeer::SERVICIO_ID, $servicio->getPrimaryKey());
+        $c->addJoin(ServicioPeer::SERVICIO_ID, AsignarServicioPeer::SERVICIO_ID);
+        $c->addJoin(AsignarServicioPeer::ASIGNARSERVICIO_ID, UsuarioAsignadoSolicitudPeer::ASIGNARSERVICIO_ID);
+        $c->add(UsuarioAsignadoSolicitudPeer::USUARIO_ID, $usuario_id);
+
+        return ServicioPeer::doCount($c) > 0;
+    }
+
     public function executeShow()
-    {		
+    {
     	$currentForm="servicio/show";
 		$this->verificaPrilegioCerrar($currentForm); 			
         $this->servicio = ServicioPeer::retrieveByPk($this->getRequestParameter('servicio_id'));
         $this->forward404Unless($this->servicio);
+        $usuariologuiado_acceso = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        if (!$this->usuarioTieneAccesoServicio($this->servicio, $usuariologuiado_acceso)) {
+          $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
+          return $this->redirect($this->getRequest()->getScriptName().'/servicio/list');
+        }
         //**************************************************************************************
 		//echo print_r($this->servicio->getBasicUrlAttach());
 		//**************************************************************************************
