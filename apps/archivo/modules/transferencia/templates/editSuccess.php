@@ -17,7 +17,10 @@ use_helper('Object','jQuery');
       </div>
       <!-- Contenedor Contenido Formulario-->
       <div class="panel-body">
-        <?php 
+        <?php if ($sf_user->hasFlash('messages_error')): ?>
+            <div class="alert alert-danger"><strong>Opps! </strong><?php echo $sf_user->getFlash('messages_error') ?></div>
+        <?php endif; ?>
+        <?php
             echo form_tag('transferencia/update', array('name'=>'form1', 'id'=>'form1','role' => 'form', 'class' => 'form-horizontal form-groups-bordered validate'));
             echo object_input_hidden_tag($transferencia, 'getTransferenciaId'); 
             echo input_hidden_tag('origentransferenciaid', $origen_transferencia);            
@@ -103,7 +106,34 @@ use_helper('Object','jQuery');
               </div>
             </div>        
         <?php } ?>
-        
+
+        <?php if($origen_transferencia == 2){ ?>
+        <div class="form-group">
+          <!-- Requiere Respuesta (Comunicaciones Externas Recibidas) -->
+          <label for="requiere_respuesta_switch" class="col-sm-1 control-label">Requiere Respuesta:<span class="text-danger">*</span></label>
+          <div class="col-sm-1">
+            <div class="make-switch switch-small" data-on="danger" data-off="info" data-on-label="SI" data-off-label="NO">
+                <?php echo checkbox_tag('requiere_respuesta_switch', 1, true, array('id' => 'requiere_respuesta_switch')); ?>
+            </div>
+            <?php echo input_hidden_tag('requiere_respuesta', '1', array('id' => 'requiere_respuesta')); ?>
+          </div>
+          <div class="col-sm-6" id="wrapper_obs_no_respuesta" style="display:none;">
+            <label for="obs_no_respuesta" class="control-label">Observaciones (No requiere respuesta):<span class="text-danger">*</span></label>
+            <?php echo textarea_tag('obs_no_respuesta', '', array('class' => 'form-control input-sm', 'rows' => 2, 'id' => 'obs_no_respuesta')); ?>
+          </div>
+        </div>
+        <script>
+        jQuery(function($){
+            function actualizarRequiereRespuestaRecibida(){
+                var marcado = $('#requiere_respuesta_switch').is(':checked');
+                $('#requiere_respuesta').val(marcado ? '1' : '0');
+                if(marcado){ $('#wrapper_obs_no_respuesta').hide(); }else{ $('#wrapper_obs_no_respuesta').show(); }
+            }
+            $('#requiere_respuesta_switch').on('change click', actualizarRequiereRespuestaRecibida);
+        });
+        </script>
+        <?php } ?>
+
         <div class="form-group">
           <!-- Botonera -->
           <div class="col-sm-offset-4 col-sm-5">

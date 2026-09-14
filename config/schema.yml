@@ -2364,6 +2364,7 @@ propel:
     FECHA_MAXIMA_RESPUESTA: { phpName: FechaMaximaRespuesta, type: TIMESTAMP, size: '16', scale: '3', required: false }
     MARCA_VINCULACION: { phpName: MarcaVinculacion, type: BOOLEAN, size: '1', required: false }
     REQUIERE_RESPUESTA: { phpName: RequiereRespuesta, type: BOOLEAN, size: '1', required: false }
+    OBS_NO_RESPUESTA: { phpName: ObsNoRespuesta, type: VARCHAR, size: '900', required: false }
     IS_CREATE_WORD: { phpName: IsCreateWord, type: BOOLEAN, size: '1', required: false }
     URL_FILE_WORD: { phpName: UrlFileWord, type: VARCHAR, size: '200', required: false }
     TAM_FUENTE_LETRA: { phpName: TamFuenteLetra, type: INTEGER, size: '4', scale: '0', required: false }
@@ -2477,6 +2478,8 @@ propel:
     DESTINO_COMRECIBIDA: { phpName: DestinoComrecibida, type: VARCHAR, size: '50', required: false }
     FECHA_DOCUMENTO: { phpName: FechaDocumento, type: TIMESTAMP, size: '16', scale: '3', required: false }
     MARCA_VINCULACION: { phpName: MarcaVinculacion, type: BOOLEAN, size: '1', required: false, defaultValue: ((0)) }
+    REQUIERE_RESPUESTA: { phpName: RequiereRespuesta, type: BOOLEAN, size: '1', required: false }
+    OBS_NO_RESPUESTA: { phpName: ObsNoRespuesta, type: VARCHAR, size: '900', required: false }
     TIPOFIRMADIGITAL_ID: { phpName: TipofirmadigitalId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: TIPO_FIRMA_DIGITAL, foreignReference: TIPOFIRMADIGITAL_ID }
     MEDIORESPUESTA_ID: { phpName: MediorespuestaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: MEDIO_RESPUESTA, foreignReference: MEDIORESPUESTA_ID }
     TIPORESPUESTA_ID: { phpName: TiporespuestaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: TIPO_RESPUESTA, foreignReference: TIPORESPUESTA_ID }

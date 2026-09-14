@@ -839,6 +839,31 @@ class transferenciaActions extends sfActions
     $transferencia->setFacturaId($this->getRequestParameter('factura_id') ? $this->getRequestParameter('factura_id') : null);
     $transferencia->setTipodocumentalId($this->getRequestParameter('tipo_documental') ? $this->getRequestParameter('tipo_documental') : null);
     $transferencia->setDestinotransferenciaId($this->getRequestParameter('destinotransferencia_id') ? $this->getRequestParameter('destinotransferencia_id') : null);
+    //***************************************************************************************************
+    // Control de obligatoriedad de "Requiere respuesta" al archivar (solo Comunicaciones Recibidas)
+    if ($transferencia->getOrigentransferenciaid() == 2 && trim($this->getRequestParameter('comrecibida_id'))) {
+      $com_recibida = ComRecibidaPeer::retrieveByPk(trim($this->getRequestParameter('comrecibida_id')));
+      if ($com_recibida) {
+        $requiereRespuestaParam = $this->getRequestParameter('requiere_respuesta');
+        $requiereRespuesta = ($requiereRespuestaParam === null || $requiereRespuestaParam === '') ? null : (bool) $requiereRespuestaParam;
+        $observacion = trim($this->getRequestParameter('obs_no_respuesta'));
+        $errorRequiereRespuesta = RequiereRespuestaValidator::validar($requiereRespuesta, $observacion);
+        if ($errorRequiereRespuesta) {
+          $this->getUser()->setFlash('messages_error', $errorRequiereRespuesta);
+
+          return $this->redirect($this->getRequest()->getScriptName().'/transferencia/create?comrecibida_id='.$com_recibida->getPrimaryKey().'&unidaddocumental_id='.trim($this->getRequestParameter('unidaddocumental_id')).'&origen_transferencia='.trim($this->getRequestParameter('origen_transferencia')));
+        }
+        $com_recibida_anterior = clone $com_recibida;
+        $com_recibida->setRequiereRespuesta($requiereRespuesta);
+        if (!$requiereRespuesta) {
+          $usuarioActorRequiereResp = UsuarioPeer::retrieveByPk($usuariologuiado);
+          $com_recibida->setObsNoRespuesta(RequiereRespuestaValidator::construirObservacionConTrazabilidad($observacion, $usuarioActorRequiereResp));
+        }
+        $com_recibida->save();
+        AuditLogPeer::guardarAuditoriaLite('ComRecibida', $com_recibida_anterior, $com_recibida, ModulesEnable::ComRecibida, $com_recibida->getRadicado(), $usuariologuiado);
+      }
+    }
+    //***************************************************************************************************
     $transferencia->save();
     //***************************************************************************************************
 	AuditLogPeer::guardarAuditoriaLite("Transferencia",$transferencia_anterior,$transferencia,ModulesEnable::Archivo,$transferencia->getTransferenciaId(),$usuariologuiado);

@@ -450,6 +450,7 @@ class com_internaActions extends sfActions
                 $com_interna->setUseMembrete($this->getRequestParameter('use_membrete') ? $this->getRequestParameter('use_membrete') : 0);
                 $com_interna->setFirmaElectronica(UsuarioPeer::countValidateTipoFirma(trim($this->getRequestParameter('firmanteId'))));
                 $com_interna->setRequiereRespuesta(null);
+                $com_interna->setObsNoRespuesta(null);
                 $com_interna->save();
                 //****************************************************************************************
                 $com_interna->setCodigoReenResp($com_interna->getPrimaryKey());
@@ -1954,6 +1955,7 @@ class com_internaActions extends sfActions
     $com_interna->setFolios($this->getRequestParameter('folios'));
     $com_interna->setAnexos($this->getRequestParameter('anexos'));
     $com_interna->setRequiereRespuesta($this->getRequestParameter('requiere_respuesta'));
+    $com_interna->setObsNoRespuesta(trim($this->getRequestParameter('obs_no_respuesta')) ? trim($this->getRequestParameter('obs_no_respuesta')) : null);
     $com_interna->setEstaentregado(0);
     $com_interna->setDependenciaId($dependencia_id);
     $com_interna->setRegionalId($regional_id);
@@ -2173,6 +2175,7 @@ class com_internaActions extends sfActions
     $com_interna->setFolios($this->getRequestParameter('folios'));
     $com_interna->setAnexos($this->getRequestParameter('anexos'));
     $com_interna->setRequiereRespuesta($this->getRequestParameter('requiere_respuesta'));
+    $com_interna->setObsNoRespuesta(trim($this->getRequestParameter('obs_no_respuesta')) ? trim($this->getRequestParameter('obs_no_respuesta')) : null);
     $com_interna->setEstaentregado(0);
     $com_interna->setDependenciaId($dependencia_id);
     $com_interna->setRegionalId($regional_id);
@@ -2425,6 +2428,19 @@ class com_internaActions extends sfActions
     $this->verificaPrilegio("com_interna/radicar");
     $this->com_interna = $com_interna = ComInternaPeer::retrieveByPk($this->getRequestParameter('cominterna_id'));
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+    //********************************************************************************************
+    // Control de obligatoriedad de "Requiere respuesta" al archivar (borrador -> radicado)
+    if($com_interna->getEstadocominternaId() == 1 && !empty($com_interna->getExpedienteId()) && !empty($com_interna->getTipoDocumentalCod())){
+        $errorRequiereRespuesta = RequiereRespuestaValidator::validar($com_interna->getRequiereRespuesta(), $com_interna->getObsNoRespuesta());
+        if($errorRequiereRespuesta){
+            $this->getUser()->setFlash('messages_error', $errorRequiereRespuesta);
+            return $this->redirect($this->getRequest()->getScriptName().'/com_interna/edit?cominterna_id='.$com_interna->getPrimaryKey());
+        }
+        if(!$com_interna->getRequiereRespuesta()){
+            $usuarioActor = UsuarioPeer::retrieveByPk($usuariologuiado);
+            $com_interna->setObsNoRespuesta(RequiereRespuestaValidator::construirObservacionConTrazabilidad($com_interna->getObsNoRespuesta(), $usuarioActor));
+        }
+    }
     //********************************************************************************************
     $usuarios_com = $com_interna->getUsuariosListComIds();
     $permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado,$usuarios_com['firmas'],2);
@@ -3750,6 +3766,7 @@ class com_internaActions extends sfActions
     $com_interna->setFolios(trim($this->getRequestParameter('folios')) ? trim($this->getRequestParameter('folios')) : 1);
     $com_interna->setAnexos(trim($this->getRequestParameter('anexos')) != "" ? trim($this->getRequestParameter('anexos')) : null);
     $com_interna->setRequiereRespuesta($this->getRequestParameter('requiere_respuesta'));
+    $com_interna->setObsNoRespuesta(trim($this->getRequestParameter('obs_no_respuesta')) ? trim($this->getRequestParameter('obs_no_respuesta')) : null);
     $com_interna->setEstaentregado(0);    
     $com_interna->setDependenciaId($dependencia_id);
     $com_interna->setRegionalId($regional_id);
@@ -4051,6 +4068,7 @@ class com_internaActions extends sfActions
     $com_interna->setFolios($this->getRequestParameter('folios'));
     $com_interna->setAnexos(trim($this->getRequestParameter('anexos')) != "" ? trim($this->getRequestParameter('anexos')) : null);
     $com_interna->setRequiereRespuesta($this->getRequestParameter('requiere_respuesta'));
+    $com_interna->setObsNoRespuesta(trim($this->getRequestParameter('obs_no_respuesta')) ? trim($this->getRequestParameter('obs_no_respuesta')) : null);
     $com_interna->setEstaentregado(0);    
     $com_interna->setDependenciaId($dependencia_id);        
     $com_interna->setRegionalId($regional_id);

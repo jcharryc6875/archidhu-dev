@@ -486,6 +486,7 @@ class UsuarioPendientesChecker
         $c->add(ComrecibidaUsuarioPeer::ESTADOCOMRECIBIDA_ID, 1);
         $c->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA, 1);
         $c->add(ComRecibidaPeer::IS_LOCKED, 0);
+        self::excluirNoRequiereRespuestaRecibida($c);
 
         return $c;
     }
@@ -502,6 +503,7 @@ class UsuarioPendientesChecker
         $c->add(ComRecibidaPeer::IS_LOCKED, 0);
         $c->add(ComRecibidaPeer::MARCA_VINCULACION, 0);
         $c->add(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA, date('Y-m-d 23:59:59'), Criteria::LESS_THAN);
+        self::excluirNoRequiereRespuestaRecibida($c);
 
         return $c;
     }
@@ -517,6 +519,7 @@ class UsuarioPendientesChecker
         $c->add(ComRecibidaPeer::MARCA_VINCULACION, 0);
         $c->add(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA, date('Y-m-d', strtotime('+3 day')), Criteria::LESS_THAN);
         $c->addAnd(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA, date('Y-m-d 00:00:00'), Criteria::GREATER_THAN);
+        self::excluirNoRequiereRespuestaRecibida($c);
 
         return $c;
     }
@@ -531,6 +534,7 @@ class UsuarioPendientesChecker
         $c->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA, 1);
         $c->add(ComRecibidaPeer::IS_LOCKED, 0);
         $c->add(ComRecibidaPeer::MARCA_VINCULACION, 0);
+        self::excluirNoRequiereRespuestaRecibida($c);
 
         return $c;
     }
@@ -545,6 +549,7 @@ class UsuarioPendientesChecker
         $c->add(ComRecibidaPeer::TIPOPROCESOCOM_ID, 2);
         $c->add(ComRecibidaPeer::IS_LOCKED, 0);
         $c->add(ComRecibidaPeer::MARCA_VINCULACION, 0);
+        self::excluirNoRequiereRespuestaRecibida($c);
 
         return $c;
     }
@@ -560,8 +565,22 @@ class UsuarioPendientesChecker
         $c->add(ComRecibidaPeer::TIPOPROCESOCOM_ID, 3);
         $c->add(ComRecibidaPeer::IS_LOCKED, 0);
         $c->add(ComRecibidaPeer::MARCA_VINCULACION, 0);
+        self::excluirNoRequiereRespuestaRecibida($c);
 
         return $c;
+    }
+
+    /**
+     * Excluye del bucket las comunicaciones recibidas marcadas explicitamente como
+     * "No requiere respuesta" (REQUIERE_RESPUESTA=0). NULL (aun sin decidir) sigue contando.
+     * El join ComrecibidaUsuarioPeer->ComRecibidaPeer ya existe en cada criteria que la llama.
+     */
+    private static function excluirNoRequiereRespuestaRecibida(Criteria $c)
+    {
+        $cNoDecidido = $c->getNewCriterion(ComRecibidaPeer::REQUIERE_RESPUESTA, 0, Criteria::NOT_EQUAL);
+        $cNulo = $c->getNewCriterion(ComRecibidaPeer::REQUIERE_RESPUESTA, null, Criteria::ISNULL);
+        $cNoDecidido->addOr($cNulo);
+        $c->add($cNoDecidido);
     }
 
     // ---- Comunicaciones Internas -------------------------------------------------------------
@@ -572,6 +591,7 @@ class UsuarioPendientesChecker
         $c->add(CominternaUsuarioPeer::USUARIO_ID, $usuario_id);
         $c->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, 4);
         $c->add(CominternaUsuarioPeer::ESTADOCOMINTERNA_ID, 2);
+        self::excluirNoRequiereRespuestaInterna($c);
 
         return $c;
     }
@@ -582,8 +602,22 @@ class UsuarioPendientesChecker
         $c->add(CominternaUsuarioPeer::USUARIO_ID, $usuario_id);
         $c->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, 4);
         $c->add(CominternaUsuarioPeer::ESTADOCOMINTERNA_ID, 5);
+        self::excluirNoRequiereRespuestaInterna($c);
 
         return $c;
+    }
+
+    /**
+     * Excluye del bucket las comunicaciones internas marcadas explicitamente como
+     * "No requiere respuesta" (REQUIERE_RESPUESTA=0). NULL (aun sin decidir) sigue contando.
+     */
+    private static function excluirNoRequiereRespuestaInterna(Criteria $c)
+    {
+        $c->addJoin(CominternaUsuarioPeer::COMINTERNA_ID, ComInternaPeer::COMINTERNA_ID);
+        $cNoDecidido = $c->getNewCriterion(ComInternaPeer::REQUIERE_RESPUESTA, 0, Criteria::NOT_EQUAL);
+        $cNulo = $c->getNewCriterion(ComInternaPeer::REQUIERE_RESPUESTA, null, Criteria::ISNULL);
+        $cNoDecidido->addOr($cNulo);
+        $c->add($cNoDecidido);
     }
 
     // ---- Comunicaciones Externas Enviadas ----------------------------------------------------

@@ -50,15 +50,30 @@ use_helper('Object','jQuery','UserComponent');
             ?>
           </div>
           <!-- Requiere respuesta -->
-          <label for="lbgetRequiereRespuesta" class="col-xs-1 control-label">Requiere Respuesta:</label>
+          <label for="lbgetRequiereRespuesta" class="col-xs-1 control-label">Requiere Respuesta:<span class="text-danger">*</span></label>
           <div class="col-xs-1">
-            <?php $value_check0 = $com_interna->getRequiereRespuesta() ? true : false; ?>                  
+            <?php $value_check0 = $com_interna->getRequiereRespuesta() !== null ? ($com_interna->getRequiereRespuesta() ? true : false) : true; ?>
             <!--div class="make-switch" data-on-label="<i class='entypo-check'></i>" data-off-label="<i class='entypo-cancel'></i>"-->
             <div class="make-switch" data-on="danger" data-off="info" data-on-label="SI" data-off-label="NO">
-                <?php echo checkbox_tag('requiere_respuesta', 1 , $value_check0); ?>
+                <?php echo checkbox_tag('requiere_respuesta_switch', 1, $value_check0, array('id' => 'requiere_respuesta_switch')); ?>
             </div>
+            <?php echo input_hidden_tag('requiere_respuesta', $value_check0 ? '1' : '0', array('id' => 'requiere_respuesta')); ?>
           </div>
-          <!-- Fecha Maxima Respuesta: -->
+          <div class="col-sm-4" id="wrapper_obs_no_respuesta" style="<?php echo $value_check0 ? 'display:none;' : ''; ?>">
+            <label for="obs_no_respuesta" class="control-label">Observaciones (No requiere respuesta):<span class="text-danger">*</span></label>
+            <?php echo textarea_tag('obs_no_respuesta', $com_interna->getObsNoRespuesta(), array('class' => 'form-control input-sm', 'rows' => 2, 'id' => 'obs_no_respuesta')); ?>
+          </div>
+          <script>
+          jQuery(function($){
+              function actualizarRequiereRespuestaInterna(){
+                  var marcado = $('#requiere_respuesta_switch').is(':checked');
+                  $('#requiere_respuesta').val(marcado ? '1' : '0');
+                  if(marcado){ $('#wrapper_obs_no_respuesta').hide(); }else{ $('#wrapper_obs_no_respuesta').show(); }
+              }
+              $('#requiere_respuesta_switch').on('change click', actualizarRequiereRespuestaInterna);
+          });
+          </script>
+<!-- Fecha Maxima Respuesta: -->
           <label for="lbfechaMaximaResp" class="col-sm-1 control-label">Fecha Respuesta:</label>
           <div class="col-sm-2">
             <div class="input-group">
