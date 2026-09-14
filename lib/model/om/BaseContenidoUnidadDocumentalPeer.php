@@ -147,13 +147,13 @@ abstract class BaseContenidoUnidadDocumentalPeer
      * first dimension keys are the type constants
      * e.g. ContenidoUnidadDocumentalPeer::$fieldNames[ContenidoUnidadDocumentalPeer::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('ContenidounidaddocumentalId', 'UnidaddocumentalId', 'VerificacioncontunidaddocId', 'TipodocumentalId', 'EstadocontenidounidaddocId', 'UsuarioId', 'Descripcion', 'Ruta', 'FechaCreacion', 'Folios', 'CreadoPorWeb', 'FechaDocumento', 'TipofirmadigitalId', 'SoporteunidaddocumentalId', 'Marca', 'VinculoRegistro', 'FolioInicial', 'FolioFinal', 'OrigendocumentoId', 'ValorHuella', 'FuncEncryp', 'FormatFile', 'SizeFile', 'PathAbsolute', 'PathRelative', 'OrdenContenido', 'ParentdocId', 'EsCopia', 'ModuloId', 'ConsecutivoId', 'ContenidodocfiletreeId', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('contenidounidaddocumentalId', 'unidaddocumentalId', 'verificacioncontunidaddocId', 'tipodocumentalId', 'estadocontenidounidaddocId', 'usuarioId', 'descripcion', 'ruta', 'fechaCreacion', 'folios', 'creadoPorWeb', 'fechaDocumento', 'tipofirmadigitalId', 'soporteunidaddocumentalId', 'marca', 'vinculoRegistro', 'folioInicial', 'folioFinal', 'origendocumentoId', 'valorHuella', 'funcEncryp', 'formatFile', 'sizeFile', 'pathAbsolute', 'pathRelative', 'ordenContenido', 'parentdocId', 'esCopia', 'moduloId', 'consecutivoId', 'contenidodocfiletreeId', ),
-        BasePeer::TYPE_COLNAME => array (ContenidoUnidadDocumentalPeer::CONTENIDOUNIDADDOCUMENTAL_ID, ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, ContenidoUnidadDocumentalPeer::TIPODOCUMENTAL_ID, ContenidoUnidadDocumentalPeer::ESTADOCONTENIDOUNIDADDOC_ID, ContenidoUnidadDocumentalPeer::USUARIO_ID, ContenidoUnidadDocumentalPeer::DESCRIPCION, ContenidoUnidadDocumentalPeer::RUTA, ContenidoUnidadDocumentalPeer::FECHA_CREACION, ContenidoUnidadDocumentalPeer::FOLIOS, ContenidoUnidadDocumentalPeer::CREADO_POR_WEB, ContenidoUnidadDocumentalPeer::FECHA_DOCUMENTO, ContenidoUnidadDocumentalPeer::TIPOFIRMADIGITAL_ID, ContenidoUnidadDocumentalPeer::SOPORTEUNIDADDOCUMENTAL_ID, ContenidoUnidadDocumentalPeer::MARCA, ContenidoUnidadDocumentalPeer::VINCULO_REGISTRO, ContenidoUnidadDocumentalPeer::FOLIO_INICIAL, ContenidoUnidadDocumentalPeer::FOLIO_FINAL, ContenidoUnidadDocumentalPeer::ORIGENDOCUMENTO_ID, ContenidoUnidadDocumentalPeer::VALOR_HUELLA, ContenidoUnidadDocumentalPeer::FUNC_ENCRYP, ContenidoUnidadDocumentalPeer::FORMAT_FILE, ContenidoUnidadDocumentalPeer::SIZE_FILE, ContenidoUnidadDocumentalPeer::PATH_ABSOLUTE, ContenidoUnidadDocumentalPeer::PATH_RELATIVE, ContenidoUnidadDocumentalPeer::ORDEN_CONTENIDO, ContenidoUnidadDocumentalPeer::PARENTDOC_ID, ContenidoUnidadDocumentalPeer::ES_COPIA, ContenidoUnidadDocumentalPeer::MODULO_ID, ContenidoUnidadDocumentalPeer::CONSECUTIVO_ID, ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('CONTENIDOUNIDADDOCUMENTAL_ID', 'UNIDADDOCUMENTAL_ID', 'VERIFICACIONCONTUNIDADDOC_ID', 'TIPODOCUMENTAL_ID', 'ESTADOCONTENIDOUNIDADDOC_ID', 'USUARIO_ID', 'DESCRIPCION', 'RUTA', 'FECHA_CREACION', 'FOLIOS', 'CREADO_POR_WEB', 'FECHA_DOCUMENTO', 'TIPOFIRMADIGITAL_ID', 'SOPORTEUNIDADDOCUMENTAL_ID', 'MARCA', 'VINCULO_REGISTRO', 'FOLIO_INICIAL', 'FOLIO_FINAL', 'ORIGENDOCUMENTO_ID', 'VALOR_HUELLA', 'FUNC_ENCRYP', 'FORMAT_FILE', 'SIZE_FILE', 'PATH_ABSOLUTE', 'PATH_RELATIVE', 'ORDEN_CONTENIDO', 'PARENTDOC_ID', 'ES_COPIA', 'MODULO_ID', 'CONSECUTIVO_ID', 'CONTENIDODOCFILETREE_ID', ),
-        BasePeer::TYPE_FIELDNAME => array ('CONTENIDOUNIDADDOCUMENTAL_ID', 'UNIDADDOCUMENTAL_ID', 'VERIFICACIONCONTUNIDADDOC_ID', 'TIPODOCUMENTAL_ID', 'ESTADOCONTENIDOUNIDADDOC_ID', 'USUARIO_ID', 'DESCRIPCION', 'RUTA', 'FECHA_CREACION', 'FOLIOS', 'CREADO_POR_WEB', 'FECHA_DOCUMENTO', 'TIPOFIRMADIGITAL_ID', 'SOPORTEUNIDADDOCUMENTAL_ID', 'MARCA', 'VINCULO_REGISTRO', 'FOLIO_INICIAL', 'FOLIO_FINAL', 'ORIGENDOCUMENTO_ID', 'VALOR_HUELLA', 'FUNC_ENCRYP', 'FORMAT_FILE', 'SIZE_FILE', 'PATH_ABSOLUTE', 'PATH_RELATIVE', 'ORDEN_CONTENIDO', 'PARENTDOC_ID', 'ES_COPIA', 'MODULO_ID', 'CONSECUTIVO_ID', 'CONTENIDODOCFILETREE_ID', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, )
+    protected static $fieldNames = array(
+        BasePeer::TYPE_PHPNAME => array('ContenidounidaddocumentalId', 'UnidaddocumentalId', 'VerificacioncontunidaddocId', 'TipodocumentalId', 'EstadocontenidounidaddocId', 'UsuarioId', 'Descripcion', 'Ruta', 'FechaCreacion', 'Folios', 'CreadoPorWeb', 'FechaDocumento', 'TipofirmadigitalId', 'SoporteunidaddocumentalId', 'Marca', 'VinculoRegistro', 'FolioInicial', 'FolioFinal', 'OrigendocumentoId', 'ValorHuella', 'FuncEncryp', 'FormatFile', 'SizeFile', 'PathAbsolute', 'PathRelative', 'OrdenContenido', 'ParentdocId', 'EsCopia', 'ModuloId', 'ConsecutivoId', 'ContenidodocfiletreeId',),
+        BasePeer::TYPE_STUDLYPHPNAME => array('contenidounidaddocumentalId', 'unidaddocumentalId', 'verificacioncontunidaddocId', 'tipodocumentalId', 'estadocontenidounidaddocId', 'usuarioId', 'descripcion', 'ruta', 'fechaCreacion', 'folios', 'creadoPorWeb', 'fechaDocumento', 'tipofirmadigitalId', 'soporteunidaddocumentalId', 'marca', 'vinculoRegistro', 'folioInicial', 'folioFinal', 'origendocumentoId', 'valorHuella', 'funcEncryp', 'formatFile', 'sizeFile', 'pathAbsolute', 'pathRelative', 'ordenContenido', 'parentdocId', 'esCopia', 'moduloId', 'consecutivoId', 'contenidodocfiletreeId',),
+        BasePeer::TYPE_COLNAME => array(ContenidoUnidadDocumentalPeer::CONTENIDOUNIDADDOCUMENTAL_ID, ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, ContenidoUnidadDocumentalPeer::TIPODOCUMENTAL_ID, ContenidoUnidadDocumentalPeer::ESTADOCONTENIDOUNIDADDOC_ID, ContenidoUnidadDocumentalPeer::USUARIO_ID, ContenidoUnidadDocumentalPeer::DESCRIPCION, ContenidoUnidadDocumentalPeer::RUTA, ContenidoUnidadDocumentalPeer::FECHA_CREACION, ContenidoUnidadDocumentalPeer::FOLIOS, ContenidoUnidadDocumentalPeer::CREADO_POR_WEB, ContenidoUnidadDocumentalPeer::FECHA_DOCUMENTO, ContenidoUnidadDocumentalPeer::TIPOFIRMADIGITAL_ID, ContenidoUnidadDocumentalPeer::SOPORTEUNIDADDOCUMENTAL_ID, ContenidoUnidadDocumentalPeer::MARCA, ContenidoUnidadDocumentalPeer::VINCULO_REGISTRO, ContenidoUnidadDocumentalPeer::FOLIO_INICIAL, ContenidoUnidadDocumentalPeer::FOLIO_FINAL, ContenidoUnidadDocumentalPeer::ORIGENDOCUMENTO_ID, ContenidoUnidadDocumentalPeer::VALOR_HUELLA, ContenidoUnidadDocumentalPeer::FUNC_ENCRYP, ContenidoUnidadDocumentalPeer::FORMAT_FILE, ContenidoUnidadDocumentalPeer::SIZE_FILE, ContenidoUnidadDocumentalPeer::PATH_ABSOLUTE, ContenidoUnidadDocumentalPeer::PATH_RELATIVE, ContenidoUnidadDocumentalPeer::ORDEN_CONTENIDO, ContenidoUnidadDocumentalPeer::PARENTDOC_ID, ContenidoUnidadDocumentalPeer::ES_COPIA, ContenidoUnidadDocumentalPeer::MODULO_ID, ContenidoUnidadDocumentalPeer::CONSECUTIVO_ID, ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID,),
+        BasePeer::TYPE_RAW_COLNAME => array('CONTENIDOUNIDADDOCUMENTAL_ID', 'UNIDADDOCUMENTAL_ID', 'VERIFICACIONCONTUNIDADDOC_ID', 'TIPODOCUMENTAL_ID', 'ESTADOCONTENIDOUNIDADDOC_ID', 'USUARIO_ID', 'DESCRIPCION', 'RUTA', 'FECHA_CREACION', 'FOLIOS', 'CREADO_POR_WEB', 'FECHA_DOCUMENTO', 'TIPOFIRMADIGITAL_ID', 'SOPORTEUNIDADDOCUMENTAL_ID', 'MARCA', 'VINCULO_REGISTRO', 'FOLIO_INICIAL', 'FOLIO_FINAL', 'ORIGENDOCUMENTO_ID', 'VALOR_HUELLA', 'FUNC_ENCRYP', 'FORMAT_FILE', 'SIZE_FILE', 'PATH_ABSOLUTE', 'PATH_RELATIVE', 'ORDEN_CONTENIDO', 'PARENTDOC_ID', 'ES_COPIA', 'MODULO_ID', 'CONSECUTIVO_ID', 'CONTENIDODOCFILETREE_ID',),
+        BasePeer::TYPE_FIELDNAME => array('CONTENIDOUNIDADDOCUMENTAL_ID', 'UNIDADDOCUMENTAL_ID', 'VERIFICACIONCONTUNIDADDOC_ID', 'TIPODOCUMENTAL_ID', 'ESTADOCONTENIDOUNIDADDOC_ID', 'USUARIO_ID', 'DESCRIPCION', 'RUTA', 'FECHA_CREACION', 'FOLIOS', 'CREADO_POR_WEB', 'FECHA_DOCUMENTO', 'TIPOFIRMADIGITAL_ID', 'SOPORTEUNIDADDOCUMENTAL_ID', 'MARCA', 'VINCULO_REGISTRO', 'FOLIO_INICIAL', 'FOLIO_FINAL', 'ORIGENDOCUMENTO_ID', 'VALOR_HUELLA', 'FUNC_ENCRYP', 'FORMAT_FILE', 'SIZE_FILE', 'PATH_ABSOLUTE', 'PATH_RELATIVE', 'ORDEN_CONTENIDO', 'PARENTDOC_ID', 'ES_COPIA', 'MODULO_ID', 'CONSECUTIVO_ID', 'CONTENIDODOCFILETREE_ID',),
+        BasePeer::TYPE_NUM => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,)
     );
 
     /**
@@ -162,13 +162,13 @@ abstract class BaseContenidoUnidadDocumentalPeer
      * first dimension keys are the type constants
      * e.g. ContenidoUnidadDocumentalPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('ContenidounidaddocumentalId' => 0, 'UnidaddocumentalId' => 1, 'VerificacioncontunidaddocId' => 2, 'TipodocumentalId' => 3, 'EstadocontenidounidaddocId' => 4, 'UsuarioId' => 5, 'Descripcion' => 6, 'Ruta' => 7, 'FechaCreacion' => 8, 'Folios' => 9, 'CreadoPorWeb' => 10, 'FechaDocumento' => 11, 'TipofirmadigitalId' => 12, 'SoporteunidaddocumentalId' => 13, 'Marca' => 14, 'VinculoRegistro' => 15, 'FolioInicial' => 16, 'FolioFinal' => 17, 'OrigendocumentoId' => 18, 'ValorHuella' => 19, 'FuncEncryp' => 20, 'FormatFile' => 21, 'SizeFile' => 22, 'PathAbsolute' => 23, 'PathRelative' => 24, 'OrdenContenido' => 25, 'ParentdocId' => 26, 'EsCopia' => 27, 'ModuloId' => 28, 'ConsecutivoId' => 29, 'ContenidodocfiletreeId' => 30, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('contenidounidaddocumentalId' => 0, 'unidaddocumentalId' => 1, 'verificacioncontunidaddocId' => 2, 'tipodocumentalId' => 3, 'estadocontenidounidaddocId' => 4, 'usuarioId' => 5, 'descripcion' => 6, 'ruta' => 7, 'fechaCreacion' => 8, 'folios' => 9, 'creadoPorWeb' => 10, 'fechaDocumento' => 11, 'tipofirmadigitalId' => 12, 'soporteunidaddocumentalId' => 13, 'marca' => 14, 'vinculoRegistro' => 15, 'folioInicial' => 16, 'folioFinal' => 17, 'origendocumentoId' => 18, 'valorHuella' => 19, 'funcEncryp' => 20, 'formatFile' => 21, 'sizeFile' => 22, 'pathAbsolute' => 23, 'pathRelative' => 24, 'ordenContenido' => 25, 'parentdocId' => 26, 'esCopia' => 27, 'moduloId' => 28, 'consecutivoId' => 29, 'contenidodocfiletreeId' => 30, ),
-        BasePeer::TYPE_COLNAME => array (ContenidoUnidadDocumentalPeer::CONTENIDOUNIDADDOCUMENTAL_ID => 0, ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID => 1, ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID => 2, ContenidoUnidadDocumentalPeer::TIPODOCUMENTAL_ID => 3, ContenidoUnidadDocumentalPeer::ESTADOCONTENIDOUNIDADDOC_ID => 4, ContenidoUnidadDocumentalPeer::USUARIO_ID => 5, ContenidoUnidadDocumentalPeer::DESCRIPCION => 6, ContenidoUnidadDocumentalPeer::RUTA => 7, ContenidoUnidadDocumentalPeer::FECHA_CREACION => 8, ContenidoUnidadDocumentalPeer::FOLIOS => 9, ContenidoUnidadDocumentalPeer::CREADO_POR_WEB => 10, ContenidoUnidadDocumentalPeer::FECHA_DOCUMENTO => 11, ContenidoUnidadDocumentalPeer::TIPOFIRMADIGITAL_ID => 12, ContenidoUnidadDocumentalPeer::SOPORTEUNIDADDOCUMENTAL_ID => 13, ContenidoUnidadDocumentalPeer::MARCA => 14, ContenidoUnidadDocumentalPeer::VINCULO_REGISTRO => 15, ContenidoUnidadDocumentalPeer::FOLIO_INICIAL => 16, ContenidoUnidadDocumentalPeer::FOLIO_FINAL => 17, ContenidoUnidadDocumentalPeer::ORIGENDOCUMENTO_ID => 18, ContenidoUnidadDocumentalPeer::VALOR_HUELLA => 19, ContenidoUnidadDocumentalPeer::FUNC_ENCRYP => 20, ContenidoUnidadDocumentalPeer::FORMAT_FILE => 21, ContenidoUnidadDocumentalPeer::SIZE_FILE => 22, ContenidoUnidadDocumentalPeer::PATH_ABSOLUTE => 23, ContenidoUnidadDocumentalPeer::PATH_RELATIVE => 24, ContenidoUnidadDocumentalPeer::ORDEN_CONTENIDO => 25, ContenidoUnidadDocumentalPeer::PARENTDOC_ID => 26, ContenidoUnidadDocumentalPeer::ES_COPIA => 27, ContenidoUnidadDocumentalPeer::MODULO_ID => 28, ContenidoUnidadDocumentalPeer::CONSECUTIVO_ID => 29, ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID => 30, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('CONTENIDOUNIDADDOCUMENTAL_ID' => 0, 'UNIDADDOCUMENTAL_ID' => 1, 'VERIFICACIONCONTUNIDADDOC_ID' => 2, 'TIPODOCUMENTAL_ID' => 3, 'ESTADOCONTENIDOUNIDADDOC_ID' => 4, 'USUARIO_ID' => 5, 'DESCRIPCION' => 6, 'RUTA' => 7, 'FECHA_CREACION' => 8, 'FOLIOS' => 9, 'CREADO_POR_WEB' => 10, 'FECHA_DOCUMENTO' => 11, 'TIPOFIRMADIGITAL_ID' => 12, 'SOPORTEUNIDADDOCUMENTAL_ID' => 13, 'MARCA' => 14, 'VINCULO_REGISTRO' => 15, 'FOLIO_INICIAL' => 16, 'FOLIO_FINAL' => 17, 'ORIGENDOCUMENTO_ID' => 18, 'VALOR_HUELLA' => 19, 'FUNC_ENCRYP' => 20, 'FORMAT_FILE' => 21, 'SIZE_FILE' => 22, 'PATH_ABSOLUTE' => 23, 'PATH_RELATIVE' => 24, 'ORDEN_CONTENIDO' => 25, 'PARENTDOC_ID' => 26, 'ES_COPIA' => 27, 'MODULO_ID' => 28, 'CONSECUTIVO_ID' => 29, 'CONTENIDODOCFILETREE_ID' => 30, ),
-        BasePeer::TYPE_FIELDNAME => array ('CONTENIDOUNIDADDOCUMENTAL_ID' => 0, 'UNIDADDOCUMENTAL_ID' => 1, 'VERIFICACIONCONTUNIDADDOC_ID' => 2, 'TIPODOCUMENTAL_ID' => 3, 'ESTADOCONTENIDOUNIDADDOC_ID' => 4, 'USUARIO_ID' => 5, 'DESCRIPCION' => 6, 'RUTA' => 7, 'FECHA_CREACION' => 8, 'FOLIOS' => 9, 'CREADO_POR_WEB' => 10, 'FECHA_DOCUMENTO' => 11, 'TIPOFIRMADIGITAL_ID' => 12, 'SOPORTEUNIDADDOCUMENTAL_ID' => 13, 'MARCA' => 14, 'VINCULO_REGISTRO' => 15, 'FOLIO_INICIAL' => 16, 'FOLIO_FINAL' => 17, 'ORIGENDOCUMENTO_ID' => 18, 'VALOR_HUELLA' => 19, 'FUNC_ENCRYP' => 20, 'FORMAT_FILE' => 21, 'SIZE_FILE' => 22, 'PATH_ABSOLUTE' => 23, 'PATH_RELATIVE' => 24, 'ORDEN_CONTENIDO' => 25, 'PARENTDOC_ID' => 26, 'ES_COPIA' => 27, 'MODULO_ID' => 28, 'CONSECUTIVO_ID' => 29, 'CONTENIDODOCFILETREE_ID' => 30, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, )
+    protected static $fieldKeys = array(
+        BasePeer::TYPE_PHPNAME => array('ContenidounidaddocumentalId' => 0, 'UnidaddocumentalId' => 1, 'VerificacioncontunidaddocId' => 2, 'TipodocumentalId' => 3, 'EstadocontenidounidaddocId' => 4, 'UsuarioId' => 5, 'Descripcion' => 6, 'Ruta' => 7, 'FechaCreacion' => 8, 'Folios' => 9, 'CreadoPorWeb' => 10, 'FechaDocumento' => 11, 'TipofirmadigitalId' => 12, 'SoporteunidaddocumentalId' => 13, 'Marca' => 14, 'VinculoRegistro' => 15, 'FolioInicial' => 16, 'FolioFinal' => 17, 'OrigendocumentoId' => 18, 'ValorHuella' => 19, 'FuncEncryp' => 20, 'FormatFile' => 21, 'SizeFile' => 22, 'PathAbsolute' => 23, 'PathRelative' => 24, 'OrdenContenido' => 25, 'ParentdocId' => 26, 'EsCopia' => 27, 'ModuloId' => 28, 'ConsecutivoId' => 29, 'ContenidodocfiletreeId' => 30,),
+        BasePeer::TYPE_STUDLYPHPNAME => array('contenidounidaddocumentalId' => 0, 'unidaddocumentalId' => 1, 'verificacioncontunidaddocId' => 2, 'tipodocumentalId' => 3, 'estadocontenidounidaddocId' => 4, 'usuarioId' => 5, 'descripcion' => 6, 'ruta' => 7, 'fechaCreacion' => 8, 'folios' => 9, 'creadoPorWeb' => 10, 'fechaDocumento' => 11, 'tipofirmadigitalId' => 12, 'soporteunidaddocumentalId' => 13, 'marca' => 14, 'vinculoRegistro' => 15, 'folioInicial' => 16, 'folioFinal' => 17, 'origendocumentoId' => 18, 'valorHuella' => 19, 'funcEncryp' => 20, 'formatFile' => 21, 'sizeFile' => 22, 'pathAbsolute' => 23, 'pathRelative' => 24, 'ordenContenido' => 25, 'parentdocId' => 26, 'esCopia' => 27, 'moduloId' => 28, 'consecutivoId' => 29, 'contenidodocfiletreeId' => 30,),
+        BasePeer::TYPE_COLNAME => array(ContenidoUnidadDocumentalPeer::CONTENIDOUNIDADDOCUMENTAL_ID => 0, ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID => 1, ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID => 2, ContenidoUnidadDocumentalPeer::TIPODOCUMENTAL_ID => 3, ContenidoUnidadDocumentalPeer::ESTADOCONTENIDOUNIDADDOC_ID => 4, ContenidoUnidadDocumentalPeer::USUARIO_ID => 5, ContenidoUnidadDocumentalPeer::DESCRIPCION => 6, ContenidoUnidadDocumentalPeer::RUTA => 7, ContenidoUnidadDocumentalPeer::FECHA_CREACION => 8, ContenidoUnidadDocumentalPeer::FOLIOS => 9, ContenidoUnidadDocumentalPeer::CREADO_POR_WEB => 10, ContenidoUnidadDocumentalPeer::FECHA_DOCUMENTO => 11, ContenidoUnidadDocumentalPeer::TIPOFIRMADIGITAL_ID => 12, ContenidoUnidadDocumentalPeer::SOPORTEUNIDADDOCUMENTAL_ID => 13, ContenidoUnidadDocumentalPeer::MARCA => 14, ContenidoUnidadDocumentalPeer::VINCULO_REGISTRO => 15, ContenidoUnidadDocumentalPeer::FOLIO_INICIAL => 16, ContenidoUnidadDocumentalPeer::FOLIO_FINAL => 17, ContenidoUnidadDocumentalPeer::ORIGENDOCUMENTO_ID => 18, ContenidoUnidadDocumentalPeer::VALOR_HUELLA => 19, ContenidoUnidadDocumentalPeer::FUNC_ENCRYP => 20, ContenidoUnidadDocumentalPeer::FORMAT_FILE => 21, ContenidoUnidadDocumentalPeer::SIZE_FILE => 22, ContenidoUnidadDocumentalPeer::PATH_ABSOLUTE => 23, ContenidoUnidadDocumentalPeer::PATH_RELATIVE => 24, ContenidoUnidadDocumentalPeer::ORDEN_CONTENIDO => 25, ContenidoUnidadDocumentalPeer::PARENTDOC_ID => 26, ContenidoUnidadDocumentalPeer::ES_COPIA => 27, ContenidoUnidadDocumentalPeer::MODULO_ID => 28, ContenidoUnidadDocumentalPeer::CONSECUTIVO_ID => 29, ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID => 30,),
+        BasePeer::TYPE_RAW_COLNAME => array('CONTENIDOUNIDADDOCUMENTAL_ID' => 0, 'UNIDADDOCUMENTAL_ID' => 1, 'VERIFICACIONCONTUNIDADDOC_ID' => 2, 'TIPODOCUMENTAL_ID' => 3, 'ESTADOCONTENIDOUNIDADDOC_ID' => 4, 'USUARIO_ID' => 5, 'DESCRIPCION' => 6, 'RUTA' => 7, 'FECHA_CREACION' => 8, 'FOLIOS' => 9, 'CREADO_POR_WEB' => 10, 'FECHA_DOCUMENTO' => 11, 'TIPOFIRMADIGITAL_ID' => 12, 'SOPORTEUNIDADDOCUMENTAL_ID' => 13, 'MARCA' => 14, 'VINCULO_REGISTRO' => 15, 'FOLIO_INICIAL' => 16, 'FOLIO_FINAL' => 17, 'ORIGENDOCUMENTO_ID' => 18, 'VALOR_HUELLA' => 19, 'FUNC_ENCRYP' => 20, 'FORMAT_FILE' => 21, 'SIZE_FILE' => 22, 'PATH_ABSOLUTE' => 23, 'PATH_RELATIVE' => 24, 'ORDEN_CONTENIDO' => 25, 'PARENTDOC_ID' => 26, 'ES_COPIA' => 27, 'MODULO_ID' => 28, 'CONSECUTIVO_ID' => 29, 'CONTENIDODOCFILETREE_ID' => 30,),
+        BasePeer::TYPE_FIELDNAME => array('CONTENIDOUNIDADDOCUMENTAL_ID' => 0, 'UNIDADDOCUMENTAL_ID' => 1, 'VERIFICACIONCONTUNIDADDOC_ID' => 2, 'TIPODOCUMENTAL_ID' => 3, 'ESTADOCONTENIDOUNIDADDOC_ID' => 4, 'USUARIO_ID' => 5, 'DESCRIPCION' => 6, 'RUTA' => 7, 'FECHA_CREACION' => 8, 'FOLIOS' => 9, 'CREADO_POR_WEB' => 10, 'FECHA_DOCUMENTO' => 11, 'TIPOFIRMADIGITAL_ID' => 12, 'SOPORTEUNIDADDOCUMENTAL_ID' => 13, 'MARCA' => 14, 'VINCULO_REGISTRO' => 15, 'FOLIO_INICIAL' => 16, 'FOLIO_FINAL' => 17, 'ORIGENDOCUMENTO_ID' => 18, 'VALOR_HUELLA' => 19, 'FUNC_ENCRYP' => 20, 'FORMAT_FILE' => 21, 'SIZE_FILE' => 22, 'PATH_ABSOLUTE' => 23, 'PATH_RELATIVE' => 24, 'ORDEN_CONTENIDO' => 25, 'PARENTDOC_ID' => 26, 'ES_COPIA' => 27, 'MODULO_ID' => 28, 'CONSECUTIVO_ID' => 29, 'CONTENIDODOCFILETREE_ID' => 30,),
+        BasePeer::TYPE_NUM => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,)
     );
 
     /**
@@ -224,7 +224,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
      */
     public static function alias($alias, $column)
     {
-        return str_replace(ContenidoUnidadDocumentalPeer::TABLE_NAME.'.', $alias.'.', $column);
+        return str_replace(ContenidoUnidadDocumentalPeer::TABLE_NAME . '.', $alias . '.', $column);
     }
 
     /**
@@ -341,9 +341,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         // BasePeer returns a PDOStatement
@@ -418,9 +417,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         // Set the correct dbName
         $criteria->setDbName(ContenidoUnidadDocumentalPeer::DATABASE_NAME);
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -471,7 +469,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 // assume we've been passed a primary key
                 $key = (string) $value;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or ContenidoUnidadDocumental object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or ContenidoUnidadDocumental object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
                 throw $e;
             }
 
@@ -499,7 +497,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
         return null; // just to be explicit
     }
-    
+
     /**
      * Clear the instance pool.
      *
@@ -507,21 +505,19 @@ abstract class BaseContenidoUnidadDocumentalPeer
      */
     public static function clearInstancePool($and_clear_all_references = false)
     {
-      if ($and_clear_all_references) {
-        foreach (ContenidoUnidadDocumentalPeer::$instances as $instance) {
-          $instance->clearAllReferences(true);
+        if ($and_clear_all_references) {
+            foreach (ContenidoUnidadDocumentalPeer::$instances as $instance) {
+                $instance->clearAllReferences(true);
+            }
         }
-      }
         ContenidoUnidadDocumentalPeer::$instances = array();
     }
-    
+
     /**
      * Method to invalidate the instance pool of all tables related to CONTENIDO_UNIDAD_DOCUMENTAL
      * by a foreign key with ON DELETE CASCADE
      */
-    public static function clearRelatedInstancePool()
-    {
-    }
+    public static function clearRelatedInstancePool() {}
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -557,7 +553,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
         return (int) $row[$startcol];
     }
-    
+
     /**
      * The returned array will contain objects of the default type or
      * objects that inherit from the default.
@@ -568,7 +564,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
     public static function populateObjects(PDOStatement $stmt)
     {
         $results = array();
-    
+
         // set the class once to avoid overhead in the loop
         $cls = ContenidoUnidadDocumentalPeer::getOMClass();
         // populate the object(s)
@@ -657,9 +653,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -714,9 +709,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -771,9 +765,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::TIPODOCUMENTAL_ID, TipoDocumentalPeer::TIPODOCUMENTAL_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -828,9 +821,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::ESTADOCONTENIDOUNIDADDOC_ID, EstadoContenidoUnidadDocumentalPeer::ESTADOCONTENIDOUNIDADDOC_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -885,9 +877,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -942,9 +933,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::TIPOFIRMADIGITAL_ID, TipoFirmaDigitalPeer::TIPOFIRMADIGITAL_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -999,9 +989,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::SOPORTEUNIDADDOCUMENTAL_ID, SoporteUnidadDocumentalPeer::SOPORTEUNIDADDOCUMENTAL_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -1056,9 +1045,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::ORIGENDOCUMENTO_ID, OrigenDocumentoPeer::ORIGENDOCUMENTO_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -1113,9 +1101,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::MODULO_ID, ModuloPeer::MODULO_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -1170,9 +1157,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -1213,9 +1199,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -1250,7 +1235,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to $obj2 (UnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row was not null
 
             $results[] = $obj1;
@@ -1286,9 +1270,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -1323,7 +1306,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to $obj2 (VerificacionContUnidadDoc)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row was not null
 
             $results[] = $obj1;
@@ -1359,9 +1341,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::TIPODOCUMENTAL_ID, TipoDocumentalPeer::TIPODOCUMENTAL_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -1396,7 +1377,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to $obj2 (TipoDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row was not null
 
             $results[] = $obj1;
@@ -1432,9 +1412,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::ESTADOCONTENIDOUNIDADDOC_ID, EstadoContenidoUnidadDocumentalPeer::ESTADOCONTENIDOUNIDADDOC_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -1469,7 +1448,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to $obj2 (EstadoContenidoUnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row was not null
 
             $results[] = $obj1;
@@ -1505,9 +1483,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -1542,7 +1519,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to $obj2 (Usuario)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row was not null
 
             $results[] = $obj1;
@@ -1578,9 +1554,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::TIPOFIRMADIGITAL_ID, TipoFirmaDigitalPeer::TIPOFIRMADIGITAL_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -1615,7 +1590,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to $obj2 (TipoFirmaDigital)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row was not null
 
             $results[] = $obj1;
@@ -1651,9 +1625,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::SOPORTEUNIDADDOCUMENTAL_ID, SoporteUnidadDocumentalPeer::SOPORTEUNIDADDOCUMENTAL_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -1688,7 +1661,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to $obj2 (SoporteUnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row was not null
 
             $results[] = $obj1;
@@ -1724,9 +1696,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::ORIGENDOCUMENTO_ID, OrigenDocumentoPeer::ORIGENDOCUMENTO_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -1761,7 +1732,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to $obj2 (OrigenDocumento)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row was not null
 
             $results[] = $obj1;
@@ -1797,9 +1767,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::MODULO_ID, ModuloPeer::MODULO_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -1834,7 +1803,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to $obj2 (Modulo)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row was not null
 
             $results[] = $obj1;
@@ -1870,9 +1838,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -1907,7 +1874,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to $obj2 (ContenidodocFiletree)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row was not null
 
             $results[] = $obj1;
@@ -1975,9 +1941,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -2065,9 +2030,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doSelect($criteria, $con);
@@ -2310,7 +2274,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-    
+
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
 
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::TIPODOCUMENTAL_ID, TipoDocumentalPeer::TIPODOCUMENTAL_ID, $join_behavior);
@@ -2330,9 +2294,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -2383,7 +2346,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-    
+
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::TIPODOCUMENTAL_ID, TipoDocumentalPeer::TIPODOCUMENTAL_ID, $join_behavior);
@@ -2403,9 +2366,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -2456,7 +2418,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-    
+
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
@@ -2476,9 +2438,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -2529,7 +2490,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-    
+
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
@@ -2549,9 +2510,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -2602,7 +2562,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-    
+
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
@@ -2622,9 +2582,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -2675,7 +2634,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-    
+
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
@@ -2695,9 +2654,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -2748,7 +2706,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-    
+
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
@@ -2768,9 +2726,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -2821,7 +2778,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-    
+
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
@@ -2841,9 +2798,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -2894,7 +2850,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-    
+
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
@@ -2914,9 +2870,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -2967,7 +2922,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
-    
+
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, $join_behavior);
 
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::VERIFICACIONCONTUNIDADDOC_ID, VerificacionContUnidadDocPeer::VERIFICACIONCONTUNIDADDOC_ID, $join_behavior);
@@ -2987,9 +2942,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::MODULO_ID, ModuloPeer::MODULO_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -3075,9 +3029,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -3098,14 +3051,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 ContenidoUnidadDocumentalPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined VerificacionContUnidadDoc rows
+            // Add objects for joined VerificacionContUnidadDoc rows
 
-                $key2 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-                if ($key2 !== null) {
-                    $obj2 = VerificacionContUnidadDocPeer::getInstanceFromPool($key2);
-                    if (!$obj2) {
-    
-                        $cls = VerificacionContUnidadDocPeer::getOMClass();
+            $key2 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = VerificacionContUnidadDocPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = VerificacionContUnidadDocPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
@@ -3114,17 +3067,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj2 (VerificacionContUnidadDoc)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoDocumental rows
+            // Add objects for joined TipoDocumental rows
 
-                $key3 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-                if ($key3 !== null) {
-                    $obj3 = TipoDocumentalPeer::getInstanceFromPool($key3);
-                    if (!$obj3) {
-    
-                        $cls = TipoDocumentalPeer::getOMClass();
+            $key3 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = TipoDocumentalPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = TipoDocumentalPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
@@ -3133,17 +3085,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj3 (TipoDocumental)
                 $obj3->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined EstadoContenidoUnidadDocumental rows
+            // Add objects for joined EstadoContenidoUnidadDocumental rows
 
-                $key4 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
-    
-                        $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
+            $key4 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            if ($key4 !== null) {
+                $obj4 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key4);
+                if (!$obj4) {
+
+                    $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
@@ -3152,17 +3103,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj4 (EstadoContenidoUnidadDocumental)
                 $obj4->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Usuario rows
+            // Add objects for joined Usuario rows
 
-                $key5 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-                if ($key5 !== null) {
-                    $obj5 = UsuarioPeer::getInstanceFromPool($key5);
-                    if (!$obj5) {
-    
-                        $cls = UsuarioPeer::getOMClass();
+            $key5 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = UsuarioPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = UsuarioPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
@@ -3171,17 +3121,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj5 (Usuario)
                 $obj5->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoFirmaDigital rows
+            // Add objects for joined TipoFirmaDigital rows
 
-                $key6 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol6);
-                if ($key6 !== null) {
-                    $obj6 = TipoFirmaDigitalPeer::getInstanceFromPool($key6);
-                    if (!$obj6) {
-    
-                        $cls = TipoFirmaDigitalPeer::getOMClass();
+            $key6 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = TipoFirmaDigitalPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = TipoFirmaDigitalPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
@@ -3190,17 +3139,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj6 (TipoFirmaDigital)
                 $obj6->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined SoporteUnidadDocumental rows
+            // Add objects for joined SoporteUnidadDocumental rows
 
-                $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
-                if ($key7 !== null) {
-                    $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
-                    if (!$obj7) {
-    
-                        $cls = SoporteUnidadDocumentalPeer::getOMClass();
+            $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = SoporteUnidadDocumentalPeer::getOMClass();
 
                     $obj7 = new $cls();
                     $obj7->hydrate($row, $startcol7);
@@ -3209,17 +3157,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj7 (SoporteUnidadDocumental)
                 $obj7->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined OrigenDocumento rows
+            // Add objects for joined OrigenDocumento rows
 
-                $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
-                if ($key8 !== null) {
-                    $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
-                    if (!$obj8) {
-    
-                        $cls = OrigenDocumentoPeer::getOMClass();
+            $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = OrigenDocumentoPeer::getOMClass();
 
                     $obj8 = new $cls();
                     $obj8->hydrate($row, $startcol8);
@@ -3228,17 +3175,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj8 (OrigenDocumento)
                 $obj8->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Modulo rows
+            // Add objects for joined Modulo rows
 
-                $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
-                if ($key9 !== null) {
-                    $obj9 = ModuloPeer::getInstanceFromPool($key9);
-                    if (!$obj9) {
-    
-                        $cls = ModuloPeer::getOMClass();
+            $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
+            if ($key9 !== null) {
+                $obj9 = ModuloPeer::getInstanceFromPool($key9);
+                if (!$obj9) {
+
+                    $cls = ModuloPeer::getOMClass();
 
                     $obj9 = new $cls();
                     $obj9->hydrate($row, $startcol9);
@@ -3247,17 +3193,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj9 (Modulo)
                 $obj9->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined ContenidodocFiletree rows
+            // Add objects for joined ContenidodocFiletree rows
 
-                $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
-                if ($key10 !== null) {
-                    $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
-                    if (!$obj10) {
-    
-                        $cls = ContenidodocFiletreePeer::getOMClass();
+            $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
+            if ($key10 !== null) {
+                $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
+                if (!$obj10) {
+
+                    $cls = ContenidodocFiletreePeer::getOMClass();
 
                     $obj10 = new $cls();
                     $obj10->hydrate($row, $startcol10);
@@ -3265,7 +3210,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 } // if $obj10 already loaded
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (ContenidodocFiletree)
-                $obj10->addContenidoUnidadDocumental($obj1);
+                //$obj10->addContenidoUnidadDocumental($obj1);
 
             } // if joined row is not null
 
@@ -3347,9 +3292,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -3370,14 +3314,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 ContenidoUnidadDocumentalPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined UnidadDocumental rows
+            // Add objects for joined UnidadDocumental rows
 
-                $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-                if ($key2 !== null) {
-                    $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
-                    if (!$obj2) {
-    
-                        $cls = UnidadDocumentalPeer::getOMClass();
+            $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UnidadDocumentalPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
@@ -3386,17 +3330,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj2 (UnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoDocumental rows
+            // Add objects for joined TipoDocumental rows
 
-                $key3 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-                if ($key3 !== null) {
-                    $obj3 = TipoDocumentalPeer::getInstanceFromPool($key3);
-                    if (!$obj3) {
-    
-                        $cls = TipoDocumentalPeer::getOMClass();
+            $key3 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = TipoDocumentalPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = TipoDocumentalPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
@@ -3405,17 +3348,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj3 (TipoDocumental)
                 $obj3->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined EstadoContenidoUnidadDocumental rows
+            // Add objects for joined EstadoContenidoUnidadDocumental rows
 
-                $key4 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
-    
-                        $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
+            $key4 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            if ($key4 !== null) {
+                $obj4 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key4);
+                if (!$obj4) {
+
+                    $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
@@ -3424,17 +3366,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj4 (EstadoContenidoUnidadDocumental)
                 $obj4->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Usuario rows
+            // Add objects for joined Usuario rows
 
-                $key5 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-                if ($key5 !== null) {
-                    $obj5 = UsuarioPeer::getInstanceFromPool($key5);
-                    if (!$obj5) {
-    
-                        $cls = UsuarioPeer::getOMClass();
+            $key5 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = UsuarioPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = UsuarioPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
@@ -3443,17 +3384,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj5 (Usuario)
                 $obj5->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoFirmaDigital rows
+            // Add objects for joined TipoFirmaDigital rows
 
-                $key6 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol6);
-                if ($key6 !== null) {
-                    $obj6 = TipoFirmaDigitalPeer::getInstanceFromPool($key6);
-                    if (!$obj6) {
-    
-                        $cls = TipoFirmaDigitalPeer::getOMClass();
+            $key6 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = TipoFirmaDigitalPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = TipoFirmaDigitalPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
@@ -3462,17 +3402,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj6 (TipoFirmaDigital)
                 $obj6->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined SoporteUnidadDocumental rows
+            // Add objects for joined SoporteUnidadDocumental rows
 
-                $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
-                if ($key7 !== null) {
-                    $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
-                    if (!$obj7) {
-    
-                        $cls = SoporteUnidadDocumentalPeer::getOMClass();
+            $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = SoporteUnidadDocumentalPeer::getOMClass();
 
                     $obj7 = new $cls();
                     $obj7->hydrate($row, $startcol7);
@@ -3481,17 +3420,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj7 (SoporteUnidadDocumental)
                 $obj7->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined OrigenDocumento rows
+            // Add objects for joined OrigenDocumento rows
 
-                $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
-                if ($key8 !== null) {
-                    $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
-                    if (!$obj8) {
-    
-                        $cls = OrigenDocumentoPeer::getOMClass();
+            $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = OrigenDocumentoPeer::getOMClass();
 
                     $obj8 = new $cls();
                     $obj8->hydrate($row, $startcol8);
@@ -3500,17 +3438,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj8 (OrigenDocumento)
                 $obj8->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Modulo rows
+            // Add objects for joined Modulo rows
 
-                $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
-                if ($key9 !== null) {
-                    $obj9 = ModuloPeer::getInstanceFromPool($key9);
-                    if (!$obj9) {
-    
-                        $cls = ModuloPeer::getOMClass();
+            $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
+            if ($key9 !== null) {
+                $obj9 = ModuloPeer::getInstanceFromPool($key9);
+                if (!$obj9) {
+
+                    $cls = ModuloPeer::getOMClass();
 
                     $obj9 = new $cls();
                     $obj9->hydrate($row, $startcol9);
@@ -3519,17 +3456,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj9 (Modulo)
                 $obj9->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined ContenidodocFiletree rows
+            // Add objects for joined ContenidodocFiletree rows
 
-                $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
-                if ($key10 !== null) {
-                    $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
-                    if (!$obj10) {
-    
-                        $cls = ContenidodocFiletreePeer::getOMClass();
+            $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
+            if ($key10 !== null) {
+                $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
+                if (!$obj10) {
+
+                    $cls = ContenidodocFiletreePeer::getOMClass();
 
                     $obj10 = new $cls();
                     $obj10->hydrate($row, $startcol10);
@@ -3538,7 +3474,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (ContenidodocFiletree)
                 $obj10->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
             $results[] = $obj1;
@@ -3619,9 +3554,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -3642,14 +3576,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 ContenidoUnidadDocumentalPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined UnidadDocumental rows
+            // Add objects for joined UnidadDocumental rows
 
-                $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-                if ($key2 !== null) {
-                    $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
-                    if (!$obj2) {
-    
-                        $cls = UnidadDocumentalPeer::getOMClass();
+            $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UnidadDocumentalPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
@@ -3658,17 +3592,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj2 (UnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined VerificacionContUnidadDoc rows
+            // Add objects for joined VerificacionContUnidadDoc rows
 
-                $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-                if ($key3 !== null) {
-                    $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
-                    if (!$obj3) {
-    
-                        $cls = VerificacionContUnidadDocPeer::getOMClass();
+            $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = VerificacionContUnidadDocPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
@@ -3677,17 +3610,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj3 (VerificacionContUnidadDoc)
                 $obj3->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined EstadoContenidoUnidadDocumental rows
+            // Add objects for joined EstadoContenidoUnidadDocumental rows
 
-                $key4 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
-    
-                        $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
+            $key4 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            if ($key4 !== null) {
+                $obj4 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key4);
+                if (!$obj4) {
+
+                    $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
@@ -3696,17 +3628,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj4 (EstadoContenidoUnidadDocumental)
                 $obj4->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Usuario rows
+            // Add objects for joined Usuario rows
 
-                $key5 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-                if ($key5 !== null) {
-                    $obj5 = UsuarioPeer::getInstanceFromPool($key5);
-                    if (!$obj5) {
-    
-                        $cls = UsuarioPeer::getOMClass();
+            $key5 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = UsuarioPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = UsuarioPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
@@ -3715,17 +3646,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj5 (Usuario)
                 $obj5->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoFirmaDigital rows
+            // Add objects for joined TipoFirmaDigital rows
 
-                $key6 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol6);
-                if ($key6 !== null) {
-                    $obj6 = TipoFirmaDigitalPeer::getInstanceFromPool($key6);
-                    if (!$obj6) {
-    
-                        $cls = TipoFirmaDigitalPeer::getOMClass();
+            $key6 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = TipoFirmaDigitalPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = TipoFirmaDigitalPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
@@ -3734,17 +3664,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj6 (TipoFirmaDigital)
                 $obj6->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined SoporteUnidadDocumental rows
+            // Add objects for joined SoporteUnidadDocumental rows
 
-                $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
-                if ($key7 !== null) {
-                    $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
-                    if (!$obj7) {
-    
-                        $cls = SoporteUnidadDocumentalPeer::getOMClass();
+            $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = SoporteUnidadDocumentalPeer::getOMClass();
 
                     $obj7 = new $cls();
                     $obj7->hydrate($row, $startcol7);
@@ -3753,17 +3682,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj7 (SoporteUnidadDocumental)
                 $obj7->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined OrigenDocumento rows
+            // Add objects for joined OrigenDocumento rows
 
-                $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
-                if ($key8 !== null) {
-                    $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
-                    if (!$obj8) {
-    
-                        $cls = OrigenDocumentoPeer::getOMClass();
+            $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = OrigenDocumentoPeer::getOMClass();
 
                     $obj8 = new $cls();
                     $obj8->hydrate($row, $startcol8);
@@ -3772,17 +3700,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj8 (OrigenDocumento)
                 $obj8->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Modulo rows
+            // Add objects for joined Modulo rows
 
-                $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
-                if ($key9 !== null) {
-                    $obj9 = ModuloPeer::getInstanceFromPool($key9);
-                    if (!$obj9) {
-    
-                        $cls = ModuloPeer::getOMClass();
+            $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
+            if ($key9 !== null) {
+                $obj9 = ModuloPeer::getInstanceFromPool($key9);
+                if (!$obj9) {
+
+                    $cls = ModuloPeer::getOMClass();
 
                     $obj9 = new $cls();
                     $obj9->hydrate($row, $startcol9);
@@ -3791,17 +3718,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj9 (Modulo)
                 $obj9->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined ContenidodocFiletree rows
+            // Add objects for joined ContenidodocFiletree rows
 
-                $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
-                if ($key10 !== null) {
-                    $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
-                    if (!$obj10) {
-    
-                        $cls = ContenidodocFiletreePeer::getOMClass();
+            $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
+            if ($key10 !== null) {
+                $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
+                if (!$obj10) {
+
+                    $cls = ContenidodocFiletreePeer::getOMClass();
 
                     $obj10 = new $cls();
                     $obj10->hydrate($row, $startcol10);
@@ -3810,7 +3736,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (ContenidodocFiletree)
                 $obj10->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
             $results[] = $obj1;
@@ -3891,9 +3816,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -3914,14 +3838,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 ContenidoUnidadDocumentalPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined UnidadDocumental rows
+            // Add objects for joined UnidadDocumental rows
 
-                $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-                if ($key2 !== null) {
-                    $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
-                    if (!$obj2) {
-    
-                        $cls = UnidadDocumentalPeer::getOMClass();
+            $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UnidadDocumentalPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
@@ -3930,17 +3854,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj2 (UnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined VerificacionContUnidadDoc rows
+            // Add objects for joined VerificacionContUnidadDoc rows
 
-                $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-                if ($key3 !== null) {
-                    $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
-                    if (!$obj3) {
-    
-                        $cls = VerificacionContUnidadDocPeer::getOMClass();
+            $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = VerificacionContUnidadDocPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
@@ -3949,17 +3872,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj3 (VerificacionContUnidadDoc)
                 $obj3->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoDocumental rows
+            // Add objects for joined TipoDocumental rows
 
-                $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
-    
-                        $cls = TipoDocumentalPeer::getOMClass();
+            $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            if ($key4 !== null) {
+                $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
+                if (!$obj4) {
+
+                    $cls = TipoDocumentalPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
@@ -3968,17 +3890,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj4 (TipoDocumental)
                 $obj4->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Usuario rows
+            // Add objects for joined Usuario rows
 
-                $key5 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-                if ($key5 !== null) {
-                    $obj5 = UsuarioPeer::getInstanceFromPool($key5);
-                    if (!$obj5) {
-    
-                        $cls = UsuarioPeer::getOMClass();
+            $key5 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = UsuarioPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = UsuarioPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
@@ -3987,17 +3908,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj5 (Usuario)
                 $obj5->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoFirmaDigital rows
+            // Add objects for joined TipoFirmaDigital rows
 
-                $key6 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol6);
-                if ($key6 !== null) {
-                    $obj6 = TipoFirmaDigitalPeer::getInstanceFromPool($key6);
-                    if (!$obj6) {
-    
-                        $cls = TipoFirmaDigitalPeer::getOMClass();
+            $key6 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = TipoFirmaDigitalPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = TipoFirmaDigitalPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
@@ -4006,17 +3926,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj6 (TipoFirmaDigital)
                 $obj6->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined SoporteUnidadDocumental rows
+            // Add objects for joined SoporteUnidadDocumental rows
 
-                $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
-                if ($key7 !== null) {
-                    $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
-                    if (!$obj7) {
-    
-                        $cls = SoporteUnidadDocumentalPeer::getOMClass();
+            $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = SoporteUnidadDocumentalPeer::getOMClass();
 
                     $obj7 = new $cls();
                     $obj7->hydrate($row, $startcol7);
@@ -4025,17 +3944,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj7 (SoporteUnidadDocumental)
                 $obj7->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined OrigenDocumento rows
+            // Add objects for joined OrigenDocumento rows
 
-                $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
-                if ($key8 !== null) {
-                    $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
-                    if (!$obj8) {
-    
-                        $cls = OrigenDocumentoPeer::getOMClass();
+            $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = OrigenDocumentoPeer::getOMClass();
 
                     $obj8 = new $cls();
                     $obj8->hydrate($row, $startcol8);
@@ -4044,17 +3962,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj8 (OrigenDocumento)
                 $obj8->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Modulo rows
+            // Add objects for joined Modulo rows
 
-                $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
-                if ($key9 !== null) {
-                    $obj9 = ModuloPeer::getInstanceFromPool($key9);
-                    if (!$obj9) {
-    
-                        $cls = ModuloPeer::getOMClass();
+            $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
+            if ($key9 !== null) {
+                $obj9 = ModuloPeer::getInstanceFromPool($key9);
+                if (!$obj9) {
+
+                    $cls = ModuloPeer::getOMClass();
 
                     $obj9 = new $cls();
                     $obj9->hydrate($row, $startcol9);
@@ -4063,17 +3980,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj9 (Modulo)
                 $obj9->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined ContenidodocFiletree rows
+            // Add objects for joined ContenidodocFiletree rows
 
-                $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
-                if ($key10 !== null) {
-                    $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
-                    if (!$obj10) {
-    
-                        $cls = ContenidodocFiletreePeer::getOMClass();
+            $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
+            if ($key10 !== null) {
+                $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
+                if (!$obj10) {
+
+                    $cls = ContenidodocFiletreePeer::getOMClass();
 
                     $obj10 = new $cls();
                     $obj10->hydrate($row, $startcol10);
@@ -4082,7 +3998,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (ContenidodocFiletree)
                 $obj10->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
             $results[] = $obj1;
@@ -4163,9 +4078,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -4186,14 +4100,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 ContenidoUnidadDocumentalPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined UnidadDocumental rows
+            // Add objects for joined UnidadDocumental rows
 
-                $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-                if ($key2 !== null) {
-                    $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
-                    if (!$obj2) {
-    
-                        $cls = UnidadDocumentalPeer::getOMClass();
+            $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UnidadDocumentalPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
@@ -4202,17 +4116,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj2 (UnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined VerificacionContUnidadDoc rows
+            // Add objects for joined VerificacionContUnidadDoc rows
 
-                $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-                if ($key3 !== null) {
-                    $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
-                    if (!$obj3) {
-    
-                        $cls = VerificacionContUnidadDocPeer::getOMClass();
+            $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = VerificacionContUnidadDocPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
@@ -4221,17 +4134,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj3 (VerificacionContUnidadDoc)
                 $obj3->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoDocumental rows
+            // Add objects for joined TipoDocumental rows
 
-                $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
-    
-                        $cls = TipoDocumentalPeer::getOMClass();
+            $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            if ($key4 !== null) {
+                $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
+                if (!$obj4) {
+
+                    $cls = TipoDocumentalPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
@@ -4240,17 +4152,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj4 (TipoDocumental)
                 $obj4->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined EstadoContenidoUnidadDocumental rows
+            // Add objects for joined EstadoContenidoUnidadDocumental rows
 
-                $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-                if ($key5 !== null) {
-                    $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
-                    if (!$obj5) {
-    
-                        $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
+            $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
@@ -4259,17 +4170,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj5 (EstadoContenidoUnidadDocumental)
                 $obj5->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoFirmaDigital rows
+            // Add objects for joined TipoFirmaDigital rows
 
-                $key6 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol6);
-                if ($key6 !== null) {
-                    $obj6 = TipoFirmaDigitalPeer::getInstanceFromPool($key6);
-                    if (!$obj6) {
-    
-                        $cls = TipoFirmaDigitalPeer::getOMClass();
+            $key6 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = TipoFirmaDigitalPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = TipoFirmaDigitalPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
@@ -4278,17 +4188,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj6 (TipoFirmaDigital)
                 $obj6->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined SoporteUnidadDocumental rows
+            // Add objects for joined SoporteUnidadDocumental rows
 
-                $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
-                if ($key7 !== null) {
-                    $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
-                    if (!$obj7) {
-    
-                        $cls = SoporteUnidadDocumentalPeer::getOMClass();
+            $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = SoporteUnidadDocumentalPeer::getOMClass();
 
                     $obj7 = new $cls();
                     $obj7->hydrate($row, $startcol7);
@@ -4297,17 +4206,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj7 (SoporteUnidadDocumental)
                 $obj7->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined OrigenDocumento rows
+            // Add objects for joined OrigenDocumento rows
 
-                $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
-                if ($key8 !== null) {
-                    $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
-                    if (!$obj8) {
-    
-                        $cls = OrigenDocumentoPeer::getOMClass();
+            $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = OrigenDocumentoPeer::getOMClass();
 
                     $obj8 = new $cls();
                     $obj8->hydrate($row, $startcol8);
@@ -4316,17 +4224,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj8 (OrigenDocumento)
                 $obj8->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Modulo rows
+            // Add objects for joined Modulo rows
 
-                $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
-                if ($key9 !== null) {
-                    $obj9 = ModuloPeer::getInstanceFromPool($key9);
-                    if (!$obj9) {
-    
-                        $cls = ModuloPeer::getOMClass();
+            $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
+            if ($key9 !== null) {
+                $obj9 = ModuloPeer::getInstanceFromPool($key9);
+                if (!$obj9) {
+
+                    $cls = ModuloPeer::getOMClass();
 
                     $obj9 = new $cls();
                     $obj9->hydrate($row, $startcol9);
@@ -4335,17 +4242,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj9 (Modulo)
                 $obj9->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined ContenidodocFiletree rows
+            // Add objects for joined ContenidodocFiletree rows
 
-                $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
-                if ($key10 !== null) {
-                    $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
-                    if (!$obj10) {
-    
-                        $cls = ContenidodocFiletreePeer::getOMClass();
+            $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
+            if ($key10 !== null) {
+                $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
+                if (!$obj10) {
+
+                    $cls = ContenidodocFiletreePeer::getOMClass();
 
                     $obj10 = new $cls();
                     $obj10->hydrate($row, $startcol10);
@@ -4354,7 +4260,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (ContenidodocFiletree)
                 $obj10->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
             $results[] = $obj1;
@@ -4435,9 +4340,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -4458,14 +4362,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 ContenidoUnidadDocumentalPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined UnidadDocumental rows
+            // Add objects for joined UnidadDocumental rows
 
-                $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-                if ($key2 !== null) {
-                    $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
-                    if (!$obj2) {
-    
-                        $cls = UnidadDocumentalPeer::getOMClass();
+            $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UnidadDocumentalPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
@@ -4474,17 +4378,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj2 (UnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined VerificacionContUnidadDoc rows
+            // Add objects for joined VerificacionContUnidadDoc rows
 
-                $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-                if ($key3 !== null) {
-                    $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
-                    if (!$obj3) {
-    
-                        $cls = VerificacionContUnidadDocPeer::getOMClass();
+            $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = VerificacionContUnidadDocPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
@@ -4493,17 +4396,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj3 (VerificacionContUnidadDoc)
                 $obj3->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoDocumental rows
+            // Add objects for joined TipoDocumental rows
 
-                $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
-    
-                        $cls = TipoDocumentalPeer::getOMClass();
+            $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            if ($key4 !== null) {
+                $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
+                if (!$obj4) {
+
+                    $cls = TipoDocumentalPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
@@ -4512,17 +4414,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj4 (TipoDocumental)
                 $obj4->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined EstadoContenidoUnidadDocumental rows
+            // Add objects for joined EstadoContenidoUnidadDocumental rows
 
-                $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-                if ($key5 !== null) {
-                    $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
-                    if (!$obj5) {
-    
-                        $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
+            $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
@@ -4531,17 +4432,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj5 (EstadoContenidoUnidadDocumental)
                 $obj5->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Usuario rows
+            // Add objects for joined Usuario rows
 
-                $key6 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol6);
-                if ($key6 !== null) {
-                    $obj6 = UsuarioPeer::getInstanceFromPool($key6);
-                    if (!$obj6) {
-    
-                        $cls = UsuarioPeer::getOMClass();
+            $key6 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = UsuarioPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = UsuarioPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
@@ -4550,17 +4450,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj6 (Usuario)
                 $obj6->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined SoporteUnidadDocumental rows
+            // Add objects for joined SoporteUnidadDocumental rows
 
-                $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
-                if ($key7 !== null) {
-                    $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
-                    if (!$obj7) {
-    
-                        $cls = SoporteUnidadDocumentalPeer::getOMClass();
+            $key7 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = SoporteUnidadDocumentalPeer::getOMClass();
 
                     $obj7 = new $cls();
                     $obj7->hydrate($row, $startcol7);
@@ -4569,17 +4468,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj7 (SoporteUnidadDocumental)
                 $obj7->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined OrigenDocumento rows
+            // Add objects for joined OrigenDocumento rows
 
-                $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
-                if ($key8 !== null) {
-                    $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
-                    if (!$obj8) {
-    
-                        $cls = OrigenDocumentoPeer::getOMClass();
+            $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = OrigenDocumentoPeer::getOMClass();
 
                     $obj8 = new $cls();
                     $obj8->hydrate($row, $startcol8);
@@ -4588,17 +4486,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj8 (OrigenDocumento)
                 $obj8->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Modulo rows
+            // Add objects for joined Modulo rows
 
-                $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
-                if ($key9 !== null) {
-                    $obj9 = ModuloPeer::getInstanceFromPool($key9);
-                    if (!$obj9) {
-    
-                        $cls = ModuloPeer::getOMClass();
+            $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
+            if ($key9 !== null) {
+                $obj9 = ModuloPeer::getInstanceFromPool($key9);
+                if (!$obj9) {
+
+                    $cls = ModuloPeer::getOMClass();
 
                     $obj9 = new $cls();
                     $obj9->hydrate($row, $startcol9);
@@ -4607,17 +4504,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj9 (Modulo)
                 $obj9->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined ContenidodocFiletree rows
+            // Add objects for joined ContenidodocFiletree rows
 
-                $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
-                if ($key10 !== null) {
-                    $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
-                    if (!$obj10) {
-    
-                        $cls = ContenidodocFiletreePeer::getOMClass();
+            $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
+            if ($key10 !== null) {
+                $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
+                if (!$obj10) {
+
+                    $cls = ContenidodocFiletreePeer::getOMClass();
 
                     $obj10 = new $cls();
                     $obj10->hydrate($row, $startcol10);
@@ -4626,7 +4522,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (ContenidodocFiletree)
                 $obj10->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
             $results[] = $obj1;
@@ -4707,9 +4602,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -4730,14 +4624,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 ContenidoUnidadDocumentalPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined UnidadDocumental rows
+            // Add objects for joined UnidadDocumental rows
 
-                $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-                if ($key2 !== null) {
-                    $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
-                    if (!$obj2) {
-    
-                        $cls = UnidadDocumentalPeer::getOMClass();
+            $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UnidadDocumentalPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
@@ -4746,17 +4640,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj2 (UnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined VerificacionContUnidadDoc rows
+            // Add objects for joined VerificacionContUnidadDoc rows
 
-                $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-                if ($key3 !== null) {
-                    $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
-                    if (!$obj3) {
-    
-                        $cls = VerificacionContUnidadDocPeer::getOMClass();
+            $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = VerificacionContUnidadDocPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
@@ -4765,17 +4658,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj3 (VerificacionContUnidadDoc)
                 $obj3->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoDocumental rows
+            // Add objects for joined TipoDocumental rows
 
-                $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
-    
-                        $cls = TipoDocumentalPeer::getOMClass();
+            $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            if ($key4 !== null) {
+                $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
+                if (!$obj4) {
+
+                    $cls = TipoDocumentalPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
@@ -4784,17 +4676,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj4 (TipoDocumental)
                 $obj4->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined EstadoContenidoUnidadDocumental rows
+            // Add objects for joined EstadoContenidoUnidadDocumental rows
 
-                $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-                if ($key5 !== null) {
-                    $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
-                    if (!$obj5) {
-    
-                        $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
+            $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
@@ -4803,17 +4694,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj5 (EstadoContenidoUnidadDocumental)
                 $obj5->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Usuario rows
+            // Add objects for joined Usuario rows
 
-                $key6 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol6);
-                if ($key6 !== null) {
-                    $obj6 = UsuarioPeer::getInstanceFromPool($key6);
-                    if (!$obj6) {
-    
-                        $cls = UsuarioPeer::getOMClass();
+            $key6 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = UsuarioPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = UsuarioPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
@@ -4822,17 +4712,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj6 (Usuario)
                 $obj6->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoFirmaDigital rows
+            // Add objects for joined TipoFirmaDigital rows
 
-                $key7 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
-                if ($key7 !== null) {
-                    $obj7 = TipoFirmaDigitalPeer::getInstanceFromPool($key7);
-                    if (!$obj7) {
-    
-                        $cls = TipoFirmaDigitalPeer::getOMClass();
+            $key7 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = TipoFirmaDigitalPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = TipoFirmaDigitalPeer::getOMClass();
 
                     $obj7 = new $cls();
                     $obj7->hydrate($row, $startcol7);
@@ -4841,17 +4730,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj7 (TipoFirmaDigital)
                 $obj7->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined OrigenDocumento rows
+            // Add objects for joined OrigenDocumento rows
 
-                $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
-                if ($key8 !== null) {
-                    $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
-                    if (!$obj8) {
-    
-                        $cls = OrigenDocumentoPeer::getOMClass();
+            $key8 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = OrigenDocumentoPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = OrigenDocumentoPeer::getOMClass();
 
                     $obj8 = new $cls();
                     $obj8->hydrate($row, $startcol8);
@@ -4860,17 +4748,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj8 (OrigenDocumento)
                 $obj8->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Modulo rows
+            // Add objects for joined Modulo rows
 
-                $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
-                if ($key9 !== null) {
-                    $obj9 = ModuloPeer::getInstanceFromPool($key9);
-                    if (!$obj9) {
-    
-                        $cls = ModuloPeer::getOMClass();
+            $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
+            if ($key9 !== null) {
+                $obj9 = ModuloPeer::getInstanceFromPool($key9);
+                if (!$obj9) {
+
+                    $cls = ModuloPeer::getOMClass();
 
                     $obj9 = new $cls();
                     $obj9->hydrate($row, $startcol9);
@@ -4879,17 +4766,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj9 (Modulo)
                 $obj9->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined ContenidodocFiletree rows
+            // Add objects for joined ContenidodocFiletree rows
 
-                $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
-                if ($key10 !== null) {
-                    $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
-                    if (!$obj10) {
-    
-                        $cls = ContenidodocFiletreePeer::getOMClass();
+            $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
+            if ($key10 !== null) {
+                $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
+                if (!$obj10) {
+
+                    $cls = ContenidodocFiletreePeer::getOMClass();
 
                     $obj10 = new $cls();
                     $obj10->hydrate($row, $startcol10);
@@ -4898,7 +4784,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (ContenidodocFiletree)
                 $obj10->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
             $results[] = $obj1;
@@ -4979,9 +4864,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -5002,14 +4886,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 ContenidoUnidadDocumentalPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined UnidadDocumental rows
+            // Add objects for joined UnidadDocumental rows
 
-                $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-                if ($key2 !== null) {
-                    $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
-                    if (!$obj2) {
-    
-                        $cls = UnidadDocumentalPeer::getOMClass();
+            $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UnidadDocumentalPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
@@ -5018,17 +4902,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj2 (UnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined VerificacionContUnidadDoc rows
+            // Add objects for joined VerificacionContUnidadDoc rows
 
-                $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-                if ($key3 !== null) {
-                    $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
-                    if (!$obj3) {
-    
-                        $cls = VerificacionContUnidadDocPeer::getOMClass();
+            $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = VerificacionContUnidadDocPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
@@ -5037,17 +4920,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj3 (VerificacionContUnidadDoc)
                 $obj3->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoDocumental rows
+            // Add objects for joined TipoDocumental rows
 
-                $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
-    
-                        $cls = TipoDocumentalPeer::getOMClass();
+            $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            if ($key4 !== null) {
+                $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
+                if (!$obj4) {
+
+                    $cls = TipoDocumentalPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
@@ -5056,17 +4938,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj4 (TipoDocumental)
                 $obj4->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined EstadoContenidoUnidadDocumental rows
+            // Add objects for joined EstadoContenidoUnidadDocumental rows
 
-                $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-                if ($key5 !== null) {
-                    $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
-                    if (!$obj5) {
-    
-                        $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
+            $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
@@ -5075,17 +4956,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj5 (EstadoContenidoUnidadDocumental)
                 $obj5->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Usuario rows
+            // Add objects for joined Usuario rows
 
-                $key6 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol6);
-                if ($key6 !== null) {
-                    $obj6 = UsuarioPeer::getInstanceFromPool($key6);
-                    if (!$obj6) {
-    
-                        $cls = UsuarioPeer::getOMClass();
+            $key6 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = UsuarioPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = UsuarioPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
@@ -5094,17 +4974,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj6 (Usuario)
                 $obj6->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoFirmaDigital rows
+            // Add objects for joined TipoFirmaDigital rows
 
-                $key7 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
-                if ($key7 !== null) {
-                    $obj7 = TipoFirmaDigitalPeer::getInstanceFromPool($key7);
-                    if (!$obj7) {
-    
-                        $cls = TipoFirmaDigitalPeer::getOMClass();
+            $key7 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = TipoFirmaDigitalPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = TipoFirmaDigitalPeer::getOMClass();
 
                     $obj7 = new $cls();
                     $obj7->hydrate($row, $startcol7);
@@ -5113,17 +4992,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj7 (TipoFirmaDigital)
                 $obj7->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined SoporteUnidadDocumental rows
+            // Add objects for joined SoporteUnidadDocumental rows
 
-                $key8 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol8);
-                if ($key8 !== null) {
-                    $obj8 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key8);
-                    if (!$obj8) {
-    
-                        $cls = SoporteUnidadDocumentalPeer::getOMClass();
+            $key8 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = SoporteUnidadDocumentalPeer::getOMClass();
 
                     $obj8 = new $cls();
                     $obj8->hydrate($row, $startcol8);
@@ -5132,17 +5010,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj8 (SoporteUnidadDocumental)
                 $obj8->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Modulo rows
+            // Add objects for joined Modulo rows
 
-                $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
-                if ($key9 !== null) {
-                    $obj9 = ModuloPeer::getInstanceFromPool($key9);
-                    if (!$obj9) {
-    
-                        $cls = ModuloPeer::getOMClass();
+            $key9 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol9);
+            if ($key9 !== null) {
+                $obj9 = ModuloPeer::getInstanceFromPool($key9);
+                if (!$obj9) {
+
+                    $cls = ModuloPeer::getOMClass();
 
                     $obj9 = new $cls();
                     $obj9->hydrate($row, $startcol9);
@@ -5151,17 +5028,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj9 (Modulo)
                 $obj9->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined ContenidodocFiletree rows
+            // Add objects for joined ContenidodocFiletree rows
 
-                $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
-                if ($key10 !== null) {
-                    $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
-                    if (!$obj10) {
-    
-                        $cls = ContenidodocFiletreePeer::getOMClass();
+            $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
+            if ($key10 !== null) {
+                $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
+                if (!$obj10) {
+
+                    $cls = ContenidodocFiletreePeer::getOMClass();
 
                     $obj10 = new $cls();
                     $obj10->hydrate($row, $startcol10);
@@ -5170,7 +5046,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (ContenidodocFiletree)
                 $obj10->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
             $results[] = $obj1;
@@ -5251,9 +5126,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::CONTENIDODOCFILETREE_ID, ContenidodocFiletreePeer::CONTENIDODOCFILETREE_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -5274,14 +5148,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 ContenidoUnidadDocumentalPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined UnidadDocumental rows
+            // Add objects for joined UnidadDocumental rows
 
-                $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-                if ($key2 !== null) {
-                    $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
-                    if (!$obj2) {
-    
-                        $cls = UnidadDocumentalPeer::getOMClass();
+            $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UnidadDocumentalPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
@@ -5290,17 +5164,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj2 (UnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined VerificacionContUnidadDoc rows
+            // Add objects for joined VerificacionContUnidadDoc rows
 
-                $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-                if ($key3 !== null) {
-                    $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
-                    if (!$obj3) {
-    
-                        $cls = VerificacionContUnidadDocPeer::getOMClass();
+            $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = VerificacionContUnidadDocPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
@@ -5309,17 +5182,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj3 (VerificacionContUnidadDoc)
                 $obj3->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoDocumental rows
+            // Add objects for joined TipoDocumental rows
 
-                $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
-    
-                        $cls = TipoDocumentalPeer::getOMClass();
+            $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            if ($key4 !== null) {
+                $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
+                if (!$obj4) {
+
+                    $cls = TipoDocumentalPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
@@ -5328,17 +5200,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj4 (TipoDocumental)
                 $obj4->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined EstadoContenidoUnidadDocumental rows
+            // Add objects for joined EstadoContenidoUnidadDocumental rows
 
-                $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-                if ($key5 !== null) {
-                    $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
-                    if (!$obj5) {
-    
-                        $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
+            $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
@@ -5347,17 +5218,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj5 (EstadoContenidoUnidadDocumental)
                 $obj5->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Usuario rows
+            // Add objects for joined Usuario rows
 
-                $key6 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol6);
-                if ($key6 !== null) {
-                    $obj6 = UsuarioPeer::getInstanceFromPool($key6);
-                    if (!$obj6) {
-    
-                        $cls = UsuarioPeer::getOMClass();
+            $key6 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = UsuarioPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = UsuarioPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
@@ -5366,17 +5236,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj6 (Usuario)
                 $obj6->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoFirmaDigital rows
+            // Add objects for joined TipoFirmaDigital rows
 
-                $key7 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
-                if ($key7 !== null) {
-                    $obj7 = TipoFirmaDigitalPeer::getInstanceFromPool($key7);
-                    if (!$obj7) {
-    
-                        $cls = TipoFirmaDigitalPeer::getOMClass();
+            $key7 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = TipoFirmaDigitalPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = TipoFirmaDigitalPeer::getOMClass();
 
                     $obj7 = new $cls();
                     $obj7->hydrate($row, $startcol7);
@@ -5385,17 +5254,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj7 (TipoFirmaDigital)
                 $obj7->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined SoporteUnidadDocumental rows
+            // Add objects for joined SoporteUnidadDocumental rows
 
-                $key8 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol8);
-                if ($key8 !== null) {
-                    $obj8 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key8);
-                    if (!$obj8) {
-    
-                        $cls = SoporteUnidadDocumentalPeer::getOMClass();
+            $key8 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = SoporteUnidadDocumentalPeer::getOMClass();
 
                     $obj8 = new $cls();
                     $obj8->hydrate($row, $startcol8);
@@ -5404,17 +5272,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj8 (SoporteUnidadDocumental)
                 $obj8->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined OrigenDocumento rows
+            // Add objects for joined OrigenDocumento rows
 
-                $key9 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol9);
-                if ($key9 !== null) {
-                    $obj9 = OrigenDocumentoPeer::getInstanceFromPool($key9);
-                    if (!$obj9) {
-    
-                        $cls = OrigenDocumentoPeer::getOMClass();
+            $key9 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol9);
+            if ($key9 !== null) {
+                $obj9 = OrigenDocumentoPeer::getInstanceFromPool($key9);
+                if (!$obj9) {
+
+                    $cls = OrigenDocumentoPeer::getOMClass();
 
                     $obj9 = new $cls();
                     $obj9->hydrate($row, $startcol9);
@@ -5423,17 +5290,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj9 (OrigenDocumento)
                 $obj9->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined ContenidodocFiletree rows
+            // Add objects for joined ContenidodocFiletree rows
 
-                $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
-                if ($key10 !== null) {
-                    $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
-                    if (!$obj10) {
-    
-                        $cls = ContenidodocFiletreePeer::getOMClass();
+            $key10 = ContenidodocFiletreePeer::getPrimaryKeyHashFromRow($row, $startcol10);
+            if ($key10 !== null) {
+                $obj10 = ContenidodocFiletreePeer::getInstanceFromPool($key10);
+                if (!$obj10) {
+
+                    $cls = ContenidodocFiletreePeer::getOMClass();
 
                     $obj10 = new $cls();
                     $obj10->hydrate($row, $startcol10);
@@ -5442,7 +5308,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (ContenidodocFiletree)
                 $obj10->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
             $results[] = $obj1;
@@ -5523,9 +5388,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
         $criteria->addJoin(ContenidoUnidadDocumentalPeer::MODULO_ID, ModuloPeer::MODULO_ID, $join_behavior);
 
         // symfony_behaviors behavior
-        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
-        {
-          call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
+        foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook) {
+            call_user_func($sf_hook, 'BaseContenidoUnidadDocumentalPeer', $criteria, $con);
         }
 
 
@@ -5546,14 +5410,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 ContenidoUnidadDocumentalPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined UnidadDocumental rows
+            // Add objects for joined UnidadDocumental rows
 
-                $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-                if ($key2 !== null) {
-                    $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
-                    if (!$obj2) {
-    
-                        $cls = UnidadDocumentalPeer::getOMClass();
+            $key2 = UnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = UnidadDocumentalPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = UnidadDocumentalPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
@@ -5562,17 +5426,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj2 (UnidadDocumental)
                 $obj2->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined VerificacionContUnidadDoc rows
+            // Add objects for joined VerificacionContUnidadDoc rows
 
-                $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
-                if ($key3 !== null) {
-                    $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
-                    if (!$obj3) {
-    
-                        $cls = VerificacionContUnidadDocPeer::getOMClass();
+            $key3 = VerificacionContUnidadDocPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = VerificacionContUnidadDocPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
+                    $cls = VerificacionContUnidadDocPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
@@ -5581,17 +5444,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj3 (VerificacionContUnidadDoc)
                 $obj3->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoDocumental rows
+            // Add objects for joined TipoDocumental rows
 
-                $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
-    
-                        $cls = TipoDocumentalPeer::getOMClass();
+            $key4 = TipoDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            if ($key4 !== null) {
+                $obj4 = TipoDocumentalPeer::getInstanceFromPool($key4);
+                if (!$obj4) {
+
+                    $cls = TipoDocumentalPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
@@ -5600,17 +5462,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj4 (TipoDocumental)
                 $obj4->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined EstadoContenidoUnidadDocumental rows
+            // Add objects for joined EstadoContenidoUnidadDocumental rows
 
-                $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-                if ($key5 !== null) {
-                    $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
-                    if (!$obj5) {
-    
-                        $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
+            $key5 = EstadoContenidoUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = EstadoContenidoUnidadDocumentalPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = EstadoContenidoUnidadDocumentalPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
@@ -5619,17 +5480,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj5 (EstadoContenidoUnidadDocumental)
                 $obj5->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Usuario rows
+            // Add objects for joined Usuario rows
 
-                $key6 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol6);
-                if ($key6 !== null) {
-                    $obj6 = UsuarioPeer::getInstanceFromPool($key6);
-                    if (!$obj6) {
-    
-                        $cls = UsuarioPeer::getOMClass();
+            $key6 = UsuarioPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = UsuarioPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = UsuarioPeer::getOMClass();
 
                     $obj6 = new $cls();
                     $obj6->hydrate($row, $startcol6);
@@ -5638,17 +5498,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj6 (Usuario)
                 $obj6->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined TipoFirmaDigital rows
+            // Add objects for joined TipoFirmaDigital rows
 
-                $key7 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
-                if ($key7 !== null) {
-                    $obj7 = TipoFirmaDigitalPeer::getInstanceFromPool($key7);
-                    if (!$obj7) {
-    
-                        $cls = TipoFirmaDigitalPeer::getOMClass();
+            $key7 = TipoFirmaDigitalPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = TipoFirmaDigitalPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = TipoFirmaDigitalPeer::getOMClass();
 
                     $obj7 = new $cls();
                     $obj7->hydrate($row, $startcol7);
@@ -5657,17 +5516,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj7 (TipoFirmaDigital)
                 $obj7->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined SoporteUnidadDocumental rows
+            // Add objects for joined SoporteUnidadDocumental rows
 
-                $key8 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol8);
-                if ($key8 !== null) {
-                    $obj8 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key8);
-                    if (!$obj8) {
-    
-                        $cls = SoporteUnidadDocumentalPeer::getOMClass();
+            $key8 = SoporteUnidadDocumentalPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = SoporteUnidadDocumentalPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = SoporteUnidadDocumentalPeer::getOMClass();
 
                     $obj8 = new $cls();
                     $obj8->hydrate($row, $startcol8);
@@ -5676,17 +5534,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj8 (SoporteUnidadDocumental)
                 $obj8->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined OrigenDocumento rows
+            // Add objects for joined OrigenDocumento rows
 
-                $key9 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol9);
-                if ($key9 !== null) {
-                    $obj9 = OrigenDocumentoPeer::getInstanceFromPool($key9);
-                    if (!$obj9) {
-    
-                        $cls = OrigenDocumentoPeer::getOMClass();
+            $key9 = OrigenDocumentoPeer::getPrimaryKeyHashFromRow($row, $startcol9);
+            if ($key9 !== null) {
+                $obj9 = OrigenDocumentoPeer::getInstanceFromPool($key9);
+                if (!$obj9) {
+
+                    $cls = OrigenDocumentoPeer::getOMClass();
 
                     $obj9 = new $cls();
                     $obj9->hydrate($row, $startcol9);
@@ -5695,17 +5552,16 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj9 (OrigenDocumento)
                 $obj9->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
-                // Add objects for joined Modulo rows
+            // Add objects for joined Modulo rows
 
-                $key10 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol10);
-                if ($key10 !== null) {
-                    $obj10 = ModuloPeer::getInstanceFromPool($key10);
-                    if (!$obj10) {
-    
-                        $cls = ModuloPeer::getOMClass();
+            $key10 = ModuloPeer::getPrimaryKeyHashFromRow($row, $startcol10);
+            if ($key10 !== null) {
+                $obj10 = ModuloPeer::getInstanceFromPool($key10);
+                if (!$obj10) {
+
+                    $cls = ModuloPeer::getOMClass();
 
                     $obj10 = new $cls();
                     $obj10->hydrate($row, $startcol10);
@@ -5714,7 +5570,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (Modulo)
                 $obj10->addContenidoUnidadDocumental($obj1);
-
             } // if joined row is not null
 
             $results[] = $obj1;
@@ -5741,10 +5596,10 @@ abstract class BaseContenidoUnidadDocumentalPeer
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getDatabaseMap(BaseContenidoUnidadDocumentalPeer::DATABASE_NAME);
-      if (!$dbMap->hasTable(BaseContenidoUnidadDocumentalPeer::TABLE_NAME)) {
-        $dbMap->addTableObject(new \ContenidoUnidadDocumentalTableMap());
-      }
+        $dbMap = Propel::getDatabaseMap(BaseContenidoUnidadDocumentalPeer::DATABASE_NAME);
+        if (!$dbMap->hasTable(BaseContenidoUnidadDocumentalPeer::TABLE_NAME)) {
+            $dbMap->addTableObject(new \ContenidoUnidadDocumentalTableMap());
+        }
     }
 
     /**
@@ -5779,8 +5634,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
             $criteria = $values->buildCriteria(); // build Criteria from ContenidoUnidadDocumental object
         }
 
-        if ($criteria->containsKey(ContenidoUnidadDocumentalPeer::CONTENIDOUNIDADDOCUMENTAL_ID) && $criteria->keyContainsValue(ContenidoUnidadDocumentalPeer::CONTENIDOUNIDADDOCUMENTAL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ContenidoUnidadDocumentalPeer::CONTENIDOUNIDADDOCUMENTAL_ID.')');
+        if ($criteria->containsKey(ContenidoUnidadDocumentalPeer::CONTENIDOUNIDADDOCUMENTAL_ID) && $criteria->keyContainsValue(ContenidoUnidadDocumentalPeer::CONTENIDOUNIDADDOCUMENTAL_ID)) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ContenidoUnidadDocumentalPeer::CONTENIDOUNIDADDOCUMENTAL_ID . ')');
         }
 
         // remove pkey col since this table uses auto-increment and passing a null value for it is not valid
@@ -5831,7 +5686,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
             } else {
                 $selectCriteria->setPrimaryTableName(ContenidoUnidadDocumentalPeer::TABLE_NAME);
             }
-
         } else { // $values is ContenidoUnidadDocumental object
             $criteria = $values->buildCriteria(); // gets full criteria
             $selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
@@ -5886,8 +5740,8 @@ abstract class BaseContenidoUnidadDocumentalPeer
      * @throws PropelException Any exceptions caught during processing will be
      *		 rethrown wrapped into a PropelException.
      */
-     public static function doDelete($values, PropelPDO $con = null)
-     {
+    public static function doDelete($values, PropelPDO $con = null)
+    {
         if ($con === null) {
             $con = Propel::getConnection(ContenidoUnidadDocumentalPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
@@ -5922,7 +5776,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
             // use transaction because $criteria could contain info
             // for more than one table or we could emulating ON DELETE CASCADE, etc.
             $con->beginTransaction();
-            
+
             $affectedRows += BasePeer::doDelete($criteria, $con);
             ContenidoUnidadDocumentalPeer::clearRelatedInstancePool();
             $con->commit();
@@ -5965,7 +5819,6 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 }
             }
         } else {
-
         }
 
         return BasePeer::doValidate(ContenidoUnidadDocumentalPeer::DATABASE_NAME, ContenidoUnidadDocumentalPeer::TABLE_NAME, $columns);
@@ -6025,7 +5878,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
     }
 
     // symfony behavior
-    
+
     /**
      * Returns an array of arrays that contain columns in each unique index.
      *
@@ -6033,11 +5886,11 @@ abstract class BaseContenidoUnidadDocumentalPeer
      */
     static public function getUniqueColumnNames()
     {
-      return array();
+        return array();
     }
 
     // symfony_behaviors behavior
-    
+
     /**
      * Returns the name of the hook to call from inside the supplied method.
      *
@@ -6049,17 +5902,14 @@ abstract class BaseContenidoUnidadDocumentalPeer
      */
     static private function getMixerPreSelectHook($method)
     {
-      if (preg_match('/^do(Select|Count)(Join(All(Except)?)?|Stmt)?/', $method, $match))
-      {
-        return sprintf('BaseContenidoUnidadDocumentalPeer:%s:%1$s', 'Count' == $match[1] ? 'doCount' : $match[0]);
-      }
-    
-      throw new LogicException(sprintf('Unrecognized function "%s"', $method));
-    }
+        if (preg_match('/^do(Select|Count)(Join(All(Except)?)?|Stmt)?/', $method, $match)) {
+            return sprintf('BaseContenidoUnidadDocumentalPeer:%s:%1$s', 'Count' == $match[1] ? 'doCount' : $match[0]);
+        }
 
+        throw new LogicException(sprintf('Unrecognized function "%s"', $method));
+    }
 } // BaseContenidoUnidadDocumentalPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
 BaseContenidoUnidadDocumentalPeer::buildTableMap();
-
