@@ -11,7 +11,7 @@ use_helper('jQuery');
 <?php if(count($list_enviadas) <= 0): ?>
     <div class="panel panel-primary">
         <div class="panel-body">
-            <div class="alert alert-default"><strong>No existen Registros</strong>, Intente con diferentes filtros de consulta.</div>
+            <div class="alert alert-default"><?php echo isset($mensajeListaVacia) && $mensajeListaVacia ? $mensajeListaVacia : ConsultaPermisoHelper::MSG_SIN_REGISTROS; ?></div>
         </div>
     </div>
 <?php else: ?>

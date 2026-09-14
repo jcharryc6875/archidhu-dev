@@ -33,13 +33,13 @@ use_helper('jQuery');
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="internas-1">
-                    <?php echo include_partial('listComInterna',array('list_internas'=>$list_internas)); ?>
+                    <?php echo include_partial('listComInterna',array('list_internas'=>$list_internas, 'mensajeListaVacia'=>isset($mensajeInternas) ? $mensajeInternas : null)); ?>
                 </div>
                 <div class="tab-pane" id="salientes-2">
-                    <?php echo include_partial('listComEnviada',array('list_enviadas'=>$list_enviadas)); ?>
+                    <?php echo include_partial('listComEnviada',array('list_enviadas'=>$list_enviadas, 'mensajeListaVacia'=>isset($mensajeEnviadas) ? $mensajeEnviadas : null)); ?>
                 </div>
                 <div class="tab-pane" id="recibidas-3">
-                    <?php echo include_partial('listComRecibida',array('list_recibidas'=>$list_recibidas)); ?>
+                    <?php echo include_partial('listComRecibida',array('list_recibidas'=>$list_recibidas, 'mensajeListaVacia'=>isset($mensajeRecibidas) ? $mensajeRecibidas : null)); ?>
                 </div>
                 <div class="tab-pane" id="arcgestion-4">
                     <?php echo include_partial('listExpGestion',array('list_gestion'=>$list_gestion)); ?>
