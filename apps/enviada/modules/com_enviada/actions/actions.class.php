@@ -1498,8 +1498,12 @@ class com_enviadaActions extends sfActions
 	$this->controlPaginacion = 1;
 	//***********************************************************************************************
 	$this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
-	if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('radicado'))) {
-		$countSinPermiso = ComEnviadaPeer::doCount((new Criteria())->add(ComEnviadaPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
+	if ($pager->getNbResults() == 0) {
+		if (trim($this->getRequestParameter('radicado'))) {
+			$countSinPermiso = ComEnviadaPeer::doCount((new Criteria())->add(ComEnviadaPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
+		} else {
+			$countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('EnviadaInteresadosPeer', EnviadaInteresadosPeer::INTERESADO_ID);
+		}
 		$this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
 	}
 	$this->destinatario = array();

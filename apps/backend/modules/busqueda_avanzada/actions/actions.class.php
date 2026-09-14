@@ -932,8 +932,12 @@ class busqueda_avanzadaActions extends sfActions
 			$resulset =  ComEnviadaPeer::doSelectStmt($e);
 			$this->list_enviadas =  $resulset->fetchAll();
 			//*********************************************************************************************************
-			if(empty($this->list_enviadas) && !empty($param_list['codigo_barras'])){
-				$countSinPermiso = ComEnviadaPeer::doCount((new Criteria())->add(ComEnviadaPeer::RADICADO, $param_list['codigo_barras'].'%', Criteria::LIKE));
+			if(empty($this->list_enviadas)){
+				if(!empty($param_list['codigo_barras'])){
+					$countSinPermiso = ComEnviadaPeer::doCount((new Criteria())->add(ComEnviadaPeer::RADICADO, $param_list['codigo_barras'].'%', Criteria::LIKE));
+				}else{
+					$countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('EnviadaInteresadosPeer', EnviadaInteresadosPeer::INTERESADO_ID);
+				}
 				$this->mensajeEnviadas = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
 			}
 		}else{
@@ -1027,8 +1031,12 @@ class busqueda_avanzadaActions extends sfActions
 			$resulset =  ComRecibidaPeer::doSelectStmt($r);
 			$this->list_recibidas =  $resulset->fetchAll();
 			//*********************************************************************************************************
-			if(empty($this->list_recibidas) && !empty($param_list['codigo_barras'])){
-				$countSinPermiso = ComRecibidaPeer::doCount((new Criteria())->add(ComRecibidaPeer::RADICADO, $param_list['codigo_barras'].'%', Criteria::LIKE));
+			if(empty($this->list_recibidas)){
+				if(!empty($param_list['codigo_barras'])){
+					$countSinPermiso = ComRecibidaPeer::doCount((new Criteria())->add(ComRecibidaPeer::RADICADO, $param_list['codigo_barras'].'%', Criteria::LIKE));
+				}else{
+					$countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('ComrecibidaInteresadosPeer', ComrecibidaInteresadosPeer::INTERESADO_ID);
+				}
 				$this->mensajeRecibidas = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
 			}
 		}else{

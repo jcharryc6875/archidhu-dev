@@ -1742,8 +1742,12 @@ class acto_administrativoActions extends sfActions
     $this->anular="Anular";
     //***********************************************************************************************
     $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
-    if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('numero_resolucion'))) {
-      $countSinPermiso = ActoAdministrativoPeer::doCount((new Criteria())->add(ActoAdministrativoPeer::NUMERO_RESOLUCION, '%'.trim($this->getRequestParameter('numero_resolucion')).'%', Criteria::LIKE));
+    if ($pager->getNbResults() == 0) {
+      if (trim($this->getRequestParameter('numero_resolucion'))) {
+        $countSinPermiso = ActoAdministrativoPeer::doCount((new Criteria())->add(ActoAdministrativoPeer::NUMERO_RESOLUCION, '%'.trim($this->getRequestParameter('numero_resolucion')).'%', Criteria::LIKE));
+      } else {
+        $countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('ActoadministraInteresadoPeer', ActoadministraInteresadoPeer::INTERESADO_ID);
+      }
       $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
     }
   }

@@ -573,8 +573,15 @@ class servicioActions extends sfActions
 	    $this->pager = $pager;
 	    //***************************************************************************************
 	    $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
-	    if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('radicado'))) {
-	    	$countSinPermiso = ServicioPeer::doCount((new Criteria())->add(ServicioPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
+	    if ($pager->getNbResults() == 0) {
+	    	if (trim($this->getRequestParameter('radicado'))) {
+	    		$countSinPermiso = ServicioPeer::doCount((new Criteria())->add(ServicioPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
+	    	} elseif (trim($this->getRequestParameter('servicio_id'))) {
+	    		$idsServicio = preg_split("/[,]+/", trim($this->getRequestParameter('servicio_id')));
+	    		$countSinPermiso = ServicioPeer::doCount((new Criteria())->add(ServicioPeer::SERVICIO_ID, $idsServicio, Criteria::IN));
+	    	} else {
+	    		$countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('ServicioInteresadosPeer', ServicioInteresadosPeer::INTERESADO_ID);
+	    	}
 	    	$this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
 	    }
 		//*************************************************************************************************

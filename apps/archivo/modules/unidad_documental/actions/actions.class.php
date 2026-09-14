@@ -520,8 +520,10 @@ class unidad_documentalActions extends sfActions
       }
       if ($cSinPermiso) {
         $countSinPermiso = UnidadDocumentalPeer::doCount($cSinPermiso);
-        $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+      } else {
+        $countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('UnidaddocumentalInteresadosPeer', UnidaddocumentalInteresadosPeer::INTERESADO_ID);
       }
+      $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
     }
 	/*********************************************************************************************************/
   }
@@ -893,8 +895,10 @@ class unidad_documentalActions extends sfActions
       }
       if ($cSinPermiso) {
         $countSinPermiso = UnidadDocumentalPeer::doCount($cSinPermiso);
-        $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+      } else {
+        $countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('UnidaddocumentalInteresadosPeer', UnidaddocumentalInteresadosPeer::INTERESADO_ID);
       }
+      $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
     }
   }
 

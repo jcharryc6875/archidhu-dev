@@ -619,8 +619,12 @@ class com_recibidaActions extends sfActions
     $this->pager = $pager;
     //*************************************************************************************************/
     $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
-    if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('radicado'))) {
-      $countSinPermiso = ComRecibidaPeer::doCount((new Criteria())->add(ComRecibidaPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
+    if ($pager->getNbResults() == 0) {
+      if (trim($this->getRequestParameter('radicado'))) {
+        $countSinPermiso = ComRecibidaPeer::doCount((new Criteria())->add(ComRecibidaPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
+      } else {
+        $countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('ComrecibidaInteresadosPeer', ComrecibidaInteresadosPeer::INTERESADO_ID);
+      }
       $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
     }
     //*************************************************************************************************/

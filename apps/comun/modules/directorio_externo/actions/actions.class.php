@@ -467,7 +467,12 @@ class directorio_externoActions extends sfActions
     $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
     //**********************************************************************************************
     $currentForm = "directorio_externo/list";
-    if($this->tienePrilegio($currentForm)){ return null; }
+    if(!$this->tienePrilegio($currentForm)){
+      $data_json = json_encode(array("id" => null, "text" => null, "img" => null));
+      //********************************************************************************************
+      $this->getResponse()->setContentType('application/json');
+      return $this->renderText($data_json);
+    }
     //**********************************************************************************************
     $this->parametros = '';
     $this->parametros .= "&campoText=" .$this->campoText=$this->getRequestParameter('campoText');
@@ -506,7 +511,7 @@ class directorio_externoActions extends sfActions
     $c->addSelectColumn(DirectorioExternoPeer::NOMBRE);//1
     $c->addSelectColumn(DirectorioExternoPeer::NIT);//2
     //**********************************************************************************************
-    $resultset = InteresadosPeer::doSelectStmt($c);
+    $resultset = DirectorioExternoPeer::doSelectStmt($c);
     //**********************************************************************************************
     $term_list = array();
     //**********************************************************************************************
