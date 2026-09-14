@@ -835,7 +835,13 @@ class com_internaActions extends sfActions
     $pager->init();
     $this->pager = $pager;
     $this->controlPaginacion = 1;
-	//*********************************************************************************************	      
+	//*********************************************************************************************
+	$this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+	if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('radicado'))) {
+		$countSinPermiso = ComInternaPeer::doCount((new Criteria())->add(ComInternaPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
+		$this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+	}
+	//*********************************************************************************************
 	$this->usuariologuiado = $usuariologuiado;
 	$this->anular = "";    
   }    
@@ -1598,8 +1604,13 @@ class com_internaActions extends sfActions
   {
   	$this->verificaPrilegioCerrar("com_interna/show");
   	$this->com_interna = $comInterna = ComInternaPeer::retrieveByPk($this->getRequestParameter('cominterna_id'));
+    $this->forward404Unless($comInterna);
     //**************************************************************************************************
 	$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    if (!$this->usuarioTieneAccesoComInterna($comInterna, $usuariologuiado)) {
+      $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
+      return $this->redirect($this->getRequest()->getScriptName().'/com_interna/list');
+    }
 	$dirRaiz = ParametroPeer::retrieveByPk(25)->getValortexto();
 	$dir_adj_object  = ParametroPeer::retrieveByPk(15)->getValortexto();
 	$alias_com_object  = ParametroPeer::retrieveByPk(26)->getValortexto();
@@ -4678,6 +4689,26 @@ class com_internaActions extends sfActions
   	return $clean_string;
   }
   
+  /**
+   * Replica, para un registro puntual, la misma jerarquia de permisos que getCriteriaBasic()
+   * aplica a la lista (LISTAR_TODAS > dueno/autorizado/firma/copia/destinatario), para
+   * distinguir "no existen registros" de "existe pero sin permiso" en executeShow().
+   */
+  private function usuarioTieneAccesoComInterna(ComInterna $com_interna, $usuario_id)
+  {
+    if ($this->getUser()->checkPerm('COM_INTERNA_LISTAR_TODAS', $usuario_id)) {
+      return true;
+    }
+    $arrIds = $this->getAutorizaciones();
+    $arrIds[] = $usuario_id;
+    $c = new Criteria();
+    $c->add(CominternaUsuarioPeer::COMINTERNA_ID, $com_interna->getPrimaryKey());
+    $c->add(CominternaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN);
+    $c->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, array(2, 3, 4), Criteria::IN);
+
+    return CominternaUsuarioPeer::doCount($c) > 0;
+  }
+
   private function getCriteriaBasic(Criteria $c)
   {
     //*******************************************************************************************

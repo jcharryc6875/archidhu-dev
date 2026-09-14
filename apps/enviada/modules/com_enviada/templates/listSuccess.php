@@ -27,7 +27,7 @@ use_helper('jQuery');
 		      </div>
 
 		      <div class="panel-body">
-		      	<div class="alert alert-default"><strong>No existen Registros</strong>, Intente con diferentes filtros de consulta.</div>
+		      	<div class="alert alert-default"><?php echo isset($mensajeListaVacia) ? $mensajeListaVacia : ConsultaPermisoHelper::MSG_SIN_REGISTROS; ?></div>
 	      	  </div>
       	</div>
         

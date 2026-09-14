@@ -616,7 +616,13 @@ class com_recibidaActions extends sfActions
     $pager->setCriteria($c);
     $pager->setPage($this->getRequestParameter('page',1));
     $pager->init();
-    $this->pager = $pager;	
+    $this->pager = $pager;
+    //*************************************************************************************************/
+    $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+    if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('radicado'))) {
+      $countSinPermiso = ComRecibidaPeer::doCount((new Criteria())->add(ComRecibidaPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
+      $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+    }
     //*************************************************************************************************/
     $this->directorio_raiz = ParametroPeer::retrieveByPk(27)->getValortexto();
     $this->directorio_alias  = ParametroPeer::retrieveByPk(28)->getValortexto();
@@ -2150,6 +2156,11 @@ class com_recibidaActions extends sfActions
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     $this->verificaPrilegioCerrar($currentForm);
   	$com_recibida = ComRecibidaPeer::retrieveByPk($comrecibida_id);
+    $this->forward404Unless($com_recibida);
+    if (!$this->usuarioTieneAccesoComRecibida($com_recibida, $usuariologuiado)) {
+      $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
+      return $this->redirect($this->getRequest()->getScriptName().'/com_recibida/list');
+    }
     //**************************************************************************************************
     $this->ilist_comenviadas =  ComRecibidaRespuestaPeer::getComEnviadasByComrecibidaId($comrecibida_id);
     $this->displayRespuestas = false;
@@ -3867,6 +3878,38 @@ class com_recibidaActions extends sfActions
   }
 
   
+  /**
+   * Replica, para un registro puntual, la misma jerarquia de permisos que getCriteriaBasic()
+   * aplica a la lista (LISTAR_TODAS > TODA_ENTIDAD > TODAS_REGIONALES > dueno/autorizado/copia),
+   * para distinguir "no existen registros" de "existe pero sin permiso" en executeShow().
+   */
+  private function usuarioTieneAccesoComRecibida(ComRecibida $com_recibida, $usuario_id)
+  {
+    if ($this->getUser()->checkPerm('COM_RECIBIDA_LISTAR_TODAS', $usuario_id)) {
+      return true;
+    }
+    $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
+    $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
+    //*********************************************************************************
+    if ($this->getUser()->checkPerm('LISTAR_COM_RECIBIDA_TODA_ENTIDAD', $usuario_id)) {
+      $regional = RegionalPeer::retrieveByPk($com_recibida->getRegionalId());
+
+      return $regional && $regional->getEntidadId() == $entidad_conectado;
+    }
+    if ($this->getUser()->checkPerm('LISTAR_COM_RECIBIDA_TODAS_REGIONALES', $usuario_id)) {
+      return $com_recibida->getRegionalId() == $regional_conectado;
+    }
+    //*********************************************************************************
+    $arrIds = $this->getAutorizaciones();
+    $arrIds[] = $usuario_id;
+    $c = new Criteria();
+    $c->add(ComrecibidaUsuarioPeer::COMRECIBIDA_ID, $com_recibida->getPrimaryKey());
+    $c->add(ComrecibidaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN);
+    $c->add(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID, array(1, 2, 3), Criteria::IN);
+
+    return ComrecibidaUsuarioPeer::doCount($c) > 0;
+  }
+
   private function getCriteriaBasic(Criteria $c)
   {
       $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');

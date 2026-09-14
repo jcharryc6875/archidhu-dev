@@ -910,6 +910,26 @@ class com_enviadaActions extends sfActions
         $this->list_object = ComEnviadaPeer::doSelectStmt($c)->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Replica, para un registro puntual, la misma jerarquia de permisos que getCriteriaBasic()
+     * aplica a la lista (LISTAR_TODAS > dueno/autorizado/creador/firma/copia), para
+     * distinguir "no existen registros" de "existe pero sin permiso" en executeShow().
+     */
+    private function usuarioTieneAccesoComEnviada(ComEnviada $com_enviada, $usuario_id)
+    {
+        if ($this->getUser()->checkPerm('COM_ENVIADA_LISTAR_TODAS', $usuario_id)) {
+            return true;
+        }
+        $arrIds = $this->getAutorizaciones();
+        $arrIds[] = $usuario_id;
+        $c = new Criteria();
+        $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $com_enviada->getPrimaryKey());
+        $c->add(EnviadaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN);
+        $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, array(1, 2, 3), Criteria::IN);
+
+        return EnviadaUsuarioPeer::doCount($c) > 0;
+    }
+
     private function getCriteriaBasic(Criteria $c)
     {
         $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
@@ -1474,8 +1494,14 @@ class com_enviadaActions extends sfActions
 	$pager->setPage($this->getRequestParameter('page',1));
 	$pager->init();
     //***********************************************************************************************
-	$this->pager = $pager;   
+	$this->pager = $pager;
 	$this->controlPaginacion = 1;
+	//***********************************************************************************************
+	$this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+	if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('radicado'))) {
+		$countSinPermiso = ComEnviadaPeer::doCount((new Criteria())->add(ComEnviadaPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
+		$this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+	}
 	$this->destinatario = array();
 	$this->firmas = array();    
 	$permisoAnular = 1;
@@ -1693,8 +1719,13 @@ class com_enviadaActions extends sfActions
     {
         $this->verificaPrilegioCerrar("com_enviada/show");
         $com_enviada = $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
+        $this->forward404Unless($com_enviada);
         //**************************************************************************************************
         $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        if (!$this->usuarioTieneAccesoComEnviada($com_enviada, $usuariologuiado)) {
+          $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
+          return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/list');
+        }
         //*********************************************************************************************************
         $stateview = trim($this->getRequestParameter('viewstate'));
         $backid = trim($this->getRequestParameter('backid'));
