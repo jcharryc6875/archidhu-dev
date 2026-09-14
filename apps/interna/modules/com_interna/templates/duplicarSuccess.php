@@ -117,17 +117,19 @@ use_helper('Object','jQuery','UserComponent');
                 echo object_select_tag($com_interna, 'getPrioridadcomId', array('related_class' => 'PrioridadCom','include_custom'=>'Selecione...','class'=>'form-control input-sm'));
             ?>
           </div>
+        </div>
+
+        <div class="form-group">
 		      <!-- Requiere respuesta -->
-          <label for="lbgetRequiereRespuesta" class="col-sm-1 control-label">Requiere Respuesta:<span class="text-danger">*</span></label>
-          <div class="col-sm-1">
+          <label for="lbgetRequiereRespuesta" class="col-sm-2 control-label">Requiere Respuesta:<span class="text-danger">*</span></label>
+          <div class="col-sm-2">
             <?php $value_check0 = $com_interna->getRequiereRespuesta() !== null ? ($com_interna->getRequiereRespuesta() ? true : false) : true; ?>
-            <!--div class="make-switch" data-on-label="<i class='entypo-check'></i>" data-off-label="<i class='entypo-cancel'></i>"-->
-            <div class="make-switch" data-on="danger" data-off="info" data-on-label="SI" data-off-label="NO">
+            <div class="make-switch switch-small" data-on="danger" data-off="info" data-on-label="SI" data-off-label="NO">
               <?php echo checkbox_tag('requiere_respuesta_switch', 1, $value_check0, array('id' => 'requiere_respuesta_switch')); ?>
             </div>
             <?php echo input_hidden_tag('requiere_respuesta', $value_check0 ? '1' : '0', array('id' => 'requiere_respuesta')); ?>
           </div>
-          <div class="col-sm-4" id="wrapper_obs_no_respuesta" style="<?php echo $value_check0 ? 'display:none;' : ''; ?>">
+          <div class="col-sm-6" id="wrapper_obs_no_respuesta" style="<?php echo $value_check0 ? 'display:none;' : ''; ?>">
             <label for="obs_no_respuesta" class="control-label">Observaciones (No requiere respuesta):<span class="text-danger">*</span></label>
             <?php echo textarea_tag('obs_no_respuesta', $com_interna->getObsNoRespuesta(), array('class' => 'form-control input-sm', 'rows' => 2, 'id' => 'obs_no_respuesta')); ?>
           </div>
@@ -136,9 +138,17 @@ use_helper('Object','jQuery','UserComponent');
               function actualizarRequiereRespuestaInterna(){
                   var marcado = $('#requiere_respuesta_switch').is(':checked');
                   $('#requiere_respuesta').val(marcado ? '1' : '0');
-                  if(marcado){ $('#wrapper_obs_no_respuesta').hide(); }else{ $('#wrapper_obs_no_respuesta').show(); }
+                  if(marcado){
+                      $('#wrapper_obs_no_respuesta').hide();
+                      $('#obs_no_respuesta').removeClass('required').removeClass('error');
+                      $('#obs_no_respuesta').next('label.error').remove();
+                  }else{
+                      $('#wrapper_obs_no_respuesta').show();
+                      $('#obs_no_respuesta').addClass('required');
+                  }
               }
               $('#requiere_respuesta_switch').on('change click', actualizarRequiereRespuestaInterna);
+              actualizarRequiereRespuestaInterna();
           });
           </script>
 

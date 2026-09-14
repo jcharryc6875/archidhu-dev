@@ -127,9 +127,17 @@ use_helper('Object','jQuery');
             function actualizarRequiereRespuestaRecibida(){
                 var marcado = $('#requiere_respuesta_switch').is(':checked');
                 $('#requiere_respuesta').val(marcado ? '1' : '0');
-                if(marcado){ $('#wrapper_obs_no_respuesta').hide(); }else{ $('#wrapper_obs_no_respuesta').show(); }
+                if(marcado){
+                    $('#wrapper_obs_no_respuesta').hide();
+                    $('#obs_no_respuesta').removeClass('required').removeClass('error');
+                    $('#obs_no_respuesta').next('label.error').remove();
+                }else{
+                    $('#wrapper_obs_no_respuesta').show();
+                    $('#obs_no_respuesta').addClass('required');
+                }
             }
             $('#requiere_respuesta_switch').on('change click', actualizarRequiereRespuestaRecibida);
+            actualizarRequiereRespuestaRecibida();
         });
         </script>
         <?php } ?>
