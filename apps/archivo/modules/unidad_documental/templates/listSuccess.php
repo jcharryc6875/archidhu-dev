@@ -42,6 +42,9 @@ use_helper('Form','jQuery');
 		include_once("_navbar_archivo.php");
         echo input_hidden_tag('localizacionunidaddocumental_id',$sf_params->get('localizacionunidaddocumental_id'));
 		?>
+        <?php if ($sf_user->hasFlash('messages_error')): ?>
+          <?php echo ConsultaPermisoHelper::htmlAlertaSinPermiso($sf_user->getFlash('messages_error')); ?>
+        <?php endif; ?>
         <div id="tablelist" >
 	    <?php	    
 	    if($cantidad_registros == 0):
@@ -52,7 +55,12 @@ use_helper('Form','jQuery');
 		      </div>
 
 		      <div class="panel-body">
-		      	<div class="alert alert-default"><strong>No existen Registros</strong>, Intente con diferentes filtros de consulta.</div>
+		      	<?php $mensajeVacio = isset($mensajeListaVacia) ? $mensajeListaVacia : ConsultaPermisoHelper::MSG_SIN_REGISTROS; ?>
+		      	<?php if (ConsultaPermisoHelper::esMensajeSinPermiso($mensajeVacio)): ?>
+		      		<?php echo ConsultaPermisoHelper::htmlAlertaSinPermiso($mensajeVacio); ?>
+		      	<?php else: ?>
+		      		<div class="alert alert-default"><?php echo $mensajeVacio; ?></div>
+		      	<?php endif; ?>
 	      	  </div>
       	</div>
 	    <?php else: ?>

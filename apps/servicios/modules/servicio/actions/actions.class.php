@@ -593,6 +593,7 @@ class servicioActions extends sfActions
     	$currentForm="servicio/show";
 		$this->verificaPrilegioCerrar($currentForm); 			
         $this->servicio = ServicioPeer::retrieveByPk($this->getRequestParameter('servicio_id'));
+        $this->forward404Unless($this->servicio);
         //**************************************************************************************
 		//echo print_r($this->servicio->getBasicUrlAttach());
 		//**************************************************************************************

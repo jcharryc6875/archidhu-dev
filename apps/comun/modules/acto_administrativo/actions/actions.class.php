@@ -340,8 +340,13 @@ class acto_administrativoActions extends sfActions
   {
     $this->verificaPrilegioCerrar("acto_administrativo/show");
     $acto_administrativo = $this->acto_administrativo = ActoAdministrativoPeer::retrieveByPk($this->getRequestParameter('actoadministrativo_id'));
+    $this->forward404Unless($acto_administrativo);
     //**************************************************************************************************
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    if (!$this->usuarioTieneAccesoActoAdministrativo($acto_administrativo, $usuariologuiado)) {
+      $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
+      return $this->redirect($this->getRequest()->getScriptName().'/acto_administrativo/list');
+    }
     //**************************************************************************************************
     $stateview = trim($this->getRequestParameter('viewstate'));
     $backid = trim($this->getRequestParameter('backid'));
@@ -1732,9 +1737,15 @@ class acto_administrativoActions extends sfActions
     $pager->setPage($this->getRequestParameter('page',1));
     $pager->init();
     //***********************************************************************************************
-    $this->pager = $pager;   
-    $this->controlPaginacion = 1;  
+    $this->pager = $pager;
+    $this->controlPaginacion = 1;
     $this->anular="Anular";
+    //***********************************************************************************************
+    $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+    if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('numero_resolucion'))) {
+      $countSinPermiso = ActoAdministrativoPeer::doCount((new Criteria())->add(ActoAdministrativoPeer::NUMERO_RESOLUCION, '%'.trim($this->getRequestParameter('numero_resolucion')).'%', Criteria::LIKE));
+      $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+    }
   }
 
   /**
@@ -2045,6 +2056,23 @@ class acto_administrativoActions extends sfActions
   *
   * @param sfRequest $request A request object
   */
+  /**
+   * Replica, para un registro puntual, la misma jerarquia de permisos que getCriteriaBasic()
+   * aplica a la lista por defecto (ACTOS_ADMINISTRATIVOS_LISTAR_TODAS > dueno/asignado), para
+   * distinguir "no existen registros" de "existe pero sin permiso" en executeShow().
+   */
+  private function usuarioTieneAccesoActoAdministrativo(ActoAdministrativo $acto_administrativo, $usuario_id)
+  {
+    if ($this->getUser()->checkPerm('ACTOS_ADMINISTRATIVOS_LISTAR_TODAS', $usuario_id)) {
+      return true;
+    }
+    $c = new Criteria();
+    $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID, $acto_administrativo->getPrimaryKey());
+    $c->add(ActoadministrativoUsuarioPeer::USUARIO_ID, $usuario_id);
+
+    return ActoadministrativoUsuarioPeer::doCount($c) > 0;
+  }
+
   private function getCriteriaBasic(Criteria $c)
   {
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');

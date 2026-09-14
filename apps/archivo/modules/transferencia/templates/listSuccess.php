@@ -16,8 +16,14 @@ use_helper('jQuery');
         // Include Navbar Archivo
 		include_once("_navbar_transferencias.php");
         //********************************************************************************
+	    ?>
+	    <?php if ($sf_user->hasFlash('messages_error')): ?>
+	      <?php echo ConsultaPermisoHelper::htmlAlertaSinPermiso($sf_user->getFlash('messages_error')); ?>
+	    <?php endif; ?>
+	    <?php
 	    $cantidad_registros = $pager->getNbResults();
 	    if($cantidad_registros == 0):
+	    	$mensajeVacio = isset($mensajeListaVacia) ? $mensajeListaVacia : ConsultaPermisoHelper::MSG_SIN_REGISTROS;
 	    ?>
 		<div class="panel panel-primary">
 		      <div class="panel-heading">
@@ -25,7 +31,11 @@ use_helper('jQuery');
 		      </div>
 
 		      <div class="panel-body">
-		      	<div class="alert alert-default"><strong>No existen Registros</strong>, Intente con diferentes filtros de consulta.</div>
+		      	<?php if (ConsultaPermisoHelper::esMensajeSinPermiso($mensajeVacio)): ?>
+		      		<?php echo ConsultaPermisoHelper::htmlAlertaSinPermiso($mensajeVacio); ?>
+		      	<?php else: ?>
+		      		<div class="alert alert-default"><?php echo $mensajeVacio; ?></div>
+		      	<?php endif; ?>
 	      	  </div>
               
               <!-- Opciones Listar Transferencias -->

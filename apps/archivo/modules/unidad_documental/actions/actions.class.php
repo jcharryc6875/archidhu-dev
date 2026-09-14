@@ -509,9 +509,15 @@ class unidad_documentalActions extends sfActions
 	$this->pager=$pager;
     $this->listfilters =  $listfilters;
     $this->localizacion = LocalizacionUnidadDocumentalPeer::retrieveByPK($localizacion);
+    //******************************************************************************************************
+    $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+    if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('codigo_barras'))) {
+      $countSinPermiso = UnidadDocumentalPeer::doCount((new Criteria())->add(UnidadDocumentalPeer::CODIGO_BARRAS, trim($this->getRequestParameter('codigo_barras')).'%', Criteria::LIKE));
+      $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+    }
 	/*********************************************************************************************************/
-  } 
-  
+  }
+
   public function executeLoadFilterData()
   {
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
@@ -868,6 +874,12 @@ class unidad_documentalActions extends sfActions
 	$this->pager = $pager;
     $this->listfilters =  $listfilters;
     $this->localizacion_object = LocalizacionUnidadDocumentalPeer::retrieveByPK($localizacion);
+    //******************************************************************************************************
+    $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+    if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('codigo_barras'))) {
+      $countSinPermiso = UnidadDocumentalPeer::doCount((new Criteria())->add(UnidadDocumentalPeer::CODIGO_BARRAS, trim($this->getRequestParameter('codigo_barras')).'%', Criteria::LIKE));
+      $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+    }
   }
   
   
@@ -910,8 +922,14 @@ class unidad_documentalActions extends sfActions
 	$this->boton = $origen;
 	$localizacion = $this->getRequestParameter('localizacionunidaddocumental_id');	
 	$currentForm="show";
-  	$this->verificaPrilegioCerrar($currentForm,$localizacion);	
-    $unidad_documental = UnidadDocumentalPeer::retrieveByPk($this->getRequestParameter('unidaddocumental_id'));    
+  	$this->verificaPrilegioCerrar($currentForm,$localizacion);
+    $unidad_documental = UnidadDocumentalPeer::retrieveByPk($this->getRequestParameter('unidaddocumental_id'));
+    $this->forward404Unless($unidad_documental);
+    $usuariologueado_acceso = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    if (!$this->usuarioTieneAccesoUnidadDocumental($unidad_documental, $usuariologueado_acceso)) {
+      $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
+      return $this->redirect($this->getRequest()->getScriptName().'/unidad_documental/list?localizacionunidaddocumental_id='.$unidad_documental->getLocalizacionunidaddocumentalId());
+    }
     //**************************************************************************************************************/
 	$this->expediente_origen = "";
 	if(!empty($unidad_documental->getParentunidaddocId())){
@@ -3877,6 +3895,30 @@ class unidad_documentalActions extends sfActions
 	$parametro->save();
 	//******************************************************************
 	return $new_codigo;
+  }
+
+  /**
+   * Replica, para un registro puntual, la misma jerarquia de permisos que getBasicCriteria()
+   * aplica a la lista (LISTAR_EXPEDIENTES_TODAS_ENTIDADES > TODAS_REGIONALES > su propia
+   * regional), para distinguir "no existen registros" de "existe pero sin permiso" en
+   * executeShow().
+   */
+  public function usuarioTieneAccesoUnidadDocumental(UnidadDocumental $unidad_documental, $usuario_id)
+  {
+    if ($this->getUser()->checkPerm('LISTAR_EXPEDIENTES_TODAS_ENTIDADES', $usuario_id)) {
+      return true;
+    }
+    $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
+    $regional = RegionalPeer::retrieveByPk($unidad_documental->getRegionalId());
+    if ($regional && $regional->getEntidadId() != $entidad_conectado) {
+      return false;
+    }
+    if ($this->getUser()->checkPerm('LISTAR_EXPEDIENTES_TODAS_REGIONALES', $usuario_id)) {
+      return true;
+    }
+    $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
+
+    return $unidad_documental->getRegionalId() == $regional_conectado;
   }
 
   public function getBasicCriteria()

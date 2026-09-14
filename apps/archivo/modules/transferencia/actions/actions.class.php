@@ -582,6 +582,19 @@ class transferenciaActions extends sfActions
     $pager->setPage($this->getRequestParameter('page', 1));
     $pager->init();
     $this->pager = $pager;
+    //*************************************************************************************************
+    $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+    if ($pager->getNbResults() == 0 && (trim($cod_barras) || trim($num_trans))) {
+      $cSinPermiso = new Criteria();
+      if (trim($cod_barras)) {
+        $cSinPermiso->addJoin(TransferenciaPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID);
+        $cSinPermiso->add(UnidadDocumentalPeer::CODIGO_BARRAS, '%'.trim($cod_barras).'%', Criteria::LIKE);
+      } else {
+        $cSinPermiso->add(TransferenciaPeer::TRANSFERENCIA_ID, trim($num_trans));
+      }
+      $countSinPermiso = TransferenciaPeer::doCount($cSinPermiso);
+      $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+    }
     //$this->filtros_consulta = $parametros_consulta;
     /**************************************************************************************************************/
     $this->parametroFormatoDig   = ParametroPeer::retrieveByPk(31)->getValortexto();
@@ -693,6 +706,28 @@ class transferenciaActions extends sfActions
   {
     $this->transferencia = TransferenciaPeer::retrieveByPk($this->getRequestParameter('transferencia_id'));
     $this->forward404Unless($this->transferencia);
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    if (!$this->usuarioTieneAccesoTransferencia($this->transferencia, $usuariologuiado)) {
+      $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
+      return $this->redirect($this->getRequest()->getScriptName().'/transferencia/list');
+    }
+  }
+
+  /**
+   * Replica, para un registro puntual, el permiso que executeList() aplica a la lista
+   * (LISTAR_TODAS_TRANSFERENCIAS > solicitante/aceptante), para distinguir "no existen
+   * registros" de "existe pero sin permiso".
+   */
+  private function usuarioTieneAccesoTransferencia(Transferencia $transferencia, $usuario_id)
+  {
+    if ($this->tienePrilegio('LISTAR_TODAS_TRANSFERENCIAS')) {
+      return true;
+    }
+    $c = new Criteria();
+    $c->add(UsuarioTransferenciaPeer::TRANSFERENCIA_ID, $transferencia->getPrimaryKey());
+    $c->add(UsuarioTransferenciaPeer::USUARIO_ID, $usuario_id);
+
+    return UsuarioTransferenciaPeer::doCount($c) > 0;
   }
 
   public function executeDetalles()
@@ -700,7 +735,13 @@ class transferenciaActions extends sfActions
     $currentForm = "transferencia/show";
     $this->verificaPrilegioCerrar($currentForm);
     $transferencia_id = trim($this->getRequestParameter('transferencia_id')) ? trim($this->getRequestParameter('transferencia_id')) : null;
-    $transferencia = TransferenciaPeer::retrieveByPk($transferencia_id);    
+    $transferencia = TransferenciaPeer::retrieveByPk($transferencia_id);
+    $this->forward404Unless($transferencia);
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    if (!$this->usuarioTieneAccesoTransferencia($transferencia, $usuariologuiado)) {
+      $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
+      return $this->redirect($this->getRequest()->getScriptName().'/transferencia/list');
+    }
     //**************************************************************************************************************
     // USUARIO SOLICITA
     $c = new Criteria();
