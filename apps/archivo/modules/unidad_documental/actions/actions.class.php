@@ -511,9 +511,17 @@ class unidad_documentalActions extends sfActions
     $this->localizacion = LocalizacionUnidadDocumentalPeer::retrieveByPK($localizacion);
     //******************************************************************************************************
     $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
-    if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('codigo_barras'))) {
-      $countSinPermiso = UnidadDocumentalPeer::doCount((new Criteria())->add(UnidadDocumentalPeer::CODIGO_BARRAS, trim($this->getRequestParameter('codigo_barras')).'%', Criteria::LIKE));
-      $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+    if ($pager->getNbResults() == 0) {
+      $cSinPermiso = null;
+      if (trim($this->getRequestParameter('unidaddocumental_id'))) {
+        $cSinPermiso = (new Criteria())->add(UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, trim($this->getRequestParameter('unidaddocumental_id')));
+      } elseif (trim($this->getRequestParameter('codigo_barras'))) {
+        $cSinPermiso = (new Criteria())->add(UnidadDocumentalPeer::CODIGO_BARRAS, trim($this->getRequestParameter('codigo_barras')).'%', Criteria::LIKE);
+      }
+      if ($cSinPermiso) {
+        $countSinPermiso = UnidadDocumentalPeer::doCount($cSinPermiso);
+        $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+      }
     }
 	/*********************************************************************************************************/
   }
@@ -876,13 +884,21 @@ class unidad_documentalActions extends sfActions
     $this->localizacion_object = LocalizacionUnidadDocumentalPeer::retrieveByPK($localizacion);
     //******************************************************************************************************
     $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
-    if ($pager->getNbResults() == 0 && trim($this->getRequestParameter('codigo_barras'))) {
-      $countSinPermiso = UnidadDocumentalPeer::doCount((new Criteria())->add(UnidadDocumentalPeer::CODIGO_BARRAS, trim($this->getRequestParameter('codigo_barras')).'%', Criteria::LIKE));
-      $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+    if ($pager->getNbResults() == 0) {
+      $cSinPermiso = null;
+      if (trim($this->getRequestParameter('unidaddocumental_id'))) {
+        $cSinPermiso = (new Criteria())->add(UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, trim($this->getRequestParameter('unidaddocumental_id')));
+      } elseif (trim($this->getRequestParameter('codigo_barras'))) {
+        $cSinPermiso = (new Criteria())->add(UnidadDocumentalPeer::CODIGO_BARRAS, trim($this->getRequestParameter('codigo_barras')).'%', Criteria::LIKE);
+      }
+      if ($cSinPermiso) {
+        $countSinPermiso = UnidadDocumentalPeer::doCount($cSinPermiso);
+        $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+      }
     }
   }
-  
-  
+
+
   public function executeUpdateLocalizacion()
   {
     /*********************************************************************************************************/
