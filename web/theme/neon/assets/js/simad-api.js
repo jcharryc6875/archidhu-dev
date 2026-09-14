@@ -3105,8 +3105,36 @@ jQuery(document).ready(function($) {
     		hide: function () {
     			$dialog.modal('hide');
     		}
-    	};    
-    })(jQuery);    
+    	};
+    })(jQuery);
+
+	// Requerimiento 4: obligatoriedad de "Requiere respuesta" al archivar comunicaciones (com_interna/transferencia)
+	function actualizarReqRespuesta($switch){
+		var $group = $switch.closest('.form-group');
+		var $wrapper = $group.find('.reqresp-obs-wrapper');
+		var $obs = $wrapper.find('.reqresp-obs');
+		var $hidden = $group.find('.reqresp-hidden');
+		var marcado = $switch.is(':checked');
+
+		$hidden.val(marcado ? '1' : '0');
+
+		if(marcado){
+			$wrapper.hide();
+			$obs.removeClass('required').removeClass('error');
+			$obs.next('label.error').remove();
+		}else{
+			$wrapper.show();
+			$obs.addClass('required');
+		}
+	}
+
+	jQuery('body').on('change click', '.reqresp-switch', function(event){
+		actualizarReqRespuesta(jQuery(this));
+	});
+
+	jQuery('.reqresp-switch').each(function(){
+		actualizarReqRespuesta(jQuery(this));
+	});
 });
 
 (function($) {

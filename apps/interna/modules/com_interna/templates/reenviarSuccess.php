@@ -57,32 +57,14 @@ use_helper('Object','jQuery','UserComponent');
           <div class="col-sm-2">
             <?php $value_check0 = $com_interna->getRequiereRespuesta() !== null ? ($com_interna->getRequiereRespuesta() ? true : false) : true; ?>
             <div class="make-switch switch-small" data-on="danger" data-off="info" data-on-label="SI" data-off-label="NO">
-                <?php echo checkbox_tag('requiere_respuesta_switch', 1, $value_check0, array('id' => 'requiere_respuesta_switch')); ?>
+                <?php echo checkbox_tag('requiere_respuesta_switch', 1, $value_check0, array('id' => 'requiere_respuesta_switch', 'class' => 'reqresp-switch')); ?>
             </div>
-            <?php echo input_hidden_tag('requiere_respuesta', $value_check0 ? '1' : '0', array('id' => 'requiere_respuesta')); ?>
+            <?php echo input_hidden_tag('requiere_respuesta', $value_check0 ? '1' : '0', array('id' => 'requiere_respuesta', 'class' => 'reqresp-hidden')); ?>
           </div>
-          <div class="col-sm-6" id="wrapper_obs_no_respuesta" style="<?php echo $value_check0 ? 'display:none;' : ''; ?>">
+          <div class="col-sm-6 reqresp-obs-wrapper" id="wrapper_obs_no_respuesta" style="<?php echo $value_check0 ? 'display:none;' : ''; ?>">
             <label for="obs_no_respuesta" class="control-label">Observaciones (No requiere respuesta):<span class="text-danger">*</span></label>
-            <?php echo textarea_tag('obs_no_respuesta', $com_interna->getObsNoRespuesta(), array('class' => 'form-control input-sm', 'rows' => 2, 'id' => 'obs_no_respuesta')); ?>
+            <?php echo textarea_tag('obs_no_respuesta', $com_interna->getObsNoRespuesta(), array('class' => 'form-control input-sm reqresp-obs', 'rows' => 2, 'id' => 'obs_no_respuesta')); ?>
           </div>
-          <script>
-          jQuery(function($){
-              function actualizarRequiereRespuestaInterna(){
-                  var marcado = $('#requiere_respuesta_switch').is(':checked');
-                  $('#requiere_respuesta').val(marcado ? '1' : '0');
-                  if(marcado){
-                      $('#wrapper_obs_no_respuesta').hide();
-                      $('#obs_no_respuesta').removeClass('required').removeClass('error');
-                      $('#obs_no_respuesta').next('label.error').remove();
-                  }else{
-                      $('#wrapper_obs_no_respuesta').show();
-                      $('#obs_no_respuesta').addClass('required');
-                  }
-              }
-              $('#requiere_respuesta_switch').on('change click', actualizarRequiereRespuestaInterna);
-              actualizarRequiereRespuestaInterna();
-          });
-          </script>
         </div>
 
         <div class="form-group">
