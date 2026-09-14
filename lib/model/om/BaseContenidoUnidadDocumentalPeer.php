@@ -3210,8 +3210,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 } // if $obj10 already loaded
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (ContenidodocFiletree)
-                //$obj10->addContenidoUnidadDocumental($obj1);
-
+                $obj10->addContenidoUnidadDocumental($obj1);
             } // if joined row is not null
 
             $results[] = $obj1;
@@ -5569,7 +5568,7 @@ abstract class BaseContenidoUnidadDocumentalPeer
                 } // if $obj10 already loaded
 
                 // Add the $obj1 (ContenidoUnidadDocumental) to the collection in $obj10 (Modulo)
-                $obj10->addContenidoUnidadDocumental($obj1);
+                //$obj10->addContenidoUnidadDocumental($obj1);
             } // if joined row is not null
 
             $results[] = $obj1;
