@@ -145,7 +145,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
             <?php echo textarea_tag('obs_no_respuesta', $com_interna->getObsNoRespuesta(), array('class' => 'form-control input-sm reqresp-obs', 'rows' => 2, 'id' => 'obs_no_respuesta')); ?>
           </div>
 
-          <?php if ($sf_user->checkPerm("CREAR_ENVIADA_CON_MEMBRETE", $currentUser) && !$com_interna->getIsCreateWord()) { ?>
+          <?php if ($sf_user->checkPerm("CREAR_INTERNA_CON_MEMBRETE", $currentUser) && !$com_interna->getIsCreateWord()) { ?>
             <!-- Use Membrete -->
             <label for="lbUseMembrete" class="col-sm-1 control-label tmpresponse">Usar Membrete:</label>
             <div class="col-sm-1 tmpresponse">
