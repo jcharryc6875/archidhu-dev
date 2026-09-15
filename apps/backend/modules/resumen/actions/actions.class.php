@@ -888,18 +888,20 @@ class resumenActions extends sfActions
         $c->addJoin(ComInternaPeer::COMINTERNA_ID,CominternaUsuarioPeer::COMINTERNA_ID);
         $c->add(CominternaUsuarioPeer::ESTADOCOMINTERNA_ID,2);//por leer
         //$c->addOr(CominternaUsuarioPeer::ESTADOCOMINTERNA_ID,5);//por responder
-        $c->add(CominternaUsuarioPeer::USUARIO_ID,$usuariologuiado);    
+        $c->add(CominternaUsuarioPeer::USUARIO_ID,$usuariologuiado);
         $c->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID,4);
         $c->add(ComInternaPeer::PERIODO_ID,$periodo_id);
+        UsuarioPendientesChecker::condicionExcluyeNoRequiereRespuestaInterna($c);
         $this->por_leer = ComInternaPeer::doCount($c);
         //****************************************Comunicaciones internas por responder*********************************************
         $r = new Criteria();	
         //$c->setDistinct();
         $r->addJoin(ComInternaPeer::COMINTERNA_ID,CominternaUsuarioPeer::COMINTERNA_ID);
         $r->add(CominternaUsuarioPeer::ESTADOCOMINTERNA_ID,5);//por responder
-        $r->add(CominternaUsuarioPeer::USUARIO_ID,$usuariologuiado);    
+        $r->add(CominternaUsuarioPeer::USUARIO_ID,$usuariologuiado);
         $r->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID,4);
         $r->add(ComInternaPeer::PERIODO_ID,$periodo_id);
+        UsuarioPendientesChecker::condicionExcluyeNoRequiereRespuestaInterna($r);
         $this->por_responder = ComInternaPeer::doCount($r);
         //********************************************Comunicaciones Internas Copias************************************************
         $a = new Criteria();
@@ -1047,6 +1049,7 @@ class resumenActions extends sfActions
         $e->add(ComRecibidaPeer::IS_LOCKED,0);
         $e->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA,1);
         $e->add(ComRecibidaPeer::PERIODO_ID,$periodo_id);
+        UsuarioPendientesChecker::excluirNoRequiereRespuestaRecibida($e);
         $this->recibidas_leer = ComRecibidaPeer::doCount($e);
         //***********************************************Comunicaciones Recibidas Vencidas******************************************
         $f = new Criteria();    
@@ -1060,6 +1063,7 @@ class resumenActions extends sfActions
         $f->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA,1);
         $f->add(ComRecibidaPeer::PERIODO_ID,$periodo_id);
         $f->add(ComRecibidaPeer::FECHA_MAXIMA_RESPUESTA,date("Y-m-d 23:59:59"),Criteria::LESS_THAN);
+        UsuarioPendientesChecker::excluirNoRequiereRespuestaRecibida($f);
         $this->vencidas = ComRecibidaPeer::doCount($f);
         //***********************************************Comunicaciones Recibidas Por Vencer****************************************
         $g = new Criteria();    
@@ -1072,6 +1076,7 @@ class resumenActions extends sfActions
         $g->add(ComRecibidaPeer::MARCA_VINCULACION,0);
         $g->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA,1);
         $g->add(ComRecibidaPeer::PERIODO_ID,$periodo_id);
+        UsuarioPendientesChecker::excluirNoRequiereRespuestaRecibida($g);
         $this->por_vencer = ComRecibidaPeer::doCount($g);
         //******************************** Comunicaciones Recibidas Copias**********************************************************
         $h1 = new Criteria();    
@@ -1090,7 +1095,8 @@ class resumenActions extends sfActions
         $h2->add(ComRecibidaPeer::IS_LOCKED,0);
         $h2->add(ComRecibidaPeer::MARCA_VINCULACION,0);
         $h2->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA,1);
-        $h2->add(ComRecibidaPeer::PERIODO_ID,$periodo_id);    
+        $h2->add(ComRecibidaPeer::PERIODO_ID,$periodo_id);
+        UsuarioPendientesChecker::excluirNoRequiereRespuestaRecibida($h2);
         $this->recibida_responder = ComRecibidaPeer::doCount($h2);
         //******************************** Comunicaciones Recibidas Distribucion****************************************************
         if(in_array(2,$process_usuario)){
@@ -1102,7 +1108,8 @@ class resumenActions extends sfActions
             $h3->add(ComRecibidaPeer::IS_LOCKED,0);
             $h3->add(ComRecibidaPeer::MARCA_VINCULACION,0);
             $h3->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA,1);
-            $h3->add(ComRecibidaPeer::PERIODO_ID,$periodo_id);    
+            $h3->add(ComRecibidaPeer::PERIODO_ID,$periodo_id);
+            UsuarioPendientesChecker::excluirNoRequiereRespuestaRecibida($h3);
             $this->por_distribuir = ComRecibidaPeer::doCount($h3);
         }else{ $this->por_distribuir = null; }
         //******************************** Comunicaciones Recibidas Gestor**********************************************************
@@ -1117,6 +1124,7 @@ class resumenActions extends sfActions
             $h4->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA,1);
             $h4->add(ComRecibidaPeer::PERIODO_ID,$periodo_id);
             $h4->add(ComrecibidaUsuarioPeer::ESTADOCOMRECIBIDA_ID,5,Criteria::NOT_EQUAL);
+            UsuarioPendientesChecker::excluirNoRequiereRespuestaRecibida($h4);
             $this->por_gestionar = ComRecibidaPeer::doCount($h4);
         }else{ $this->por_gestionar = null; }
         //******************************** Comunicaciones Recibidas Control Calidad*************************************************

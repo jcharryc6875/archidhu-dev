@@ -574,8 +574,9 @@ class UsuarioPendientesChecker
      * Excluye del bucket las comunicaciones recibidas marcadas explicitamente como
      * "No requiere respuesta" (REQUIERE_RESPUESTA=0). NULL (aun sin decidir) sigue contando.
      * El join ComrecibidaUsuarioPeer->ComRecibidaPeer ya existe en cada criteria que la llama.
+     * Publico: reutilizado tambien por el dashboard de resumen (apps/backend/modules/resumen).
      */
-    private static function excluirNoRequiereRespuestaRecibida(Criteria $c)
+    public static function excluirNoRequiereRespuestaRecibida(Criteria $c)
     {
         $cNoDecidido = $c->getNewCriterion(ComRecibidaPeer::REQUIERE_RESPUESTA, 0, Criteria::NOT_EQUAL);
         $cNulo = $c->getNewCriterion(ComRecibidaPeer::REQUIERE_RESPUESTA, null, Criteria::ISNULL);
@@ -610,10 +611,21 @@ class UsuarioPendientesChecker
     /**
      * Excluye del bucket las comunicaciones internas marcadas explicitamente como
      * "No requiere respuesta" (REQUIERE_RESPUESTA=0). NULL (aun sin decidir) sigue contando.
+     * Agrega el join ComInternaPeer<->CominternaUsuarioPeer (usar solo si el criteria
+     * todavia no lo tiene; si ya existe, usar condicionExcluyeNoRequiereRespuestaInterna()).
      */
     private static function excluirNoRequiereRespuestaInterna(Criteria $c)
     {
         $c->addJoin(CominternaUsuarioPeer::COMINTERNA_ID, ComInternaPeer::COMINTERNA_ID);
+        self::condicionExcluyeNoRequiereRespuestaInterna($c);
+    }
+
+    /**
+     * Igual que excluirNoRequiereRespuestaInterna() pero sin agregar el join, para
+     * criterias (como el dashboard de resumen) que ya unen ComInternaPeer.
+     */
+    public static function condicionExcluyeNoRequiereRespuestaInterna(Criteria $c)
+    {
         $cNoDecidido = $c->getNewCriterion(ComInternaPeer::REQUIERE_RESPUESTA, 0, Criteria::NOT_EQUAL);
         $cNulo = $c->getNewCriterion(ComInternaPeer::REQUIERE_RESPUESTA, null, Criteria::ISNULL);
         $cNoDecidido->addOr($cNulo);
