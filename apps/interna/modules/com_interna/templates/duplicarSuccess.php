@@ -14,7 +14,7 @@ $currentFormSingAuto   = "COM_INTERNA_CREAR_FIRMA_DESATENDIDA";
 $currentUser = $sf_user->getAttribute('username', '', 'subscriber');
 $useFirmaDesatendida = $sf_user->checkPerm($currentFormSingAuto, $currentUser);
 
-use_helper('Object','jQuery','UserComponent');
+use_helper('Object', 'jQuery', 'UserComponent');
 ?>
 <!-- Imported scripts on this page -->
 <script src="<?php echo $path_theme; ?>/assets/js/typeahead.min.js"></script>
@@ -24,7 +24,7 @@ use_helper('Object','jQuery','UserComponent');
 <div class="row">
   <div class="col-md-12">
     <!-- Contenedor Pagina -->
-    <div class="panel panel-gradient" data-collapsed="0">      
+    <div class="panel panel-gradient" data-collapsed="0">
       <div class="panel-heading">
         <div class="panel-title">
           Duplicar Comunicaci&oacute;n Interna
@@ -33,20 +33,20 @@ use_helper('Object','jQuery','UserComponent');
 
       <!-- Contenedor Contenido Formulario-->
       <div class="panel-body">
-        <?php 
-            echo form_tag('com_interna/update', array('name'=>'form1', 'role' => 'form', 'class' => 'form-horizontal form-groups-bordered validate')); 
-            echo object_input_hidden_tag($com_interna, 'getCominternaId');
-            echo input_hidden_tag('duplicar',1);
-            echo input_hidden_tag('copiaInternaId',$copiaInternaId);
-            echo input_hidden_tag('destinatarioId',$destinatarioId);
-            echo input_hidden_tag('firmanteId',$firmanteId);
-            echo input_hidden_tag('cargousuarioId',$cargousuarioId);
-            echo input_hidden_tag('cargousuarioIdCopias',$cargousuarioIdCopias);
-            echo input_hidden_tag('cargousuarioIdFirma',$cargousuarioIdFirma);
-            echo input_hidden_tag('wfinstancia_id',$wfinstancia_id);
-            echo input_hidden_tag('wfbitacora_id', $wfbitacora_id );
-            echo input_hidden_tag('aprobadoresId',$aprobadores);// aprobadores
-            echo input_hidden_tag('cargousuarioIdAprob',$cargousuarioIdAprob);
+        <?php
+        echo form_tag('com_interna/update', array('name' => 'form1', 'role' => 'form', 'class' => 'form-horizontal form-groups-bordered validate'));
+        echo object_input_hidden_tag($com_interna, 'getCominternaId');
+        echo input_hidden_tag('duplicar', 1);
+        echo input_hidden_tag('copiaInternaId', $copiaInternaId);
+        echo input_hidden_tag('destinatarioId', $destinatarioId);
+        echo input_hidden_tag('firmanteId', $firmanteId);
+        echo input_hidden_tag('cargousuarioId', $cargousuarioId);
+        echo input_hidden_tag('cargousuarioIdCopias', $cargousuarioIdCopias);
+        echo input_hidden_tag('cargousuarioIdFirma', $cargousuarioIdFirma);
+        echo input_hidden_tag('wfinstancia_id', $wfinstancia_id);
+        echo input_hidden_tag('wfbitacora_id', $wfbitacora_id);
+        echo input_hidden_tag('aprobadoresId', $aprobadores); // aprobadores
+        echo input_hidden_tag('cargousuarioIdAprob', $cargousuarioIdAprob);
         ?>
 
         <div class="form-group">
@@ -54,74 +54,81 @@ use_helper('Object','jQuery','UserComponent');
           <label for="lbradByInt" class="col-sm-1 control-label">Usar Documento:</label>
           <div class="col-xs-1">
             <?php $value_check0 = !$com_interna->getIsCreateWord() ? false : true; ?>
-            <div class="make-switch tooltip-primary switch-input" data-toggle = "tooltip" data-on="success" data-off="warning" data-on-label="SI" data-off-label="NO" data-original-title = "Radicar comunicaci&oacute;n usando documento pdf">
-              <?php echo checkbox_tag(md5('radComByPdf'), 1 , $value_check0,array('onchange' => jq_remote_function(
-                array(
-                  'update' => 'tplcomrad',
-                  'url'    => 'com_interna/fileTemplate',
-                  'loading' => "javascript:jQuery.LoadingStructData();",
-                  'complete' => 'javascript:jQuery.CloseLoadingStructData(); try{ if(jQuery("#'.md5('radComByPdf').'").prop("checked")){ jQuery(".tmpresponse").hide(); jQuery("#tplcomrad").show(); }else{ jQuery(".tmpresponse").show(); jQuery("#tplcomrad").hide(); } javascript:jQuery.CloseLoadingStructData(); }catch(err) { toastr.error(err.message); }',
-                ))
+            <div class="make-switch tooltip-primary switch-input" data-toggle="tooltip" data-on="success" data-off="warning" data-on-label="SI" data-off-label="NO" data-original-title="Radicar comunicaci&oacute;n usando documento pdf">
+              <?php echo checkbox_tag(md5('radComByPdf'), 1, $value_check0, array(
+                'onchange' => jq_remote_function(
+                  array(
+                    'update' => 'tplcomrad',
+                    'url'    => 'com_interna/fileTemplate',
+                    'loading' => "javascript:jQuery.LoadingStructData();",
+                    'complete' => 'javascript:jQuery.CloseLoadingStructData(); try{ if(jQuery("#' . md5('radComByPdf') . '").prop("checked")){ jQuery(".tmpresponse").hide(); jQuery("#tplcomrad").show(); }else{ jQuery(".tmpresponse").show(); jQuery("#tplcomrad").hide(); } javascript:jQuery.CloseLoadingStructData(); }catch(err) { toastr.error(err.message); }',
+                  )
+                )
               )); ?>
             </div>
           </div>
           <!-- Tipo Com Interna -->
           <label for="lbgetTipocominternaId" class="col-sm-1 control-label">Plantilla<span class="ctrlreq">(*)</span>:</label>
           <div class="col-sm-4">
-            <?php 
-              echo object_select_tag($com_interna, 'getTipocominternaId', array('peer_method'=>'getTipoComInternaShow','related_class' => 'TipoComInterna','include_custom'=>'Selecione...','class'=>'form-control input-sm required','onchange' =>
-                    jq_remote_function(array(
-                      'update' => '',
-                      'url' => 'com_interna/loadPlantilla',                       
-                      'with' => "'tipocominterna_id=' + this.options[this.selectedIndex].value",
-                      'loading'  => "javascript:jQuery.LoadingStructData()",                           
-                      'success'  => "javascript:jQuery.setTplComContents(data)",
-                      'complete' => "javascript:jQuery.CloseLoadingStructData();",
-                      'script' => true,
-                    ))
-              ));
+            <?php
+            echo object_select_tag($com_interna, 'getTipocominternaId', array(
+              'peer_method' => 'getTipoComInternaShow',
+              'related_class' => 'TipoComInterna',
+              'include_custom' => 'Selecione...',
+              'class' => 'form-control input-sm required',
+              'onchange' =>
+              jq_remote_function(array(
+                'update' => '',
+                'url' => 'com_interna/loadPlantilla',
+                'with' => "'tipocominterna_id=' + this.options[this.selectedIndex].value",
+                'loading'  => "javascript:jQuery.LoadingStructData()",
+                'success'  => "javascript:jQuery.setTplComContents(data)",
+                'complete' => "javascript:jQuery.CloseLoadingStructData();",
+                'script' => true,
+              ))
+            ));
             ?>
           </div>
         </div>
-        
+
         <?php
-            echo component_user_multiple("paraUser","destinatarioId","cargousuarioId",array('url'=>'usuario_firma/selectUserSearching', 'caption'=>'Destinatario', 'buttontitle'=>'Buscar Destinatario','class'=>'form-control input-sm required','values'=>$destinatarioId,'values_text'=>$destinatarioName,'values_cuid'=>$cargousuarioId,'option'=>0,'maximumSelectionSize'=>1));  
+        echo component_user_multiple("paraUser", "destinatarioId", "cargousuarioId", array('url' => 'usuario_firma/selectUserSearching', 'caption' => 'Destinatario', 'buttontitle' => 'Buscar Destinatario', 'class' => 'form-control input-sm required', 'values' => $destinatarioId, 'values_text' => $destinatarioName, 'values_cuid' => $cargousuarioId, 'option' => 0, 'maximumSelectionSize' => 1));
         ?>
 
         <?php
-            echo component_user_multiple('copiaUser',"copiaInternaId","cargousuarioIdCopias",array('url'=>'usuario_firma/selectUserSearching','caption'=>'Copias', 'buttontitle'=>'Asignar Copias','values'=>$copiaInternaId,'values_text'=>$copiaInternaName,'values_cuid'=>$cargousuarioIdCopias,'option'=>1,'maximumSelectionSize'=>-1));  
-        ?>        
-        
+        echo component_user_multiple('copiaUser', "copiaInternaId", "cargousuarioIdCopias", array('url' => 'usuario_firma/selectUserSearching', 'caption' => 'Copias', 'buttontitle' => 'Asignar Copias', 'values' => $copiaInternaId, 'values_text' => $copiaInternaName, 'values_cuid' => $cargousuarioIdCopias, 'option' => 1, 'maximumSelectionSize' => -1));
+        ?>
+
         <div class="form-group">
           <!-- Asunto -->
           <label for="lbdestinatarioid" class="col-sm-1 control-label">Asunto:</label>
-          <div class="col-sm-8">            
-          <?php                
-            echo object_textarea_tag($com_interna, 'getReferencia', array ('class' => 'form-control input-sm required','placeholder'=>'Digite asunto de la comunicacion')); 
-          ?>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <!-- Folios -->
-          <label for="lbfolios" class="col-sm-1 control-label">Folios:</label>
-          <div class="col-sm-1">            
-            <?php 
-              echo object_input_tag($com_interna, 'getFolios', array ('class' => 'form-control input-sm','placeholder'=>'Digite folios','data-mask'=>'decimal')); 
-            ?>
-          </div>
-           <!-- Prioridad -->
-           <label for="lbgetPrioridadcomId" class="col-sm-1 control-label">Prioridad:</label>
-           <div class="col-sm-2">
+          <div class="col-sm-8">
             <?php
-                echo object_select_tag($com_interna, 'getPrioridadcomId', array('related_class' => 'PrioridadCom','include_custom'=>'Selecione...','class'=>'form-control input-sm'));
+            echo object_textarea_tag($com_interna, 'getReferencia', array('class' => 'form-control input-sm required', 'placeholder' => 'Digite asunto de la comunicacion'));
             ?>
           </div>
         </div>
 
         <div class="form-group">
-		      <!-- Requiere respuesta -->
-          <label for="lbgetRequiereRespuesta" class="col-sm-2 control-label">Requiere Respuesta:<span class="text-danger">*</span></label>
+          <!-- Folios -->
+          <label for="lbfolios" class="col-sm-1 control-label">Folios:</label>
+          <div class="col-sm-1">
+            <?php
+            echo object_input_tag($com_interna, 'getFolios', array('class' => 'form-control input-sm', 'placeholder' => 'Digite folios', 'data-mask' => 'decimal'));
+            ?>
+          </div>
+          <!-- Prioridad -->
+          <label for="lbgetPrioridadcomId" class="col-sm-1 control-label">Prioridad:</label>
+          <div class="col-sm-2">
+            <?php
+            echo object_select_tag($com_interna, 'getPrioridadcomId', array('related_class' => 'PrioridadCom', 'include_custom' => 'Selecione...', 'class' => 'form-control input-sm'));
+            ?>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <!-- Requiere respuesta -->
+          <label for="lbgetRequiereRespuesta" class="col-sm-1 control-label">Requiere Respuesta:<span class="text-danger">*</span></label>
           <div class="col-sm-2">
             <?php $value_check0 = $com_interna->getRequiereRespuesta() !== null ? ($com_interna->getRequiereRespuesta() ? true : false) : true; ?>
             <div class="make-switch switch-small" data-on="danger" data-off="info" data-on-label="SI" data-off-label="NO">
@@ -134,29 +141,29 @@ use_helper('Object','jQuery','UserComponent');
             <?php echo textarea_tag('obs_no_respuesta', $com_interna->getObsNoRespuesta(), array('class' => 'form-control input-sm reqresp-obs', 'rows' => 2, 'id' => 'obs_no_respuesta')); ?>
           </div>
 
-          <?php if($permisoCrearConMembrete && !$com_interna->getIsCreateWord()){ ?>
+          <?php if ($permisoCrearConMembrete && !$com_interna->getIsCreateWord()) { ?>
             <!-- Use Membrete -->
             <label for="lbUseMembrete" class="col-xs-1 control-label tmpresponse">Usar Membrete:</label>
             <div class="col-xs-1 tmpresponse">
-				        <?php $value_check0 = $com_interna->getPrimaryKey() ? $com_interna->getUseMembrete() : $usar_membrete; ?>
-                <div class="make-switch" data-on="success" data-off="warning" data-on-label="SI" data-off-label="NO">
-                    <?php echo checkbox_tag('use_membrete', 1 , $value_check0); ?>
-                </div>
+              <?php $value_check0 = $com_interna->getPrimaryKey() ? $com_interna->getUseMembrete() : $usar_membrete; ?>
+              <div class="make-switch" data-on="success" data-off="warning" data-on-label="SI" data-off-label="NO">
+                <?php echo checkbox_tag('use_membrete', 1, $value_check0); ?>
+              </div>
             </div>
-            <?php } ?>
+          <?php } ?>
         </div>
-        
-        <div class="form-group">  
+
+        <div class="form-group">
           <!-- Unidad Documental -->
           <label for="nombre" class="col-sm-1 control-label">Nombre Expediente:</label>
           <div class="col-sm-8">
             <div class="input-group">
               <?php
-                echo input_hidden_tag('unidaddocumental_id', $expediente_id,array('class' => 'explinkto'));
-                echo input_tag('nombre', (isset($nombre_expediente) ? $nombre_expediente : ''), array('size' => '80','class' => 'data-readonly form-control input-sm'));
+              echo input_hidden_tag('unidaddocumental_id', $expediente_id, array('class' => 'explinkto'));
+              echo input_tag('nombre', (isset($nombre_expediente) ? $nombre_expediente : ''), array('size' => '80', 'class' => 'data-readonly form-control input-sm'));
               ?>
               <div class="input-group-btn">
-                <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print $base_path;?>/archivo.php/transferencia/unidad'); return false;">Buscar</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print $base_path; ?>/archivo.php/transferencia/unidad'); return false;">Buscar</button>
                 <button type="button" class="btn btn-default btn-sm" onclick="jQuery.LimpiarCampoFormulario('unidaddocumental_id');jQuery.LimpiarCampoFormulario('nombre');"><i class="entypo-cancel-circled"></i></button>
               </div>
             </div>
@@ -167,182 +174,183 @@ use_helper('Object','jQuery','UserComponent');
           <label for="lbgettipodocumental" class="col-sm-1 control-label">Tipo Documental:</label>
           <div class="col-sm-6">
             <div id="contenedor_tipos">
-                <select name="tipodocumental_id" id="tipodocumental_id" class="select2 form-control input-sm">
-                    <option value="">Seleccione expediente...</option>
-                    <?php
-                    foreach ($list_tdocs as $tipo_documental) {
-                      $selected = $tipo_documental->getPrimaryKey() == $tipodocumental_id ? "selected" : "";
-                      echo '<option '.$selected.' value="'.$tipo_documental->getPrimaryKey().'">'.$tipo_documental->getDescripcion().'</option>';
-                    }
-                    ?>
-                </select>
+              <select name="tipodocumental_id" id="tipodocumental_id" class="select2 form-control input-sm">
+                <option value="">Seleccione expediente...</option>
+                <?php
+                foreach ($list_tdocs as $tipo_documental) {
+                  $selected = $tipo_documental->getPrimaryKey() == $tipodocumental_id ? "selected" : "";
+                  echo '<option ' . $selected . ' value="' . $tipo_documental->getPrimaryKey() . '">' . $tipo_documental->getDescripcion() . '</option>';
+                }
+                ?>
+              </select>
             </div>
-          </div>          
+          </div>
         </div>
 
-        <?php if(!$com_interna->getIsCreateWord()){ ?>
+        <?php if (!$com_interna->getIsCreateWord()) { ?>
           <div class="form-group" id="tplcomrad" style="display: none;"></div>
-        <?php }else{ ?>
-        <div class="form-group">
-              <!-- Ruta -->  
-              <label for="ruta" class="col-sm-1 control-label">Cargar Documento:</label>
-              <div class="col-sm-6">
-                  <div class="input-group">
-                  <?php
-                      echo input_tag('replyfile',basename($com_interna->getUrlFileWord()) , array('class' => 'data-readonly form-control input-sm'));
-                  ?>
-                  <div class="input-group-btn">
-                      <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print url_for('com_interna/uploadTemplate'); $base_path;?>', 800, 400);">Seleccionar archivo</button>
-                      <button type="button" class="btn btn-default btn-sm" onclick="javascript:jQuery.LimpiarCampoFormulario('replyfile');"><i class="entypo-cancel-circled"></i></button>
-                  </div>
-                  </div>
+        <?php } else { ?>
+          <div class="form-group">
+            <!-- Ruta -->
+            <label for="ruta" class="col-sm-1 control-label">Cargar Documento:</label>
+            <div class="col-sm-6">
+              <div class="input-group">
+                <?php
+                echo input_tag('replyfile', basename($com_interna->getUrlFileWord()), array('class' => 'data-readonly form-control input-sm'));
+                ?>
+                <div class="input-group-btn">
+                  <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print url_for('com_interna/uploadTemplate');
+                                                                                                                  $base_path; ?>', 800, 400);">Seleccionar archivo</button>
+                  <button type="button" class="btn btn-default btn-sm" onclick="javascript:jQuery.LimpiarCampoFormulario('replyfile');"><i class="entypo-cancel-circled"></i></button>
+                </div>
               </div>
+            </div>
           </div>
         <?php } ?>
 
-        <?php if(!$com_interna->getIsCreateWord()){ ?>
+        <?php if (!$com_interna->getIsCreateWord()) { ?>
           <div class="form-group tmpresponse">
             <!-- Contenido -->
             <div class="col-sm-12">
               <label for="lbcontenido" class="col-sm-1 control-label">Contenido:</label>
-            </div>          
+            </div>
           </div>
-          <div class="form-group tmpresponse">          
+          <div class="form-group tmpresponse">
             <!-- Contenido Editor -->
             <div class="col-sm-9">
               <textarea id="contenido" name="contenido" class="form-control input-sm ckeditor1"><?php echo $com_interna->getContenido(); ?></textarea>
             </div>
-            <?php if($com_interna->getPrimaryKey() && $com_interna->getEstadocominternaId() == 1){ ?>
+            <?php if ($com_interna->getPrimaryKey() && $com_interna->getEstadocominternaId() == 1) { ?>
               <!-- Contenido notas -->
               <div class="col-sm-3" style="height: 30%;overflow: auto;max-height: 540px;">
-                <?php echo include_partial('comments',array('com_interna'=>$com_interna)) ?>
+                <?php echo include_partial('comments', array('com_interna' => $com_interna)) ?>
               </div>
             <?php } ?>
           </div>
-        <?php }elseif($com_interna->getPrimaryKey() && $com_interna->getEstadocominternaId() == 1){ ?>
+        <?php } elseif ($com_interna->getPrimaryKey() && $com_interna->getEstadocominternaId() == 1) { ?>
           <div class="form-group">
             <!-- Contenido notas -->
             <div class="col-sm-6" style="margin-left:8%;height:30%;overflow:auto;max-height:540px;">
-              <?php echo include_partial('comments',array('com_interna'=>$com_interna)) ?>
+              <?php echo include_partial('comments', array('com_interna' => $com_interna)) ?>
             </div>
           </div>
         <?php } ?>
-        
-        <div class="form-group" id="accordion">          
-          <div class="panel col-sm-11 panel-primary">             
+
+        <div class="form-group" id="accordion">
+          <div class="panel col-sm-11 panel-primary">
             <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" style="cursor: pointer;">
-    			<div class="panel-title">                                       
-                      <strong>Documentos anexos( haga clic para abrir)</strong>
-    			</div>
-    		</div>
+              <div class="panel-title">
+                <strong>Documentos anexos( haga clic para abrir)</strong>
+              </div>
+            </div>
             <div id="collapseOne" class="panel-collapse collapse" data-collapsed="1">
-                <div class="panel-body">
-                    <div class="dropzone dz-clickable dz-default dz-file-preview" id="myDrop" multiple="multiple" >
-                        <div class="dz-message">
-                            <h2><i class="glyphicon glyphicon-cloud-upload"></i><br/>Arrastre archivos aqui!</h2>o haga clic para seleccionar
-                        </div>
-                    </div>
+              <div class="panel-body">
+                <div class="dropzone dz-clickable dz-default dz-file-preview" id="myDrop" multiple="multiple">
+                  <div class="dz-message">
+                    <h2><i class="glyphicon glyphicon-cloud-upload"></i><br />Arrastre archivos aqui!</h2>o haga clic para seleccionar
+                  </div>
                 </div>
+              </div>
             </div>
-              <?php
-                $active_files = array();
-                $json_data = array();
-                if(trim($com_interna->getRuta())){
-                    $arr = preg_split("/[,]+/",trim($com_interna->getRuta()),-1, PREG_SPLIT_NO_EMPTY);
-                    foreach ($arr as $result){
-                        if(trim(basename($result))){
-                            $active_files[] = trim(basename($result));
-                            $json_data[] = array('name' => trim(basename($result)), 'size' => '10');
-                        }
-                    }
+            <?php
+            $active_files = array();
+            $json_data = array();
+            if (trim($com_interna->getRuta())) {
+              $arr = preg_split("/[,]+/", trim($com_interna->getRuta()), -1, PREG_SPLIT_NO_EMPTY);
+              foreach ($arr as $result) {
+                if (trim(basename($result))) {
+                  $active_files[] = trim(basename($result));
+                  $json_data[] = array('name' => trim(basename($result)), 'size' => '10');
                 }
-                echo input_hidden_tag('ruta',implode(",",$active_files));
-                $json_files = json_encode($json_data);
-              ?>
-          </div>
-        </div>
-        
-        <?php if(trim($com_interna->getRuta())){ ?>
-        <div class="form-group">                    
-          <!-- Imagenes -->
-          <label for="lbadjuntos" class="col-sm-1 control-label">Adjuntos actuales:</label>
-          <div class="col-sm-2">
-            <div class="input-group"> 
-                <?php
-                $arr = preg_split("/[,]+/",$com_interna->getRuta(),-1, PREG_SPLIT_NO_EMPTY);                 
-                foreach ($arr as $result):
-                    if(trim(basename($result))):
-                ?>
-                        <a class="tooltip-primary" data-toggle = "tooltip" data-original-title = "<?php echo basename($result); ?>" href="<?php  echo $result;?> " target="_blank"><img width="25" border="0" align="middle" src="<?php echo $base_path; ?>/images/simad/ico_ver_adj.png"/></a>
-                <?php
-                    endif; 
-                endforeach; 
-                ?>
-            </div>
-          </div>          
-        </div>
-        <?php } ?>
-        
-        <div class="form-group">          
-          <!-- Descripcion de Anexos -->
-          <label for="lbDescripcionAnexos" class="col-sm-1 control-label">Descripci&oacute;n de Anexos:</label>
-          <div class="col-sm-7">            
-          <?php                
-                echo object_textarea_tag($com_interna, 'getAnexos', array ('class' => 'form-control input-sm','placeholder'=>'Digite descripcion de los anexos')); 
+              }
+            }
+            echo input_hidden_tag('ruta', implode(",", $active_files));
+            $json_files = json_encode($json_data);
             ?>
           </div>
         </div>
-        
-        <?php if($permisoRadicarOtraRegional){ ?>
+
+        <?php if (trim($com_interna->getRuta())) { ?>
           <div class="form-group">
-              <!-- Regional -->
-              <label for="lnombre" class="col-sm-1 control-label">Regional:</label>
-              <div class="col-sm-3">            
-                <?php                                
-                    echo object_select_tag($com_interna, 'getRegionalId', array ('related_class' => 'Regional','include_custom'=>'Selecione...', 'class'=>'form-control input-sm select2')); 
-                ?>            
-              </div>
-          </div>
-        <?php } ?>
-        
-        <?php if($es_otra_dependencia){ ?>
-            <div class="form-group">          
-              <!-- UnidadAdministrativa -->
-              <label for="lbUnidadAdministrativa" class="col-sm-1 control-label">Dependencia:</label>
-              <div class="col-sm-6">                       
-                <?php 
-                    echo object_select_tag($com_interna, 'getDependenciaId', array ('peer_method'=>'getDependenciaAllJoin', 'related_class' => 'Dependencia', 'include_custom'=>'Seleccione...', 'class'=>'form-control input-sm select2',));
+            <!-- Imagenes -->
+            <label for="lbadjuntos" class="col-sm-1 control-label">Adjuntos actuales:</label>
+            <div class="col-sm-2">
+              <div class="input-group">
+                <?php
+                $arr = preg_split("/[,]+/", $com_interna->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($arr as $result):
+                  if (trim(basename($result))):
+                ?>
+                    <a class="tooltip-primary" data-toggle="tooltip" data-original-title="<?php echo basename($result); ?>" href="<?php echo $result; ?> " target="_blank"><img width="25" border="0" align="middle" src="<?php echo $base_path; ?>/images/simad/ico_ver_adj.png" /></a>
+                <?php
+                  endif;
+                endforeach;
                 ?>
               </div>
             </div>
+          </div>
         <?php } ?>
-        
-        <?php
-            $autfirma = $permisoRadicarFirmaAut ? 1 : 0;
-            echo component_user_multiple('firmaUser',"firmanteId","cargousuarioIdFirma",array('class'=>'form-control input-sm sl required','url'=>'usuario_firma/selectUserSearching','modulo_id'=>2, 'autfirma'=>$autfirma, 'caption'=>'Firma(s)<span class="ctrlreq">(*)</span>', 'buttontitle'=>'Asignar Firma','values'=>$firmanteId,'values_text'=>$firmanteName,'values_cuid'=>$cargousuarioIdFirma,'option'=>1,'maximumSelectionSize'=>-1));  
-        ?>
-        
-        <?php if($useFirmaDesatendida){ ?>
+
+        <div class="form-group">
+          <!-- Descripcion de Anexos -->
+          <label for="lbDescripcionAnexos" class="col-sm-1 control-label">Descripci&oacute;n de Anexos:</label>
+          <div class="col-sm-7">
+            <?php
+            echo object_textarea_tag($com_interna, 'getAnexos', array('class' => 'form-control input-sm', 'placeholder' => 'Digite descripcion de los anexos'));
+            ?>
+          </div>
+        </div>
+
+        <?php if ($permisoRadicarOtraRegional) { ?>
           <div class="form-group">
-            <?php if($useFirmaDesatendida && $com_interna->getPrimaryKey() && ($firmas_desatendida == true)){ ?>
+            <!-- Regional -->
+            <label for="lnombre" class="col-sm-1 control-label">Regional:</label>
+            <div class="col-sm-3">
+              <?php
+              echo object_select_tag($com_interna, 'getRegionalId', array('related_class' => 'Regional', 'include_custom' => 'Selecione...', 'class' => 'form-control input-sm select2'));
+              ?>
+            </div>
+          </div>
+        <?php } ?>
+
+        <?php if ($es_otra_dependencia) { ?>
+          <div class="form-group">
+            <!-- UnidadAdministrativa -->
+            <label for="lbUnidadAdministrativa" class="col-sm-1 control-label">Dependencia:</label>
+            <div class="col-sm-6">
+              <?php
+              echo object_select_tag($com_interna, 'getDependenciaId', array('peer_method' => 'getDependenciaAllJoin', 'related_class' => 'Dependencia', 'include_custom' => 'Seleccione...', 'class' => 'form-control input-sm select2',));
+              ?>
+            </div>
+          </div>
+        <?php } ?>
+
+        <?php
+        $autfirma = $permisoRadicarFirmaAut ? 1 : 0;
+        echo component_user_multiple('firmaUser', "firmanteId", "cargousuarioIdFirma", array('class' => 'form-control input-sm sl required', 'url' => 'usuario_firma/selectUserSearching', 'modulo_id' => 2, 'autfirma' => $autfirma, 'caption' => 'Firma(s)<span class="ctrlreq">(*)</span>', 'buttontitle' => 'Asignar Firma', 'values' => $firmanteId, 'values_text' => $firmanteName, 'values_cuid' => $cargousuarioIdFirma, 'option' => 1, 'maximumSelectionSize' => -1));
+        ?>
+
+        <?php if ($useFirmaDesatendida) { ?>
+          <div class="form-group">
+            <?php if ($useFirmaDesatendida && $com_interna->getPrimaryKey() && ($firmas_desatendida == true)) { ?>
               <!-- Usar Firma Desatendida -->
               <label for="lbSingOnTime" class="col-sm-1 control-label">Firma Desatendida:</label>
               <div class="col-sm-3">
                 <?php $autofirma_check0 = $com_interna->getFirmaDesatendida() ? true : false; ?>
-                <div class="make-switch tooltip-primary" data-toggle = "tooltip" data-on="success" data-off="warning" data-on-label="SI" data-off-label="NO" data-original-title = "Habilita o deshabilita la firma desatendida, los firmantes deben tener configurada la opci&oacute;n de firma desatendida">
+                <div class="make-switch tooltip-primary" data-toggle="tooltip" data-on="success" data-off="warning" data-on-label="SI" data-off-label="NO" data-original-title="Habilita o deshabilita la firma desatendida, los firmantes deben tener configurada la opci&oacute;n de firma desatendida">
                   <?php echo checkbox_tag(md5('singIsDesatendida'), 1, $autofirma_check0); ?>
                 </div>
               </div>
             <?php } ?>
           </div>
         <?php } ?>
-        
+
         <?php
-            echo input_hidden_tag('revisorUserId');
-            echo input_hidden_tag('cargousuarioIdRevisor');
-            echo component_user_multiple('revisorUserText',"revisorUserId","cargousuarioIdRevisor",array('url'=>'usuario_firma/selectUserSearching','bytipoprocesocom'=>4, 'caption'=>'Revisor(es)', 'buttontitle'=>'Buscar','values'=>null,'values_text'=>null,'values_cuid'=>null,'option'=>1,'maximumSelectionSize'=>-1));  
+        echo input_hidden_tag('revisorUserId');
+        echo input_hidden_tag('cargousuarioIdRevisor');
+        echo component_user_multiple('revisorUserText', "revisorUserId", "cargousuarioIdRevisor", array('url' => 'usuario_firma/selectUserSearching', 'bytipoprocesocom' => 4, 'caption' => 'Revisor(es)', 'buttontitle' => 'Buscar', 'values' => null, 'values_text' => null, 'values_cuid' => null, 'option' => 1, 'maximumSelectionSize' => -1));
         ?>
-        
+
         <div class="form-group">
           <!-- Botonera -->
           <div class="col-sm-offset-4 col-sm-5">
@@ -350,87 +358,84 @@ use_helper('Object','jQuery','UserComponent');
           </div>
         </div>
         <div class="clear"></div>
-      </form>
-    </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>
-      
+
 <script type="text/javascript">
-jQuery(function() {
+  jQuery(function() {
     // Executes a callback detecting changes with a frequency of 1 second
-    jQuery("#unidaddocumental_id").observe_field(1, function( ) {
+    jQuery("#unidaddocumental_id").observe_field(1, function() {
       <?php echo jq_remote_function(array(
         'update'  => 'tipodocumental_id',
-        'url'     => $base_path.'/archivo.php/unidad_documental/loadTipoDoc',
+        'url'     => $base_path . '/archivo.php/unidad_documental/loadTipoDoc',
         'with'    => "'expediente_id=' + this.value",
         'loading' => 'jQuery("#tipodocumental_id").val("").trigger("change");',
-        'complete' => 'jQuery("#'.md5('Expediente.lbgettipodocumental').'").show()'
+        'complete' => 'jQuery("#' . md5('Expediente.lbgettipodocumental') . '").show()'
       )) ?>
     });
-});
+  });
 
-var myTypeahead = jQuery('input.typeahead');        
-myTypeahead.on('typeahead:selected', function(event, selection) {
+  var myTypeahead = jQuery('input.typeahead');
+  myTypeahead.on('typeahead:selected', function(event, selection) {
     jQuery('#destinatarioId').val(selection.usuario_id);
     jQuery('#cargousuarioId').val(selection.cargousuario_id);
-});
+  });
 
-// Attach initialized event to it
-myTypeahead.on('change',function(evt,data){
-    if(myTypeahead.val().length == 0)
-    {
-        jQuery('#destinatarioId').val('');
-        jQuery('#cargousuarioId').val('');
+  // Attach initialized event to it
+  myTypeahead.on('change', function(evt, data) {
+    if (myTypeahead.val().length == 0) {
+      jQuery('#destinatarioId').val('');
+      jQuery('#cargousuarioId').val('');
     }
-});
+  });
 
-Dropzone.autoDiscover = false;
-jQuery(document).ready(function() 
-{
+  Dropzone.autoDiscover = false;
+  jQuery(document).ready(function() {
     Dropzone.options.myAwesomeDropzone = false;
-    var myDropzone = new Dropzone("div#myDrop", { 
-        url: "<?php echo url_for('com_interna/dzFileUpload') ?>",
-        // The configuration we've talked about above
-        autoProcessQueue: true,       
-        //uploadMultiple: true,
-        addRemoveLinks: true,
-        thumbnailWidth: 50,
-        thumbnailHeight: 50,
-        parallelUploads: 100,
-        maxFiles: 10,
-        dictResponseError: "Ha ocurrido un error en el server",
-        acceptedFiles: 'image/*,.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.TIF,.TIFF,.tif,.tiff,.rar,application/pdf,.psd,.xls,.doc,.ppt,.msg,.xlsx,.docx,.pptx',
-        init: function () {
-            this.on("success", function (file, response) {
-                 jQuery(file.previewElement).find('[data-dz-name]').html(response.name);
-                 var active_value = jQuery('#ruta').val().trim() != "" ? jQuery('#ruta').val() + "," + response.name : response.name;
-                 jQuery('#ruta').val(active_value);
-            });
-            
-            this.on("removedfile", function(file) {
-                if(file != null)
-                {                    
-                    var active_new = [];
-                    var active_files = jQuery('#ruta').val().split(",");
-                    var index = 0;
-                    for(i=0; i < active_files.length; i++){
-                        if(file.name != active_files[i]){
-                            active_new.push(active_files[i]);
-                        }
-                        index++;
-                    }
-                    jQuery('#ruta').val(active_new.join(","));
-                }
-            });
-        }
-    });    
+    var myDropzone = new Dropzone("div#myDrop", {
+      url: "<?php echo url_for('com_interna/dzFileUpload') ?>",
+      // The configuration we've talked about above
+      autoProcessQueue: true,
+      //uploadMultiple: true,
+      addRemoveLinks: true,
+      thumbnailWidth: 50,
+      thumbnailHeight: 50,
+      parallelUploads: 100,
+      maxFiles: 10,
+      dictResponseError: "Ha ocurrido un error en el server",
+      acceptedFiles: 'image/*,.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.TIF,.TIFF,.tif,.tiff,.rar,application/pdf,.psd,.xls,.doc,.ppt,.msg,.xlsx,.docx,.pptx',
+      init: function() {
+        this.on("success", function(file, response) {
+          jQuery(file.previewElement).find('[data-dz-name]').html(response.name);
+          var active_value = jQuery('#ruta').val().trim() != "" ? jQuery('#ruta').val() + "," + response.name : response.name;
+          jQuery('#ruta').val(active_value);
+        });
+
+        this.on("removedfile", function(file) {
+          if (file != null) {
+            var active_new = [];
+            var active_files = jQuery('#ruta').val().split(",");
+            var index = 0;
+            for (i = 0; i < active_files.length; i++) {
+              if (file.name != active_files[i]) {
+                active_new.push(active_files[i]);
+              }
+              index++;
+            }
+            jQuery('#ruta').val(active_new.join(","));
+          }
+        });
+      }
+    });
     //Add existing files into dropzone    
-    var existingFiles = <?php echo $json_files; ?>;    
+    var existingFiles = <?php echo $json_files; ?>;
     for (i = 0; i < existingFiles.length; i++) {
-        myDropzone.emit("addedfile", existingFiles[i]);
-        //myDropzone.emit("thumbnail", existingFiles[i], "/image/url");
-        myDropzone.emit("complete", existingFiles[i]);                
-    }        
-});
-</script>        
+      myDropzone.emit("addedfile", existingFiles[i]);
+      //myDropzone.emit("thumbnail", existingFiles[i], "/image/url");
+      myDropzone.emit("complete", existingFiles[i]);
+    }
+  });
+</script>
