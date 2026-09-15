@@ -131,6 +131,16 @@ use_helper('Object', 'jQuery', 'UserComponent');
         </div>
 
         <div class="form-group">
+          <?php if ($sf_user->checkPerm("CREAR_INTERNA_CON_MEMBRETE", $currentUser) && !$com_interna->getIsCreateWord()) { ?>
+            <!-- Use Membrete -->
+            <label for="lbUseMembrete" class="col-sm-1 control-label tmpresponse">Usar Membrete:</label>
+            <div class="col-sm-1 tmpresponse">
+              <?php $value_check0 = $com_interna->getPrimaryKey() ? $com_interna->getUseMembrete() : $usar_membrete; ?>
+              <div class="make-switch switch-small" data-on="success" data-off="warning" data-on-label="SI" data-off-label="NO">
+                <?php echo checkbox_tag('use_membrete', 1, $value_check0); ?>
+              </div>
+            </div>
+          <?php } ?>
           <!-- Requiere respuesta -->
           <label for="lbgetRequiereRespuesta" class="col-sm-1 control-label">Requiere Respuesta:<span class="text-danger">*</span></label>
           <div class="col-sm-2">
@@ -144,17 +154,6 @@ use_helper('Object', 'jQuery', 'UserComponent');
             <label for="obs_no_respuesta" class="control-label">Observaciones (No requiere respuesta):<span class="text-danger">*</span></label>
             <?php echo textarea_tag('obs_no_respuesta', $com_interna->getObsNoRespuesta(), array('class' => 'form-control input-sm reqresp-obs', 'rows' => 2, 'id' => 'obs_no_respuesta')); ?>
           </div>
-
-          <?php if ($sf_user->checkPerm("CREAR_INTERNA_CON_MEMBRETE", $currentUser) && !$com_interna->getIsCreateWord()) { ?>
-            <!-- Use Membrete -->
-            <label for="lbUseMembrete" class="col-sm-1 control-label tmpresponse">Usar Membrete:</label>
-            <div class="col-sm-1 tmpresponse">
-              <?php $value_check0 = $com_interna->getPrimaryKey() ? $com_interna->getUseMembrete() : $usar_membrete; ?>
-              <div class="make-switch switch-small" data-on="success" data-off="warning" data-on-label="SI" data-off-label="NO">
-                <?php echo checkbox_tag('use_membrete', 1, $value_check0); ?>
-              </div>
-            </div>
-          <?php } ?>
         </div>
 
         <div class="form-group">
