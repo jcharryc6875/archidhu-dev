@@ -245,15 +245,30 @@ $wdg = new wf_widgets();
                                     <?php } ?>
 
                                     <?php if(trim($com_interna->getRegionalId()) || trim($com_interna->getPrioridadcomId())){ ?>
-                                        <div class="row">                   
+                                        <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="col-sm-4"><p><strong>Punto Radicaci&oacute;n:</strong></p></div>
                                                 <div class="col-sm-8"><p><?php echo $com_interna->getRegional(); ?></p></div>
-                                            </div>	
+                                            </div>
                                             <div class="col-sm-6">
                                                 <div class="col-sm-5"><p><strong>Prioridad:</strong></p></div>
                                                 <div class="col-sm-7"><p><?php echo $com_interna->getPrioridadCom(); ?></p></div>
                                             </div>
+                                        </div>
+                                    <?php } ?>
+
+                                    <?php if($com_interna->getRequiereRespuesta() !== null){ ?>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="col-sm-4"><p><strong>Requiere Respuesta:</strong></p></div>
+                                                <div class="col-sm-8"><p><?php echo $com_interna->getRequiereRespuesta() ? "Si" : "No"; ?></p></div>
+                                            </div>
+                                            <?php if(!$com_interna->getRequiereRespuesta() && trim($com_interna->getObsNoRespuesta())){ ?>
+                                            <div class="col-sm-6">
+                                                <div class="col-sm-5"><p><strong>Observaciones:</strong></p></div>
+                                                <div class="col-sm-7"><p><?php echo $com_interna->getObsNoRespuesta(); ?></p></div>
+                                            </div>
+                                            <?php } ?>
                                         </div>
                                     <?php } ?>
                                     

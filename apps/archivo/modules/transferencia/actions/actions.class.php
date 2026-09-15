@@ -858,6 +858,9 @@ class transferenciaActions extends sfActions
         if (!$requiereRespuesta) {
           $usuarioActorRequiereResp = UsuarioPeer::retrieveByPk($usuariologuiado);
           $com_recibida->setObsNoRespuesta(RequiereRespuestaValidator::construirObservacionConTrazabilidad($observacion, $usuarioActorRequiereResp));
+        } else {
+          // La observacion solo aplica cuando no requiere respuesta; se descarta cualquier valor previo.
+          $com_recibida->setObsNoRespuesta(null);
         }
         $com_recibida->save();
         AuditLogPeer::guardarAuditoriaLite('ComRecibida', $com_recibida_anterior, $com_recibida, ModulesEnable::ComRecibida, $com_recibida->getRadicado(), $usuariologuiado);

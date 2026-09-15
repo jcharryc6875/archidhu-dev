@@ -416,7 +416,7 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                                     </div>
                                 <?php } ?>
 
-                                <?php if(trim($com_recibida->getFechaDigit()) || trim($com_recibida->getPrioridadcomId())) { ?>                
+                                <?php if(trim($com_recibida->getFechaDigit()) || trim($com_recibida->getPrioridadcomId())) { ?>
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="col-sm-4"><p><strong>Fecha Digitalizaci&oacute;n:</strong></p></div>
@@ -425,7 +425,22 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                                         <div class="col-sm-6">
                                             <div class="col-sm-5"><p><strong>Prioridad:</strong></p></div>
                                             <div class="col-sm-7"><p><?php echo $com_recibida->getPrioridadCom(); ?></p></div>
-                                        </div>					
+                                        </div>
+                                    </div>
+                                <?php } ?>
+
+                                <?php if($com_recibida->getRequiereRespuesta() !== null){ ?>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4"><p><strong>Requiere Respuesta:</strong></p></div>
+                                            <div class="col-sm-8"><p><?php echo $com_recibida->getRequiereRespuesta() ? "Si" : "No"; ?></p></div>
+                                        </div>
+                                        <?php if(!$com_recibida->getRequiereRespuesta() && trim($com_recibida->getObsNoRespuesta())){ ?>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-5"><p><strong>Observaciones:</strong></p></div>
+                                            <div class="col-sm-7"><p><?php echo $com_recibida->getObsNoRespuesta(); ?></p></div>
+                                        </div>
+                                        <?php } ?>
                                     </div>
                                 <?php } ?>
 

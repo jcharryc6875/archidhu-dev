@@ -1955,7 +1955,7 @@ class com_internaActions extends sfActions
     $com_interna->setFolios($this->getRequestParameter('folios'));
     $com_interna->setAnexos($this->getRequestParameter('anexos'));
     $com_interna->setRequiereRespuesta($this->getRequestParameter('requiere_respuesta'));
-    $com_interna->setObsNoRespuesta(trim($this->getRequestParameter('obs_no_respuesta')) ? trim($this->getRequestParameter('obs_no_respuesta')) : null);
+    $com_interna->setObsNoRespuesta(RequiereRespuestaValidator::normalizarObservacion($this->getRequestParameter('requiere_respuesta'), $this->getRequestParameter('obs_no_respuesta')));
     $com_interna->setEstaentregado(0);
     $com_interna->setDependenciaId($dependencia_id);
     $com_interna->setRegionalId($regional_id);
@@ -2175,7 +2175,7 @@ class com_internaActions extends sfActions
     $com_interna->setFolios($this->getRequestParameter('folios'));
     $com_interna->setAnexos($this->getRequestParameter('anexos'));
     $com_interna->setRequiereRespuesta($this->getRequestParameter('requiere_respuesta'));
-    $com_interna->setObsNoRespuesta(trim($this->getRequestParameter('obs_no_respuesta')) ? trim($this->getRequestParameter('obs_no_respuesta')) : null);
+    $com_interna->setObsNoRespuesta(RequiereRespuestaValidator::normalizarObservacion($this->getRequestParameter('requiere_respuesta'), $this->getRequestParameter('obs_no_respuesta')));
     $com_interna->setEstaentregado(0);
     $com_interna->setDependenciaId($dependencia_id);
     $com_interna->setRegionalId($regional_id);
@@ -2439,6 +2439,9 @@ class com_internaActions extends sfActions
         if(!$com_interna->getRequiereRespuesta()){
             $usuarioActor = UsuarioPeer::retrieveByPk($usuariologuiado);
             $com_interna->setObsNoRespuesta(RequiereRespuestaValidator::construirObservacionConTrazabilidad($com_interna->getObsNoRespuesta(), $usuarioActor));
+        }else{
+            // La observacion solo aplica cuando no requiere respuesta; se descarta cualquier valor previo.
+            $com_interna->setObsNoRespuesta(null);
         }
     }
     //********************************************************************************************
@@ -3766,7 +3769,7 @@ class com_internaActions extends sfActions
     $com_interna->setFolios(trim($this->getRequestParameter('folios')) ? trim($this->getRequestParameter('folios')) : 1);
     $com_interna->setAnexos(trim($this->getRequestParameter('anexos')) != "" ? trim($this->getRequestParameter('anexos')) : null);
     $com_interna->setRequiereRespuesta($this->getRequestParameter('requiere_respuesta'));
-    $com_interna->setObsNoRespuesta(trim($this->getRequestParameter('obs_no_respuesta')) ? trim($this->getRequestParameter('obs_no_respuesta')) : null);
+    $com_interna->setObsNoRespuesta(RequiereRespuestaValidator::normalizarObservacion($this->getRequestParameter('requiere_respuesta'), $this->getRequestParameter('obs_no_respuesta')));
     $com_interna->setEstaentregado(0);    
     $com_interna->setDependenciaId($dependencia_id);
     $com_interna->setRegionalId($regional_id);
@@ -4068,7 +4071,7 @@ class com_internaActions extends sfActions
     $com_interna->setFolios($this->getRequestParameter('folios'));
     $com_interna->setAnexos(trim($this->getRequestParameter('anexos')) != "" ? trim($this->getRequestParameter('anexos')) : null);
     $com_interna->setRequiereRespuesta($this->getRequestParameter('requiere_respuesta'));
-    $com_interna->setObsNoRespuesta(trim($this->getRequestParameter('obs_no_respuesta')) ? trim($this->getRequestParameter('obs_no_respuesta')) : null);
+    $com_interna->setObsNoRespuesta(RequiereRespuestaValidator::normalizarObservacion($this->getRequestParameter('requiere_respuesta'), $this->getRequestParameter('obs_no_respuesta')));
     $com_interna->setEstaentregado(0);    
     $com_interna->setDependenciaId($dependencia_id);        
     $com_interna->setRegionalId($regional_id);

@@ -32,6 +32,28 @@ class RequiereRespuestaValidator
     }
 
     /**
+     * La observacion de "no requiere respuesta" solo tiene sentido cuando $requiereRespuesta
+     * es false: si el usuario marca "Si" tras haber tenido una observacion cargada (o el campo
+     * oculto sigue trayendo el valor anterior desde el POST), se descarta para no dejar
+     * observaciones huerfanas asociadas a una comunicacion que si requiere respuesta.
+     *
+     * @param bool|string|null $requiereRespuesta valor crudo tal como llega del request (checkbox_tag envia '1'/'0')
+     * @param string|null      $observacion       valor crudo del textarea
+     *
+     * @return string|null observacion recortada, o null si no aplica o quedo vacia
+     */
+    public static function normalizarObservacion($requiereRespuesta, $observacion)
+    {
+        if ($requiereRespuesta) {
+            return null;
+        }
+
+        $obs = trim((string) $observacion);
+
+        return $obs !== '' ? $obs : null;
+    }
+
+    /**
      * Concatena usuario y fecha al texto de la observacion, para que quede legible
      * directamente en el campo (ademas de quedar en el audit log por el guardado normal).
      */
