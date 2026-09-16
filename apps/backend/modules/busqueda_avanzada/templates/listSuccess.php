@@ -42,13 +42,13 @@ use_helper('jQuery');
                     <?php echo include_partial('listComRecibida',array('list_recibidas'=>$list_recibidas, 'mensajeListaVacia'=>isset($mensajeRecibidas) ? $mensajeRecibidas : null)); ?>
                 </div>
                 <div class="tab-pane" id="arcgestion-4">
-                    <?php echo include_partial('listExpGestion',array('list_gestion'=>$list_gestion)); ?>
+                    <?php echo include_partial('listExpGestion',array('list_gestion'=>$list_gestion, 'mensajeListaVacia'=>isset($mensajeGestion) ? $mensajeGestion : null)); ?>
                 </div>
                 <div class="tab-pane" id="arccentral-5">
-                    <?php echo include_partial('listExpCentral',array('list_central'=>$list_central)); ?>
+                    <?php echo include_partial('listExpCentral',array('list_central'=>$list_central, 'mensajeListaVacia'=>isset($mensajeCentral) ? $mensajeCentral : null)); ?>
                 </div>
                 <div class="tab-pane" id="archistorico-6">
-                    <?php echo include_partial('listExpHistorico',array('list_historico'=>$list_historico)); ?>
+                    <?php echo include_partial('listExpHistorico',array('list_historico'=>$list_historico, 'mensajeListaVacia'=>isset($mensajeHistorico) ? $mensajeHistorico : null)); ?>
                 </div>
             </div>
         </div>

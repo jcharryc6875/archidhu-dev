@@ -66,16 +66,29 @@ class UsuarioPendientesChecker
         return false;
     }
 
+    // Getter del identificador real de la comunicacion/prestamo para cada bandeja, usado
+    // para deduplicar: una misma comunicacion puede cumplir varios criterios del mismo
+    // bucket (ej. "Por Leer" y "Vencidas" a la vez) y doSelect() la traeria repetida.
+    private static $getterIdPorBandeja = array(
+        'com_recibida' => 'getComrecibidaId',
+        'com_interna'  => 'getCominternaId',
+        'com_enviada'  => 'getComenviadaId',
+        'prestamo'     => 'getPrestamoId',
+    );
+
     public static function getPendientesPorBandeja($usuario_id)
     {
         $resultado = array();
         foreach (self::bucketDefinitions($usuario_id) as $bandeja_key => $bandeja) {
             $registros = array();
             foreach ($bandeja['criterios'] as $criteria) {
-                $registros = array_merge($registros, call_user_func(array($bandeja['peer'], 'doSelect'), $criteria));
+                foreach (call_user_func(array($bandeja['peer'], 'doSelect'), $criteria) as $registro) {
+                    $id = $registro->{self::$getterIdPorBandeja[$bandeja_key]}();
+                    $registros[$id] = $registro;
+                }
             }
             if (count($registros)) {
-                $resultado[$bandeja_key] = $registros;
+                $resultado[$bandeja_key] = array_values($registros);
             }
         }
 

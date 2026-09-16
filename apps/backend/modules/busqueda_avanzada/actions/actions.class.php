@@ -1108,6 +1108,16 @@ class busqueda_avanzadaActions extends sfActions
 				$cbasic->add(InteresadosPeer::NUMERO_IDENTIFICACION,$param_list['nuid_interesado'].'%',Criteria::LIKE);
 				$filtros_consulta .= "&nuid_interesado=".$param_list['nuid_interesado'];
 			}
+			//*******************************ALCANCE POR REGIONAL/ENTIDAD (permisos)**************************************
+			$usuario_conectado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+			$regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
+			$entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
+			if(!$this->getUser()->checkPerm('LISTAR_EXPEDIENTES_TODAS_REGIONALES', $usuario_conectado)){
+				$cbasic->add(UnidadDocumentalPeer::REGIONAL_ID, $regional_conectado);
+			}elseif(!$this->getUser()->checkPerm('LISTAR_EXPEDIENTES_TODAS_ENTIDADES', $usuario_conectado)){
+				$cbasic->addJoin(UnidadDocumentalPeer::REGIONAL_ID, RegionalPeer::REGIONAL_ID);
+				$cbasic->add(RegionalPeer::ENTIDAD_ID, $entidad_conectado);
+			}
 			//****************************************ARCHIVO GESTION***************************************************
 			$ag = clone $cbasic;
 			$ag->add(UnidadDocumentalPeer::LOCALIZACIONUNIDADDOCUMENTAL_ID,1);
@@ -1122,6 +1132,10 @@ class busqueda_avanzadaActions extends sfActions
 			//**********************************************************************************************************
 			$resulset =  UnidadDocumentalPeer::doSelectStmt($ag);
 			$this->list_gestion =  $resulset->fetchAll();
+			$this->mensajeGestion = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+			if(empty($this->list_gestion)){
+				$this->mensajeGestion = ConsultaPermisoHelper::mensajeListaVacia($this->countArchivoSinPermiso($param_list, 1));
+			}
 			//***********************************ARCHIVO CENTRAL********************************************************
 			$ac = clone $cbasic;
 			$ac->add(UnidadDocumentalPeer::LOCALIZACIONUNIDADDOCUMENTAL_ID,2);
@@ -1136,6 +1150,10 @@ class busqueda_avanzadaActions extends sfActions
 			//**********************************************************************************************************
 			$resulset2 =  UnidadDocumentalPeer::doSelectStmt($ac);
 			$this->list_central =  $resulset2->fetchAll();
+			$this->mensajeCentral = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+			if(empty($this->list_central)){
+				$this->mensajeCentral = ConsultaPermisoHelper::mensajeListaVacia($this->countArchivoSinPermiso($param_list, 2));
+			}
 			//***************************************ARCHIVO HISTORICO**************************************************
 			$ah = clone $cbasic;
 			$ah->add(UnidadDocumentalPeer::LOCALIZACIONUNIDADDOCUMENTAL_ID,3);
@@ -1150,6 +1168,10 @@ class busqueda_avanzadaActions extends sfActions
 			//**********************************************************************************************************
 			$resulset_ah =  UnidadDocumentalPeer::doSelectStmt($ah);
 			$this->list_historico =  $resulset_ah->fetchAll();
+			$this->mensajeHistorico = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+			if(empty($this->list_historico)){
+				$this->mensajeHistorico = ConsultaPermisoHelper::mensajeListaVacia($this->countArchivoSinPermiso($param_list, 3));
+			}
 		}
 		//**************************************************************************************************************
 		$this->datos = 1;  	
@@ -1174,6 +1196,31 @@ class busqueda_avanzadaActions extends sfActions
   
   public function executeConsulta()
   {
-  	
+
+  }
+
+  /**
+   * Cuenta, SIN las condiciones de alcance por regional/entidad, si existe algun expediente
+   * en la localizacion dada que coincida con el filtro puntual de la busqueda (codigo_barras,
+   * o interesado si no vino codigo_barras) - usado para distinguir "no existen registros" de
+   * "existe pero no cuenta con permisos" en Archivo Gestion/Central/Historico.
+   */
+  private function countArchivoSinPermiso($param_list, $localizacion_id)
+  {
+  	if(!empty($param_list['codigo_barras'])){
+  		$c = new Criteria();
+  		$c->add(UnidadDocumentalPeer::LOCALIZACIONUNIDADDOCUMENTAL_ID, $localizacion_id);
+  		$c->add(UnidadDocumentalPeer::CODIGO_BARRAS, '%'.$param_list['codigo_barras'].'%', Criteria::LIKE);
+
+  		return UnidadDocumentalPeer::doCount($c);
+  	}
+
+  	if(!empty($param_list['pnombre_interesado']) || !empty($param_list['papellido_interesado']) || !empty($param_list['nuid_interesado'])){
+  		// Mismo patron ya usado en unidad_documental/com_recibida/etc: no se acota por
+  		// localizacion, el helper solo confirma si existe algun interesado coincidente.
+  		return ConsultaPermisoHelper::countInteresadoSinPermiso('UnidaddocumentalInteresadosPeer', UnidaddocumentalInteresadosPeer::INTERESADO_ID);
+  	}
+
+  	return 0;
   }
 }
