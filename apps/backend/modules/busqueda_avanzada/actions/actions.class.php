@@ -1124,6 +1124,29 @@ class busqueda_avanzadaActions extends sfActions
 			$this->gestion = 0;
 			//**********************************************************************************************************
 			$ag->addJoin(UnidadDocumentalPeer::SUBSERIE_ID,SubseriePeer::SUBSERIE_ID,Criteria::INNER_JOIN);
+			//*******************ALCANCE POR DEPENDENCIA/SUBSERIE (solo Gestion, igual que unidad_documental::getBasicCriteria())*******
+			$ag->addJoin(UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidaddocumentalUsuarioPeer::UNIDADDOCUMENTAL_ID);
+			if(!$this->getUser()->checkPerm('VER_TODAS_LAS_SUBSERIES', $usuario_conectado)){
+				$usuario_object = UsuarioPeer::retrieveByPK($usuario_conectado);
+				$dependencia_conectado = $usuario_object->getDependenciaId();
+				if($this->getUser()->checkPerm('VER_EXPEDIENTES_POR_DEPENDENCIA', $usuario_conectado)){
+					$ag->addJoin(SubseriePeer::SERIE_ID, SeriePeer::SERIE_ID);
+					$ag->addJoin(SeriePeer::DEPENDENCIA_ID, DependenciaPeer::DEPENDENCIA_ID);
+					$subserielist_perm = $this->getPermSubseriesPorUsuarioGestion($usuario_conectado, $dependencia_conectado);
+					if(count($subserielist_perm)){
+						$ctonDependencia = $ag->getNewCriterion(DependenciaPeer::DEPENDENCIA_ID, $dependencia_conectado);
+						$ctonSubserie = $ag->getNewCriterion(UnidadDocumentalPeer::SUBSERIE_ID, $subserielist_perm, Criteria::IN);
+						$ctonDependencia->addOr($ctonSubserie);
+						$ag->add($ctonDependencia);
+					}else{
+						$ag->add(DependenciaPeer::DEPENDENCIA_ID, $dependencia_conectado);
+					}
+				}else{
+					$ag->add(UnidaddocumentalUsuarioPeer::USUARIO_ID, $usuario_conectado);
+				}
+			}
+			$ag->add(UnidaddocumentalUsuarioPeer::ROLUSUUNIDADDOC_ID, 1);
+			//**********************************************************************************************************
 			$ag->clearSelectColumns();
 			$ag->addSelectColumn(UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID);
 			$ag->addSelectColumn(UnidadDocumentalPeer::CODIGO_BARRAS);
@@ -1222,5 +1245,34 @@ class busqueda_avanzadaActions extends sfActions
   	}
 
   	return 0;
+  }
+
+  /**
+   * Replica exacta de unidad_documentalActions::getPermSubseriesPorUsuario() (Archivo de
+   * Gestion): subseries a las que el usuario tiene acceso explicito (SUBSERIE_POR_USUARIO,
+   * VISUALIZACION=true) fuera de su propia dependencia.
+   */
+  private function getPermSubseriesPorUsuarioGestion($usuario_id, $dependencia_id)
+  {
+  	$s = new Criteria();
+  	$s->setDistinct();
+  	$s->addJoin(SubseriePorUsuarioPeer::SUBSERIE_ID, SubseriePeer::SUBSERIE_ID);
+  	$s->addJoin(SubseriePeer::SERIE_ID, SeriePeer::SERIE_ID);
+  	$s->addJoin(SeriePeer::DEPENDENCIA_ID, DependenciaPeer::DEPENDENCIA_ID);
+  	$s->add(SubseriePorUsuarioPeer::USUARIO_ID, $usuario_id);
+  	$s->add(SubseriePorUsuarioPeer::VISUALIZACION, true);
+  	$s->clearSelectColumns();
+  	$s->addSelectColumn(DependenciaPeer::DEPENDENCIA_ID);
+  	$s->addSelectColumn(SubseriePorUsuarioPeer::SUBSERIE_ID);
+
+  	$resultset = SubseriePorUsuarioPeer::doSelectStmt($s);
+  	$subseries_disponibles = array();
+  	while($object = $resultset->fetch()){
+  		if($object[0] != $dependencia_id){
+  			$subseries_disponibles[] = $object[1];
+  		}
+  	}
+
+  	return $subseries_disponibles;
   }
 }
