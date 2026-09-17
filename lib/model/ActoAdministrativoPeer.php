@@ -153,16 +153,20 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
                     $info_com['estadocom_id'] = $estadoobject_id;
                     $info_com['rol_id'] = $value['rol_id'];
                     $info_com['tipoprocesocom_id'] = isset($value['tipoprocesocom_id']) ? $value['tipoprocesocom_id'] : null;
+                    $etapa_rol = ActoadminEtapaPeer::getEtapaByRol($value['rol_id']);
+                    $info_com['actoadminetapa_id'] = $etapa_rol ? $etapa_rol->getPrimaryKey() : null;
                     $ucom_object = ActoAdministrativoPeer::addOrUpdateUserByCom($info_com);
                     $ucargo_list[] = $ucom_object;
                     $uidcargo_list[] = $ucom_object->getPrimaryKey();
                 }else{
+                    $etapa_rol = ActoadminEtapaPeer::getEtapaByRol($value['rol_id']);
                     for ($i=0; $i < count($value['lusuarios']); $i++){
                         $info_com['usuario_id'] = $value['lusuarios'][$i];
                         $info_com['cusuario_id'] =  $value['ucargos'][$i];
                         $info_com['estadocom_id'] = $estadoobject_id;
                         $info_com['rol_id'] = $value['rol_id'];
                         $info_com['tipoprocesocom_id'] = isset($value['tipoprocesocom_id']) ? $value['tipoprocesocom_id'] : null;
+                        $info_com['actoadminetapa_id'] = $etapa_rol ? $etapa_rol->getPrimaryKey() : null;
                         $ucom_object = ActoAdministrativoPeer::addOrUpdateUserByCom($info_com);
                         if($ucom_object != null){
                             $ucargo_list[] = is_array($ucom_object) ? array_merge($ucargo_list,$ucom_object) : $ucom_object;
@@ -203,7 +207,110 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
         }
     }
 
+    /**
+     * Avanza el flujo de aprobación al siguiente participante pendiente.
+     *
+     * UARIV-202605: la secuencia de etapas ya no está fija en código; se lee de las etapas activas
+     * configuradas en ACTOADMIN_ETAPA (ver ActoadminEtapaPeer::getEtapasActivasOrdenadas()), ordenadas
+     * por ORDEN. Mientras el cliente no configure ninguna etapa se conserva, sin cambios, el flujo
+     * histórico fijo Creador(1) -> Gestor(4) -> Revisor(3) -> Firma(2) (legacySetNextUserProceso).
+     */
     public static function setNextUserProceso($comobject_id,$snext_user = false)
+    {
+        if(!count(ActoadminEtapaPeer::getEtapasActivasOrdenadas())){
+            return ActoAdministrativoPeer::legacySetNextUserProceso($comobject_id);
+        }
+        //*************************************************************************************************************
+        try {
+            $ucom_current = ActoAdministrativoPeer::getCurrentUserAsignado($comobject_id);
+            $cambia_asignado = false;
+            $es_finalizacion = false;
+            //*********************************************************************************************************
+            if($ucom_current == null){
+                $primer_rol = ActoadminEtapaPeer::getPrimeraEtapaRol();
+                $ucom_next = $primer_rol ? ActoAdministrativoPeer::getUserComByRol($comobject_id,$primer_rol) : ActoAdministrativoPeer::getUserComByRol($comobject_id,1);
+            }else{
+                $urol_current = $ucom_current->getRolusuarioactoadministvoId();
+                //*****************************************************************************************************
+                // 1) intenta el siguiente participante dentro de la MISMA etapa (p.ej. el 2do de varios revisores)
+                $ucom_next = ActoAdministrativoPeer::getNextUserComByProceso($comobject_id,$urol_current,array($ucom_current->getPrimaryKey()));
+                //*****************************************************************************************************
+                if($ucom_next == null){
+                    $es_etapa_configurada = ActoadminEtapaPeer::getEtapaByRol($urol_current) != null;
+                    if(!$es_etapa_configurada){
+                        // El rol de origen (creador) no es una etapa configurable: arranca en la primera etapa
+                        // del flujo. Se conserva el comportamiento histórico: este paso de origen siempre se cierra.
+                        $rol_siguiente = ActoadminEtapaPeer::getPrimeraEtapaRol();
+                        $cambia_asignado = true;
+                    }else{
+                        // 2) ya no quedan participantes pendientes en esta etapa: avanza a la siguiente etapa
+                        // configurada, en el orden definido, hasta encontrar una con participantes pendientes.
+                        $rol_siguiente = ActoadminEtapaPeer::getSiguienteRolEtapa($urol_current);
+                    }
+                    while($rol_siguiente != null && $ucom_next == null){
+                        $ucom_next = ActoAdministrativoPeer::getNextUserComByProceso($comobject_id,$rol_siguiente);
+                        if($ucom_next == null){ $rol_siguiente = ActoadminEtapaPeer::getSiguienteRolEtapa($rol_siguiente); }
+                    }
+                    //*************************************************************************************************
+                    if($ucom_next == null && $es_etapa_configurada && $urol_current == ActoadminEtapaPeer::getUltimaEtapaRol()){
+                        // 3) la etapa actual era la última del flujo configurado: se cierra el proceso notificando al creador.
+                        $ucom_next = ActoAdministrativoPeer::getNextUserComByProceso($comobject_id,1);
+                        if($ucom_next != null){
+                            $ucom_next->setEstaAsignada(1);
+                            $cambia_asignado = true;
+                            $es_finalizacion = true;
+                        }
+                    }
+                }
+            }
+            //*********************************************************************************************************
+            if($ucom_next != null && !$es_finalizacion){
+                $ucom_next->setFechaAsigna(date("Y-m-d G:i:s"));
+                $ucom_next->setEstaAsignada(1);
+                $ucom_next->setEstaAprobado(0);
+                $ucom_next->setFechaAprobacion(null);
+                $cambia_asignado = true;
+            }
+            //*********************************************************************************************************
+            if($ucom_next != null){ $ucom_next->save(); }
+            //*********************************************************************************************************
+            if($cambia_asignado && ($ucom_current != null)){
+                $ucom_current->setEstaAsignada(0);
+                $ucom_current->setFechaAprobacion(date("Y-m-d G:i:s"));
+                $ucom_current->setEstaAprobado(1);
+                $ucom_current->save();
+                //*****************************************************************************************************
+                $actoadminetapa_id = $ucom_current->getActoadminetapaId();
+                if(empty($actoadminetapa_id)){
+                    $etapa_actual = ActoadminEtapaPeer::getEtapaByRol($ucom_current->getRolusuarioactoadministvoId());
+                    $actoadminetapa_id = $etapa_actual ? $etapa_actual->getPrimaryKey() : null;
+                }
+                if($actoadminetapa_id){
+                    ActoadminEtapaBitacoraPeer::addBitacora($comobject_id,$actoadminetapa_id,$ucom_current->getUsuarioId(),
+                        $ucom_current->getRolusuarioactoadministvoId(),$ucom_current->getEstadoactoadministrativoId(),
+                        ActoadminEtapaBitacoraPeer::ACCION_APROBACION);
+                    if($es_finalizacion){
+                        ActoadminEtapaBitacoraPeer::addBitacora($comobject_id,$actoadminetapa_id,$ucom_current->getUsuarioId(),
+                            $ucom_current->getRolusuarioactoadministvoId(),$ucom_current->getEstadoactoadministrativoId(),
+                            ActoadminEtapaBitacoraPeer::ACCION_FINALIZACION);
+                    }
+                }
+            }
+            //*********************************************************************************************************
+            return $ucom_next;
+        } catch (PropelException $th) {
+            return null;
+        } catch (Exception $th) {
+            return null;
+        }
+    }
+
+    /**
+     * Flujo histórico fijo Creador(1) -> Gestor(4) -> Revisor(3) -> Firma(2), sin cambios de comportamiento.
+     * Se conserva tal cual para los actos administrativos de dependencias que aún no han configurado
+     * ninguna etapa en ACTOADMIN_ETAPA (ver setNextUserProceso).
+     */
+    private static function legacySetNextUserProceso($comobject_id)
     {
         try {
             $ucom_current = ActoAdministrativoPeer::getCurrentUserAsignado($comobject_id);
@@ -243,7 +350,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             }elseif($urol_current == 4){//si actualmente esta en gestion
                 $ucom_next = ActoAdministrativoPeer::getNextUserComByProceso($comobject_id,3);
                 if($ucom_next == null){ $ucom_next = ActoAdministrativoPeer::getNextUserComByProceso($comobject_id,2); }
-                
+
 				if($ucom_next != null){
                     $ucom_next->setFechaAsigna(date("Y-m-d G:i:s"));
                     $ucom_next->setEstaAsignada(1);
@@ -392,6 +499,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
                             $uobject->setEstadoactoadministrativoId($info_com['estadocom_id']);
                             $uobject->setFechaAsigna(($esta_asignada ? date("Y-m-d G:i:s") : null));
                             $uobject->setEstaAsignada($esta_asignada);
+                            $uobject->setActoadminetapaId(isset($info_com['actoadminetapa_id']) ? $info_com['actoadminetapa_id'] : $uobject->getActoadminetapaId());
                             $uobject->save();
                         }
                     }
@@ -401,6 +509,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
                     $ucom_object->setEstadoactoadministrativoId($info_com['estadocom_id']);
                     $ucom_object->setFechaAsigna(($esta_asignada ? date("Y-m-d G:i:s") : null));
                     $ucom_object->setEstaAsignada($esta_asignada);
+                    $ucom_object->setActoadminetapaId(isset($info_com['actoadminetapa_id']) ? $info_com['actoadminetapa_id'] : $ucom_object->getActoadminetapaId());
                     $ucom_object->save();
                 }
                 //**************************************************************************************************
@@ -446,6 +555,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
                 $ucom_object->setUsuarioId($info_com['usuario_id']);
                 $ucom_object->setActoadministrativoId($info_com['pkcom_id']);
                 $ucom_object->setRolusuarioactoadministvoId($info_com['rol_id']);
+                $ucom_object->setActoadminetapaId(isset($info_com['actoadminetapa_id']) ? $info_com['actoadminetapa_id'] : null);
                 $ucom_object->setCargousuarioId($info_com['cusuario_id']);
                 $ucom_object->setTipoprocesocomId($info_com['tipoprocesocom_id']);
                 $ucom_object->setFechaAsigna(($esta_asignada ? date("Y-m-d G:i:s") : null));

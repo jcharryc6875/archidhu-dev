@@ -1264,3 +1264,18 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
     background-color: rgba(255, 255, 255, 0.65);
     z-index: 1;
 }
+
+/* Administración de etapas del flujo de aprobación de Actos Administrativos (UARIV-202605) */
+.actoadmin-etapa-drag {
+    cursor: move;
+    color: #999;
+}
+#actoadminEtapaSortable tr.ui-sortable-helper {
+    display: table;
+    background-color: #f5f5f5;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+#actoadminEtapaSortable tr.ui-sortable-placeholder {
+    visibility: visible !important;
+    background-color: #eef6ff;
+}

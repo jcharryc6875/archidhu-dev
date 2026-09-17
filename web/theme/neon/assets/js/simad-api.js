@@ -3135,6 +3135,39 @@ jQuery(document).ready(function($) {
 	jQuery('.reqresp-switch').each(function(){
 		actualizarReqRespuesta(jQuery(this));
 	});
+
+	if (jQuery('#actoadminEtapaSortable').length && jQuery.fn.sortable) {
+		jQuery('#actoadminEtapaSortable').sortable({
+			items: 'tr',
+			handle: '.actoadmin-etapa-drag',
+			axis: 'y',
+			helper: function(e, tr) {
+				var $originals = tr.children();
+				var $helper = tr.clone();
+				$helper.children().each(function(index) {
+					jQuery(this).width($originals.eq(index).outerWidth());
+				});
+				return $helper;
+			},
+			update: function() {
+				var ordenIds = [];
+				jQuery('#actoadminEtapaSortable tr').each(function(index) {
+					ordenIds.push(jQuery(this).data('etapa-id'));
+					jQuery(this).find('.actoadmin-etapa-orden').text(index + 1);
+				});
+				jQuery.ajax({
+					url: 'actoadmin_etapa/reorder',
+					type: 'POST',
+					data: { orden_ids: ordenIds },
+					success: function(){},
+					error: function(){
+						alert('Ocurrió un error guardando el nuevo orden, por favor intente de nuevo.');
+						window.location.reload();
+					}
+				});
+			}
+		});
+	}
 });
 
 (function($) {
