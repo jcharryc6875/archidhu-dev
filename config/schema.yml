@@ -245,10 +245,41 @@ propel:
     ACTOADMINISTRATIVO_ID: { phpName: ActoadministrativoId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: ACTO_ADMINISTRATIVO, foreignReference: ACTOADMINISTRATIVO_ID }
     USUARIO_ID: { phpName: UsuarioId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: USUARIO, foreignReference: USUARIO_ID }
     ROLUSUARIOACTOADMINISTVO_ID: { phpName: RolusuarioactoadministvoId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: ROL_USUARIO_ACTO_ADMINISTVO, foreignReference: ROLUSUARIOACTOADMINISTVO_ID }
+    ACTOADMINETAPA_ID: { phpName: ActoadminetapaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: ACTOADMIN_ETAPA, foreignReference: ACTOADMINETAPA_ID }
     OBSERVACION: { phpName: Observacion, type: VARCHAR, size: '900', required: false }
     FECHA_DEVOLUCION: { phpName: FechaDevolucion, type: TIMESTAMP, size: '16', scale: '3', required: false }
     FECHA_MODIFICACION: { phpName: FechaModificacion, type: TIMESTAMP, size: '16', scale: '3', required: false }
     _indexes: { PK_ACTOADMIN_DEVOLUCION: [ACTOADMINDEVOLUCION_ID] }
+  ACTOADMIN_ETAPA:
+    _attributes: { phpName: ActoadminEtapa, idMethod: native }
+    ACTOADMINETAPA_ID: { phpName: ActoadminetapaId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }
+    NOMBRE: { phpName: Nombre, type: VARCHAR, size: '100', required: true }
+    ROLUSUARIOACTOADMINISTVO_ID: { phpName: RolusuarioactoadministvoId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: ROL_USUARIO_ACTO_ADMINISTVO, foreignReference: ROLUSUARIOACTOADMINISTVO_ID }
+    ORDEN: { phpName: Orden, type: SMALLINT, size: '2', scale: '0', required: true }
+    ESTA_ACTIVO: { phpName: EstaActivo, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((1)) }
+    TAG_PREFIJO: { phpName: TagPrefijo, type: VARCHAR, size: '30', required: true }
+    FECHA_CREACION: { phpName: FechaCreacion, type: TIMESTAMP, size: '16', scale: '3', required: true }
+    FECHA_MODIFICACION: { phpName: FechaModificacion, type: TIMESTAMP, size: '16', scale: '3', required: true }
+    _indexes: { PK_ACTOADMIN_ETAPA: [ACTOADMINETAPA_ID], IX_ACTOADMIN_ETAPA_ORDEN: [ORDEN] }
+  ACTOADMIN_ETAPA_BITACORA:
+    _attributes: { phpName: ActoadminEtapaBitacora, idMethod: native }
+    ACTOADMINETAPABITACORA_ID: { phpName: ActoadminetapabitacoraId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }
+    ACTOADMINISTRATIVO_ID: { phpName: ActoadministrativoId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: ACTO_ADMINISTRATIVO, foreignReference: ACTOADMINISTRATIVO_ID }
+    ACTOADMINETAPA_ID: { phpName: ActoadminetapaId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: ACTOADMIN_ETAPA, foreignReference: ACTOADMINETAPA_ID }
+    USUARIO_ID: { phpName: UsuarioId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: USUARIO, foreignReference: USUARIO_ID }
+    ROLUSUARIOACTOADMINISTVO_ID: { phpName: RolusuarioactoadministvoId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: ROL_USUARIO_ACTO_ADMINISTVO, foreignReference: ROLUSUARIOACTOADMINISTVO_ID }
+    ESTADOACTOADMINISTRATIVO_ID: { phpName: EstadoactoadministrativoId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: ESTADO_ACTO_ADMINISTRATIVO, foreignReference: ESTADOACTOADMINISTRATIVO_ID }
+    ACCION: { phpName: Accion, type: VARCHAR, size: '30', required: true }
+    OBSERVACION: { phpName: Observacion, type: VARCHAR, size: '900', required: false }
+    FECHA_ACCION: { phpName: FechaAccion, type: TIMESTAMP, size: '16', scale: '3', required: true }
+    _indexes: { PK_ACTOADMIN_ETAPA_BITACORA: [ACTOADMINETAPABITACORA_ID], IX_ACTOADMIN_ETAPA_BITACORA_ACTO: [ACTOADMINISTRATIVO_ID] }
+  ACTOADMIN_CONFIGURACION:
+    _attributes: { phpName: ActoadminConfiguracion, idMethod: native }
+    ACTOADMINCONFIGURACION_ID: { phpName: ActoadminconfiguracionId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }
+    DIAS_RETENCION_BORRADOR: { phpName: DiasRetencionBorrador, type: INTEGER, size: '4', scale: '0', required: true, defaultValue: ((0)) }
+    USUARIO_ID: { phpName: UsuarioId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: USUARIO, foreignReference: USUARIO_ID }
+    FECHA_MODIFICACION: { phpName: FechaModificacion, type: TIMESTAMP, size: '16', scale: '3', required: true }
+    _indexes: { PK_ACTOADMIN_CONFIGURACION: [ACTOADMINCONFIGURACION_ID] }
   DOC_PRESTAMO:
     _attributes: { phpName: DocPrestamo, idMethod: native }
     DOCPRESTAMO_ID: { phpName: DocprestamoId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }
@@ -1898,6 +1929,7 @@ propel:
     CARGOUSUARIO_ID: { phpName: CargousuarioId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: CARGO_USUARIO, foreignReference: CARGOUSUARIO_ID }
     USUARIO_ID: { phpName: UsuarioId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: USUARIO, foreignReference: USUARIO_ID }
     TIPOPROCESOCOM_ID: { phpName: TipoprocesocomId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: TIPO_PROCESO_COM, foreignReference: TIPOPROCESOCOM_ID }
+    ACTOADMINETAPA_ID: { phpName: ActoadminetapaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: ACTOADMIN_ETAPA, foreignReference: ACTOADMINETAPA_ID }
     FECHA_CREACION: { phpName: FechaCreacion, type: TIMESTAMP, size: '16', scale: '3', required: false }
     FECHA_LECTURA: { phpName: FechaLectura, type: TIMESTAMP, size: '16', scale: '3', required: false }
     FECHA_ASIGNA: { phpName: FechaAsigna, type: TIMESTAMP, size: '16', scale: '3', required: false }
@@ -2451,6 +2483,12 @@ propel:
     CIUDAD_ID: { phpName: CiudadId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: CIUDAD, foreignReference: CIUDAD_ID }
     DIRECTORIOEXTERNO_ID: { phpName: DirectorioexternoId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: DIRECTORIO_EXTERNO, foreignReference: DIRECTORIOEXTERNO_ID }
     EMPRESA_MENSAJERIA_ID: { phpName: EmpresaMensajeriaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: EMPRESA_MENSAJERIA, foreignReference: EMPRESA_MENSAJERIA_ID }
+    TIPOFIRMADIGITAL_ID: { phpName: TipofirmadigitalId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: TIPO_FIRMA_DIGITAL, foreignReference: TIPOFIRMADIGITAL_ID }
+    MEDIORESPUESTA_ID: { phpName: MediorespuestaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: MEDIO_RESPUESTA, foreignReference: MEDIORESPUESTA_ID }
+    TIPORESPUESTA_ID: { phpName: TiporespuestaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: TIPO_RESPUESTA, foreignReference: TIPORESPUESTA_ID }
+    PRIORIDADCOM_ID: { phpName: PrioridadcomId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: PRIORIDAD_COM, foreignReference: PRIORIDADCOM_ID }
+    TIPOEXPEDIENTE_ID: { phpName: TipoexpedienteId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: TIPO_EXPEDIENTE, foreignReference: TIPOEXPEDIENTE_ID }
+    TIPOPROCESOCOM_ID: { phpName: TipoprocesocomId, type: INTEGER, size: '4', scale: '0', required: true, defaultValue: ((1)), foreignTable: TIPO_PROCESO_COM, foreignReference: TIPOPROCESOCOM_ID }
     RADICADO_ORIGEN: { phpName: RadicadoOrigen, type: VARCHAR, size: '100', required: false }
     FECHA_CREACION: { phpName: FechaCreacion, type: TIMESTAMP, size: '16', scale: '3', required: false }
     ASUNTO: { phpName: Asunto, type: VARCHAR, size: '800', required: false }
@@ -2480,17 +2518,11 @@ propel:
     MARCA_VINCULACION: { phpName: MarcaVinculacion, type: BOOLEAN, size: '1', required: false, defaultValue: ((0)) }
     REQUIERE_RESPUESTA: { phpName: RequiereRespuesta, type: BOOLEAN, size: '1', required: false }
     OBS_NO_RESPUESTA: { phpName: ObsNoRespuesta, type: VARCHAR, size: '900', required: false }
-    TIPOFIRMADIGITAL_ID: { phpName: TipofirmadigitalId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: TIPO_FIRMA_DIGITAL, foreignReference: TIPOFIRMADIGITAL_ID }
-    MEDIORESPUESTA_ID: { phpName: MediorespuestaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: MEDIO_RESPUESTA, foreignReference: MEDIORESPUESTA_ID }
-    TIPORESPUESTA_ID: { phpName: TiporespuestaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: TIPO_RESPUESTA, foreignReference: TIPORESPUESTA_ID }
     NUM_ANEXOS: { phpName: NumAnexos, type: INTEGER, size: '4', scale: '0', required: false }
-    PRIORIDADCOM_ID: { phpName: PrioridadcomId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: PRIORIDAD_COM, foreignReference: PRIORIDADCOM_ID }
-    TIPOEXPEDIENTE_ID: { phpName: TipoexpedienteId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: TIPO_EXPEDIENTE, foreignReference: TIPOEXPEDIENTE_ID }
     NUMERO_FUD: { phpName: NumeroFud, type: VARCHAR, size: '100', required: false }
     NUMERO_PROCESO: { phpName: NumeroProceso, type: VARCHAR, size: '250', required: false }
     FECHA_DIGIT: { phpName: FechaDigit, type: TIMESTAMP, size: '16', scale: '3', required: false }
     IS_LOCKED: { phpName: IsLocked, type: TINYINT, size: '1', scale: '0', required: false }
-    TIPOPROCESOCOM_ID: { phpName: TipoprocesocomId, type: INTEGER, size: '4', scale: '0', required: true, defaultValue: ((1)), foreignTable: TIPO_PROCESO_COM, foreignReference: TIPOPROCESOCOM_ID }
     FECHA_RECIBIDO: { phpName: FechaRecibido, type: VARCHAR, size: '20', required: false }
     CONTENIDODOC_ID: { phpName: ContenidodocId, type: INTEGER, size: '4', scale: '0', required: false }
     RESPTA_INTEGRACION: { phpName: ResptaIntegracion, type: VARCHAR, size: '500', required: false }
