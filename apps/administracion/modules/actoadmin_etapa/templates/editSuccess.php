@@ -52,6 +52,21 @@ $base_path = sfConfig::get('base_simad');
           </div>
         </div>
 
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Permite edición:</label>
+          <div class="col-sm-10">
+            <div class="checkbox">
+              <label>
+                <?php echo object_checkbox_tag($actoadmin_etapa, 'getPermiteEdicion'); ?>
+                Por defecto, los usuarios asignados a esta etapa pueden editar el contenido del acto administrativo
+              </label>
+            </div>
+            <span class="help-block">
+              Valor por defecto para todos los actos que pasen por esta etapa. Si se desactiva, ningún participante de esta etapa podrá editar el contenido ni cargar un nuevo archivo Word (solo ver/descargar), salvo que se habilite explícitamente para un acto puntual desde su pantalla de configuración de flujo.
+            </span>
+          </div>
+        </div>
+
         <hr />
         <div class="row">
           <div class="col-sm-12 form-group">

@@ -456,9 +456,10 @@ class acto_administrativoActions extends sfActions
       try {
           $status = 400;
           $actoadministrativo_id = !empty($this->getRequestParameter('actoadministrativo_id')) ? trim($this->getRequestParameter('actoadministrativo_id')) : null;
+          // UARIV-202605 (ampliación): usuario elegido cuando hay varios candidatos con el mismo orden
+          $usuario_destino_id = trim($this->getRequestParameter('usuario_destino_id')) ? trim($this->getRequestParameter('usuario_destino_id')) : null;
           $response_data = array( 'status' => 400, 'message' => 'error interno no se realizo la aprobación');
           $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-          $rol_firma = 2;
           //************************************************************************************************
           if($actoadministrativo_id != null){
               $acto_administrativo = ActoAdministrativoPeer::retrieveByPk($actoadministrativo_id);
@@ -467,38 +468,55 @@ class acto_administrativoActions extends sfActions
               //********************************************************************************************
               if($ucom_current == null){
                   $array = json_encode($response_data);
-                  $this->getResponse()->setContentType('application/json');      
+                  $this->getResponse()->setContentType('application/json');
                   return $this->renderText($array);
               }
               //********************************************************************************************
               if($ucom_current->getUsuarioId() != $usuariologuiado){
                   $array = json_encode($response_data);
-                  $this->getResponse()->setContentType('application/json');      
+                  $this->getResponse()->setContentType('application/json');
                   return $this->renderText($array);
               }
               //********************************************************************************************
               $usuario_responsable = $ucom_current->getUsuario();
               $rol_etapa_cerrada = $ucom_current->getRolusuarioactoadministvoId();
               //********************************************************************************************
-              $ucom_next = ActoAdministrativoPeer::setNextUserProceso($acto_administrativo->getPrimaryKey());
+              if(ActoAdministrativoPeer::tieneOrdenPorDocumento($acto_administrativo->getPrimaryKey())){
+                  $resultado = ActoAdministrativoPeer::avanzarFlujoPorOrden($acto_administrativo->getPrimaryKey(),$usuario_destino_id);
+                  //********************************************************************************************
+                  if($resultado['status'] == 'empate'){
+                      $candidatos_data = array();
+                      foreach ($resultado['candidatos'] as $candidato) {
+                          $candidatos_data[] = array(
+                              'usuario_id' => $candidato->getUsuarioId(),
+                              'nombre' => $candidato->getUsuario() ? $candidato->getUsuario()->getFullNombre() : '',
+                              'rol' => $candidato->getRolUsuarioActoAdministvo() ? $candidato->getRolUsuarioActoAdministvo()->getDescripcion() : '',
+                          );
+                      }
+                      $response_data = array('status' => 300, 'message' => 'Hay varios usuarios con el mismo orden, seleccione a quién enviar el trámite', 'candidatos' => $candidatos_data);
+                      $array = json_encode($response_data);
+                      $this->getResponse()->setContentType('application/json');
+                      return $this->renderText($array);
+                  }
+                  //********************************************************************************************
+                  if($resultado['status'] == 'error'){
+                      $response_data = array('status' => 400, 'message' => $resultado['message']);
+                      $array = json_encode($response_data);
+                      $this->getResponse()->setContentType('application/json');
+                      return $this->renderText($array);
+                  }
+                  //********************************************************************************************
+                  $ucom_next = isset($resultado['ucom_next']) ? $resultado['ucom_next'] : null;
+              }else{
+                  $ucom_next = ActoAdministrativoPeer::setNextUserProceso($acto_administrativo->getPrimaryKey());
+              }
+              //********************************************************************************************
               $usuario_asignado = $ucom_next != null ? $ucom_next->getUsuario() : null;
+              $nombre_asignado = '';
               //********************************************************************************************
               if($usuario_asignado != null){
                   $nombre_asignado = $usuario_asignado->getFullNombre();
-                  //****************************************************************************************
-                  if($ucom_next->getRolusuarioactoadministvoId() == 1){
-                      // No hay más etapas configuradas pendientes: se cierra el flujo (UARIV-202605 CA-2.2 Finalización)
-                      $acto_administrativo->sendMailFlujoEtapa($usuario_asignado, ActoAdministrativo::MAIL_ACCION_FINALIZACION, $usuario_responsable);
-                      $acto_administrativo->sendMailFlujoEtapaMasivo(ActoAdministrativo::MAIL_ACCION_FINALIZACION, $acto_administrativo->getParticipantesUnicos($usuario_asignado->getPrimaryKey()), $usuario_responsable);
-                  }else{
-                      $etapa_siguiente = ActoadminEtapaPeer::getEtapaByRol($ucom_next->getRolusuarioactoadministvoId());
-                      $acto_administrativo->sendMailFlujoEtapa($usuario_asignado, ActoAdministrativo::MAIL_ACCION_SOLICITUD_ETAPA, $usuario_responsable, null, $etapa_siguiente ? $etapa_siguiente->getNombre() : null);
-                  }
-                  //****************************************************************************************
-                  if($rol_etapa_cerrada == 2){
-                      // Se completó una etapa de firma: notifica a todos los participantes del flujo (CA-2.2 Firma realizada)
-                      $acto_administrativo->sendMailFlujoEtapaMasivo(ActoAdministrativo::MAIL_ACCION_FIRMA, $acto_administrativo->getParticipantesUnicos(), $usuario_responsable);
-                  }
+                  $this->notificarAvanceFlujoActoAdministrativo($acto_administrativo,$ucom_next,$usuario_responsable,$rol_etapa_cerrada);
               }
               //********************************************************************************************
               $response_data = array( 'status' => 200, 'message' => 'Se envio el registro al siguiente usuario del proceso ('.$nombre_asignado.')');
@@ -510,8 +528,33 @@ class acto_administrativoActions extends sfActions
       }
       //****************************************************************************************************
       $array = json_encode($response_data);
-      $this->getResponse()->setContentType('application/json');      
+      $this->getResponse()->setContentType('application/json');
       return $this->renderText($array);
+  }
+
+  /**
+   * Envia las alertas de correo del flujo (etapa pendiente/finalizacion/firma realizada) al usuario
+   * recien asignado, tras un avance del motor de etapas globales o del motor de orden por documento.
+   * UARIV-202605.
+   */
+  private function notificarAvanceFlujoActoAdministrativo(ActoAdministrativo $acto_administrativo, ActoadministrativoUsuario $ucom_next, $usuario_responsable = null, $rol_etapa_cerrada = null)
+  {
+      $usuario_asignado = $ucom_next->getUsuario();
+      if($usuario_asignado == null){ return; }
+      //****************************************************************************************
+      if($ucom_next->getRolusuarioactoadministvoId() == 1){
+          // No hay más etapas/orden pendientes: se cierra el flujo (UARIV-202605 CA-2.2 Finalización)
+          $acto_administrativo->sendMailFlujoEtapa($usuario_asignado, ActoAdministrativo::MAIL_ACCION_FINALIZACION, $usuario_responsable);
+          $acto_administrativo->sendMailFlujoEtapaMasivo(ActoAdministrativo::MAIL_ACCION_FINALIZACION, $acto_administrativo->getParticipantesUnicos($usuario_asignado->getPrimaryKey()), $usuario_responsable);
+      }else{
+          $etapa_siguiente = $ucom_next->getActoadminEtapa() ? $ucom_next->getActoadminEtapa() : ActoadminEtapaPeer::getEtapaByRol($ucom_next->getRolusuarioactoadministvoId());
+          $acto_administrativo->sendMailFlujoEtapa($usuario_asignado, ActoAdministrativo::MAIL_ACCION_SOLICITUD_ETAPA, $usuario_responsable, null, $etapa_siguiente ? $etapa_siguiente->getNombre() : null);
+      }
+      //****************************************************************************************
+      if($rol_etapa_cerrada == 2){
+          // Se completó una etapa de firma: notifica a todos los participantes del flujo (CA-2.2 Firma realizada)
+          $acto_administrativo->sendMailFlujoEtapaMasivo(ActoAdministrativo::MAIL_ACCION_FIRMA, $acto_administrativo->getParticipantesUnicos(), $usuario_responsable);
+      }
   }
 
   public function executeShowPdfByWord()
@@ -1405,6 +1448,8 @@ class acto_administrativoActions extends sfActions
               }
               //******************************************************************************
               $acto_administrativo->save();
+              // UARIV-202605 (ampliación): historial de versiones del archivo Word
+              ActoadminWordVersionPeer::addVersion($acto_administrativo->getPrimaryKey(),$filedir_upload,$usuariologuiado);
               //******************************************************************************
               $digitDocFile = $acto_administrativo->getPathImageDigitByCom();
               //******************************************************************************
@@ -1524,13 +1569,87 @@ class acto_administrativoActions extends sfActions
       $this->ldocument_version = array();
     }
     //***************************************************************************************************
+    // UARIV-202605 (ampliación): configuración de orden de ejecución y permiso de edición por
+    // participante/etapa, exclusiva del acto que se está editando.
+    $this->puedeConfigurarFlujo = $this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_CONFIGURAR_FLUJO",$usuariologuiado);
+    if($this->puedeConfigurarFlujo && $acto_administrativo->getPrimaryKey()){
+      $this->participantesFlujo = ActoadministrativoUsuarioPeer::getParticipantesConfigurables($acto_administrativo->getPrimaryKey());
+      $this->etapasConfigActo = ActoAdministrativoPeer::getEtapasConfigParaActo($acto_administrativo->getPrimaryKey());
+    }else{
+      $this->participantesFlujo = array();
+      $this->etapasConfigActo = array();
+    }
+    //***************************************************************************************************
+    // UARIV-202605 (ampliación): candado de edición de contenido/Word para el usuario actual
+    $this->puedeEditarContenido = $acto_administrativo->getPrimaryKey()
+      ? ActoAdministrativoPeer::puedeEditarContenido($acto_administrativo->getPrimaryKey(),$usuariologuiado)
+      : true;
+    //***************************************************************************************************
+    // UARIV-202605 (ampliación): historial de versiones del archivo Word, para comparación visual
+    $this->wordVersions = $acto_administrativo->getPrimaryKey()
+      ? ActoadminWordVersionPeer::getListByActoId($acto_administrativo->getPrimaryKey())
+      : array();
+    //***************************************************************************************************
     $this->forward404Unless($this->acto_administrativo);
   }
 
   /**
-  * Executes edit action
-  *
-  */
+   * Guarda, para UN acto administrativo puntual, el orden de ejecución y el permiso de edición
+   * de cada participante, y los overrides de "¿la etapa permite edición?" por acto. UARIV-202605
+   * (ampliación). Requiere el permiso ACTO_ADMINISTRATIVO_CONFIGURAR_FLUJO.
+   */
+  public function executeUpdateOrdenParticipantes($request)
+  {
+      $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+      $response_data = array('status' => 400, 'message' => 'Error interno, no se guardó la configuración del flujo');
+      //****************************************************************************************************
+      if(!$this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_CONFIGURAR_FLUJO", $usuariologuiado)){
+          $response_data = array('status' => 400, 'message' => 'Acceso denegado, no tienes permiso para configurar el flujo de este acto');
+          $this->getResponse()->setContentType('application/json');
+          return $this->renderText(json_encode($response_data));
+      }
+      //****************************************************************************************************
+      $this->forward404Unless($request->isMethod(sfRequest::POST));
+      $actoadministrativo_id = trim($request->getParameter('actoadministrativo_id')) ? trim($request->getParameter('actoadministrativo_id')) : null;
+      if(empty($actoadministrativo_id)){
+          $response_data = array('status' => 400, 'message' => 'El acto administrativo indicado no es válido');
+          $this->getResponse()->setContentType('application/json');
+          return $this->renderText(json_encode($response_data));
+      }
+      //****************************************************************************************************
+      try {
+          // participantes[<actoadministrativoUsuario_id>][orden] / [puede_editar]
+          $participantes = $request->getParameter('participantes') ? $request->getParameter('participantes') : array();
+          foreach ($participantes as $actoadministrativousuario_id => $datos) {
+              $fila = ActoadministrativoUsuarioPeer::retrieveByPk($actoadministrativousuario_id);
+              if($fila == null || $fila->getActoadministrativoId() != $actoadministrativo_id){ continue; }
+              //************************************************************************************************
+              $orden = isset($datos['orden']) ? trim($datos['orden']) : '';
+              $fila->setOrdenEjecucion($orden !== '' && is_numeric($orden) ? (int)$orden : null);
+              $fila->setPuedeEditar(!empty($datos['puede_editar']) ? 1 : 0);
+              $fila->save();
+          }
+          //*****************************************************************************************************
+          // etapas_override[<actoadminetapa_id>] = 'heredar' | 'si' | 'no'
+          $etapas_override = $request->getParameter('etapas_override') ? $request->getParameter('etapas_override') : array();
+          foreach ($etapas_override as $actoadminetapa_id => $valor) {
+              $permite = null;
+              if($valor === 'si'){ $permite = 1; }
+              elseif($valor === 'no'){ $permite = 0; }
+              ActoadminEtapaActoConfigPeer::setOverride($actoadministrativo_id,$actoadminetapa_id,$permite,$usuariologuiado);
+          }
+          //*****************************************************************************************************
+          $response_data = array('status' => 200, 'message' => 'La configuración del flujo fue almacenada satisfactoriamente');
+      } catch (PropelException $th) {
+          $response_data = array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+      } catch (\Exception $th) {
+          $response_data = array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+      }
+      //****************************************************************************************************
+      $this->getResponse()->setContentType('application/json');
+      return $this->renderText(json_encode($response_data));
+  }
+
   public function executeCompareVersion()
   {
     $this->verificaPrilegio("acto_administrativo/edit");
@@ -1562,6 +1681,56 @@ class acto_administrativoActions extends sfActions
     $this->diff_data = $last_controldoc->compareVersions('Inline');
     //***************************************************************************************************
     $this->forward404Unless($this->acto_administrativo);
+  }
+
+  /**
+   * Compara visualmente, página a página, dos versiones del archivo Word de un acto administrativo
+   * (UARIV-202605, ampliación): convierte cada .docx a PDF con LibreOffice (mismo mecanismo que ya
+   * usa la app para generar el PDF de radicación) y cada PDF a imágenes con pdftoppm (mismo binario
+   * ya vendorizado y usado en com_recibida), y las muestra lado a lado.
+   */
+  public function executeCompareWordVersion()
+  {
+      $this->verificaPrilegio("acto_administrativo/edit");
+      //***************************************************************************************************
+      $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+      $version_a_id = trim($this->getRequestParameter('version_a_id')) ? trim($this->getRequestParameter('version_a_id')) : null;
+      $version_b_id = trim($this->getRequestParameter('version_b_id')) ? trim($this->getRequestParameter('version_b_id')) : null;
+      //***************************************************************************************************
+      if(empty($version_a_id) || empty($version_b_id)){
+          $this->redirect(sfConfig::get('base_simad').'/no_autorizado.html');
+      }
+      //***************************************************************************************************
+      $version_a = ActoadminWordVersionPeer::retrieveByPk($version_a_id);
+      $version_b = ActoadminWordVersionPeer::retrieveByPk($version_b_id);
+      if($version_a == null || $version_b == null || $version_a->getActoadministrativoId() != $version_b->getActoadministrativoId()){
+          $this->redirect(sfConfig::get('base_simad').'/no_autorizado.html');
+      }
+      //***************************************************************************************************
+      $this->acto_administrativo = ActoAdministrativoPeer::retrieveByPk($version_a->getActoadministrativoId());
+      $this->forward404Unless($this->acto_administrativo);
+      //***************************************************************************************************
+      // UARIV-202605 CA-3.4.1: una vez firmado y radicado, solo el administrador puede consultar
+      // las versiones preliminares del documento.
+      if(trim($this->acto_administrativo->getNumeroResolucion()) && !$this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_VER_VERSIONES_PRELIMINARES",$usuariologuiado)){
+          $this->redirect(sfConfig::get('base_simad').'/no_autorizado.html');
+      }
+      //***************************************************************************************************
+      $carpeta_comparacion = md5($version_a_id.'_'.$version_b_id);
+      $directorio_tmp = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.'wordcompare'.DIRECTORY_SEPARATOR.$carpeta_comparacion;
+      //***************************************************************************************************
+      $pdf_a = ActoadminWordVersionPeer::convertirDocxAPdf($version_a->getRutaArchivo(),$directorio_tmp);
+      $pdf_b = ActoadminWordVersionPeer::convertirDocxAPdf($version_b->getRutaArchivo(),$directorio_tmp);
+      //***************************************************************************************************
+      $imagenes_a = $pdf_a ? ActoadminWordVersionPeer::convertirPdfAImagenes($pdf_a,$directorio_tmp,'version_a_') : array();
+      $imagenes_b = $pdf_b ? ActoadminWordVersionPeer::convertirPdfAImagenes($pdf_b,$directorio_tmp,'version_b_') : array();
+      //***************************************************************************************************
+      $web_base = '/tmp/wordcompare/'.$carpeta_comparacion.'/';
+      $this->imagenesA = array_map(function($ruta) use ($web_base){ return $web_base.basename($ruta); }, $imagenes_a);
+      $this->imagenesB = array_map(function($ruta) use ($web_base){ return $web_base.basename($ruta); }, $imagenes_b);
+      $this->versionA = $version_a;
+      $this->versionB = $version_b;
+      $this->huboErrorConversion = ($pdf_a == null || $pdf_b == null);
   }
 
   /**
@@ -1861,6 +2030,11 @@ class acto_administrativoActions extends sfActions
           $this->forward404Unless($acto_administrativo);
       }
       //*********************************************************************************************************
+      // UARIV-202605 (ampliación): candado de edición por etapa/participante. Un documento nuevo
+      // siempre es editable por su creador; en uno existente, depende de si la etapa (global u
+      // override por acto) y el participante actual lo permiten, salvo permiso general de edición.
+      $puedeEditarContenido = $isNewActoAdm || $com_edit_all || ActoAdministrativoPeer::puedeEditarContenido($actoadministrativo_id,$usuariologuiado);
+      //*********************************************************************************************************
       $unidaddocumental_id = trim($this->getRequestParameter('unidaddocumental_id')) ? trim($this->getRequestParameter('unidaddocumental_id')) : null;
       if(empty($unidaddocumental_id)){
         $this->getResponse()->setContentType('application/json');
@@ -1942,7 +2116,9 @@ class acto_administrativoActions extends sfActions
       $acto_administrativo->setFechaResolucion(null);
       $acto_administrativo->setFechaCreacion(date("Y-m-d G:i:s"));
       //*********************************************************************************************************
-      $current_content = trim($this->getRequestParameter('contenido'));
+      // UARIV-202605 (ampliación): si el participante actual no puede editar, se conserva el
+      // contenido ya almacenado en vez de aceptar lo que venga en el request.
+      $current_content = $puedeEditarContenido ? trim($this->getRequestParameter('contenido')) : $acto_administrativo->getContenido();
       $acto_administrativo->setContenido($current_content);
       //*********************************************************************************************************
       $acto_administrativo->setFolios(trim($this->getRequestParameter('folios')) ? trim($this->getRequestParameter('folios')) : 1);
@@ -1981,7 +2157,8 @@ class acto_administrativoActions extends sfActions
       //*********************************************************************************************************
       $is_create_doc = false;
       // UARIV-202605 CA-3.5: no se permite adjuntar el acto como PDF directo sin el permiso "Usar PDF"
-      $replyfile = $this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_USAR_PDF",$usuariologuiado) ? trim($this->getRequestParameter('replyfile')) : '';
+      // UARIV-202605 (ampliación): tampoco si el participante actual no puede editar en esta etapa
+      $replyfile = ($puedeEditarContenido && $this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_USAR_PDF",$usuariologuiado)) ? trim($this->getRequestParameter('replyfile')) : '';
       if(!empty($replyfile))
       {
         $filedir_tmp = sfConfig::get("sf_web_dir").DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.$replyfile;
@@ -2001,7 +2178,7 @@ class acto_administrativoActions extends sfActions
             }
           }
         }
-      }else if($this->getRequestParameter(md5('radComByWord')) && !empty($acto_administrativo->getPlantillascomId())){
+      }else if($puedeEditarContenido && $this->getRequestParameter(md5('radComByWord')) && !empty($acto_administrativo->getPlantillascomId())){
         $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(25)->getValortexto() . 'uploads');
         $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
         //*****************************************************************************************************
@@ -2016,6 +2193,8 @@ class acto_administrativoActions extends sfActions
           $acto_administrativo->setIsCreateWord(2);
           $acto_administrativo->setContenido(null);
           $acto_administrativo->setUseMembrete($params['use_membrete']);
+          // UARIV-202605 (ampliación): historial de versiones del archivo Word
+          ActoadminWordVersionPeer::addVersion($acto_administrativo->getPrimaryKey(),$response_tpl['path_plantilla'],$usuariologuiado);
         }
       }else{
         $acto_administrativo->setUrlFileWord(null);

@@ -22,6 +22,7 @@ use_javascript($path_theme.'assets/js/jquery-ui/js/jquery-ui-1.10.3.custom.js');
               <th>Nombre de la etapa</th>
               <th>Tipo de participante</th>
               <th style="width: 10%;">Prefijo etiqueta</th>
+              <th class="text-center" style="width: 8%;">Permite edición</th>
               <th class="text-center" style="width: 10%;">Estado</th>
               <th class="text-center" style="width: 10%;">Opciones</th>
             </tr>
@@ -34,6 +35,7 @@ use_javascript($path_theme.'assets/js/jquery-ui/js/jquery-ui-1.10.3.custom.js');
                 <td><?php echo $etapa->getNombre(); ?></td>
                 <td><?php echo $etapa->getRolUsuarioActoAdministvo(); ?></td>
                 <td><?php echo $etapa->getTagPrefijo(); ?></td>
+                <td class="text-center"><?php echo $etapa->getPermiteEdicion() ? 'Sí' : 'No'; ?></td>
                 <td class="text-center">
                   <?php echo jq_link_to_remote($etapa->getEstaActivo() ? image_tag('simad/ico_check_green.png', array('width' => "22", 'height' => "22")) : image_tag('simad/ico_check_red.png', array('width' => "22", 'height' => "22")), array(
                     'update'  => false,

@@ -67,6 +67,7 @@ class actoadmin_etapaActions extends sfActions
     $actoadmin_etapa->setRolusuarioactoadministvoId($request->getParameter('rolusuarioactoadministvo_id'));
     $actoadmin_etapa->setTagPrefijo(strtoupper(trim($request->getParameter('tag_prefijo'))));
     $actoadmin_etapa->setEstaActivo($request->getParameter('esta_activo') ? 1 : 0);
+    $actoadmin_etapa->setPermiteEdicion($request->getParameter('permite_edicion') ? 1 : 0);
     $actoadmin_etapa->setFechaModificacion($ahora);
     $actoadmin_etapa->save();
     //*********************************************************************************************************

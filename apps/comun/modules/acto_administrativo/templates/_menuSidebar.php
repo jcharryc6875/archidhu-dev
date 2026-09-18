@@ -86,7 +86,7 @@
                                     'url'     => 'acto_administrativo/singComCheck',
                                     'with'    => "'actoadministrativo_id=".$acto_administrativo->getPrimaryKey()."'",
                                     'loading' => "javascript:jQuery.LoadingStructData();",
-                                    'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); if(response_value.status == 200){ toastr.success(response_value.message);setTimeout(function(){ document.location.reload(); }, 5000); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
+                                    'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); jQuery.handleSingComCheckResponse(response_value, '.$acto_administrativo->getPrimaryKey().'); }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
                                 ),array('data-toggle'=>'tooltip', 'data-original-title'=>'Aprobar y enviar al siguiente usuario'));
                             ?> 
                         </li>
@@ -110,8 +110,8 @@
                             'url'     => 'acto_administrativo/singComCheck',
                             'with'    => "'actoadministrativo_id=".$acto_administrativo->getPrimaryKey()."'",
                             'loading' => "javascript:jQuery.LoadingStructData();",
-                            'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); if(response_value.status == 200){ toastr.success(response_value.message);setTimeout(function(){ document.location.reload(); }, 5000); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
-                        ),array('data-toggle'=>'tooltip', 'data-original-title'=>'Aprobar y enviar al siguiente usuario')); 
+                            'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); jQuery.handleSingComCheckResponse(response_value, '.$acto_administrativo->getPrimaryKey().'); }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
+                        ),array('data-toggle'=>'tooltip', 'data-original-title'=>'Aprobar y enviar al siguiente usuario'));
                 ?> 
             </li>
         <?php } ?>

@@ -3000,6 +3000,68 @@ jQuery(document).ready(function ($) {
 			}
 		});
 	}
+
+	// UARIV-202605 (ampliación): manejo de "Aprobar y Enviar" cuando hay varios usuarios con el
+	// mismo orden configurado en el acto administrativo (bifurcación: el usuario elige a cuál enviar).
+	$.handleSingComCheckResponse = function (response_value, actoadministrativo_id) {
+		if (response_value.status == 200) {
+			toastr.success(response_value.message);
+			setTimeout(function () { document.location.reload(); }, 5000);
+		} else if (response_value.status == 300 && response_value.candidatos) {
+			$.mostrarSeleccionCandidatosFlujo(actoadministrativo_id, response_value.candidatos, response_value.message);
+		} else {
+			toastr.error(response_value.message);
+		}
+	};
+
+	$.mostrarSeleccionCandidatosFlujo = function (actoadministrativo_id, candidatos, mensaje) {
+		var htmlLista = '<div class="list-group">';
+		jQuery.each(candidatos, function (index, candidato) {
+			htmlLista += '<a href="#" class="list-group-item singcomcheck-candidato" data-actoadministrativo-id="' + actoadministrativo_id + '" data-usuario-id="' + candidato.usuario_id + '">' +
+				'<strong>' + candidato.nombre + '</strong> <span class="text-muted">(' + candidato.rol + ')</span></a>';
+		});
+		htmlLista += '</div>';
+		//*******************************************************************************************
+		var $modal = jQuery('#modalSeleccionFlujo');
+		if ($modal.length === 0) {
+			jQuery('body').append(
+				'<div class="modal fade" id="modalSeleccionFlujo" tabindex="-1" role="dialog">' +
+				'<div class="modal-dialog" role="document"><div class="modal-content">' +
+				'<div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button>' +
+				'<h4 class="modal-title">Seleccionar destinatario</h4></div>' +
+				'<div class="modal-body" id="modalSeleccionFlujoBody"></div>' +
+				'</div></div></div>'
+			);
+			$modal = jQuery('#modalSeleccionFlujo');
+		}
+		jQuery('#modalSeleccionFlujoBody').html('<p>' + mensaje + '</p>' + htmlLista);
+		$modal.modal('show');
+	};
+
+	jQuery('body').on('click', '.singcomcheck-candidato', function (e) {
+		e.preventDefault();
+		var actoadministrativo_id = jQuery(this).data('actoadministrativo-id');
+		var usuario_destino_id = jQuery(this).data('usuario-id');
+		jQuery('#modalSeleccionFlujo').modal('hide');
+		jQuery.LoadingStructData();
+		jQuery.ajax({
+			url: 'acto_administrativo/singComCheck',
+			type: 'POST',
+			data: { actoadministrativo_id: actoadministrativo_id, usuario_destino_id: usuario_destino_id },
+			complete: function (xhr) {
+				jQuery.CloseLoadingStructData();
+				try {
+					var response_value = JSON.parse(xhr.responseText);
+					if (response_value.status == 200) {
+						toastr.success(response_value.message);
+						setTimeout(function () { document.location.reload(); }, 3000);
+					} else {
+						toastr.error(response_value.message);
+					}
+				} catch (err) { toastr.error(err.message); }
+			}
+		});
+	});
 });
 
 (function ($) {

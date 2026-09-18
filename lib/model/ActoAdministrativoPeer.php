@@ -258,6 +258,13 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
      */
     public static function setNextUserProceso($comobject_id,$snext_user = false)
     {
+        if(ActoAdministrativoPeer::tieneOrdenPorDocumento($comobject_id)){
+            $resultado = ActoAdministrativoPeer::avanzarFlujoPorOrden($comobject_id);
+            // Compatibilidad con el contrato histórico del método (retorna el objeto asignado o null);
+            // cuando hay empate de orden, no se asigna nada todavía y se retorna null — el llamador
+            // (executeSingComCheck) debe usar avanzarFlujoPorOrden() directamente para detectar el empate.
+            return isset($resultado['ucom_next']) ? $resultado['ucom_next'] : null;
+        }
         if(!count(ActoadminEtapaPeer::getEtapasActivasOrdenadas())){
             return ActoAdministrativoPeer::legacySetNextUserProceso($comobject_id);
         }
@@ -316,26 +323,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             if($ucom_next != null){ $ucom_next->save(); }
             //*********************************************************************************************************
             if($cambia_asignado && ($ucom_current != null)){
-                $ucom_current->setEstaAsignada(0);
-                $ucom_current->setFechaAprobacion(date("Y-m-d G:i:s"));
-                $ucom_current->setEstaAprobado(1);
-                $ucom_current->save();
-                //*****************************************************************************************************
-                $actoadminetapa_id = $ucom_current->getActoadminetapaId();
-                if(empty($actoadminetapa_id)){
-                    $etapa_actual = ActoadminEtapaPeer::getEtapaByRol($ucom_current->getRolusuarioactoadministvoId());
-                    $actoadminetapa_id = $etapa_actual ? $etapa_actual->getPrimaryKey() : null;
-                }
-                if($actoadminetapa_id){
-                    ActoadminEtapaBitacoraPeer::addBitacora($comobject_id,$actoadminetapa_id,$ucom_current->getUsuarioId(),
-                        $ucom_current->getRolusuarioactoadministvoId(),$ucom_current->getEstadoactoadministrativoId(),
-                        ActoadminEtapaBitacoraPeer::ACCION_APROBACION);
-                    if($es_finalizacion){
-                        ActoadminEtapaBitacoraPeer::addBitacora($comobject_id,$actoadminetapa_id,$ucom_current->getUsuarioId(),
-                            $ucom_current->getRolusuarioactoadministvoId(),$ucom_current->getEstadoactoadministrativoId(),
-                            ActoadminEtapaBitacoraPeer::ACCION_FINALIZACION);
-                    }
-                }
+                ActoAdministrativoPeer::cerrarPasoYRegistrarBitacora($comobject_id,$ucom_current,$es_finalizacion);
             }
             //*********************************************************************************************************
             return $ucom_next;
@@ -343,6 +331,193 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             return null;
         } catch (Exception $th) {
             return null;
+        }
+    }
+
+    /**
+     * Marca como aprobado/cerrado el paso que ocupaba $ucom_current y registra la(s) fila(s)
+     * correspondientes en ACTOADMIN_ETAPA_BITACORA (APROBACION y, si corresponde, FINALIZACION).
+     * Compartido entre el motor de etapas globales (Fase 2) y el motor de orden por documento
+     * (ampliación UARIV-202605).
+     */
+    private static function cerrarPasoYRegistrarBitacora($comobject_id, ActoadministrativoUsuario $ucom_current, $es_finalizacion = false, $observacion = null)
+    {
+        $ucom_current->setEstaAsignada(0);
+        $ucom_current->setFechaAprobacion(date("Y-m-d G:i:s"));
+        $ucom_current->setEstaAprobado(1);
+        $ucom_current->save();
+        //*****************************************************************************************************
+        $actoadminetapa_id = $ucom_current->getActoadminetapaId();
+        if(empty($actoadminetapa_id)){
+            $etapa_actual = ActoadminEtapaPeer::getEtapaByRol($ucom_current->getRolusuarioactoadministvoId());
+            $actoadminetapa_id = $etapa_actual ? $etapa_actual->getPrimaryKey() : null;
+        }
+        if($actoadminetapa_id){
+            ActoadminEtapaBitacoraPeer::addBitacora($comobject_id,$actoadminetapa_id,$ucom_current->getUsuarioId(),
+                $ucom_current->getRolusuarioactoadministvoId(),$ucom_current->getEstadoactoadministrativoId(),
+                ActoadminEtapaBitacoraPeer::ACCION_APROBACION,$observacion);
+            if($es_finalizacion){
+                ActoadminEtapaBitacoraPeer::addBitacora($comobject_id,$actoadminetapa_id,$ucom_current->getUsuarioId(),
+                    $ucom_current->getRolusuarioactoadministvoId(),$ucom_current->getEstadoactoadministrativoId(),
+                    ActoadminEtapaBitacoraPeer::ACCION_FINALIZACION);
+            }
+        }
+    }
+
+    /**
+     * Indica si el acto administrativo tiene al menos un participante con ORDEN_EJECUCION
+     * configurado (ampliación UARIV-202605): en ese caso el flujo se gobierna por
+     * avanzarFlujoPorOrden() en vez del motor de etapas globales o el histórico fijo.
+     */
+    public static function tieneOrdenPorDocumento($comobject_id)
+    {
+        try {
+            $c = new Criteria();
+            $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$comobject_id);
+            $c->add(ActoadministrativoUsuarioPeer::ORDEN_EJECUCION,null,Criteria::ISNOTNULL);
+            return ActoadministrativoUsuarioPeer::doCount($c) > 0;
+        } catch (PropelException $th) {
+            return false;
+        } catch (Exception $th) {
+            return false;
+        }
+    }
+
+    /**
+     * Si una etapa permite edición para UN ACTO ADMINISTRATIVO PUNTUAL (UARIV-202605, ampliación):
+     * usa el override de ACTOADMIN_ETAPA_ACTO_CONFIG si existe para ese acto+etapa; si no, hereda
+     * el valor global de ACTOADMIN_ETAPA.PERMITE_EDICION. Sin etapa asociada (flujo legado, sin
+     * ACTOADMINETAPA_ID) se conserva el comportamiento histórico: se permite editar.
+     */
+    public static function etapaPermiteEdicion($actoadministrativo_id, $actoadminetapa_id)
+    {
+        if(empty($actoadminetapa_id)){ return true; }
+        //*************************************************************************************************
+        $override = ActoadminEtapaActoConfigPeer::getOverride($actoadministrativo_id,$actoadminetapa_id);
+        if($override != null){ return (bool) $override->getPermiteEdicion(); }
+        //*************************************************************************************************
+        $etapa = ActoadminEtapaPeer::retrieveByPk($actoadminetapa_id);
+        return $etapa != null ? (bool) $etapa->getPermiteEdicion() : true;
+    }
+
+    /**
+     * Si el usuario dado puede editar el contenido/Word del acto administrativo AHORA MISMO
+     * (UARIV-202605, ampliación): debe ser el participante actualmente asignado (ESTA_ASIGNADA=1),
+     * la etapa de ese paso debe permitir edición (global u override por acto), y el participante no
+     * debe tener PUEDE_EDITAR explícitamente en 0. Compatibilidad: sin etapa asociada o con
+     * PUEDE_EDITAR nulo/no configurado, se permite editar (comportamiento histórico sin cambios).
+     */
+    public static function puedeEditarContenido($actoadministrativo_id, $usuario_id)
+    {
+        $ucom = ActoAdministrativoPeer::getIsUserAsignado($actoadministrativo_id,$usuario_id,1,true);
+        if($ucom == null){ return false; }
+        //*************************************************************************************************
+        if(!ActoAdministrativoPeer::etapaPermiteEdicion($actoadministrativo_id,$ucom->getActoadminetapaId())){
+            return false;
+        }
+        //*************************************************************************************************
+        $puede_editar = $ucom->getPuedeEditar();
+        return $puede_editar === null ? true : (bool) $puede_editar;
+    }
+
+    /**
+     * Etapas distintas entre los participantes configurables de un acto administrativo (UARIV-202605,
+     * ampliación) — usado en la pantalla "Configurar Flujo" para listar, por cada una, el control de
+     * "¿Permite edición en este acto?" (heredar/sí/no).
+     */
+    public static function getEtapasConfigParaActo($actoadministrativo_id)
+    {
+        $etapas = array();
+        $vistos = array();
+        foreach (ActoadministrativoUsuarioPeer::getParticipantesConfigurables($actoadministrativo_id) as $participante) {
+            $etapa = $participante->getActoadminEtapa();
+            if($etapa != null && !in_array($etapa->getPrimaryKey(),$vistos)){
+                $vistos[] = $etapa->getPrimaryKey();
+                $etapas[] = $etapa;
+            }
+        }
+        return $etapas;
+    }
+
+    /**
+     * Motor de avance por orden configurado POR ACTO ADMINISTRATIVO (ampliación UARIV-202605):
+     * el orden ya no viene del catálogo global de etapas, sino de ACTOADMINISTRATIVO_USUARIO.
+     * ORDEN_EJECUCION para ESTE documento en particular, permitiendo repetir tipos de etapa y
+     * saltar libremente entre ellas.
+     *
+     * Si el siguiente orden pendiente tiene un solo candidato, se asigna automáticamente
+     * (igual que el motor de etapas). Si hay varios candidatos empatados en el mismo orden y no
+     * se indica $usuario_destino_id, NO se asigna nada: se retorna la lista de candidatos para
+     * que el usuario actual elija a cuál enviarle el trámite (bifurcación, no aprobación paralela).
+     *
+     * @return array{status:string, ucom_next?:ActoadministrativoUsuario, ucom_current?:ActoadministrativoUsuario, candidatos?:ActoadministrativoUsuario[], message?:string}
+     *         status: 'asignado' | 'empate' | 'finalizado' | 'error'
+     */
+    public static function avanzarFlujoPorOrden($comobject_id, $usuario_destino_id = null)
+    {
+        try {
+            $ucom_current = ActoAdministrativoPeer::getCurrentUserAsignado($comobject_id);
+            $orden_actual = $ucom_current != null ? $ucom_current->getOrdenEjecucion() : null;
+            //*********************************************************************************************************
+            $c = new Criteria();
+            $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$comobject_id);
+            $c->add(ActoadministrativoUsuarioPeer::ESTA_APROBADO,0);
+            $c->add(ActoadministrativoUsuarioPeer::ORDEN_EJECUCION,null,Criteria::ISNOTNULL);
+            if($ucom_current != null){ $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVOUSUARIO_ID,$ucom_current->getPrimaryKey(),Criteria::NOT_EQUAL); }
+            if($orden_actual !== null){ $c->add(ActoadministrativoUsuarioPeer::ORDEN_EJECUCION,$orden_actual,Criteria::GREATER_THAN); }
+            $c->addAscendingOrderByColumn(ActoadministrativoUsuarioPeer::ORDEN_EJECUCION);
+            $pendientes = ActoadministrativoUsuarioPeer::doSelect($c);
+            //*********************************************************************************************************
+            if(!count($pendientes)){
+                // no quedan mas ordenes pendientes configurados: se cierra el proceso, igual que el motor de etapas.
+                $ucom_next = ActoAdministrativoPeer::getNextUserComByProceso($comobject_id,1);
+                if($ucom_next != null){ $ucom_next->setEstaAsignada(1); $ucom_next->save(); }
+                if($ucom_current != null){ ActoAdministrativoPeer::cerrarPasoYRegistrarBitacora($comobject_id,$ucom_current,true); }
+                return array('status' => 'finalizado', 'ucom_next' => $ucom_next, 'ucom_current' => $ucom_current);
+            }
+            //*********************************************************************************************************
+            $siguiente_orden = $pendientes[0]->getOrdenEjecucion();
+            $candidatos = array();
+            foreach ($pendientes as $pendiente) {
+                if($pendiente->getOrdenEjecucion() == $siguiente_orden){ $candidatos[] = $pendiente; }
+            }
+            //*********************************************************************************************************
+            // El empate solo se pregunta interactivamente cuando alguien está avanzando el trámite
+            // ($ucom_current != null). Si es la asignación inicial (nadie ha actuado todavía, p.ej. al
+            // guardar el acto por primera vez) no hay quién elija todavía: se asigna automáticamente
+            // al primero para no dejar el documento sin ningún responsable.
+            if(count($candidatos) > 1 && empty($usuario_destino_id) && $ucom_current != null){
+                return array('status' => 'empate', 'candidatos' => $candidatos, 'ucom_current' => $ucom_current);
+            }
+            //*********************************************************************************************************
+            $ucom_next = null;
+            if(count($candidatos) > 1){
+                foreach ($candidatos as $candidato) {
+                    if($candidato->getUsuarioId() == $usuario_destino_id){ $ucom_next = $candidato; break; }
+                }
+                if($ucom_next == null){
+                    return array('status' => 'error', 'message' => 'El usuario seleccionado no es un candidato válido para este paso del flujo');
+                }
+            }else{
+                $ucom_next = $candidatos[0];
+            }
+            //*********************************************************************************************************
+            $ucom_next->setFechaAsigna(date("Y-m-d G:i:s"));
+            $ucom_next->setEstaAsignada(1);
+            $ucom_next->setEstaAprobado(0);
+            $ucom_next->setFechaAprobacion(null);
+            $ucom_next->save();
+            //*********************************************************************************************************
+            if($ucom_current != null){
+                $observacion = count($candidatos) > 1 ? ('Elegido entre '.count($candidatos).' usuarios del mismo orden: '.$ucom_next->getUsuario()->getNombreAll()) : null;
+                ActoAdministrativoPeer::cerrarPasoYRegistrarBitacora($comobject_id,$ucom_current,false,$observacion);
+            }
+            //*********************************************************************************************************
+            return array('status' => 'asignado', 'ucom_next' => $ucom_next, 'ucom_current' => $ucom_current);
+        } catch (PropelException $th) {
+            return array('status' => 'error', 'message' => $th->getMessage());
+        } catch (Exception $th) {
+            return array('status' => 'error', 'message' => $th->getMessage());
         }
     }
 

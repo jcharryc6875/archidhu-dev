@@ -172,18 +172,50 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent');
                       echo input_tag('replyfile',basename($acto_administrativo->getUrlFileWord()) , array('class' => 'data-readonly form-control input-sm'));
                   ?>
                   <div class="input-group-btn">
-                      <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print url_for('acto_administrativo/uploadTemplate?actoadministrativo_id='.$acto_administrativo->getPrimaryKey());?>', 800, 400);">Seleccionar archivo</button>
+                      <?php if($puedeEditarContenido){ ?>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print url_for('acto_administrativo/uploadTemplate?actoadministrativo_id='.$acto_administrativo->getPrimaryKey());?>', 800, 400);">Seleccionar archivo</button>
+                      <?php } ?>
                       <?php if(pathinfo($acto_administrativo->getUrlFileWord(),PATHINFO_EXTENSION) == "docx"){ ?>
                         <a class="btn btn-orange tooltip-primary btn-sm" data-toggle="tooltip" data-original-title="Previsualizar el documento" target="_blank" href="<?php echo url_for('acto_administrativo/showPdfByWord?actoadministrativo_id='.$acto_administrativo->getPrimaryKey()); ?>">Vista Previa</a>
                       <?php } ?>
-                      <button type="button" class="btn btn-default btn-sm" onclick="javascript:jQuery.LimpiarCampoFormulario('replyfile');"><i class="entypo-cancel-circled"></i></button>
+                      <?php if($puedeEditarContenido){ ?>
+                        <button type="button" class="btn btn-default btn-sm" onclick="javascript:jQuery.LimpiarCampoFormulario('replyfile');"><i class="entypo-cancel-circled"></i></button>
+                      <?php } ?>
                   </div>
                 </div>
+                <?php if(!$puedeEditarContenido){ ?>
+                  <span class="help-block">No tiene permiso para editar el archivo en esta etapa. Solo puede consultarlo/descargarlo.</span>
+                <?php } ?>
               </div>
               <?php if(pathinfo($acto_administrativo->getUrlFileWord(),PATHINFO_EXTENSION) == "docx"){ ?>
                 <a class="btn btn-default btn-icon" data-toggle="tooltip" data-original-title="Descargar Plantilla" target="_blank" href="<?php echo url_for('acto_administrativo/downloadTplByWord?actoadministrativo_id='.$acto_administrativo->getPrimaryKey());; ?>"><i class="entypo-down"></i>Descargar Plantilla</a>
               <?php } ?>
           </div>
+          <?php if(count($wordVersions) >= 2){ ?>
+            <div class="form-group">
+              <label class="col-sm-1 control-label">Comparar versiones (Word):</label>
+              <div class="col-sm-8">
+                <?php echo form_tag('acto_administrativo/compareWordVersion', array('name' => 'formCompararWord', 'method' => 'GET', 'target' => '_blank', 'class' => 'form-inline')); ?>
+                  <select name="version_a_id" class="form-control input-sm">
+                    <?php foreach ($wordVersions as $version): ?>
+                      <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $version->getCurrentVersion() ? 'selected' : ''; ?>>
+                        Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
+                  vs.
+                  <select name="version_b_id" class="form-control input-sm">
+                    <?php foreach ($wordVersions as $index => $version): ?>
+                      <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $index == 1 ? 'selected' : ''; ?>>
+                        Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
+                  <button type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-random"></span> Comparar</button>
+                </form>
+              </div>
+            </div>
+          <?php } ?>
         <?php } ?>
 
         <?php if(!$acto_administrativo->getIsCreateWord()){ ?>
@@ -196,10 +228,15 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent');
                     <label for="lbcontenido" class="col-sm-1 control-label">Contenido:</label>
                   </div>          
                 </div>
-                <div class="form-group tmpresponse">          
+                <div class="form-group tmpresponse">
                   <!-- Contenido Editor -->
                   <div class="col-sm-11" style="padding-right: 0;">
-                    <textarea id="contenido" name="contenido" class="form-control input-sm ckeditor1"><?php echo $acto_administrativo->getContenido(); ?></textarea>
+                    <?php if($puedeEditarContenido){ ?>
+                      <textarea id="contenido" name="contenido" class="form-control input-sm ckeditor1"><?php echo $acto_administrativo->getContenido(); ?></textarea>
+                    <?php }else{ ?>
+                      <div class="form-control" style="height: auto; min-height: 200px; background-color: #f5f5f5; overflow: auto;"><?php echo $acto_administrativo->getContenido(); ?></div>
+                      <span class="help-block">No tiene permiso para editar el contenido del acto en esta etapa. Solo puede consultarlo.</span>
+                    <?php } ?>
                   </div>
                 </div>
               </div>
@@ -404,6 +441,14 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent');
       </form>
     </div>
     </div>
+
+    <?php if($puedeConfigurarFlujo && $acto_administrativo->getPrimaryKey() && count($participantesFlujo)){ ?>
+      <?php include_partial('configurarFlujo', array(
+        'acto_administrativo' => $acto_administrativo,
+        'participantesFlujo' => $participantesFlujo,
+        'etapasConfigActo' => $etapasConfigActo,
+      )); ?>
+    <?php } ?>
   </div>
 </div>
 <script type="text/javascript">

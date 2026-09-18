@@ -258,6 +258,7 @@ propel:
     ORDEN: { phpName: Orden, type: SMALLINT, size: '2', scale: '0', required: true }
     ESTA_ACTIVO: { phpName: EstaActivo, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((1)) }
     TAG_PREFIJO: { phpName: TagPrefijo, type: VARCHAR, size: '30', required: true }
+    PERMITE_EDICION: { phpName: PermiteEdicion, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((1)) }
     FECHA_CREACION: { phpName: FechaCreacion, type: TIMESTAMP, size: '16', scale: '3', required: true }
     FECHA_MODIFICACION: { phpName: FechaModificacion, type: TIMESTAMP, size: '16', scale: '3', required: true }
     _indexes: { PK_ACTOADMIN_ETAPA: [ACTOADMINETAPA_ID], IX_ACTOADMIN_ETAPA_ORDEN: [ORDEN] }
@@ -280,6 +281,25 @@ propel:
     USUARIO_ID: { phpName: UsuarioId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: USUARIO, foreignReference: USUARIO_ID }
     FECHA_MODIFICACION: { phpName: FechaModificacion, type: TIMESTAMP, size: '16', scale: '3', required: true }
     _indexes: { PK_ACTOADMIN_CONFIGURACION: [ACTOADMINCONFIGURACION_ID] }
+  ACTOADMIN_WORD_VERSION:
+    _attributes: { phpName: ActoadminWordVersion, idMethod: native }
+    ACTOADMINWORDVERSION_ID: { phpName: ActoadminwordversionId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }
+    ACTOADMINISTRATIVO_ID: { phpName: ActoadministrativoId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: ACTO_ADMINISTRATIVO, foreignReference: ACTOADMINISTRATIVO_ID }
+    RUTA_ARCHIVO: { phpName: RutaArchivo, type: VARCHAR, size: '500', required: true }
+    VERSION_NUMBER: { phpName: VersionNumber, type: INTEGER, size: '4', scale: '0', required: true }
+    CURRENT_VERSION: { phpName: CurrentVersion, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
+    USUARIO_ID: { phpName: UsuarioId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: USUARIO, foreignReference: USUARIO_ID }
+    FECHA_CREACION: { phpName: FechaCreacion, type: TIMESTAMP, size: '16', scale: '3', required: true }
+    _indexes: { PK_ACTOADMIN_WORD_VERSION: [ACTOADMINWORDVERSION_ID], IX_ACTOADMIN_WORD_VERSION_ACTO: [ACTOADMINISTRATIVO_ID] }
+  ACTOADMIN_ETAPA_ACTO_CONFIG:
+    _attributes: { phpName: ActoadminEtapaActoConfig, idMethod: native }
+    ACTOADMINETAPAACTOCONFIG_ID: { phpName: ActoadminetapaactoconfigId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }
+    ACTOADMINISTRATIVO_ID: { phpName: ActoadministrativoId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: ACTO_ADMINISTRATIVO, foreignReference: ACTOADMINISTRATIVO_ID }
+    ACTOADMINETAPA_ID: { phpName: ActoadminetapaId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: ACTOADMIN_ETAPA, foreignReference: ACTOADMINETAPA_ID }
+    PERMITE_EDICION: { phpName: PermiteEdicion, type: TINYINT, size: '1', scale: '0', required: true }
+    USUARIO_ID: { phpName: UsuarioId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: USUARIO, foreignReference: USUARIO_ID }
+    FECHA_MODIFICACION: { phpName: FechaModificacion, type: TIMESTAMP, size: '16', scale: '3', required: true }
+    _indexes: { PK_ACTOADMIN_ETAPA_ACTO_CONFIG: [ACTOADMINETAPAACTOCONFIG_ID], IX_ACTOADMIN_ETAPA_ACTO_CONFIG_UNICO: [ACTOADMINISTRATIVO_ID, ACTOADMINETAPA_ID] }
   DOC_PRESTAMO:
     _attributes: { phpName: DocPrestamo, idMethod: native }
     DOCPRESTAMO_ID: { phpName: DocprestamoId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }
@@ -1936,6 +1956,8 @@ propel:
     FECHA_APROBACION: { phpName: FechaAprobacion, type: TIMESTAMP, size: '16', scale: '3', required: false }
     ESTA_ASIGNADA: { phpName: EstaAsignada, type: TINYINT, size: '1', scale: '0', required: false, defaultValue: ((0)) }
     ESTA_APROBADO: { phpName: EstaAprobado, type: TINYINT, size: '1', scale: '0', required: false, defaultValue: ((0)) }
+    ORDEN_EJECUCION: { phpName: OrdenEjecucion, type: SMALLINT, size: '2', scale: '0', required: false }
+    PUEDE_EDITAR: { phpName: PuedeEditar, type: TINYINT, size: '1', scale: '0', required: false, defaultValue: ((1)) }
     _indexes: { PK_ACTOADMINISTRATIVO_USUARIO: [ACTOADMINISTRATIVOUSUARIO_ID] }
   FACTURA_AUDIT_IMAGE:
     _attributes: { phpName: FacturaAuditImage, idMethod: native }

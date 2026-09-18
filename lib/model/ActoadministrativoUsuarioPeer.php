@@ -19,6 +19,27 @@
  */
 class ActoadministrativoUsuarioPeer extends BaseActoadministrativoUsuarioPeer
 {
+    /**
+     * Participantes del flujo de aprobación de un acto administrativo configurables desde
+     * "Configurar Flujo" (orden de ejecución / puede editar): excluye Creador(1), Radicador(5),
+     * Destinatario(6) y Copia(7), que no forman parte de la secuencia de revisión/aprobación/firma.
+     * UARIV-202605, ampliación.
+     */
+    public static function getParticipantesConfigurables($actoadministrativo_id)
+    {
+        try {
+            $c = new Criteria();
+            $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$actoadministrativo_id);
+            $c->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID,array(1,5,6,7),Criteria::NOT_IN);
+            $c->addAscendingOrderByColumn(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID);
+            return ActoadministrativoUsuarioPeer::doSelect($c);
+        } catch (PropelException $th) {
+            return array();
+        } catch (\Exception $th) {
+            return array();
+        }
+    }
+
     public static function getFirstUsurioFirma($objectpk_id,$rol_id = 2,$IsIdPk = true)
     {
 		$firmante = "";
