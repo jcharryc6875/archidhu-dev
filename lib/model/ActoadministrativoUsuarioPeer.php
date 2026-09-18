@@ -108,6 +108,7 @@ class ActoadministrativoUsuarioPeer extends BaseActoadministrativoUsuarioPeer
             $c->setDistinct();
             $c->addJoin(ActoadministrativoUsuarioPeer::USUARIO_ID,UsuarioPeer::USUARIO_ID);
             $c->addJoin(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID,RolUsuarioActoAdministvoPeer::ROLUSUARIOACTOADMINISTVO_ID);
+            $c->addJoin(ActoadministrativoUsuarioPeer::ACTOADMINETAPA_ID,ActoadminEtapaPeer::ACTOADMINETAPA_ID,Criteria::LEFT_JOIN);
             //*******************************************************************************
             $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$pkobject_id);
             $c->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID,$rol_ids,Criteria::IN);
@@ -122,19 +123,20 @@ class ActoadministrativoUsuarioPeer extends BaseActoadministrativoUsuarioPeer
             $c->addAsColumn('UAPELLIDO',UsuarioPeer::APELLIDO);
             $c->addAsColumn('UROL_ID',ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID);
             $c->addAsColumn('TPCOM_ID',ActoadministrativoUsuarioPeer::TIPOPROCESOCOM_ID);
+            $c->addAsColumn('ETAPA_NOMBRE',ActoadminEtapaPeer::NOMBRE);
             //*******************************************************************************
             $list_userscom = UsuarioPeer::doSelectStmt($c);
             //*******************************************************************************
             while ($object = $list_userscom->fetch()) {
                 $nombre_apellido = trim($object['UNOMBRE']).' '.trim($object['UAPELLIDO']);
-                $list_objects[] = array('USUARIO_ID'=>$object['USUARIO_ID'],'NOMBRE_USER'=>$nombre_apellido,'UTROL'=>$object['ROL_NAME'],'UTROL_ID'=>$object['UROL_ID'],'TPCOM_ID'=>$object['TPCOM_ID']);
+                $list_objects[] = array('USUARIO_ID'=>$object['USUARIO_ID'],'NOMBRE_USER'=>$nombre_apellido,'UTROL'=>$object['ROL_NAME'],'UTROL_ID'=>$object['UROL_ID'],'TPCOM_ID'=>$object['TPCOM_ID'],'ETAPA_NOMBRE'=>$object['ETAPA_NOMBRE']);
             }
             //*******************************************************************************
             $cuser_creador = ActoadministrativoUsuarioPeer::getUserActoAdmByRol($pkobject_id,1);
             if($cuser_creador != null){
                 $nombre_apellido = trim($cuser_creador->getUsuario()->getNombreApellido());
                 $list_objects[] = array('USUARIO_ID'=>$cuser_creador->getUsuarioId(),'NOMBRE_USER'=>$nombre_apellido,
-                    'UTROL'=>$cuser_creador->getRolUsuarioActoAdministvo()->getDescripcion(),'UTROL_ID'=>$cuser_creador->getRolusuarioactoadministvoId(),'TPCOM_ID'=>1);
+                    'UTROL'=>$cuser_creador->getRolUsuarioActoAdministvo()->getDescripcion(),'UTROL_ID'=>$cuser_creador->getRolusuarioactoadministvoId(),'TPCOM_ID'=>1,'ETAPA_NOMBRE'=>null);
             }
         } catch (PropelException $th) {
             //throw $th;

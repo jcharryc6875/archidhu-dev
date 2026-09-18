@@ -33,7 +33,8 @@ use_helper('Object','jQuery','UserComponent');
                                     <?php
                                         foreach($devoluciones_list as $urow)
                                         {
-                                            $istext = sprintf("%s - %s",$urow['NOMBRE_USER'],$urow['UTROL']);
+                                            $etapa_o_rol = !empty($urow['ETAPA_NOMBRE']) ? $urow['ETAPA_NOMBRE'] : $urow['UTROL'];
+                                            $istext = sprintf("%s - %s",$urow['NOMBRE_USER'],$etapa_o_rol);
                                             $dvalue = SED::encryption(sprintf('{"usuariodestino_id":%s,"rolusuarioactoadm_id":%s,"tipoprocesocom_id":%s}',$urow['USUARIO_ID'],$urow['UTROL_ID'],$urow['TPCOM_ID']));
                                             echo "<option value='".$dvalue."'>".$istext."</option>";;
                                         }

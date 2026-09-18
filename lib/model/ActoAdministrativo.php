@@ -1777,7 +1777,145 @@ class ActoAdministrativo extends BaseActoAdministrativo
             return $response_email === false ? false : (empty($response_email) ? $messages_error : $response_email);
         }
     }
-	
+
+    const MAIL_ACCION_SOLICITUD_ETAPA = 'SOLICITUD_ETAPA';
+    const MAIL_ACCION_FIRMA = 'FIRMA';
+    const MAIL_ACCION_DEVOLUCION = 'DEVOLUCION';
+    const MAIL_ACCION_CAMBIO_VERSION = 'CAMBIO_VERSION';
+    const MAIL_ACCION_RADICACION = 'RADICACION';
+    const MAIL_ACCION_FINALIZACION = 'FINALIZACION';
+
+    /**
+     * Texto (asunto corto + introducción) de la alerta de correo según el tipo de evento del flujo.
+     * UARIV-202605 CA-2.2: cubre solicitud de etapa (revisión/firma), firma realizada, devolución,
+     * cambio de versión, radicación y finalización.
+     */
+    private function getInfoMailFlujoEtapa($accion, $etapa_nombre = null)
+    {
+        switch ($accion) {
+            case self::MAIL_ACCION_SOLICITUD_ETAPA:
+                return array(
+                    'asunto' => 'Etapa pendiente' . ($etapa_nombre ? ' - ' . $etapa_nombre : ''),
+                    'intro'  => 'Este es un mensaje para informarle que tiene una etapa pendiente' . ($etapa_nombre ? ' (' . $etapa_nombre . ')' : '') . ' en el siguiente Acto Administrativo.',
+                );
+            case self::MAIL_ACCION_FIRMA:
+                return array(
+                    'asunto' => 'Firma realizada',
+                    'intro'  => 'Este es un mensaje para informarle que se realizó una firma en el siguiente Acto Administrativo.',
+                );
+            case self::MAIL_ACCION_DEVOLUCION:
+                return array(
+                    'asunto' => 'Acto Administrativo devuelto',
+                    'intro'  => 'Este es un mensaje para informarle que el siguiente Acto Administrativo fue devuelto a su etapa' . ($etapa_nombre ? ' (' . $etapa_nombre . ')' : '') . '.',
+                );
+            case self::MAIL_ACCION_CAMBIO_VERSION:
+                return array(
+                    'asunto' => 'Cambio de versión',
+                    'intro'  => 'Este es un mensaje para informarle que el contenido del siguiente Acto Administrativo fue modificado luego de su revisión o aprobación.',
+                );
+            case self::MAIL_ACCION_RADICACION:
+                return array(
+                    'asunto' => 'Acto Administrativo radicado',
+                    'intro'  => 'Este es un mensaje para informarle que el siguiente Acto Administrativo fue radicado.',
+                );
+            case self::MAIL_ACCION_FINALIZACION:
+                return array(
+                    'asunto' => 'Proceso de aprobación finalizado',
+                    'intro'  => 'Este es un mensaje para informarle que finalizó el proceso de aprobación del siguiente Acto Administrativo.',
+                );
+            default:
+                return array('asunto' => 'Notificación', 'intro' => 'Este es un mensaje relacionado con el siguiente Acto Administrativo.');
+        }
+    }
+
+    /**
+     * Alerta por correo de un evento del flujo de aprobación (UARIV-202605, CA-2.1/CA-2.2).
+     * El cuerpo incluye, como mínimo (CA-2.1.3): ID de la comunicación, estado actual, acción
+     * realizada, fecha/hora y usuario responsable. Usa el mismo mecanismo de envío (BaseMailSimad)
+     * que el resto de la aplicación.
+     */
+    public function sendMailFlujoEtapa(Usuario $usuario_destino, $accion, Usuario $usuario_responsable = null, $observacion = null, $etapa_nombre = null)
+    {
+        if (empty(trim($usuario_destino->getEmail()))) {
+            return false;
+        }
+        //***************************************************************************
+        $info = $this->getInfoMailFlujoEtapa($accion, $etapa_nombre);
+        $estado_actual = $this->getEstadoActoAdministrativo() ? $this->getEstadoActoAdministrativo()->getDescripcion() : '';
+        //***************************************************************************
+        $cuerpo = '
+        <html>
+        <head>
+        <title></title>
+        </head>
+        <body>
+        <div id="cotenedor">
+        <br>' . $info['intro'] . '
+        <br>
+        <br>
+        <b>ID Comunicación:</b> ' . $this->getPrimaryKey() . '<br>
+        <b>Asunto:</b> ' . ($this->getAsunto()) . '<br>
+        <b>Dependencia:</b> ' . ($this->getDependencia()) . '<br>
+        <b>Estado actual:</b> ' . $estado_actual . '<br>
+        <b>Acción realizada:</b> ' . $info['asunto'] . '<br>
+        <b>Fecha y hora:</b> ' . date('Y-m-d H:i:s') . '<br>
+        <b>Usuario responsable:</b> ' . ($usuario_responsable ? $usuario_responsable->getNombreAll() : '') . '<br>';
+        if (trim($this->getNumeroResolucion())) {
+            $cuerpo .= '<b>Radicado:</b> ' . $this->getRadicadoCompuesto() . '<br>';
+        }
+        if (!empty($observacion)) {
+            $cuerpo .= '<br><b>Observación:</b> ' . htmlspecialchars(trim($observacion)) . '<br>';
+        }
+        $cuerpo .= '<br></div></body></html>';
+        //***************************************************************************
+        $baseMail = new BaseMailSimad();
+        $baseMail->SetSubject('SGDEA : ' . $info['asunto'] . ' - Acto Administrativo #' . $this->getPrimaryKey());
+        $baseMail->SetMsgHTML($cuerpo);
+        $baseMail->SetAddAddress($usuario_destino->getEmail(), $usuario_destino->getEmail());
+        $response_email = $baseMail->InitSend();
+        if ($response_email === true) {
+            $baseMail->writetolog("Alerta flujo (" . $accion . ") enviada: " . $this->getPrimaryKey() . " Enviado a: " . $usuario_destino->getEmail());
+            return true;
+        }
+        //***************************************************************************
+        $messages_error = "Error al enviar alerta flujo (" . $accion . "): " . $this->getPrimaryKey() . " Cuenta correo: " . $usuario_destino->getEmail();
+        $baseMail->writetolog($messages_error);
+        return false;
+    }
+
+    /**
+     * Envía sendMailFlujoEtapa() a varios destinatarios (p.ej. "todos los participantes" en
+     * Firma realizada o Finalización), sin duplicar envíos al mismo usuario.
+     */
+    public function sendMailFlujoEtapaMasivo($accion, $usuarios_destino = array(), Usuario $usuario_responsable = null, $observacion = null, $etapa_nombre = null)
+    {
+        $ids_enviados = array();
+        foreach ($usuarios_destino as $usuario_destino) {
+            if ($usuario_destino instanceof Usuario && !in_array($usuario_destino->getPrimaryKey(), $ids_enviados)) {
+                $this->sendMailFlujoEtapa($usuario_destino, $accion, $usuario_responsable, $observacion, $etapa_nombre);
+                $ids_enviados[] = $usuario_destino->getPrimaryKey();
+            }
+        }
+    }
+
+    /**
+     * Usuarios únicos que han participado en el flujo de este acto administrativo
+     * (todas las filas de ACTOADMINISTRATIVO_USUARIO), opcionalmente excluyendo uno.
+     */
+    public function getParticipantesUnicos($excluir_usuario_id = null)
+    {
+        $usuarios = array();
+        $ids_agregados = array();
+        foreach ($this->getActoadministrativoUsuarios() as $uobject) {
+            $usuario = $uobject->getUsuario();
+            if ($usuario != null && !in_array($usuario->getPrimaryKey(), $ids_agregados) && $usuario->getPrimaryKey() != $excluir_usuario_id) {
+                $usuarios[] = $usuario;
+                $ids_agregados[] = $usuario->getPrimaryKey();
+            }
+        }
+        return $usuarios;
+    }
+
 	/**
     * objectActions::getComIsArchivedExpediente()
     * valida si la comunicacion esta archivada

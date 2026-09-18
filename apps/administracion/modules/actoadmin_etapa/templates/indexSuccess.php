@@ -55,6 +55,9 @@ use_javascript($path_theme.'assets/js/jquery-ui/js/jquery-ui-1.10.3.custom.js');
             <a class="btn btn-white btn-sm" href="<?php echo $base_path; ?>/administracion.php/actoadmin_etapa/create">
               <img border="0" src="<?php echo $base_path; ?>/images/simad/ico_crear_nuevo.png" width="25" align="middle" />Crear Nueva Etapa
             </a>
+            <a class="btn btn-white btn-sm" href="<?php echo $base_path; ?>/administracion.php/actoadmin_etapa/configuracion">
+              <span class="glyphicon glyphicon-cog"></span> Configuración de Retención de Versiones
+            </a>
           </div>
         </div>
       </div>

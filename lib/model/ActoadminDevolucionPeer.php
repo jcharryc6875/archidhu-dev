@@ -19,17 +19,38 @@
  */
 class ActoadminDevolucionPeer extends BaseActoadminDevolucionPeer
 {
-    public static function addDevolucionByPkActoAdmon($actoadministrativo_id,$usuario_id,$observacion,$rolusacto_id = null){
+    /**
+     * Registra una devolución del acto administrativo a una etapa anterior.
+     *
+     * UARIV-202605: además del registro histórico propio de esta tabla, se escribe una entrada
+     * en la bitácora unificada del flujo (ACTOADMIN_ETAPA_BITACORA, acción DEVOLUCION) cuando se
+     * conoce la etapa configurada a la que se devuelve ($actoadminetapa_id).
+     *
+     * @param int      $actoadministrativo_id
+     * @param int      $usuario_id            usuario que ejecuta la devolución
+     * @param string   $observacion           justificación obligatoria de la devolución
+     * @param int|null $rolusacto_id          rol/etapa de origen desde la cual se devuelve (informativo)
+     * @param int|null $actoadminetapa_id     etapa configurada de destino a la que se devuelve el documento
+     */
+    public static function addDevolucionByPkActoAdmon($actoadministrativo_id,$usuario_id,$observacion,$rolusacto_id = null,$actoadminetapa_id = null){
         try {
             if(!empty($observacion) && !empty($actoadministrativo_id) && !empty($usuario_id)){
                 $ucom_object = new ActoadminDevolucion();
                 $ucom_object->setUsuarioId($usuario_id);
                 $ucom_object->setActoadministrativoId($actoadministrativo_id);
                 $ucom_object->setRolusuarioactoadministvoId($rolusacto_id);
+                $ucom_object->setActoadminetapaId($actoadminetapa_id);
                 $ucom_object->setObservacion(trim($observacion));
                 $ucom_object->setFechaDevolucion(date("Y-m-d G:i:s"));
                 $ucom_object->setFechaModificacion(date("Y-m-d G:i:s"));
                 $ucom_object->save();
+                //**************************************************************************************************
+                if($actoadminetapa_id){
+                    $acto_administrativo = ActoAdministrativoPeer::retrieveByPk($actoadministrativo_id);
+                    ActoadminEtapaBitacoraPeer::addBitacora($actoadministrativo_id,$actoadminetapa_id,$usuario_id,$rolusacto_id,
+                        $acto_administrativo ? $acto_administrativo->getEstadoactoadministrativoId() : null,
+                        ActoadminEtapaBitacoraPeer::ACCION_DEVOLUCION,$observacion);
+                }
                 //**************************************************************************************************
                 return $ucom_object;
             }else{

@@ -31,6 +31,47 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
         return ActoAdministrativoPeer::getListIntersadosByActoId($objpk_id);
     }
 
+    /**
+     * Valida que la plantilla asociada contenga tantas etiquetas {{PREFIJO_n}} por etapa como
+     * participantes se hayan asignado (UARIV-202605 CA-1.1.4). $list_users usa la misma estructura
+     * que initUserByCom() (claves str_firmausers/str_revisorusers/str_gestorusers con ids separados
+     * por coma). Solo valida las etapas cuyo rol tiene un bucket de participantes en el formulario
+     * actual (Firmante, Revisor, Gestor); etapas con un rol de participante nuevo sin bucket propio
+     * en el formulario (p.ej. un "Aprobador" agregado por el cliente) no se validan aquí.
+     *
+     * @return array Mensajes de error (vacío si la plantilla cumple, o si no hay nada que validar).
+     */
+    public static function validarEtiquetasPlantilla($plantillascom_id, $list_users = array())
+    {
+        $errores = array();
+        //*************************************************************************************************
+        if(empty($plantillascom_id)){ return $errores; }
+        $plantilla = PlantillasComPeer::retrieveByPk($plantillascom_id);
+        if($plantilla == null){ return $errores; }
+        //*************************************************************************************************
+        $mapa_bucket_por_rol = array(2 => 'str_firmausers', 3 => 'str_revisorusers', 4 => 'str_gestorusers');
+        $etapas = ActoadminEtapaPeer::getEtapasActivasOrdenadas();
+        //*************************************************************************************************
+        foreach ($etapas as $etapa) {
+            $rol_id = $etapa->getRolusuarioactoadministvoId();
+            if(!isset($mapa_bucket_por_rol[$rol_id])){ continue; }
+            //*********************************************************************************************
+            $bucket_key = $mapa_bucket_por_rol[$rol_id];
+            $usuarios_str = isset($list_users[$bucket_key]) ? trim($list_users[$bucket_key]) : '';
+            $cantidad_participantes = count(preg_split("/[,]+/",$usuarios_str,-1,PREG_SPLIT_NO_EMPTY));
+            //*********************************************************************************************
+            if($cantidad_participantes <= 0){ continue; }
+            //*********************************************************************************************
+            $cantidad_etiquetas = $plantilla->countEtiquetasPorPrefijo($etapa->getTagPrefijo());
+            if($cantidad_etiquetas != $cantidad_participantes){
+                $errores[] = sprintf('La plantilla debe contener %d etiqueta(s) {{%s_n}} para la etapa "%s" (participantes asignados: %d), pero contiene %d.',
+                    $cantidad_participantes,strtoupper($etapa->getTagPrefijo()),$etapa->getNombre(),$cantidad_participantes,$cantidad_etiquetas);
+            }
+        }
+        //*************************************************************************************************
+        return $errores;
+    }
+
     public static function getUserActoByRol($pkobj_id,$rol_id = 0){
         try {
             $c = new Criteria();

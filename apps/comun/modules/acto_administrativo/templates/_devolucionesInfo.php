@@ -23,7 +23,8 @@ $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
                   <thead>
                       <tr>
                           <th class="text-center" style="width: 10%;">Radicado</th>
-                          <th class="text-center" style="width: 20%;">Usuario Modifica</th>
+                          <th class="text-center" style="width: 15%;">Usuario Modifica</th>
+                          <th class="text-center" style="width: 15%;">Etapa Devuelta</th>
                           <th class="text-center">Observaci&oacute;n</th>
                           <th class="text-center" style="width: 10%;">Fecha Creaci&oacute;n</th>
                           <th class="text-center" style="width: 10%;">Fecha Modificaci&oacute;n</th>
@@ -34,9 +35,10 @@ $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
                       <tr>
                         <td class="text-center"><?php echo  trim($acto_administrativo->getNumeroResolucion()) ? $acto_administrativo->getRadicadoCompuesto() : "Sin Radicar" ?></td>
                         <td><?php echo $item->getUsuario()->getNombreAll() ?></td>
+                        <td class="text-center"><?php echo $item->getActoadminEtapa() ? $item->getActoadminEtapa()->getNombre() : ($item->getRolUsuarioActoAdministvo() ? $item->getRolUsuarioActoAdministvo()->getDescripcion() : '-') ?></td>
                         <td><?php echo $item->getObservacion() ?></td>
                         <td class="text-center"><?php echo $item->getFechaDevolucion() ?></td>
-                        <td class="text-center"><?php echo $item->getFechaModificacion() ?></td>                        
+                        <td class="text-center"><?php echo $item->getFechaModificacion() ?></td>
                       </tr>
                   <?php endforeach; ?>
                   </tbody>

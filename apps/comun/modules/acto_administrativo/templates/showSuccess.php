@@ -9,6 +9,7 @@ $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 $lista_interesados = ActoAdministrativoPeer::getListIntersadosByComId($acto_administrativo->getPrimaryKey());
 $lista_servicios = ServicioPeer::getListServicosByComId($acto_administrativo->getPrimaryKey(),17);
 $list_devoluciones = ActoadminDevolucionPeer::getListDevolucionesByActoId($acto_administrativo->getPrimaryKey());
+$list_bitacora_flujo = ActoadminEtapaBitacoraPeer::getListByActoId($acto_administrativo->getPrimaryKey());
 use_helper('jQuery','Object');
 ?>
 <script src="<?php echo $path_theme; ?>assets/js/toastr.js"></script>
@@ -68,6 +69,9 @@ use_helper('jQuery','Object');
                             <li><a data-toggle="tab" href="#listinteresados"><span class="glyphicon glyphicon-list"></span>&nbsp;Lista Interesados</a></li>
                         <?php } ?>                            
                         <li><a data-toggle="tab" href="#listbitacora"><span class="glyphicon glyphicon-list"></span>&nbsp;Bitacora Proceso</a></li>
+                        <?php if(count($list_bitacora_flujo)){ ?>
+                            <li><a data-toggle="tab" href="#listbitacoraflujo"><span class="glyphicon glyphicon-time"></span>&nbsp;Bitacora del Flujo</a></li>
+                        <?php } ?>
                         <?php if(count($lista_servicios)){ ?>
                             <li><a data-toggle="tab" href="#listservicioscom"><span class="glyphicon glyphicon-list"></span>&nbsp;Servicios Relacionados</a></li>
                         <?php } ?>
@@ -284,10 +288,18 @@ use_helper('jQuery','Object');
                         <?php } ?>
                         <!-- listado de bitacoras -->
                         <div id="listbitacora" class="tab-pane">
-                            <?php 
-                                include_partial('listProceso',array('list_usuarios'=>$acto_administrativo->getActoadministrativoUsuarios())); 
+                            <?php
+                                include_partial('listProceso',array('list_usuarios'=>$acto_administrativo->getActoadministrativoUsuarios()));
                             ?>
                         </div>
+                        <!-- bitacora unificada del flujo de aprobacion (UARIV-202605) -->
+                        <?php if(count($list_bitacora_flujo)){ ?>
+                            <div id="listbitacoraflujo" class="tab-pane">
+                                <?php
+                                    include_partial('bitacoraFlujo',array('list_bitacora'=>$list_bitacora_flujo));
+                                ?>
+                            </div>
+                        <?php } ?>
                         <!-- listado de servicios -->
                         <?php if(count($list_devoluciones)){ ?>
                             <div id="listdevolucionesacto" class="tab-pane">

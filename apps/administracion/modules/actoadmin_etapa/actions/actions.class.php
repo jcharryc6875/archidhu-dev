@@ -145,4 +145,33 @@ class actoadmin_etapaActions extends sfActions
     http_response_code($status);
     exit;
   }
+
+  public function executeConfiguracion()
+  {
+    $this->verificaPrivilegio();
+    $this->actoadmin_configuracion = ActoadminConfiguracionPeer::getConfiguracionActual();
+  }
+
+  public function executeUpdateConfiguracion($request)
+  {
+    $this->verificaPrivilegio();
+    $this->forward404Unless($request->isMethod(sfRequest::POST));
+    //*********************************************************************************************************
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    $dias_retencion = $request->getParameter('dias_retencion_borrador');
+    //*********************************************************************************************************
+    if($dias_retencion === null || !is_numeric($dias_retencion) || $dias_retencion < 0){
+      $this->getUser()->setFlash('notice', 'Los días de retención deben ser un número mayor o igual a 0 (0 = nunca depurar).');
+      $this->redirect('actoadmin_etapa/configuracion');
+    }
+    //*********************************************************************************************************
+    $actoadmin_configuracion = ActoadminConfiguracionPeer::getConfiguracionActual();
+    $actoadmin_configuracion->setDiasRetencionBorrador((int)$dias_retencion);
+    $actoadmin_configuracion->setUsuarioId($usuariologuiado);
+    $actoadmin_configuracion->setFechaModificacion(date('Y-m-d H:i:s'));
+    $actoadmin_configuracion->save();
+    //*********************************************************************************************************
+    $this->getUser()->setFlash('success', 'La configuración fue almacenada satisfactoriamente.');
+    $this->redirect('actoadmin_etapa/configuracion');
+  }
 }

@@ -8,12 +8,14 @@ $currentFormBotonRadicar  = "ACTO_ADMINISTRATIVO_RADICAR";
 $currentFormoSingStamp    = "ACTO_ADMINISTRATIVO_CREAR_FIRMA_DIGITAL";
 $currentFormSingAuto      = "ACTO_ADMINISTRATIVO_CREAR_FIRMA_DESATENDIDA";
 $currentFormCreateDoc     = "ACTO_ADMINISTRATIVO_CREAR_CON_DOCPDF";
+$currentFormUsarPdf       = "ACTO_ADMINISTRATIVO_USAR_PDF"; // UARIV-202605: controla la opción "Usar PDF" (CA-3.5)
 
 $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 $acto_pradicar = $sf_user->checkPerm($currentFormBotonRadicar, $currentUser);
 $useFirmaDigital = $sf_user->checkPerm($currentFormoSingStamp, $currentUser);
 $useFirmaDesatendida = $sf_user->checkPerm($currentFormSingAuto, $currentUser);
 $useDocumentRadicar = $sf_user->checkPerm($currentFormCreateDoc, $currentUser);
+$useUsarPdf = $sf_user->checkPerm($currentFormUsarPdf, $currentUser);
 
 use_helper('Object','jQuery','UserComponent','InteresadosComponent');
 ?>
@@ -44,14 +46,16 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent');
 		    <div class="form-group">
           <!-- Documento Pdf -->
           <?php if(!$acto_administrativo->getPrimaryKey() && $useDocumentRadicar == true){ ?>
+            <?php if($useUsarPdf == true){ ?>
             <label for="lbradByInt" class="col-sm-1 control-label">Usar Documento:</label>
             <div class="col-sm-1">
               <?php $value_check0 = false; ?>
-              <div class="make-switch tooltip-primary switch-input tploptionset switch-small exclusive-group" data-idcurrent="<?php echo md5('radComByPdf'); ?>" data-erefresh="tplcomrad" data-endpoint="<?php echo url_for('acto_administrativo/fileTemplate'); ?>" 
+              <div class="make-switch tooltip-primary switch-input tploptionset switch-small exclusive-group" data-idcurrent="<?php echo md5('radComByPdf'); ?>" data-erefresh="tplcomrad" data-endpoint="<?php echo url_for('acto_administrativo/fileTemplate'); ?>"
                     data-exclusive-group="grpcom-unique" data-toggle = "tooltip" data-on="success" data-off="warning" data-on-label="SI" data-off-label="NO" data-original-title = "Radicar comunicaci&oacute;n usando documento pdf">
                 <?php echo checkbox_tag(md5('radComByPdf'), 1 , $value_check0); ?>
               </div>
             </div>
+            <?php } ?>
             <label for="lbradComByWord" class="col-sm-1 control-label">Respuesta Word:</label>
             <div class="col-sm-1">
               <?php $value_check0 = false; ?>

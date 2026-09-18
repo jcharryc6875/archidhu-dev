@@ -50,6 +50,22 @@ class PlantillasCom extends BasePlantillasCom {
 			return $this->getDescripcion();
 	}
 
+	/**
+	 * Cuenta cuántas etiquetas {{PREFIJO_n}} (p.ej. {{FIRMANTE_1}}, {{FIRMANTE_2}}) aparecen en el
+	 * contenido de la plantilla para un prefijo dado. UARIV-202605 CA-1.1.4: la plantilla asociada al
+	 * flujo de aprobación debe contener tantas etiquetas por etapa como participantes se asignen.
+	 */
+	public function countEtiquetasPorPrefijo($prefijo){
+		if(empty(trim((string)$prefijo)) || trim($this->getContents()) === ''){
+			return 0;
+		}
+		//*****************************************************************************************************
+		$patron = '/\{\{\s*'.preg_quote(strtoupper(trim($prefijo)),'/').'_\d+\s*\}\}/i';
+		$cantidad = preg_match_all($patron,(string)$this->getContents(),$coincidencias);
+		//*****************************************************************************************************
+		return $cantidad === false ? 0 : $cantidad;
+	}
+
 	public function generateWordByPlantilla($savePath, $metadatos = array()){
 		try {
 			$phpWord = new \PhpOffice\PhpWord\PhpWord();

@@ -81,4 +81,20 @@ class ActoadminEtapaPeer extends BaseActoadminEtapaPeer
         $etapas = ActoadminEtapaPeer::getEtapasActivasOrdenadas();
         return count($etapas) ? $etapas[count($etapas) - 1]->getRolusuarioactoadministvoId() : null;
     }
+
+    /**
+     * Roles (tipos de participante) de todas las etapas activas configuradas, sin duplicados.
+     * Si no hay ninguna etapa configurada retorna $fallback (el flujo histórico Gestor/Revisor/Firma),
+     * para no cambiar el comportamiento de las pantallas de devolución mientras el cliente no configure
+     * el flujo desde la administración de etapas.
+     */
+    public static function getRolesFlujoConfiguradoODefault($fallback = array(2,3,4))
+    {
+        $etapas = ActoadminEtapaPeer::getEtapasActivasOrdenadas();
+        if(!count($etapas)){ return $fallback; }
+        //*************************************************************************************************
+        $roles = array();
+        foreach($etapas as $etapa){ $roles[] = $etapa->getRolusuarioactoadministvoId(); }
+        return array_values(array_unique($roles));
+    }
 }
