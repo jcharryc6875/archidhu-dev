@@ -429,9 +429,12 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent');
 
                 <a class="btn btn-orange tooltip-primary" data-toggle="tooltip" data-original-title="Previsualizar el documento" target="_blank" href="<?php echo $base_path; ?>/comun.php/acto_administrativo/showpdf?actoadministrativo_id=<?php echo $acto_administrativo->getPrimaryKey()?>" >Vista Previa</a>
             <?php }else{ ?>
-              <?php echo input_hidden_tag('save_and_send',md5('save_and_send'.$currentUser)); ?>
+              <?php // UARIV-202605 (ampliación): al crear no se puede "enviar" todavía -el creador debe
+                    // quedar primero como usuario actual de su propia etapa-, así que solo se ofrece
+                    // guardar; el envío al siguiente participante se hace luego, ya como documento
+                    // existente, desde este mismo botón (jq_submit_to_remote más arriba) o "Aprobar y
+                    // Enviar", una vez recargada la pantalla de edición. ?>
               <button type="button" name="saveActoAdm" id="saveActoAdm" value="save" class="btn btn-success tooltip-primary" data-toggle="tooltip" data-original-title="Guardar los cambios en el registro actual">Guardar Registro</button>
-              <button type="button" name="save_and_send" value="save_and_send" class="btn btn-primary tooltip-primary" data-toggle='tooltip' data-original-title='Guardar los cambios en el registro actual y enviar al siguiente usuario'>Guardar Registro y Enviar</button>
             <?php } ?>
           </div>
         </div>

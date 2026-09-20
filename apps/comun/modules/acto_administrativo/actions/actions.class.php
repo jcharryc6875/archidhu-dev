@@ -2238,16 +2238,26 @@ class acto_administrativoActions extends sfActions
       $snext_user = $this->getRequestParameter('optadd') ? false : true;
       $usuario_creador = ActoAdministrativoPeer::getUserActoByRol($acto_administrativo->getPrimaryKey(),1);
       $usuariocreador_id = $usuario_creador != null ? $usuario_creador->getUsuarioId() : $usuariologuiado;
-      ActoAdministrativoPeer::initUserByCom($acto_administrativo->getPrimaryKey(),$list_users,$usuariocreador_id,$estadoactoadm_id,$snext_user);
+      // UARIV-202605 (ampliación): al crear, el flujo NUNCA avanza automáticamente más allá del
+      // creador (antes saltaba directo al primer rol configurado, p.ej. Gestor, sin pasar por él).
+      // El creador queda como usuario actual de su propia etapa; solo se mueve al siguiente
+      // participante cuando él lo envíe explícitamente desde su bandeja, igual que cualquier otra
+      // transición del flujo.
+      ActoAdministrativoPeer::initUserByCom($acto_administrativo->getPrimaryKey(),$list_users,$usuariocreador_id,$estadoactoadm_id,$isNewActoAdm ? false : $snext_user);
       //*********************************************************************************************************
-      if($snext_user && $isNewActoAdm){
-        $ucom_current = ActoAdministrativoPeer::setNextUserProceso($acto_administrativo->getPrimaryKey());
+      if($isNewActoAdm){
+        $ucom_current = ActoAdministrativoPeer::getUserActoByRol($acto_administrativo->getPrimaryKey(),1);
+        if($ucom_current != null){
+          $ucom_current->setEstaAsignada(1);
+          $ucom_current->setFechaAsigna(date("Y-m-d G:i:s"));
+          $ucom_current->save();
+        }
       }else{
         $ucom_current = ActoAdministrativoPeer::getCurrentUserAsignado($acto_administrativo->getPrimaryKey());
-      }
-      //*********************************************************************************************************
-      if($ucom_current == null){
-          $usuario_creador = ActoAdministrativoPeer::setNextUserProceso($acto_administrativo->getPrimaryKey());
+        //*******************************************************************************************************
+        if($ucom_current == null){
+            $usuario_creador = ActoAdministrativoPeer::setNextUserProceso($acto_administrativo->getPrimaryKey());
+        }
       }
       //*********************************************************************************************************
       if(count($list_interesado)){
