@@ -2101,17 +2101,6 @@ class acto_administrativoActions extends sfActions
         return $this->renderText(json_encode($response_info));
       }
       //*********************************************************************************************************
-      // Valida que la plantilla contenga las etiquetas {{PREFIJO_n}} necesarias para la cantidad de
-      // participantes asignados en cada etapa activa configurada (UARIV-202605 CA-1.1.4)
-      if(!empty($plantillascom_id)){
-        $errores_etiquetas = ActoAdministrativoPeer::validarEtiquetasPlantilla($plantillascom_id,$list_users);
-        if(count($errores_etiquetas)){
-          $this->getResponse()->setContentType('application/json');
-          $response_info = array('status' => 405, 'message' => implode(' ',$errores_etiquetas));
-          return $this->renderText(json_encode($response_info));
-        }
-      }
-      //*********************************************************************************************************
       $acto_administrativo->setDependenciaId($dependencia_id);
       $acto_administrativo->setRegionalId($regional_id);
       $acto_administrativo->setPlantillascomId($plantillascom_id);
