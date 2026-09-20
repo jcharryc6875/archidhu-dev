@@ -3011,6 +3011,53 @@ jQuery(document).ready(function ($) {
 		});
 	}
 
+	// UARIV-202605 (ampliación): modal/pestaña "Configurar Flujo" - arrastrar para reordenar
+	// participantes y resaltar empates de orden (dos o más con el mismo número).
+	function actualizarOrdenFlujo($lista) {
+		var conteos = {};
+		$lista.find('.flujo-order-input').each(function () {
+			var val = jQuery(this).val();
+			if (val !== '') { conteos[val] = (conteos[val] || 0) + 1; }
+		});
+		var hayEmpate = false;
+		$lista.find('.flujo-participant-item').each(function () {
+			var $item = jQuery(this);
+			var val = $item.find('.flujo-order-input').val();
+			var $badge = $item.find('.flujo-order-badge');
+			$badge.text(val !== '' ? val : '-');
+			if (val !== '' && conteos[val] > 1) {
+				$badge.addClass('flujo-order-badge-tie');
+				hayEmpate = true;
+			} else {
+				$badge.removeClass('flujo-order-badge-tie');
+			}
+		});
+		$lista.closest('.tab-pane').find('.flujo-tie-alert').toggle(hayEmpate);
+	}
+
+	jQuery('.flujo-participant-list').each(function () {
+		actualizarOrdenFlujo(jQuery(this));
+	});
+
+	jQuery('body').on('input change', '.flujo-order-input', function () {
+		actualizarOrdenFlujo(jQuery(this).closest('.flujo-participant-list'));
+	});
+
+	if (jQuery.fn.sortable) {
+		jQuery('.flujo-participant-list').sortable({
+			handle: '.flujo-drag-handle',
+			axis: 'y',
+			placeholder: 'flujo-participant-placeholder',
+			update: function () {
+				var $lista = jQuery(this);
+				$lista.find('.flujo-participant-item').each(function (index) {
+					jQuery(this).find('.flujo-order-input').val(index + 1);
+				});
+				actualizarOrdenFlujo($lista);
+			}
+		});
+	}
+
 	// UARIV-202605 (ampliación): manejo de "Aprobar y Enviar" cuando hay varios usuarios con el
 	// mismo orden configurado en el acto administrativo (bifurcación: el usuario elige a cuál enviar).
 	$.handleSingComCheckResponse = function (response_value, actoadministrativo_id) {

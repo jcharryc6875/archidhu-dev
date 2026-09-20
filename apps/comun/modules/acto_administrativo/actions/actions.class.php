@@ -448,6 +448,17 @@ class acto_administrativoActions extends sfActions
       $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado,implode(",",$user_firman),4);
     }
     //**********************************************************************************************************
+    // UARIV-202605 (ampliación): configuración de orden de ejecución y permiso de edición por
+    // participante/etapa, disponible también como pestaña de solo este acto en el detalle.
+    $this->puedeConfigurarFlujo = $this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_CONFIGURAR_FLUJO",$usuariologuiado);
+    if($this->puedeConfigurarFlujo){
+      $this->participantesFlujo = ActoadministrativoUsuarioPeer::getParticipantesConfigurables($acto_administrativo->getPrimaryKey());
+      $this->etapasConfigActo = ActoAdministrativoPeer::getEtapasConfigParaActo($acto_administrativo->getPrimaryKey());
+    }else{
+      $this->participantesFlujo = array();
+      $this->etapasConfigActo = array();
+    }
+    //**********************************************************************************************************
     $this->forward404Unless($this->acto_administrativo);
   }
 

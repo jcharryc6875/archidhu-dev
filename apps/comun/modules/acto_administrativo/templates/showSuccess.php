@@ -14,6 +14,10 @@ use_helper('jQuery','Object');
 ?>
 <script src="<?php echo $path_theme; ?>assets/js/toastr.js"></script>
 <script src="<?php echo $path_theme; ?>/assets/js/dropzone/dropzone.js"></script>
+<?php if($puedeConfigurarFlujo && count($participantesFlujo)){ ?>
+  <script src="<?php echo $path_theme; ?>assets/js/bootstrap-switch.min.js"></script>
+  <script src="<?php echo $path_theme; ?>assets/js/jquery-ui/js/jquery-ui-1.10.3.custom.js"></script>
+<?php } ?>
 <?php  echo object_input_hidden_tag($acto_administrativo, 'getActoadministrativoId'); ?>
 
 <style>
@@ -77,6 +81,9 @@ use_helper('jQuery','Object');
                         <?php } ?>
                         <?php if(count($list_devoluciones)){ ?>
                             <li><a data-toggle="tab" href="#listdevolucionesacto"><span class="glyphicon glyphicon-list"></span>&nbsp;Devoluciones</a></li>
+                        <?php } ?>
+                        <?php if($puedeConfigurarFlujo && count($participantesFlujo)){ ?>
+                            <li><a data-toggle="tab" href="#configurarflujoacto"><span class="glyphicon glyphicon-cog"></span>&nbsp;Flujo</a></li>
                         <?php } ?>
                     </ul>
                     <div class="tab-content">
@@ -303,9 +310,18 @@ use_helper('jQuery','Object');
                         <!-- listado de servicios -->
                         <?php if(count($list_devoluciones)){ ?>
                             <div id="listdevolucionesacto" class="tab-pane">
-                                <?php 
-                                    include_partial('devolucionesInfo',array('list_objects' => $list_devoluciones,'acto_administrativo' => $acto_administrativo)); 
+                                <?php
+                                    include_partial('devolucionesInfo',array('list_objects' => $list_devoluciones,'acto_administrativo' => $acto_administrativo));
                                 ?>
+                            </div>
+                        <?php } ?>
+                        <?php if($puedeConfigurarFlujo && count($participantesFlujo)){ ?>
+                            <div id="configurarflujoacto" class="tab-pane">
+                                <?php include_partial('configurarFlujo', array(
+                                    'acto_administrativo' => $acto_administrativo,
+                                    'participantesFlujo' => $participantesFlujo,
+                                    'etapasConfigActo' => $etapasConfigActo,
+                                )); ?>
                             </div>
                         <?php } ?>
                     </div>

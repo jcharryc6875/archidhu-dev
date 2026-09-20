@@ -1286,3 +1286,116 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
     max-height: 80vh;
     overflow-y: auto;
 }
+
+/* UARIV-202605 (ampliación): modal/pestaña "Configurar Flujo" del acto administrativo */
+#modalConfigurarFlujo .modal-dialog {
+    width: 820px;
+}
+.flujo-subtabs {
+    margin-bottom: 14px;
+}
+.flujo-tie-alert {
+    padding: 8px 12px;
+    font-size: 12px;
+}
+.flujo-participant-list {
+    margin: 0;
+}
+.flujo-participant-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #e6e9ee;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+}
+.flujo-participant-placeholder {
+    border: 2px dashed #b8d0ec;
+    border-radius: 4px;
+    height: 52px;
+    margin-bottom: 8px;
+    background: #f2f7fd;
+}
+.flujo-drag-handle {
+    cursor: move;
+    color: #ccc;
+    flex-shrink: 0;
+}
+.flujo-order-badge {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #edf2f7;
+    color: #4a5568;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.flujo-order-badge-tie {
+    background: #fff3cd;
+    color: #8a6d1d;
+}
+.flujo-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #4a5568;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.flujo-participant-info {
+    flex: 1;
+    min-width: 0;
+}
+.flujo-participant-name {
+    font-size: 13px;
+    color: #2d3748;
+    font-weight: 600;
+}
+.flujo-participant-meta {
+    display: block;
+    font-size: 11px;
+    color: #a0aec0;
+}
+.flujo-role-badge {
+    margin-left: 4px;
+    font-weight: 600;
+}
+.flujo-order-input {
+    width: 56px;
+    flex-shrink: 0;
+}
+.flujo-no-aplica {
+    flex-shrink: 0;
+}
+.flujo-etapa-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f2f5;
+}
+.flujo-etapa-row:last-child {
+    border-bottom: none;
+}
+.flujo-etapa-name {
+    flex: 1;
+    font-size: 13px;
+}
+.flujo-etapa-name small {
+    display: block;
+}
+.flujo-actions {
+    margin-top: 16px;
+    text-align: right;
+}

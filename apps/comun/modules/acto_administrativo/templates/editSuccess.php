@@ -25,6 +25,9 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent');
 <script src="<?php echo $path_theme; ?>assets/js/dropzone/dropzone.js"></script>
 <script src="<?php echo $path_theme; ?>assets/js/bootstrap-switch.min.js"></script>
 <script src="<?php echo $path_theme; ?>assets/js/toastr.js"></script>
+<?php if($puedeConfigurarFlujo && $acto_administrativo->getPrimaryKey() && count($participantesFlujo)){ ?>
+  <script src="<?php echo $path_theme; ?>assets/js/jquery-ui/js/jquery-ui-1.10.3.custom.js"></script>
+<?php } ?>
 
 <div class="row">
   <div class="col-md-12">
@@ -428,6 +431,12 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent');
                 <?php }  ?>
 
                 <a class="btn btn-orange tooltip-primary" data-toggle="tooltip" data-original-title="Previsualizar el documento" target="_blank" href="<?php echo $base_path; ?>/comun.php/acto_administrativo/showpdf?actoadministrativo_id=<?php echo $acto_administrativo->getPrimaryKey()?>" >Vista Previa</a>
+
+                <?php if($puedeConfigurarFlujo && count($participantesFlujo)){ ?>
+                  <button type="button" class="btn btn-default tooltip-primary" data-toggle="modal" data-target="#modalConfigurarFlujo" data-original-title="Configurar el orden de ejecución y la edición del flujo para este acto">
+                    <span class="glyphicon glyphicon-cog"></span>&nbsp;Configurar Flujo
+                  </button>
+                <?php } ?>
             <?php }else{ ?>
               <?php // UARIV-202605 (ampliación): al crear no se puede "enviar" todavía -el creador debe
                     // quedar primero como usuario actual de su propia etapa-, así que solo se ofrece
@@ -444,11 +453,23 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent');
     </div>
 
     <?php if($puedeConfigurarFlujo && $acto_administrativo->getPrimaryKey() && count($participantesFlujo)){ ?>
-      <?php include_partial('configurarFlujo', array(
-        'acto_administrativo' => $acto_administrativo,
-        'participantesFlujo' => $participantesFlujo,
-        'etapasConfigActo' => $etapasConfigActo,
-      )); ?>
+      <div class="modal fade" id="modalConfigurarFlujo" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Configurar Flujo de este Acto Administrativo</h4>
+            </div>
+            <div class="modal-body">
+              <?php include_partial('configurarFlujo', array(
+                'acto_administrativo' => $acto_administrativo,
+                'participantesFlujo' => $participantesFlujo,
+                'etapasConfigActo' => $etapasConfigActo,
+              )); ?>
+            </div>
+          </div>
+        </div>
+      </div>
     <?php } ?>
   </div>
 </div>
