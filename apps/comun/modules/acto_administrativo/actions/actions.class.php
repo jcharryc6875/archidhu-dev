@@ -895,6 +895,15 @@ class acto_administrativoActions extends sfActions
     if($this->getUser()->checkPerm("RADICAR_ACTO_ADMINISTRATIVO_OTRA_DEPENDENCIA", $usuariologuiado)){
       $this->es_otra_dependencia=1;
     }
+    //***************************************************************************************************
+    // UARIV-202605 (ampliación): un acto aún no creado no tiene etapa/participante asignado, así que
+    // no aplica ningún candado de edición ni hay versiones/flujo que mostrar todavía.
+    $this->puedeConfigurarFlujo = $this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_CONFIGURAR_FLUJO",$usuariologuiado);
+    $this->participantesFlujo = array();
+    $this->etapasConfigActo = array();
+    $this->puedeEditarContenido = true;
+    $this->wordVersions = array();
+    $this->ldocument_version = array();
   }
 
   /**
