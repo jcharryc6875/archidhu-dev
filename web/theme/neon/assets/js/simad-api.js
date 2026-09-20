@@ -9,6 +9,16 @@ jQuery(document).ready(function ($) {
 		e.preventDefault();
 	});
 
+	// UARIV-202605 (ampliación): pone en modo solo lectura los CKEditor cuyo textarea
+	// original traiga data-ckeditor-readonly="1" (candado de edición por etapa/documento).
+	if (typeof CKEDITOR !== 'undefined') {
+		CKEDITOR.on('instanceReady', function (evt) {
+			if (jQuery('#' + evt.editor.name).data('ckeditor-readonly')) {
+				evt.editor.setReadOnly(true);
+			}
+		});
+	}
+
 	// Manejar el evento cancel para limpiar la selección
 	jQuery(document).on('click', '.daterangepicker .cancelBtn', function (event) {
 		jQuery('#erecfecha_inicio').val('');

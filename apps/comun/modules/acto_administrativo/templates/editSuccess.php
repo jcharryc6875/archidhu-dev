@@ -231,10 +231,8 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent');
                 <div class="form-group tmpresponse">
                   <!-- Contenido Editor -->
                   <div class="col-sm-11" style="padding-right: 0;">
-                    <?php if($puedeEditarContenido){ ?>
-                      <textarea id="contenido" name="contenido" class="form-control input-sm ckeditor1"><?php echo $acto_administrativo->getContenido(); ?></textarea>
-                    <?php }else{ ?>
-                      <div class="form-control" style="height: auto; min-height: 200px; background-color: #f5f5f5; overflow: auto;"><?php echo $acto_administrativo->getContenido(); ?></div>
+                    <textarea id="contenido" name="contenido" class="form-control input-sm ckeditor1"<?php echo !$puedeEditarContenido ? ' data-ckeditor-readonly="1"' : ''; ?>><?php echo $acto_administrativo->getContenido(); ?></textarea>
+                    <?php if(!$puedeEditarContenido){ ?>
                       <span class="help-block">No tiene permiso para editar el contenido del acto en esta etapa. Solo puede consultarlo.</span>
                     <?php } ?>
                   </div>

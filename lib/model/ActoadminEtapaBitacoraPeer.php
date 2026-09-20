@@ -9,6 +9,7 @@
  */
 class ActoadminEtapaBitacoraPeer extends BaseActoadminEtapaBitacoraPeer
 {
+    const ACCION_CREACION = 'CREACION';
     const ACCION_APROBACION = 'APROBACION';
     const ACCION_RECHAZO = 'RECHAZO';
     const ACCION_DEVOLUCION = 'DEVOLUCION';

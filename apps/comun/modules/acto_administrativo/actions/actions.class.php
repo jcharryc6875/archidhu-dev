@@ -2153,6 +2153,16 @@ class acto_administrativoActions extends sfActions
       //*********************************************************************************************************
       $acto_administrativo->save();
       //*********************************************************************************************************
+      // UARIV-202605 CA-3.1: registra en la bitácora del flujo la creación del acto administrativo
+      // (rol "Proyectó"), si el catálogo tiene una etapa activa configurada para ese rol.
+      if($isNewActoAdm){
+        $etapa_creador = ActoadminEtapaPeer::getEtapaByRol(1);
+        if($etapa_creador != null){
+          ActoadminEtapaBitacoraPeer::addBitacora($acto_administrativo->getPrimaryKey(),$etapa_creador->getPrimaryKey(),
+            $usuariologuiado,1,$estadoactoadm_id,ActoadminEtapaBitacoraPeer::ACCION_CREACION,'Creación del acto administrativo');
+        }
+      }
+      //*********************************************************************************************************
       $is_create_doc = false;
       // UARIV-202605 CA-3.5: no se permite adjuntar el acto como PDF directo sin el permiso "Usar PDF"
       // UARIV-202605 (ampliación): tampoco si el participante actual no puede editar en esta etapa
