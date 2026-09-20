@@ -1279,3 +1279,10 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
     visibility: visible !important;
     background-color: #eef6ff;
 }
+
+/* Permite hacer scroll dentro de pantallas abiertas como modal (OpenModalSIMAD/fancybox iframe)
+   cuando el contenido es mas alto que la ventana del modal, sin depender del scroll del navegador */
+.modal-scroll-body {
+    max-height: 80vh;
+    overflow-y: auto;
+}

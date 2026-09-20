@@ -492,28 +492,47 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 //$ilfirmates_ucargo = $actlist_users['firmas_ucargo'];
                 $ilfirmates_areas = $actlist_users['firmas_areas'];
                 $firmas_tncargos = $actlist_users['firmas_tncargos'];
+                $cantidad_firmantes = count($ilfirmates_pks);
                 //*******************************************************************************************************
-                $usfirma = UsuarioPeer::retrieveByPK($ilfirmates_pks[0]);
-                $urlfmecanica = "";
-                if(trim($this->getFirmaElectronica()) && (!in_array($this->getEstadoactoadministrativoId(),array(1,2,3,4)))){
-                    if(trim($usfirma->getFirmaElectronica())){
-                        $urlfmecanica = trim($usfirma->getFirmaElectronica());
-                    }else{
-                        $urlfmecanica = '';
+                // Datos de CADA firmante (antes solo se usaba el indice [0], perdiendo el resto cuando
+                // habia mas de un firmante). Ver duplicacion del bloque {[FIRMA_MECANICA]}/{[FIRMAS_NOMBRE]}/
+                // {[FIRMAS_CARGOS]} mas abajo, cuando $cantidad_firmantes > 1.
+                $firmantes_datos = array();
+                foreach ($ilfirmates_pks as $idx_firmante => $firmante_pk) {
+                    $usuario_firmante = UsuarioPeer::retrieveByPK($firmante_pk);
+                    $urlfmecanica_firmante = "";
+                    if(trim($this->getFirmaElectronica()) && (!in_array($this->getEstadoactoadministrativoId(),array(1,2,3,4)))){
+                        $urlfmecanica_firmante = trim($usuario_firmante->getFirmaElectronica()) ? trim($usuario_firmante->getFirmaElectronica()) : '';
                     }
-                }else{
-                    $urlfmecanica = '';
+                    $firmantes_datos[] = array(
+                        'FIRMAS_NOMBRE' => isset($ilfirmates_names[$idx_firmante]) ? $ilfirmates_names[$idx_firmante] : '',
+                        'FIRMAS_CARGOS' => isset($firmas_tncargos[$idx_firmante]) ? $firmas_tncargos[$idx_firmante]->getDescripcion() : '',
+                        'FIRMAS_DEPENDENCIA' => isset($ilfirmates_areas[$idx_firmante]) ? $ilfirmates_areas[$idx_firmante] : '',
+                        'FIRMAS_REGIONAL' => $usuario_firmante->getRegional()->getDescripcion(),
+                        'FIRMA_MECANICA' => $urlfmecanica_firmante,
+                    );
                 }
                 //*****************************************************************************************************
                 $tmp_codebar = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR;
                 $codebar_radicado = $tmp_codebar.simad_util::generateCodeBarInFile(trim($this->getRadicadoCompuesto()));
                 $replacement_images['CODEBAR_COM'] = ['path' => $codebar_radicado, 'wcm' => 150, 'hcm' => 40];
                 //*****************************************************************************************************
+                // Si hay mas de un firmante, se envuelve (sin que el usuario tenga que tocar su plantilla)
+                // el bloque de parrafos que contiene las etiquetas de firma con marcadores {[BLOQUE_FIRMAS]}
+                // para poder duplicarlo con TemplateProcessor::cloneBlock() mas abajo. Si la plantilla no
+                // tiene ese bloque (o solo hay un firmante), se conserva el comportamiento historico.
+                $docxOrigenTpl = $inputFileName;
+                $bloqueFirmasInsertado = false;
+                if($cantidad_firmantes > 1){
+                    $docxConMarcadores = $tmp_dir . DIRECTORY_SEPARATOR . 'marcado_'.basename($inputFileName);
+                    $bloqueFirmasInsertado = DocxPlaceholderUtil::insertRepeatingBlockMarkers(
+                        $inputFileName, $docxConMarcadores, 'BLOQUE_FIRMAS',
+                        array('FIRMA_MECANICA','FIRMAS_NOMBRE','FIRMAS_CARGOS','FIRMAS_DEPENDENCIA','FIRMAS_REGIONAL')
+                    );
+                    if($bloqueFirmasInsertado){ $docxOrigenTpl = $docxConMarcadores; }
+                }
+                //*****************************************************************************************************
                 $datos = [
-                    'FIRMAS_NOMBRE' => $ilfirmates_names[0],
-                    'FIRMAS_CARGOS' => $firmas_tncargos[0]->getDescripcion(),
-                    'FIRMAS_DEPENDENCIA' => $ilfirmates_areas[0],
-                    'FIRMAS_REGIONAL' => $usfirma->getRegional()->getDescripcion(),
                     'FECHA_COM' => $this->getFechaCreacion("Y-m-d"),
                     'ASUNTO_COM' => trim($this->getAsunto()),
                     'RADICADO_COM' => trim($this->getRadicadoCompuesto()),
@@ -528,10 +547,18 @@ class ActoAdministrativo extends BaseActoAdministrativo
                     'RADICADOR_AREA' => $actlist_users['dependencia_radicador'],
                 ];
                 //*****************************************************************************************************
-                if(isset($urlfmecanica) && !empty($urlfmecanica)){
-                    $replacement_images['FIRMA_MECANICA'] = ['path' => $urlfmecanica, 'wcm' => 120, 'hcm' => 80];
-                }else{
-                    $datos['FIRMA_MECANICA'] = "";
+                // Un solo firmante (o sin bloque duplicable en la plantilla): comportamiento historico, sin cambios.
+                if($cantidad_firmantes <= 1 || !$bloqueFirmasInsertado){
+                    $primer_firmante = $firmantes_datos[0];
+                    $datos['FIRMAS_NOMBRE'] = $primer_firmante['FIRMAS_NOMBRE'];
+                    $datos['FIRMAS_CARGOS'] = $primer_firmante['FIRMAS_CARGOS'];
+                    $datos['FIRMAS_DEPENDENCIA'] = $primer_firmante['FIRMAS_DEPENDENCIA'];
+                    $datos['FIRMAS_REGIONAL'] = $primer_firmante['FIRMAS_REGIONAL'];
+                    if(!empty($primer_firmante['FIRMA_MECANICA'])){
+                        $replacement_images['FIRMA_MECANICA'] = ['path' => $primer_firmante['FIRMA_MECANICA'], 'wcm' => 120, 'hcm' => 80];
+                    }else{
+                        $datos['FIRMA_MECANICA'] = "";
+                    }
                 }
                 //*****************************************************************************************************
                 if(isset($actlist_users['fmecanica_radicador']) && !empty($actlist_users['fmecanica_radicador'])){
@@ -558,67 +585,146 @@ class ActoAdministrativo extends BaseActoAdministrativo
                     $datos['DESTINO_CIUDAD'] = $com_destino->getUsuario()->getRegional()->getCiudad()->getNombre();
                 }
                 //***********************************INICIA SECCION DE GESTORES****************************************
-                if(isset($actlist_users['gestores_pkusers']) && !empty($actlist_users['gestores_pkusers']))
-                {
-                    if(is_array($actlist_users['gestores_pkusers']) && count($actlist_users['gestores_pkusers']) > 1){
-                        $datos['APROBADOR_NOMBRE'] = implode($actlist_users['gestores_names']);
-                        $datos['APROBADOR_CARGO'] = implode($actlist_users['gestores_tncargos']);
-                        $datos['APROBADOR_AREA'] = implode($actlist_users['gestores_tnareas']);
-                    }else{
-                        $cacto_gestuser = $actlist_users['gestores_uobjs'][0];
-                        if($cacto_gestuser->getEstaAprobado()){
-                            if(!empty($cacto_gestuser->getUsuario()->getFirmaElectronica())){
-                                $replacement_images['APROBADOR_FMECANICA'] = ['path' => trim($cacto_gestuser->getUsuario()->getFirmaElectronica()), 'wcm' => 50, 'hcm' => 30];
-                            }else{
-                                $datos['APROBADOR_FMECANICA'] = '';
-                            }
+                // Datos de CADA gestor/aprobador (antes, con mas de uno, se concatenaban los nombres en una
+                // sola etiqueta con implode() — se perdia el cargo/area/firma individual de cada uno).
+                $gestores_count = isset($actlist_users['gestores_pkusers']) ? count($actlist_users['gestores_pkusers']) : 0;
+                $gestores_filas = array();
+                if($gestores_count > 0){
+                    foreach ($actlist_users['gestores_pkusers'] as $idx_gestor => $pk_gestor) {
+                        $cacto_gestuser = $actlist_users['gestores_uobjs'][$idx_gestor];
+                        $fmecanica_gestor = '';
+                        if($cacto_gestuser->getEstaAprobado() && !empty($cacto_gestuser->getUsuario()->getFirmaElectronica())){
+                            $fmecanica_gestor = trim($cacto_gestuser->getUsuario()->getFirmaElectronica());
                         }
-                        //*********************************************************************************************
-                        $datos['APROBADOR_NOMBRE'] = $actlist_users['gestores_names'][0];
-                        $datos['APROBADOR_CARGO'] = $actlist_users['gestores_tncargos'][0];
-                        $datos['APROBADOR_AREA'] = $actlist_users['gestores_tnareas'][0];
-                    }                    
+                        $gestores_filas[] = array(
+                            'APROBADOR_NOMBRE' => isset($actlist_users['gestores_names'][$idx_gestor]) ? $actlist_users['gestores_names'][$idx_gestor] : '',
+                            'APROBADOR_CARGO' => isset($actlist_users['gestores_tncargos'][$idx_gestor]) ? $actlist_users['gestores_tncargos'][$idx_gestor]->getDescripcion() : '',
+                            'APROBADOR_AREA' => isset($actlist_users['gestores_tnareas'][$idx_gestor]) ? $actlist_users['gestores_tnareas'][$idx_gestor] : '',
+                            'APROBADOR_FMECANICA' => $fmecanica_gestor,
+                        );
+                    }
                 }else{
                     $datos['APROBADOR_NOMBRE'] = '';
                     $datos['APROBADOR_CARGO'] = '';
                     $datos['APROBADOR_AREA'] = '';
                     $datos['APROBADOR_FMECANICA'] = '';
                 }
-                //***********************************INICIA SECCION DE REVISORES**************************************
-                if(isset($actlist_users['revisores_pkusers']) && !empty($actlist_users['revisores_pkusers']))
-                {
-                    if(is_array($actlist_users['revisores_pkusers']) && count($actlist_users['revisores_pkusers']) > 1){
-                        $datos['REVISOR_NOMBRE'] = implode($actlist_users['revisores_names']);
-                        $datos['REVISOR_CARGO'] = implode($actlist_users['revisores_tncargos']);
-                        $datos['REVISOR_AREA'] = implode($actlist_users['revisores_tnareas']);
+                if($gestores_count == 1){
+                    $datos['APROBADOR_NOMBRE'] = $gestores_filas[0]['APROBADOR_NOMBRE'];
+                    $datos['APROBADOR_CARGO'] = $gestores_filas[0]['APROBADOR_CARGO'];
+                    $datos['APROBADOR_AREA'] = $gestores_filas[0]['APROBADOR_AREA'];
+                    if(!empty($gestores_filas[0]['APROBADOR_FMECANICA'])){
+                        $replacement_images['APROBADOR_FMECANICA'] = ['path' => $gestores_filas[0]['APROBADOR_FMECANICA'], 'wcm' => 50, 'hcm' => 30];
                     }else{
-                        $cacto_revuser = $actlist_users['revisores_uobjs'][0];
-                        if($cacto_revuser->getEstaAprobado()){
-                            if(!empty($cacto_revuser->getUsuario()->getFirmaElectronica())){
-                                $replacement_images['REVISOR_FMECANICA'] = ['path' => trim($cacto_revuser->getUsuario()->getFirmaElectronica()), 'wcm' => 50, 'hcm' => 30];
-                            }else{
-                                $datos['REVISOR_FMECANICA'] = '';
-                            }
+                        $datos['APROBADOR_FMECANICA'] = '';
+                    }
+                }
+                //***********************************INICIA SECCION DE REVISORES**************************************
+                $revisores_count = isset($actlist_users['revisores_pkusers']) ? count($actlist_users['revisores_pkusers']) : 0;
+                $revisores_filas = array();
+                if($revisores_count > 0){
+                    foreach ($actlist_users['revisores_pkusers'] as $idx_revisor => $pk_revisor) {
+                        $cacto_revuser = $actlist_users['revisores_uobjs'][$idx_revisor];
+                        $fmecanica_revisor = '';
+                        if($cacto_revuser->getEstaAprobado() && !empty($cacto_revuser->getUsuario()->getFirmaElectronica())){
+                            $fmecanica_revisor = trim($cacto_revuser->getUsuario()->getFirmaElectronica());
                         }
-                        //*********************************************************************************************
-                        $datos['REVISOR_NOMBRE'] = $actlist_users['revisores_names'][0];
-                        $datos['REVISOR_CARGO'] = $actlist_users['revisores_tncargos'][0];
-                        $datos['REVISOR_AREA'] = $actlist_users['revisores_tnareas'][0];
-                    }                    
+                        $revisores_filas[] = array(
+                            'REVISOR_NOMBRE' => isset($actlist_users['revisores_names'][$idx_revisor]) ? $actlist_users['revisores_names'][$idx_revisor] : '',
+                            'REVISOR_CARGO' => isset($actlist_users['revisores_tncargos'][$idx_revisor]) ? $actlist_users['revisores_tncargos'][$idx_revisor]->getDescripcion() : '',
+                            'REVISOR_AREA' => isset($actlist_users['revisores_tnareas'][$idx_revisor]) ? $actlist_users['revisores_tnareas'][$idx_revisor] : '',
+                            'REVISOR_FMECANICA' => $fmecanica_revisor,
+                        );
+                    }
                 }else{
                     $datos['REVISOR_NOMBRE'] = '';
                     $datos['REVISOR_CARGO'] = '';
                     $datos['REVISOR_AREA'] = '';
                     $datos['REVISOR_FMECANICA'] = '';
                 }
+                if($revisores_count == 1){
+                    $datos['REVISOR_NOMBRE'] = $revisores_filas[0]['REVISOR_NOMBRE'];
+                    $datos['REVISOR_CARGO'] = $revisores_filas[0]['REVISOR_CARGO'];
+                    $datos['REVISOR_AREA'] = $revisores_filas[0]['REVISOR_AREA'];
+                    if(!empty($revisores_filas[0]['REVISOR_FMECANICA'])){
+                        $replacement_images['REVISOR_FMECANICA'] = ['path' => $revisores_filas[0]['REVISOR_FMECANICA'], 'wcm' => 50, 'hcm' => 30];
+                    }else{
+                        $datos['REVISOR_FMECANICA'] = '';
+                    }
+                }
                 //*******************************************************************************************************
                 $docxTpl = $tmp_dir . DIRECTORY_SEPARATOR . 'tpl_'.basename($inputFileName);
-                DocxPlaceholderUtil::convertCurlyPlaceholdersToPhpWordTpl($inputFileName, $docxTpl);
+                DocxPlaceholderUtil::convertCurlyPlaceholdersToPhpWordTpl($docxOrigenTpl, $docxTpl);
                 //*******************************************************************************************************
                 $tpl = new TemplateProcessor($docxTpl);
                 //*******************************************************************************************************
                 foreach ($datos as $key => $value) {
                     $tpl->setValue($key,  $value);
+                }
+                //*******************************************************************************************************
+                // Duplicar el bloque de firmantes (2 o mas) que se marco mas arriba con {[BLOQUE_FIRMAS]}
+                if($cantidad_firmantes > 1 && $bloqueFirmasInsertado){
+                    $tpl->cloneBlock('BLOQUE_FIRMAS', $cantidad_firmantes, true, true);
+                    foreach ($firmantes_datos as $idx_firmante => $fila_firmante) {
+                        $numero_firmante = $idx_firmante + 1;
+                        foreach (array('FIRMAS_NOMBRE','FIRMAS_CARGOS','FIRMAS_DEPENDENCIA','FIRMAS_REGIONAL') as $campo_firmante) {
+                            $tpl->setValue($campo_firmante.'#'.$numero_firmante, $fila_firmante[$campo_firmante]);
+                        }
+                        if(!empty($fila_firmante['FIRMA_MECANICA'])){
+                            $replacement_images['FIRMA_MECANICA#'.$numero_firmante] = ['path' => $fila_firmante['FIRMA_MECANICA'], 'wcm' => 120, 'hcm' => 80];
+                        }else{
+                            $tpl->setValue('FIRMA_MECANICA#'.$numero_firmante, '');
+                        }
+                    }
+                }
+                //*******************************************************************************************************
+                // Duplicar la fila de la tabla de gestores/aprobadores (2 o mas) — no requiere marcadores,
+                // PhpWord ubica los limites de la fila (<w:tr>...</w:tr>) automaticamente a partir de la etiqueta.
+                if($gestores_count > 1){
+                    try {
+                        $tpl->cloneRow('APROBADOR_NOMBRE', $gestores_count);
+                        foreach ($gestores_filas as $idx_gestor => $fila_gestor) {
+                            $numero_gestor = $idx_gestor + 1;
+                            $tpl->setValue('APROBADOR_NOMBRE#'.$numero_gestor, $fila_gestor['APROBADOR_NOMBRE']);
+                            $tpl->setValue('APROBADOR_CARGO#'.$numero_gestor, $fila_gestor['APROBADOR_CARGO']);
+                            $tpl->setValue('APROBADOR_AREA#'.$numero_gestor, $fila_gestor['APROBADOR_AREA']);
+                            if(!empty($fila_gestor['APROBADOR_FMECANICA'])){
+                                $replacement_images['APROBADOR_FMECANICA#'.$numero_gestor] = ['path' => $fila_gestor['APROBADOR_FMECANICA'], 'wcm' => 50, 'hcm' => 30];
+                            }else{
+                                $tpl->setValue('APROBADOR_FMECANICA#'.$numero_gestor, '');
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        // La plantilla no tiene la etiqueta APROBADOR_NOMBRE dentro de una fila de tabla:
+                        // no se puede duplicar automaticamente, se conserva solo el primer gestor.
+                        $tpl->setValue('APROBADOR_NOMBRE', $gestores_filas[0]['APROBADOR_NOMBRE']);
+                        $tpl->setValue('APROBADOR_CARGO', $gestores_filas[0]['APROBADOR_CARGO']);
+                        $tpl->setValue('APROBADOR_AREA', $gestores_filas[0]['APROBADOR_AREA']);
+                    }
+                }
+                //*******************************************************************************************************
+                // Duplicar la fila de la tabla de revisores (2 o mas), mismo mecanismo que gestores/aprobadores.
+                if($revisores_count > 1){
+                    try {
+                        $tpl->cloneRow('REVISOR_NOMBRE', $revisores_count);
+                        foreach ($revisores_filas as $idx_revisor => $fila_revisor) {
+                            $numero_revisor = $idx_revisor + 1;
+                            $tpl->setValue('REVISOR_NOMBRE#'.$numero_revisor, $fila_revisor['REVISOR_NOMBRE']);
+                            $tpl->setValue('REVISOR_CARGO#'.$numero_revisor, $fila_revisor['REVISOR_CARGO']);
+                            $tpl->setValue('REVISOR_AREA#'.$numero_revisor, $fila_revisor['REVISOR_AREA']);
+                            if(!empty($fila_revisor['REVISOR_FMECANICA'])){
+                                $replacement_images['REVISOR_FMECANICA#'.$numero_revisor] = ['path' => $fila_revisor['REVISOR_FMECANICA'], 'wcm' => 50, 'hcm' => 30];
+                            }else{
+                                $tpl->setValue('REVISOR_FMECANICA#'.$numero_revisor, '');
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        // La plantilla no tiene la etiqueta REVISOR_NOMBRE dentro de una fila de tabla:
+                        // no se puede duplicar automaticamente, se conserva solo el primer revisor.
+                        $tpl->setValue('REVISOR_NOMBRE', $revisores_filas[0]['REVISOR_NOMBRE']);
+                        $tpl->setValue('REVISOR_CARGO', $revisores_filas[0]['REVISOR_CARGO']);
+                        $tpl->setValue('REVISOR_AREA', $revisores_filas[0]['REVISOR_AREA']);
+                    }
                 }
                 //*******************************************************************************************************
                 $pathDefault = simad_paths_app::readConfigFileApp();

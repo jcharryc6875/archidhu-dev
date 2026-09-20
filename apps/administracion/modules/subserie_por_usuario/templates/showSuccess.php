@@ -16,7 +16,7 @@ $base_path = sfConfig::get('base_simad');
 		</div>
 
       	<!-- Contenedor Contenido Formulario-->
-		<div class="panel-body">
+		<div class="panel-body modal-scroll-body">
             <!-- Opciones Detalle -->
 			<div class="col-sm-12 col-md-12">
 				<div class="form-group">  

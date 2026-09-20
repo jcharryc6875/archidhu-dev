@@ -14,10 +14,10 @@ use_helper('Object','jQuery');
         </div>
       </div>
       <!-- Contenedor Contenido Formulario-->
-      <div class="panel-body">
-      
-        <?php 
-        echo form_tag('subserie_por_usuario/update', array('name'=>'form1','role' => 'form', 'class' => 'form-horizontal form-groups-bordered validate'));        
+      <div class="panel-body modal-scroll-body">
+
+        <?php
+        echo form_tag('subserie_por_usuario/update', array('name'=>'form1','role' => 'form', 'class' => 'form-horizontal form-groups-bordered validate'));
         echo object_input_hidden_tag($subserie_por_usuario, 'getSubserieporusuarioId');
         ?>
        
