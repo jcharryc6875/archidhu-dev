@@ -1356,15 +1356,12 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_interesados = array($interesado);
                 //******************************************************************************
                 try {
-                    $error_list = false;
                     $acto_administrativo = ActoAdministrativoPeer::addActoAdministrativo($params);
                     if ($acto_administrativo == null) {
                         $row->setEstadoMigracion('ERROR RADICANDO');
                         $row->setUsuarioId($usuario_origen->getPrimaryKey());
                         $row->setMensajeInfo("ERROR RADICANDO ACTO ADMINISTRATIVO");
                         $row->save();
-                        //**********************************************************************
-                        $error_list = true;
                         continue;
                     }
                     //**************************************************************************
@@ -1540,10 +1537,15 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 }
             }
             //**********************************************************************************
-            if ($error_list) {
-                return array('status' => 200, 'message' => 'Se radicaron todos los documentos, por favor verifique la informaci&oacute;n');
-            } else {
+            $cErrores = new Criteria();
+            $cErrores->add(ComMigmasivoPeer::COMLOTE_ID, $parameters['comIdLote']);
+            $cErrores->add(ComMigmasivoPeer::ESTADO_MIGRACION, 'ERROR%', Criteria::LIKE);
+            $totalErrores = ComMigmasivoPeer::doCount($cErrores);
+            //**********************************************************************************
+            if ($totalErrores > 0) {
                 return array('status' => 300, 'message' => 'Algunos registros no se pudieron radicar, por favor verifique la informaci&oacute;n');
+            } else {
+                return array('status' => 200, 'message' => 'Se radicaron todos los documentos, por favor verifique la informaci&oacute;n');
             }
         } catch (\PropelException $ex) {
             return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
