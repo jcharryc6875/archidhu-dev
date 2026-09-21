@@ -873,6 +873,41 @@ jQuery(document).ready(function ($) {
 		}
 	};
 
+	$.batchMigResultAsyncActoAdm = function (data, exitosos, errores) {
+		try {
+			var response = JSON.parse(data);
+			if (response.status == 200) {
+				toastr.success(response.message);
+
+				jQuery.ajax({
+					url: '/comun.php/acto_administrativo/loadListBatchMig',
+					method: 'POST',
+					data: jQuery.param({ comIdLote: jQuery("#comIdLote").val() }),
+					contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+					cache: false,
+					processData: false,
+					error: function (response) {
+						toastr.error("Opps, ocurrio un error al cargar la informacion del lote de radicacion masiva, por favor verifique la informacion en el modulo de actos administrativos!");
+					},
+					success: function (response) {
+						$("#resultmigdata").html(response);
+						$.mostrarResultadoFinal(exitosos, errores);
+						$("#resultmigdata").show();
+						$(".next").removeAttr('disabled').trigger('click');
+					}
+				});
+
+			} else {
+				toastr.error(response.message);
+				$(".next").addClass("disabled");
+			}
+		} catch (err) {
+			$(".next").addClass("disabled");
+			$.CloseLoadingStructData();
+			toastr.error(err.message);
+		}
+	};
+
 	$.batchMigResultActoAdm = function (data) {
 		try {
 			var response = JSON.parse(data);
@@ -1875,6 +1910,107 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
+	// radicar masivas Actos Administrativos (registro a registro, con barra de progreso)
+	// Evento botón radicar masivas Actos Administrativos
+	jQuery('body').on('click', '#btn_radicar_masivas_actoadm', async function (event) {
+		event.preventDefault();
+		var validator = $(this).closest('form').valid();
+		var response_ilist = null;
+		var botoneraMigration = $("#hide_buttons_com").html();
+		if (validator) {
+			try {
+				$.UpdateProgressMigMasivo(0, 1, 'Obteniendo registros desde el servidor...');
+
+				const response = await $.ajax({
+					url: '/comun.php/acto_administrativo/getMigrationsByLote',
+					method: 'POST',
+					data: $(this.form.elements).serialize(),
+					contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+					cache: false,
+					processData: true,
+					beforeSend: function () {
+						$.LoadingStructData();
+						$.CrearProgresoRadMasivo("contenedor_tabla_lote");
+						$('#hide_buttons_com').hide();
+						$("#hide_buttons_com").empty();
+					},
+					success: function (response) {
+						if (response.status == 200) {
+							response_ilist = response.batchs_ilist;
+						}
+					},
+					error: function (response) {
+						$.CloseLoadingStructData();
+						toastr.error("Error Interno del Servidor!");
+						$("#hide_buttons_com").html(botoneraMigration);
+						$('#hide_buttons_com').show();
+					}
+				});
+
+				if (response.status == 200) {
+					try {
+						if (Array.isArray(response_ilist) && response_ilist.length > 0) {
+							$.CloseLoadingStructData();
+						}
+
+						$.UpdateProgressMigMasivo(0, response_ilist.length, `Se encontraron ${response_ilist.length} registros. Iniciando procesamiento...`);
+
+						let procesados = 0;
+						let exitosos = 0;
+						let errores = [];
+						// Iterar sobre el array y esperar cada radicación
+						for (const item of response_ilist) {
+							const identificador = item.pkobject_id || `Registro ${item.pkobject_id}`;
+							$.UpdateProgressMigMasivo(procesados, response_ilist.length, `Procesando: <strong>${identificador}</strong>`, `⏳ Procesando: ${identificador}`);
+							let resp_process = await $.RadicadorMigMasivaByOneActoAdm(item.pkobject_id, item.comIdLote, item.comfirma_digital, item.docs_source);
+
+							if (resp_process === null) {
+								$.UpdateProgressMigMasivo(procesados + 1, response_ilist.length, `Error en: <strong>${identificador}</strong>`, `✗ Error: ${identificador}`);
+								errores.push({
+									registro: identificador,
+									error: 'Error desconocido'
+								});
+							} else if (resp_process.status == 200) {
+								exitosos++;
+								$.UpdateProgressMigMasivo(procesados + 1, response_ilist.length, `Completado: <strong>${identificador}</strong>`, `✓ Completado: ${identificador}`);
+							} else {
+								$.UpdateProgressMigMasivo(procesados + 1, response_ilist.length, `Error en: <strong>${identificador}</strong>`, `✗ Error: ${resp_process.message}`);
+								errores.push({
+									registro: identificador,
+									error: resp_process.message || 'Error desconocido'
+								});
+							}
+
+							procesados++;
+						}
+
+						$.batchMigResultAsyncActoAdm('{"status":200,"message":"El proceso de radicacion termino"}', exitosos, errores);
+
+					} catch (error) {
+						toastr.error("Error procesando los elementos!" + error);
+						$("#hide_buttons_com").html(botoneraMigration);
+						$('#hide_buttons_com').show();
+					}
+					finally {
+						$.CloseLoadingStructData();
+					}
+				}
+				else {
+					$.CloseLoadingStructData();  //cerrar la cortina
+					toastr.error("Error Interno del Servidor!," + response.message);
+					$('#progresoMigMasivo').remove();
+					$("#hide_buttons_com").html(botoneraMigration);
+					$('#hide_buttons_com').show();
+				}
+			} catch (error) {
+				toastr.error("Error Interno del Servidor!," + error);
+			}
+			finally {
+				$.CloseLoadingStructData();
+			}
+		}
+	});
+
 	//function mostrarResultadoFinal(exitosos, errores) {
 	$.mostrarResultadoFinal = function (exitosos, errores) {
 		const $resultado = $('#resultadoFinal');
@@ -1910,6 +2046,23 @@ jQuery(document).ready(function ($) {
 		try {
 			const response = await $.ajax({
 				url: '/enviada.php/com_enviada/radicarMigMasivoByOne',
+				method: 'POST',
+				data: { idmigmasivo: pkobject_id, comIdLote: batchid, comsign_digital: comsign, docs_source: docs_source },
+				contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+				cache: false,
+				processData: true
+			});
+
+			return response;
+		} catch (error) {
+			return null;
+		}
+	};
+
+	$.RadicadorMigMasivaByOneActoAdm = async function (pkobject_id, batchid, comsign, docs_source) {
+		try {
+			const response = await $.ajax({
+				url: '/comun.php/acto_administrativo/radicarMigMasivoByOne',
 				method: 'POST',
 				data: { idmigmasivo: pkobject_id, comIdLote: batchid, comsign_digital: comsign, docs_source: docs_source },
 				contentType: 'application/x-www-form-urlencoded; charset=UTF-8',

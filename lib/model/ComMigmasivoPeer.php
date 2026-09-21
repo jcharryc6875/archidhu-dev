@@ -1124,6 +1124,8 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
         try {
             if ($modulo_id == ModulesEnable::ComEnviada) {
                 return ComMigmasivoPeer::commitNewComEnviadaByOneAsync($migmasiva_id, $lote_id, $firma_digital, $docs_source);
+            } elseif ($modulo_id == ModulesEnable::ActosAdministrativos) {
+                return ComMigmasivoPeer::commitNewActoAdministrativoByOneAsync($migmasiva_id, $lote_id, $docs_source, $firma_digital);
             } else {
                 return array('status' => 400, 'message' => 'Error el modulo de destino de la radicación es obligatorio');
             }
@@ -1172,379 +1174,19 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $dependencia_cod = array();
             $lexpedientes = array();
             $lcomtipo_servicio = array();
-            $lexptransfer = array();
-            $lcomservicios = array();
             foreach ($blotes as $row) {
-                $params = array();
-                $estado_documento = 1;
-                //******************************************************************************
-                //Si la plantilla trae numero de resolucion, se conserva tal cual y el acto
-                //queda radicado de inmediato (estado 6), sin generar un consecutivo nuevo. La
-                //fecha de resolucion solo aplica junto con el numero; si el numero no viene, la
-                //fecha se descarta (no tiene sentido sin el numero al que pertenece).
-                $numero_resolucion_externo = trim($row->getNumeroResolucion()) ?: null;
-                if (!empty($numero_resolucion_externo)) {
-                    $estado_documento = 6;
-                    if (empty(trim($row->getFechaResolucion()))) {
-                        $row->setEstadoMigracion('ERROR_RADICANDO');
-                        $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                        $row->setMensajeInfo("FECHA_RESOLUCION ES OBLIGATORIA CUANDO SE INFORMA NUMERO DE RADICADO (RESOLUCION)");
-                        $row->save();
-                        continue;
-                    }
-                }
-                //******************************************************************************
-                $file_source = $outfile_zip . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
-                $file_target = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
-                if (!file_exists($file_source)) {
-                    continue;
-                }
-                //******************************************************************************
-                $ciudad_id = in_array($row->getPuntoRadicacion(), $ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(), false);
-                if ($ciudad_id != null) {
-                    $ciudad_codigo[$ciudad_id] = $row->getPuntoRadicacion();
-                }
-                //******************************************************************************
-                $dependencia = in_array($row->getCodDependencia(), $dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
-                $dependencia_id = is_int($dependencia) ? $dependencia : $dependencia->getPrimaryKey();
-                if ($dependencia_id != null) {
-                    $dependencia_cod[$dependencia_id] = $row->getCodDependencia();
-                }
-                //******************************************************************************
-                $unidaddocumental_id = null;
-                if (in_array($row->getNumeroExpediente(), $lexpedientes)) {
-                    $unidaddocumental_id = array_search($row->getNumeroExpediente(), $lexpedientes);
-                } else {
-                    $unidad_documental = UnidadDocumentalPeer::getExpedienteByCodBarras($row->getNumeroExpediente());
-                    $unidaddocumental_id = $unidad_documental != null ? $unidad_documental->getPrimaryKey() : null;
-                    $lexpedientes[$unidaddocumental_id] = $row->getNumeroExpediente();
-                }
-                //******************************************************************************
-                $tipodocumental_id = null;
-                if (trim($row->getCodTipoDoc())) {
-                    $tipo_documental = TipoDocumentalPeer::getTipoDocByCodigo(trim($row->getCodTipoDoc()));
-                    $tipodocumental_id = $tipo_documental != null ? $tipo_documental->getPrimaryKey() : null;
-                }
-                //******************************************************************************
-                $subserie_id = null;
-                if (trim($row->getSubserieCodigo())) {
-                    $subserie = SubseriePeer::getSubserieByCodigo(trim($row->getSubserieCodigo()));
-                    $subserie_id = $subserie != null ? $subserie->getPrimaryKey() : null;
-                }
-                //******************************************************************************
-                //No permitir radicar dos veces el mismo numero de resolucion en la subserie
-                if (!empty($numero_resolucion_externo) && ActoAdministrativoPeer::isExistActoByNumResolucion($numero_resolucion_externo, $subserie_id)) {
-                    $row->setEstadoMigracion('ERROR_RADICANDO');
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("NUMERO RESOLUCION YA EXISTE EN LA SUBSERIE");
-                    $row->save();
-                    continue;
-                }
-                //******************************************************************************
-                $plantillacom_id = null;
-                if (trim($row->getTipoDocumento())) {
-                    $plantilla_com = PlantillasComPeer::getTplByDescripcionModulo(trim($row->getTipoDocumento()), ModulesEnable::ActosAdministrativos);
-                    $plantillacom_id = $plantilla_com != null ? $plantilla_com->getPrimaryKey() : null;
-                }
-                //******************************************************************************
-                $usuariodestino_id = null;
-                $ucargodestino_id = null;
-                if (trim($row->getNuidDestinatario())) {
-                    $ucargo_destino = CargoUsuarioPeer::getCargoUsuarioByNuidUser(trim($row->getNuidDestinatario()), ModulesEnable::ActosAdministrativos);
-                    $ucargodestino_id = $ucargo_destino != null ? $ucargo_destino->getPrimaryKey() : null;
-                    $usuariodestino_id = $ucargo_destino != null ? $ucargo_destino->getUsuarioId() : null;
-                }
-                //******************************************************************************
-                $prioridadcom_id = null;
-                if (trim($row->getPrioridadCom())) {
-                    $prioridad_com = PrioridadComPeer::getPrioridadComByText(trim($row->getPrioridadCom()), true);
-                    $prioridadcom_id = $prioridad_com != null ? $prioridad_com->getPrimaryKey() : null;
-                }
-                //******************************************************************************
-                $tipo_servicio = in_array($row->getTipoNotificacion(), $lcomtipo_servicio) ? array_search($row->getTipoNotificacion(), $lcomtipo_servicio) : TipoServicioPeer::getTipoServicioObjByName($row->getTipoNotificacion());
-                $tiposervicio_id = null;
-                $tipo_envio = null;
-                $needleIntegration = false;
-                if ($tipo_servicio != null) {
-                    $tipo_servicio = !is_numeric($tipo_servicio) ? $tipo_servicio : TipoServicioPeer::retrieveByPK($tipo_servicio);
-                    $tiposervicio_id = $tipo_servicio->getPrimaryKey();
-                    $lcomtipo_servicio[$tiposervicio_id] = $row->getTipoNotificacion();
-                    $tipo_envio = $tipo_servicio->getTipoEnvio();
-                    $needleIntegration = $tipo_servicio->getInitIntegracion() ? true : false;
-                }
-                //******************************************************************************
-                /*$marconormativo_id = null;
-                if(trim($row->getMarcoNormativo())){//validar si el tipo servicio inicia integracion, de se asi este marco normativo debe ser obligatorio
-                    $marco_normativo = MarcoNormativoPeer::getMarcoNormativoByName(trim($row->getPrioridadCom()),true);
-                    $marconormativo_id = $marco_normativo != null ? $marco_normativo->getPrimaryKey() : null;
-                }*/
-                //******************************************************************************
-                $params['regional_id'] = $usuario_origen->getRegionalId();
-                $params['dependencia_id'] = $dependencia_id;
-                $params['estadoactoadministrativo_id'] = $estado_documento;
-                $params['ciudad_id'] = $usuario_origen->getRegional()->getCiudadId();
-                $params['periodo_id'] = date("Y");
-                $params['asunto'] = trim($row->getAsuntoCom());
-                $params['folios'] = trim($row->getNumFolios()) ?: 0;
-                $params['observaciones'] =  trim($row->getObservacionesCom()) ? trim($row->getObservacionesCom()) : "Radicación masiva con archivo plano de excel";
-                $params['firma_electronica'] = $parameters['firma_digital'];
-                //$params['firmado_digital'] = $parameters['firma_digital'];//validar porque si se firma digital debe quedar en 0 de lo contrario en 3
-                $params['firmado_digital'] = 0;
-                $params['archivo_digit'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
-                $params['use_membrete'] = 1;
-                $params['tipo_envio'] = $tipo_envio;
-                $params['tipo_masivo'] = 1;
-                $params['expediente_id'] = $unidaddocumental_id;
-                $params['plantillacom_id'] = $plantillacom_id;
-                $params['subserie_id'] = $subserie_id;
-                $params['prioridadcom_id'] = $prioridadcom_id;
-                $params['fecha_aprobacion'] = date("Y-m-d G:i:s");
-                $params['usuariodestino_id'] = $usuariodestino_id;
-                $params['ucargodestino_id'] = $ucargodestino_id;
-                $params['tipodocumental_id'] = $tipodocumental_id;
-                $params['codigo_tipodocumental'] = trim($row->getCodTipoDoc());
-                $params['tipoprocesocom_id'] = 1;
-                $params['marco_normativo'] = trim($row->getMarcoNormativo());;
-                $params['id_suborigen'] = trim($row->getIdSuborigen());
-                $params['numero_resolucion'] = $numero_resolucion_externo;
-                //******************************************************************************
-                //La fecha solo se toma en cuenta junto con el numero de resolucion externo.
-                if (!empty($numero_resolucion_externo) && trim($row->getFechaResolucion())) {
-                    try {
-                        $date = new DateTime(trim($row->getFechaResolucion()));
-                        $params['fecha_resolucion'] = $date->format('Y-m-d');
-                    } catch (Exception $ex) {
-                        $params['fecha_resolucion'] = date("Y-m-d");
-                    }
-                }
-                //******************************************************************************
-                $params['tipo_documental_cod'] = trim($row->getCodTipoDoc()) ?: null;
-                $params['UrlFileWord'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
-                $params['IsCreateWord'] = true;
-                $params['tipo_integracion'] = "MASIVOEXCEL";
-                //******************************************************************************
-                $firmas_nuids = preg_split("/[;]+/", trim($row->getNuidsFirmas()), -1, PREG_SPLIT_NO_EMPTY);
-                //******************************************************************************
-                //Validaciones condicionales del documento: NUID interesado obligatorio si se va a
-                //crear el interesado, NUIDS_FIRMAS obligatorio si se requiere firma digital certificada.
-                if ($row->getCrearInteresado() && empty(trim($row->getNuidInteresado()))) {
-                    $row->setEstadoMigracion('ERROR_RADICANDO');
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("NUID_INTERESADO ES OBLIGATORIO CUANDO CREAR INTERESADO = SI");
-                    $row->save();
-                    continue;
-                }
-                if ($row->getFirmaDigital() && empty($firmas_nuids)) {
-                    $row->setEstadoMigracion('ERROR_RADICANDO');
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("NUIDS_FIRMAS ES OBLIGATORIO CUANDO SE REQUIERE FIRMA DIGITAL CERTIFICADA");
-                    $row->save();
-                    continue;
-                }
-                //******************************************************************************
-                //Un interesado por fila; CREAR_INTERESADO define si se busca solo por NUID
-                //(y se crea de no existir) o por nombre/apellidos (y se crea de no existir)
-                $interesado = InteresadosPeer::findOrCreateInteresado(
-                    (bool) $row->getCrearInteresado(),
-                    trim($row->getTipodocInteresado()),
-                    trim($row->getNuidInteresado()),
-                    trim($row->getPnombreInteresado()),
-                    trim($row->getSnombreInteresado()),
-                    trim($row->getPapellidoInteresado()),
-                    trim($row->getSapellidoInteresado()),
-                    trim($row->getCiudadInteresado()),
-                    trim($row->getEmailInteresado()),
-                    $usuario_origen->getPrimaryKey()
+                ComMigmasivoPeer::processActoAdministrativoRow(
+                    $row,
+                    $usuario_origen,
+                    $ucargo_origen,
+                    $outfile_zip,
+                    $filedir_target,
+                    $parameters['firma_digital'],
+                    $ciudad_codigo,
+                    $dependencia_cod,
+                    $lexpedientes,
+                    $lcomtipo_servicio
                 );
-                if ($interesado == null) {
-                    $row->setEstadoMigracion('ERROR RADICANDO');
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR CON EL INTERESADO");
-                    $row->save();
-                    continue;
-                }
-                $coll_interesados = array($interesado);
-                //******************************************************************************
-                try {
-                    $acto_administrativo = ActoAdministrativoPeer::addActoAdministrativo($params);
-                    if ($acto_administrativo == null) {
-                        $row->setEstadoMigracion('ERROR RADICANDO');
-                        $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                        $row->setMensajeInfo("ERROR RADICANDO ACTO ADMINISTRATIVO");
-                        $row->save();
-                        continue;
-                    }
-                    //**************************************************************************
-                    $coll_intersadosPk = array();
-                    $email_interesado = array();
-                    foreach ($coll_interesados as $interesado) {
-                        $isAddInteresadoCom = ActoadministraInteresadoPeer::addNewInteresadoByComId($acto_administrativo->getPrimaryKey(), $interesado->getPrimaryKey());
-                        if ($isAddInteresadoCom) {
-                            $coll_intersadosPk[] = $interesado->getPrimaryKey();
-                            if (!empty(trim($interesado->getEmail()))) {
-                                if (!in_array(trim($interesado->getEmail()), $email_interesado))
-                                    $email_interesado[] = trim($interesado->getEmail());
-                            }
-                        }
-                    }
-                    //**************************************************************************
-                    //proyecta
-                    $info_upryecta['pkcom_id'] = $acto_administrativo->getPrimaryKey();
-                    $info_upryecta['esta_asignada'] = 0;
-                    $info_upryecta['estadocom_id'] = $estado_documento;
-                    $info_upryecta['usuario_id'] = $usuariologuiado;
-                    $info_upryecta['rol_id'] = 1;
-                    $info_upryecta['cusuario_id'] = $ucargo_origen->getPrimaryKey();
-                    $info_upryecta['tipoprocesocom_id'] = null;
-                    $info_upryecta['fecha_aprobacion'] = date("Y-m-d G:i:s");
-                    $info_upryecta['fecha_lectura'] = date("Y-m-d G:i:s");
-                    $info_upryecta['esta_aprobado'] = 1;
-                    ActoAdministrativoPeer::addUserByActo($info_upryecta);
-                    //**************************************************************************
-                    //radica
-                    $info_uradica['pkcom_id'] = $acto_administrativo->getPrimaryKey();
-                    $info_uradica['esta_asignada'] = 0;
-                    $info_uradica['estadocom_id'] = $estado_documento;
-                    $info_uradica['usuario_id'] = $usuariologuiado;
-                    $info_uradica['rol_id'] = 5;
-                    $info_uradica['cusuario_id'] = $ucargo_origen->getPrimaryKey();
-                    $info_uradica['tipoprocesocom_id'] = 1;
-                    $info_uradica['fecha_aprobacion'] = date("Y-m-d G:i:s");
-                    $info_uradica['fecha_lectura'] = date("Y-m-d G:i:s");
-                    $info_uradica['esta_aprobado'] = 1;
-                    ActoAdministrativoPeer::addUserByActo($info_uradica);
-                    //**************************************************************************
-                    $cuser_firmas = CargoUsuarioPeer::getCaUsuariosByNuidsUsers($firmas_nuids);
-                    $radicar_automativo = true;
-                    foreach ($cuser_firmas as $cuser) {
-                        //firmantes
-                        $info_ufirma['pkcom_id'] = $acto_administrativo->getPrimaryKey();
-                        $info_ufirma['esta_asignada'] = 0;
-                        $info_ufirma['estadocom_id'] = $estado_documento;
-                        $info_ufirma['usuario_id'] = $cuser->getUsuarioId();
-                        $info_ufirma['rol_id'] = 2;
-                        $info_ufirma['cusuario_id'] = $cuser->getPrimaryKey();
-                        $info_ufirma['tipoprocesocom_id'] = 5;
-                        $info_ufirma['fecha_aprobacion'] = date("Y-m-d G:i:s");
-                        $info_ufirma['fecha_lectura'] = date("Y-m-d G:i:s");
-                        $info_ufirma['esta_aprobado'] = 0;
-                        ActoAdministrativoPeer::addUserByActo($info_ufirma);
-                        //**************************************************************************
-                        if (empty($cuser->getUsuario()->getFirmaDesatendida())) {
-                            $radicar_automativo = false;
-                        }
-                    }
-                    //******************************************************************************
-                    if (trim($row->getNuidDestinatario())) {
-                        //destinatario
-                        $info_udestino['pkcom_id'] = $acto_administrativo->getPrimaryKey();
-                        $info_udestino['esta_asignada'] = 1;
-                        $info_udestino['estadocom_id'] = 6;
-                        $info_udestino['usuario_id'] = $usuariodestino_id;
-                        $info_udestino['rol_id'] = 2;
-                        $info_udestino['cusuario_id'] = $ucargodestino_id;
-                        $info_udestino['tipoprocesocom_id'] = 6;
-                        $info_udestino['fecha_aprobacion'] = date("Y-m-d G:i:s");
-                        $info_udestino['fecha_lectura'] = date("Y-m-d G:i:s");
-                        $info_udestino['esta_aprobado'] = 0;
-                        ActoAdministrativoPeer::addUserByActo($info_udestino);
-                    }
-                    //******************************************************************************
-                    if ($radicar_automativo && empty($numero_resolucion_externo)) {
-                        $estado_documento = 6;
-                        $numero_resolucion = $acto_administrativo->getRadicadoFormat();
-                        $acto_administrativo->setEstadoactoadministrativoId($estado_documento);
-                        $acto_administrativo->save();
-                    }
-                    //**************************************************************************
-                    ActoAdministrativoPeer::updateEstadosObj($acto_administrativo->getPrimaryKey(), $estado_documento);
-                    ActoAdministrativoPeer::updateAproObjAllProcess($acto_administrativo->getPrimaryKey(), array(2, 3, 4));
-                    //**************************************************************************
-                    if (file_exists($file_target)) {
-                        unlink($file_target);
-                    }
-                    $copyFile = @rename($file_source, $file_target);
-                    //**************************************************************************
-                    $row->setEstadoMigracion('RADICADO');
-                    $row->setRadicadoSalida($acto_administrativo->getRadicadoCompuesto());
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setFechaRadicado(date("Y-m-d G:i:s"));
-                    $row->save();
-                    //**************************************************************************
-                    //ARCHIVAR
-                    $origentrans_id = 8;
-                    $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id, $tipodocumental_id, $acto_administrativo->getPrimaryKey(), $origentrans_id, $usuario_origen->getPrimaryKey());
-                    //**************************************************************************
-                    //La firma digital certificada solo se aplica si la fila lo solicita;
-                    //si no, se conserva el PDF original tal como fue cargado.
-                    if ($row->getFirmaDigital() && ($acto_administrativo->getEstadoactoadministrativoId() != 1) && ($acto_administrativo->getFirmadoDigital() == 0)) {
-                        $response_firma = $acto_administrativo->signDocumentProcess();
-                        $msg_firma[] = isset($response_firma['message']) ? trim($response_firma['message']) : "Por favor verifique que el documento fue firmado correctamente";
-                    }
-                    //**************************************************************************
-                    //SOLUCITUD SERVICIO
-                    if ($tipo_servicio != null) {
-                        $response_servicio = $acto_administrativo->addServicioByCom($usuario_origen->getPrimaryKey(), $tiposervicio_id, $coll_intersadosPk);
-                        $servicio = $response_servicio['isError'] == false ? $response_servicio['object'] : null;
-                        //**********************************************************************
-                        if ($servicio != null) {
-                            $lcomservicios[] = $servicio;
-                            //******************************************************************
-                            if ($tipo_servicio->getInitIntegracion()) { //integracion con actos administrativos
-                                if (!empty($acto_administrativo->getPrimaryKey())) {
-                                    try {
-                                        $simadSoap = new WsSimadUariv();
-                                        $response_acto = $simadSoap->loadWsRadActoAdministrativo($acto_administrativo->getPrimaryKey(), "Acto Administrativo", ModulesEnable::ActosAdministrativos);
-                                        //$message_status = !empty($response_acto['status']) ? trim($response_acto['status']) : 400;
-                                    } catch (\Exception $th) {
-                                        $msgintegracion = $th->getMessage();
-                                    } catch (\Throwable $th) {
-                                        $msgintegracion = $th->getMessage();
-                                    }
-                                }
-                            }
-                            //******************************************************************
-                            if ($servicio != null) {
-                                if (empty(trim($servicio->getEmailDestino()))) {
-                                    $servicio->setEmailDestino(implode(";", $email_interesado));
-                                    $servicio->save();
-                                }
-                            }
-                            //******************************************************************
-                            $dependencia_id = $acto_administrativo->getDependenciaId();
-                            if ($tipo_servicio->getTipoEnvio() == 2 &&  !empty(trim($servicio->getEmailDestino()))) {
-                                if ($dependencia_id) {
-                                    $sendEmailNotify = $servicio->envioEmailNotificacion($dependencia_id);
-                                    $msgnotify = ($sendEmailNotify != true) ? "&msgnotify=false" : "&msgnotify=true";
-                                    //*******************************************************
-                                    //bitacora de notificacion
-                                    if ($sendEmailNotify != true) {
-                                        $obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: " . trim($servicio->getEmailDestino());
-                                    } else {
-                                        $obs_bitacora = "Se notifico al interesado, email: " . trim($servicio->getEmailDestino());
-                                    }
-                                    //*******************************************************
-                                    ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicio->getServicioestadoId(), $usuario_origen->getPrimaryKey(), $usuario_origen->getPrimaryKey(), $obs_bitacora);
-                                }
-                            }
-                        }
-                    }
-                } catch (PropelException $th) {
-                    $row->setEstadoMigracion('ERROR RADICANDO');
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS " . $th->getMessage());
-                    $row->save();
-                } catch (\Exception $th) {
-                    $row->setEstadoMigracion('ERROR RADICANDO');
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR INTERNO SERVIDOR " . $th->getMessage());
-                    $row->save();
-                } catch (\Throwable $th) {
-                    $row->setEstadoMigracion('ERROR RADICANDO');
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR INTERNO SERVIDOR");
-                    $row->save();
-                }
             }
             //**********************************************************************************
             $cErrores = new Criteria();
@@ -1558,6 +1200,425 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 return array('status' => 200, 'message' => 'Se radicaron todos los documentos, por favor verifique la informaci&oacute;n');
             }
         } catch (\PropelException $ex) {
+            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
+        } catch (\Exception $th) {
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
+        } catch (\Throwable $th) {
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
+        }
+    }
+
+    /**
+     * ComMigmasivoPeer::processActoAdministrativoRow()
+     * Procesa una fila de radicacion masiva de Actos Administrativos: resuelve catalogos,
+     * valida datos obligatorios, crea o asocia el interesado, crea el acto administrativo,
+     * asigna firmantes/destinatario, aplica firma digital si corresponde y dispara la
+     * solicitud de servicio/integracion. La usan tanto el flujo por lote (sincrono) como el
+     * flujo por registro (asincrono), para no duplicar esta logica en dos sitios.
+     * @return array('status' => 200|400, 'message' => string)
+     */
+    private static function processActoAdministrativoRow($row, $usuario_origen, $ucargo_origen, $outfile_zip, $filedir_target, $firma_electronica, array &$ciudad_codigo, array &$dependencia_cod, array &$lexpedientes, array &$lcomtipo_servicio)
+    {
+        $params = array();
+        $estado_documento = 1;
+        //******************************************************************************
+        //Si la plantilla trae numero de resolucion, se conserva tal cual y el acto
+        //queda radicado de inmediato (estado 6), sin generar un consecutivo nuevo. La
+        //fecha de resolucion solo aplica junto con el numero; si el numero no viene, la
+        //fecha se descarta (no tiene sentido sin el numero al que pertenece).
+        $numero_resolucion_externo = trim($row->getNumeroResolucion()) ?: null;
+        if (!empty($numero_resolucion_externo)) {
+            $estado_documento = 6;
+            if (empty(trim($row->getFechaResolucion()))) {
+                $row->setEstadoMigracion('ERROR_RADICANDO');
+                $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                $row->setMensajeInfo("FECHA_RESOLUCION ES OBLIGATORIA CUANDO SE INFORMA NUMERO DE RADICADO (RESOLUCION)");
+                $row->save();
+                return array('status' => 400, 'message' => 'FECHA_RESOLUCION es obligatoria cuando se informa numero de radicado');
+            }
+        }
+        //******************************************************************************
+        $file_source = $outfile_zip . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+        $file_target = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+        if (!file_exists($file_source)) {
+            return array('status' => 400, 'message' => 'El archivo ' . $row->getNombreArchivo() . ' no existe en el paquete de documentos');
+        }
+        //******************************************************************************
+        $ciudad_id = in_array($row->getPuntoRadicacion(), $ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(), false);
+        if ($ciudad_id != null) {
+            $ciudad_codigo[$ciudad_id] = $row->getPuntoRadicacion();
+        }
+        //******************************************************************************
+        $dependencia = in_array($row->getCodDependencia(), $dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
+        $dependencia_id = is_int($dependencia) ? $dependencia : $dependencia->getPrimaryKey();
+        if ($dependencia_id != null) {
+            $dependencia_cod[$dependencia_id] = $row->getCodDependencia();
+        }
+        //******************************************************************************
+        $unidaddocumental_id = null;
+        if (in_array($row->getNumeroExpediente(), $lexpedientes)) {
+            $unidaddocumental_id = array_search($row->getNumeroExpediente(), $lexpedientes);
+        } else {
+            $unidad_documental = UnidadDocumentalPeer::getExpedienteByCodBarras($row->getNumeroExpediente());
+            $unidaddocumental_id = $unidad_documental != null ? $unidad_documental->getPrimaryKey() : null;
+            $lexpedientes[$unidaddocumental_id] = $row->getNumeroExpediente();
+        }
+        //******************************************************************************
+        $tipodocumental_id = null;
+        if (trim($row->getCodTipoDoc())) {
+            $tipo_documental = TipoDocumentalPeer::getTipoDocByCodigo(trim($row->getCodTipoDoc()));
+            $tipodocumental_id = $tipo_documental != null ? $tipo_documental->getPrimaryKey() : null;
+        }
+        //******************************************************************************
+        $subserie_id = null;
+        if (trim($row->getSubserieCodigo())) {
+            $subserie = SubseriePeer::getSubserieByCodigo(trim($row->getSubserieCodigo()));
+            $subserie_id = $subserie != null ? $subserie->getPrimaryKey() : null;
+        }
+        //******************************************************************************
+        //No permitir radicar dos veces el mismo numero de resolucion en la subserie
+        if (!empty($numero_resolucion_externo) && ActoAdministrativoPeer::isExistActoByNumResolucion($numero_resolucion_externo, $subserie_id)) {
+            $row->setEstadoMigracion('ERROR_RADICANDO');
+            $row->setUsuarioId($usuario_origen->getPrimaryKey());
+            $row->setMensajeInfo("NUMERO RESOLUCION YA EXISTE EN LA SUBSERIE");
+            $row->save();
+            return array('status' => 400, 'message' => 'El numero de resolucion ya existe en la subserie');
+        }
+        //******************************************************************************
+        $plantillacom_id = null;
+        if (trim($row->getTipoDocumento())) {
+            $plantilla_com = PlantillasComPeer::getTplByDescripcionModulo(trim($row->getTipoDocumento()), ModulesEnable::ActosAdministrativos);
+            $plantillacom_id = $plantilla_com != null ? $plantilla_com->getPrimaryKey() : null;
+        }
+        //******************************************************************************
+        $usuariodestino_id = null;
+        $ucargodestino_id = null;
+        if (trim($row->getNuidDestinatario())) {
+            $ucargo_destino = CargoUsuarioPeer::getCargoUsuarioByNuidUser(trim($row->getNuidDestinatario()), ModulesEnable::ActosAdministrativos);
+            $ucargodestino_id = $ucargo_destino != null ? $ucargo_destino->getPrimaryKey() : null;
+            $usuariodestino_id = $ucargo_destino != null ? $ucargo_destino->getUsuarioId() : null;
+        }
+        //******************************************************************************
+        $prioridadcom_id = null;
+        if (trim($row->getPrioridadCom())) {
+            $prioridad_com = PrioridadComPeer::getPrioridadComByText(trim($row->getPrioridadCom()), true);
+            $prioridadcom_id = $prioridad_com != null ? $prioridad_com->getPrimaryKey() : null;
+        }
+        //******************************************************************************
+        $tipo_servicio = in_array($row->getTipoNotificacion(), $lcomtipo_servicio) ? array_search($row->getTipoNotificacion(), $lcomtipo_servicio) : TipoServicioPeer::getTipoServicioObjByName($row->getTipoNotificacion());
+        $tiposervicio_id = null;
+        $tipo_envio = null;
+        if ($tipo_servicio != null) {
+            $tipo_servicio = !is_numeric($tipo_servicio) ? $tipo_servicio : TipoServicioPeer::retrieveByPK($tipo_servicio);
+            $tiposervicio_id = $tipo_servicio->getPrimaryKey();
+            $lcomtipo_servicio[$tiposervicio_id] = $row->getTipoNotificacion();
+            $tipo_envio = $tipo_servicio->getTipoEnvio();
+        }
+        //******************************************************************************
+        $params['regional_id'] = $usuario_origen->getRegionalId();
+        $params['dependencia_id'] = $dependencia_id;
+        $params['estadoactoadministrativo_id'] = $estado_documento;
+        $params['ciudad_id'] = $usuario_origen->getRegional()->getCiudadId();
+        $params['periodo_id'] = date("Y");
+        $params['asunto'] = trim($row->getAsuntoCom());
+        $params['folios'] = trim($row->getNumFolios()) ?: 0;
+        $params['observaciones'] =  trim($row->getObservacionesCom()) ? trim($row->getObservacionesCom()) : "Radicación masiva con archivo plano de excel";
+        $params['firma_electronica'] = $firma_electronica;
+        $params['firmado_digital'] = 0;
+        $params['archivo_digit'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+        $params['use_membrete'] = 1;
+        $params['tipo_envio'] = $tipo_envio;
+        $params['tipo_masivo'] = 1;
+        $params['expediente_id'] = $unidaddocumental_id;
+        $params['plantillacom_id'] = $plantillacom_id;
+        $params['subserie_id'] = $subserie_id;
+        $params['prioridadcom_id'] = $prioridadcom_id;
+        $params['fecha_aprobacion'] = date("Y-m-d G:i:s");
+        $params['usuariodestino_id'] = $usuariodestino_id;
+        $params['ucargodestino_id'] = $ucargodestino_id;
+        $params['tipodocumental_id'] = $tipodocumental_id;
+        $params['codigo_tipodocumental'] = trim($row->getCodTipoDoc());
+        $params['tipoprocesocom_id'] = 1;
+        $params['marco_normativo'] = trim($row->getMarcoNormativo());
+        $params['id_suborigen'] = trim($row->getIdSuborigen());
+        $params['numero_resolucion'] = $numero_resolucion_externo;
+        //******************************************************************************
+        //La fecha solo se toma en cuenta junto con el numero de resolucion externo.
+        if (!empty($numero_resolucion_externo) && trim($row->getFechaResolucion())) {
+            try {
+                $date = new DateTime(trim($row->getFechaResolucion()));
+                $params['fecha_resolucion'] = $date->format('Y-m-d');
+            } catch (Exception $ex) {
+                $params['fecha_resolucion'] = date("Y-m-d");
+            }
+        }
+        //******************************************************************************
+        $params['tipo_documental_cod'] = trim($row->getCodTipoDoc()) ?: null;
+        $params['UrlFileWord'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+        $params['IsCreateWord'] = true;
+        $params['tipo_integracion'] = "MASIVOEXCEL";
+        //******************************************************************************
+        $firmas_nuids = preg_split("/[;]+/", trim($row->getNuidsFirmas()), -1, PREG_SPLIT_NO_EMPTY);
+        //******************************************************************************
+        //Validaciones condicionales del documento: NUID interesado obligatorio si se va a
+        //crear el interesado, NUIDS_FIRMAS obligatorio si se requiere firma digital certificada.
+        if ($row->getCrearInteresado() && empty(trim($row->getNuidInteresado()))) {
+            $row->setEstadoMigracion('ERROR_RADICANDO');
+            $row->setUsuarioId($usuario_origen->getPrimaryKey());
+            $row->setMensajeInfo("NUID_INTERESADO ES OBLIGATORIO CUANDO CREAR INTERESADO = SI");
+            $row->save();
+            return array('status' => 400, 'message' => 'NUID_INTERESADO es obligatorio cuando CREAR_INTERESADO = SI');
+        }
+        if ($row->getFirmaDigital() && empty($firmas_nuids)) {
+            $row->setEstadoMigracion('ERROR_RADICANDO');
+            $row->setUsuarioId($usuario_origen->getPrimaryKey());
+            $row->setMensajeInfo("NUIDS_FIRMAS ES OBLIGATORIO CUANDO SE REQUIERE FIRMA DIGITAL CERTIFICADA");
+            $row->save();
+            return array('status' => 400, 'message' => 'NUIDS_FIRMAS es obligatorio cuando se requiere firma digital certificada');
+        }
+        //******************************************************************************
+        //Un interesado por fila; CREAR_INTERESADO define si se busca solo por NUID
+        //(y se crea de no existir) o por nombre/apellidos (y se crea de no existir)
+        $interesado = InteresadosPeer::findOrCreateInteresado(
+            (bool) $row->getCrearInteresado(),
+            trim($row->getTipodocInteresado()),
+            trim($row->getNuidInteresado()),
+            trim($row->getPnombreInteresado()),
+            trim($row->getSnombreInteresado()),
+            trim($row->getPapellidoInteresado()),
+            trim($row->getSapellidoInteresado()),
+            trim($row->getCiudadInteresado()),
+            trim($row->getEmailInteresado()),
+            $usuario_origen->getPrimaryKey()
+        );
+        if ($interesado == null) {
+            $row->setEstadoMigracion('ERROR RADICANDO');
+            $row->setUsuarioId($usuario_origen->getPrimaryKey());
+            $row->setMensajeInfo("ERROR CON EL INTERESADO");
+            $row->save();
+            return array('status' => 400, 'message' => 'Error con el interesado');
+        }
+        $coll_interesados = array($interesado);
+        //******************************************************************************
+        try {
+            $acto_administrativo = ActoAdministrativoPeer::addActoAdministrativo($params);
+            if ($acto_administrativo == null) {
+                $row->setEstadoMigracion('ERROR RADICANDO');
+                $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                $row->setMensajeInfo("ERROR RADICANDO ACTO ADMINISTRATIVO");
+                $row->save();
+                return array('status' => 400, 'message' => 'Error radicando el acto administrativo');
+            }
+            //**************************************************************************
+            $coll_intersadosPk = array();
+            $email_interesado = array();
+            foreach ($coll_interesados as $interesadoItem) {
+                $isAddInteresadoCom = ActoadministraInteresadoPeer::addNewInteresadoByComId($acto_administrativo->getPrimaryKey(), $interesadoItem->getPrimaryKey());
+                if ($isAddInteresadoCom) {
+                    $coll_intersadosPk[] = $interesadoItem->getPrimaryKey();
+                    if (!empty(trim($interesadoItem->getEmail()))) {
+                        if (!in_array(trim($interesadoItem->getEmail()), $email_interesado))
+                            $email_interesado[] = trim($interesadoItem->getEmail());
+                    }
+                }
+            }
+            //**************************************************************************
+            //proyecta
+            $info_upryecta['pkcom_id'] = $acto_administrativo->getPrimaryKey();
+            $info_upryecta['esta_asignada'] = 0;
+            $info_upryecta['estadocom_id'] = $estado_documento;
+            $info_upryecta['usuario_id'] = $usuario_origen->getPrimaryKey();
+            $info_upryecta['rol_id'] = 1;
+            $info_upryecta['cusuario_id'] = $ucargo_origen->getPrimaryKey();
+            $info_upryecta['tipoprocesocom_id'] = null;
+            $info_upryecta['fecha_aprobacion'] = date("Y-m-d G:i:s");
+            $info_upryecta['fecha_lectura'] = date("Y-m-d G:i:s");
+            $info_upryecta['esta_aprobado'] = 1;
+            ActoAdministrativoPeer::addUserByActo($info_upryecta);
+            //**************************************************************************
+            //radica
+            $info_uradica['pkcom_id'] = $acto_administrativo->getPrimaryKey();
+            $info_uradica['esta_asignada'] = 0;
+            $info_uradica['estadocom_id'] = $estado_documento;
+            $info_uradica['usuario_id'] = $usuario_origen->getPrimaryKey();
+            $info_uradica['rol_id'] = 5;
+            $info_uradica['cusuario_id'] = $ucargo_origen->getPrimaryKey();
+            $info_uradica['tipoprocesocom_id'] = 1;
+            $info_uradica['fecha_aprobacion'] = date("Y-m-d G:i:s");
+            $info_uradica['fecha_lectura'] = date("Y-m-d G:i:s");
+            $info_uradica['esta_aprobado'] = 1;
+            ActoAdministrativoPeer::addUserByActo($info_uradica);
+            //**************************************************************************
+            $cuser_firmas = CargoUsuarioPeer::getCaUsuariosByNuidsUsers($firmas_nuids);
+            $radicar_automativo = true;
+            foreach ($cuser_firmas as $cuser) {
+                //firmantes
+                $info_ufirma['pkcom_id'] = $acto_administrativo->getPrimaryKey();
+                $info_ufirma['esta_asignada'] = 0;
+                $info_ufirma['estadocom_id'] = $estado_documento;
+                $info_ufirma['usuario_id'] = $cuser->getUsuarioId();
+                $info_ufirma['rol_id'] = 2;
+                $info_ufirma['cusuario_id'] = $cuser->getPrimaryKey();
+                $info_ufirma['tipoprocesocom_id'] = 5;
+                $info_ufirma['fecha_aprobacion'] = date("Y-m-d G:i:s");
+                $info_ufirma['fecha_lectura'] = date("Y-m-d G:i:s");
+                $info_ufirma['esta_aprobado'] = 0;
+                ActoAdministrativoPeer::addUserByActo($info_ufirma);
+                //**************************************************************************
+                if (empty($cuser->getUsuario()->getFirmaDesatendida())) {
+                    $radicar_automativo = false;
+                }
+            }
+            //******************************************************************************
+            if (trim($row->getNuidDestinatario())) {
+                //destinatario
+                $info_udestino['pkcom_id'] = $acto_administrativo->getPrimaryKey();
+                $info_udestino['esta_asignada'] = 1;
+                $info_udestino['estadocom_id'] = 6;
+                $info_udestino['usuario_id'] = $usuariodestino_id;
+                $info_udestino['rol_id'] = 2;
+                $info_udestino['cusuario_id'] = $ucargodestino_id;
+                $info_udestino['tipoprocesocom_id'] = 6;
+                $info_udestino['fecha_aprobacion'] = date("Y-m-d G:i:s");
+                $info_udestino['fecha_lectura'] = date("Y-m-d G:i:s");
+                $info_udestino['esta_aprobado'] = 0;
+                ActoAdministrativoPeer::addUserByActo($info_udestino);
+            }
+            //******************************************************************************
+            if ($radicar_automativo && empty($numero_resolucion_externo)) {
+                $estado_documento = 6;
+                $acto_administrativo->getRadicadoFormat();
+                $acto_administrativo->setEstadoactoadministrativoId($estado_documento);
+                $acto_administrativo->save();
+            }
+            //**************************************************************************
+            ActoAdministrativoPeer::updateEstadosObj($acto_administrativo->getPrimaryKey(), $estado_documento);
+            ActoAdministrativoPeer::updateAproObjAllProcess($acto_administrativo->getPrimaryKey(), array(2, 3, 4));
+            //**************************************************************************
+            if (file_exists($file_target)) {
+                unlink($file_target);
+            }
+            @rename($file_source, $file_target);
+            //**************************************************************************
+            $row->setEstadoMigracion('RADICADO');
+            $row->setRadicadoSalida($acto_administrativo->getRadicadoCompuesto());
+            $row->setUsuarioId($usuario_origen->getPrimaryKey());
+            $row->setFechaRadicado(date("Y-m-d G:i:s"));
+            $row->save();
+            //**************************************************************************
+            //ARCHIVAR
+            $origentrans_id = 8;
+            TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id, $tipodocumental_id, $acto_administrativo->getPrimaryKey(), $origentrans_id, $usuario_origen->getPrimaryKey());
+            //**************************************************************************
+            //La firma digital certificada solo se aplica si la fila lo solicita;
+            //si no, se conserva el PDF original tal como fue cargado.
+            if ($row->getFirmaDigital() && ($acto_administrativo->getEstadoactoadministrativoId() != 1) && ($acto_administrativo->getFirmadoDigital() == 0)) {
+                $acto_administrativo->signDocumentProcess();
+            }
+            //**************************************************************************
+            //SOLUCITUD SERVICIO
+            if ($tipo_servicio != null) {
+                $response_servicio = $acto_administrativo->addServicioByCom($usuario_origen->getPrimaryKey(), $tiposervicio_id, $coll_intersadosPk);
+                $servicio = $response_servicio['isError'] == false ? $response_servicio['object'] : null;
+                //**********************************************************************
+                if ($servicio != null) {
+                    //******************************************************************
+                    if ($tipo_servicio->getInitIntegracion()) { //integracion con actos administrativos
+                        if (!empty($acto_administrativo->getPrimaryKey())) {
+                            try {
+                                $simadSoap = new WsSimadUariv();
+                                $simadSoap->loadWsRadActoAdministrativo($acto_administrativo->getPrimaryKey(), "Acto Administrativo", ModulesEnable::ActosAdministrativos);
+                            } catch (\Exception $th) {
+                            } catch (\Throwable $th) {
+                            }
+                        }
+                    }
+                    //******************************************************************
+                    if (empty(trim($servicio->getEmailDestino()))) {
+                        $servicio->setEmailDestino(implode(";", $email_interesado));
+                        $servicio->save();
+                    }
+                    //******************************************************************
+                    $dependencia_id = $acto_administrativo->getDependenciaId();
+                    if ($tipo_servicio->getTipoEnvio() == 2 &&  !empty(trim($servicio->getEmailDestino()))) {
+                        if ($dependencia_id) {
+                            $sendEmailNotify = $servicio->envioEmailNotificacion($dependencia_id);
+                            //*******************************************************
+                            //bitacora de notificacion
+                            if ($sendEmailNotify != true) {
+                                $obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: " . trim($servicio->getEmailDestino());
+                            } else {
+                                $obs_bitacora = "Se notifico al interesado, email: " . trim($servicio->getEmailDestino());
+                            }
+                            //*******************************************************
+                            ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicio->getServicioestadoId(), $usuario_origen->getPrimaryKey(), $usuario_origen->getPrimaryKey(), $obs_bitacora);
+                        }
+                    }
+                }
+            }
+            //**************************************************************************
+            return array('status' => 200, 'message' => 'Se radico el acto administrativo, por favor verifique la informacion');
+        } catch (PropelException $th) {
+            $row->setEstadoMigracion('ERROR RADICANDO');
+            $row->setUsuarioId($usuario_origen->getPrimaryKey());
+            $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS " . $th->getMessage());
+            $row->save();
+            return array('status' => 400, 'message' => 'Error de datos al radicar: ' . $th->getMessage());
+        } catch (\Exception $th) {
+            $row->setEstadoMigracion('ERROR RADICANDO');
+            $row->setUsuarioId($usuario_origen->getPrimaryKey());
+            $row->setMensajeInfo("ERROR INTERNO SERVIDOR " . $th->getMessage());
+            $row->save();
+            return array('status' => 400, 'message' => 'Error interno del servidor: ' . $th->getMessage());
+        } catch (\Throwable $th) {
+            $row->setEstadoMigracion('ERROR RADICANDO');
+            $row->setUsuarioId($usuario_origen->getPrimaryKey());
+            $row->setMensajeInfo("ERROR INTERNO SERVIDOR");
+            $row->save();
+            return array('status' => 400, 'message' => 'Error interno del servidor');
+        }
+    }
+
+    /**
+     * ComMigmasivoPeer::commitNewActoAdministrativoByOneAsync()
+     * Radica un unico registro de un lote de radicacion masiva de Actos Administrativos
+     * (contra un paquete de documentos ya descomprimido). Pensado para ser invocado registro
+     * a registro desde el frontend, evitando timeouts en lotes grandes.
+     * @return array('status' => 200|400, 'message' => string)
+     */
+    public static function commitNewActoAdministrativoByOneAsync($migmasiva_id, $lote_id, $outfile_zip, $firma_electronica = false)
+    {
+        try {
+            $row = ComMigmasivoPeer::retrieveByPK($migmasiva_id, $lote_id);
+            if ($row == null) {
+                return array('status' => 400, 'message' => 'Error, el registro de migracion no existe');
+            }
+            //**********************************************************************************
+            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(75)->getValortexto() . 'uploads');
+            $filedir_target = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
+            //**********************************************************************************
+            $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
+            $usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
+            $ucargo_origen = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuariologuiado, true);
+            //**********************************************************************************
+            $ciudad_codigo = array();
+            $dependencia_cod = array();
+            $lexpedientes = array();
+            $lcomtipo_servicio = array();
+            //**********************************************************************************
+            return ComMigmasivoPeer::processActoAdministrativoRow(
+                $row,
+                $usuario_origen,
+                $ucargo_origen,
+                $outfile_zip,
+                $filedir_target,
+                $firma_electronica,
+                $ciudad_codigo,
+                $dependencia_cod,
+                $lexpedientes,
+                $lcomtipo_servicio
+            );
+        } catch (PropelException $ex) {
             return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $th) {
             return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());

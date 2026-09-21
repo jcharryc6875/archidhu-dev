@@ -197,21 +197,17 @@ $currentUser = $sf_user->getAttribute('username', '', 'subscriber');
                                             </div>
                                         </div>
                                     </div>
-                                    <?php
-                                    echo '<div class="row"><div class="col-sm-5"><div class="form-group">';
-                                    echo jq_submit_to_remote('radicar_combatch', 'Radicar Documentos...', array(
-                                        'url'  => url_for('acto_administrativo/updateComBatch'),
-                                        'script' => true,
-                                        'loading' => 'javascript:jQuery.LoadingStructData();',
-                                        'complete' => 'javascript:jQuery.batchMigResultActoAdm(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData();',
-                                    ), array('id' => 'formsave', 'name' => 'formsave', 'class' => "btn btn-success"));
-                                    echo '&nbsp;&nbsp;&nbsp;';
-                                    echo button_to('Regresar...', 'acto_administrativo/radicarMasivas', array('class' => "btn btn-blue"));
-                                    echo '&nbsp;&nbsp;&nbsp;';
-                                    echo button_to('Cancelar', 'acto_administrativo/radicarMasivas', array('class' => "btn btn-red"));
-                                    echo '</div></div>';
-                                    echo '</div>';
-                                    ?>
+                                    <div class="row" id="hide_buttons_com">
+                                        <div class="col-sm-5">
+                                            <div class="form-group">
+                                                <button type="button" id="btn_radicar_masivas_actoadm" class="btn btn-green btn-icon" style="margin-left: 14px;">Radicar Documentos...</button>
+                                                <?php echo button_to('Regresar...', 'acto_administrativo/radicarMasivas', array('class' => "btn btn-blue")); ?>
+                                                <?php echo button_to('Cancelar', 'acto_administrativo/radicarMasivas', array('class' => "btn btn-red")); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="contenedor_tabla_lote"></div>
+                                    <div id="resultadoFinal"></div>
                                 </div>
                             </div>
                         </div>

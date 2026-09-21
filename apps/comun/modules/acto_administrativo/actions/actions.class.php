@@ -1179,6 +1179,104 @@ class acto_administrativoActions extends sfActions
   }
 
   /**
+   * acto_administrativoActions::executeGetMigrationsByLote()
+   * Descomprime el archivo de documentos una sola vez y devuelve la lista de registros
+   * pendientes del lote, para que el frontend los radique uno a uno (evita timeouts en lotes grandes).
+   * @return
+   */
+  public function executeGetMigrationsByLote()
+  {
+    $currentForm = "ACTO_ADMINISTRATIVO_RADICACION_MASIVA";
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
+      $this->getResponse()->setContentType('application/json');
+      $response_info = array('status' => 400, 'message' => "Esta funcionalidad no esta permitida");
+      return $this->renderText(json_encode($response_info));
+    }
+    //*******************************************************************************************
+    $comIdLote = trim($this->getRequestParameter('comIdLote')) ?: null;
+    $firma_digital = trim($this->getRequestParameter('firma_digital')) ?: false;
+    $dataufiledocs = trim($this->getRequestParameter('dataufiledocs')) ?: null;
+    $upload_dir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
+    //*******************************************************************************************
+    if (empty($comIdLote) || empty($dataufiledocs)) {
+      $this->getResponse()->setContentType('application/json');
+      $response_info = array('status' => 400, 'message' => 'Error, el lote de radicacion no es valido');
+      return $this->renderText(json_encode($response_info));
+    }
+    //*******************************************************************************************
+    $filedocsupload = $upload_dir . DIRECTORY_SEPARATOR . $dataufiledocs;
+    if (!file_exists($filedocsupload)) {
+      $this->getResponse()->setContentType('application/json');
+      $response_info = array('status' => 400, 'message' => 'Error, el archivo de documentos no existe en el servidor, intente de nuevo');
+      return $this->renderText(json_encode($response_info));
+    }
+    //*******************************************************************************************
+    $outfile_zip = $upload_dir . DIRECTORY_SEPARATOR . md5(date("YmdGisu"));
+    $zipfile_extract = simad_util::extractFileCompress($filedocsupload, $outfile_zip);
+    if (!$zipfile_extract) {
+      $this->getResponse()->setContentType('application/json');
+      $response_info = array('status' => 400, 'message' => 'Ocurrio un error al descomprimir el archivo de documentos');
+      return $this->renderText(json_encode($response_info));
+    }
+    //*******************************************************************************************
+    $migrations_list = ComMigmasivoPeer::getListComByComLote($comIdLote, 'PENDIENTE VALIDAR');
+    if (empty($migrations_list) || count($migrations_list) <= 0) {
+      $this->getResponse()->setContentType('application/json');
+      $response_info = array('status' => 400, 'message' => 'Error, el listado de registros esta vacio, intente de nuevo');
+      return $this->renderText(json_encode($response_info));
+    }
+    //*******************************************************************************************
+    $migmasiva_array = array();
+    foreach ($migrations_list as $migmasiva) {
+      $migmasiva_array[] = array(
+        'pkobject_id' => $migmasiva->getCommigmasivoId(),
+        'comIdLote' => $migmasiva->getComloteId(),
+        'comfirma_digital' => $firma_digital,
+        'docs_source' => SED::encryption($outfile_zip),
+      );
+    }
+    //*******************************************************************************************
+    $this->getResponse()->setContentType('application/json');
+    $response_info = array('status' => 200, 'message' => 'Lista de registros para radicacion generada correctamente', 'batchs_ilist' => $migmasiva_array);
+    return $this->renderText(json_encode($response_info));
+  }
+
+  /**
+   * acto_administrativoActions::executeRadicarMigMasivoByOne()
+   * Radica un unico registro de un lote de radicacion masiva de Actos Administrativos.
+   * @return
+   */
+  public function executeRadicarMigMasivoByOne()
+  {
+    $currentForm = "ACTO_ADMINISTRATIVO_RADICACION_MASIVA";
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
+      $this->getResponse()->setContentType('application/json');
+      $response_info = array('status' => 400, 'message' => "Esta funcionalidad no esta permitida");
+      return $this->renderText(json_encode($response_info));
+    }
+    //*******************************************************************************************
+    $firma_digital = trim($this->getRequestParameter('comsign_digital')) ?: false;
+    $comIdLote = trim($this->getRequestParameter('comIdLote')) ?: null;
+    $migmasiva_id = trim($this->getRequestParameter('idmigmasivo')) ?: null;
+    $docs_source = trim($this->getRequestParameter('docs_source')) ?: null;
+    //*******************************************************************************************
+    if (empty($comIdLote) || empty($migmasiva_id) || empty($docs_source)) {
+      $this->getResponse()->setContentType('application/json');
+      $response_info = array('status' => 400, 'message' => 'Error el lote de radicacion no es valido');
+      return $this->renderText(json_encode($response_info));
+    }
+    //*******************************************************************************************
+    $docs_source = SED::decryption($docs_source);
+    $response_ajax = ComMigmasivoPeer::addNewComByOneComAsync($migmasiva_id, ModulesEnable::ActosAdministrativos, $comIdLote, $firma_digital, $docs_source);
+    //*******************************************************************************************
+    $this->getResponse()->setContentType('application/json');
+    $response_info = array('status' => $response_ajax['status'], 'message' => $response_ajax['message']);
+    return $this->renderText(json_encode($response_info));
+  }
+
+  /**
    * acto_administrativoActions::executeExportarBatchList()
    * accion para exportar los resultados de la radicacion masiva filtrado por un comIdLote
    * @return
