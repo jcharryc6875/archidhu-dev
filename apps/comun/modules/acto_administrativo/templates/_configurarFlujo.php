@@ -88,7 +88,7 @@ use_helper('Object', 'jQuery');
     echo jq_submit_to_remote('guardarFlujo', 'Guardar Configuración de Flujo', array(
       'url' => 'acto_administrativo/updateOrdenParticipantes',
       'loading' => "javascript:jQuery.LoadingStructData();",
-      'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText); javascript:jQuery.CloseLoadingStructData(); if(response_value.status == 200){ toastr.success(response_value.message); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
+      'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText); javascript:jQuery.CloseLoadingStructData(); if(response_value.status == 200){ toastr.success(response_value.message); setTimeout(function(){ try{ parent.jQuery.ReloadAndCloseModalSIMAD(); }catch(e){ document.location.reload(); } }, 1500); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
     ), array('class' => 'btn btn-primary btn-sm'));
   ?>
 </div>

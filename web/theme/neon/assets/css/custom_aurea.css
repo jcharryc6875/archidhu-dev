@@ -1287,10 +1287,7 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
     overflow-y: auto;
 }
 
-/* UARIV-202605 (ampliación): modal/pestaña "Configurar Flujo" del acto administrativo */
-#modalConfigurarFlujo .modal-dialog {
-    width: 820px;
-}
+/* UARIV-202605 (ampliación): modal (fancybox iframe) / pestaña "Configurar Flujo" del acto administrativo */
 .flujo-subtabs {
     margin-bottom: 14px;
 }

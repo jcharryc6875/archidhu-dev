@@ -1614,6 +1614,26 @@ class acto_administrativoActions extends sfActions
   }
 
   /**
+   * Modal (fancybox iframe, igual que "Devolver"/"Seleccionar archivo") para configurar el orden
+   * de ejecución y el permiso de edición del flujo de UN acto administrativo puntual. UARIV-202605
+   * (ampliación). Requiere el permiso ACTO_ADMINISTRATIVO_CONFIGURAR_FLUJO.
+   */
+  public function executeConfigurarFlujo()
+  {
+      $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+      if(!$this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_CONFIGURAR_FLUJO", $usuariologuiado)){
+          $this->redirect(sfConfig::get('base_simad').'/no_autorizado.html');
+      }
+      //***************************************************************************************************
+      $actoadministrativo_id = $this->getRequestParameter('actoadministrativo_id') ? $this->getRequestParameter('actoadministrativo_id') : -1;
+      $this->acto_administrativo = ActoAdministrativoPeer::retrieveByPk($actoadministrativo_id);
+      $this->forward404Unless($this->acto_administrativo);
+      //***************************************************************************************************
+      $this->participantesFlujo = ActoadministrativoUsuarioPeer::getParticipantesConfigurables($this->acto_administrativo->getPrimaryKey());
+      $this->etapasConfigActo = ActoAdministrativoPeer::getEtapasConfigParaActo($this->acto_administrativo->getPrimaryKey());
+  }
+
+  /**
    * Guarda, para UN acto administrativo puntual, el orden de ejecución y el permiso de edición
    * de cada participante, y los overrides de "¿la etapa permite edición?" por acto. UARIV-202605
    * (ampliación). Requiere el permiso ACTO_ADMINISTRATIVO_CONFIGURAR_FLUJO.
