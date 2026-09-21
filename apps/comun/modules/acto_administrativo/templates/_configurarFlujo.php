@@ -22,6 +22,9 @@ use_helper('Object', 'jQuery');
     <div class="alert alert-warning flujo-tie-alert" style="display:none;">
       <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;Hay participantes con el mismo orden: al aprobar esa etapa, se pedirá elegir a cuál enviar el trámite.
     </div>
+    <div class="alert alert-danger flujo-firmante-alert" style="display:none;">
+      <span class="glyphicon glyphicon-remove-sign"></span>&nbsp;El último participante del orden configurado debe ser un Firmante: es quien cierra el flujo y genera el radicado. No podrá guardar esta configuración hasta ajustarlo.
+    </div>
     <ul class="list-unstyled flujo-participant-list">
       <?php foreach ($participantesFlujo as $index => $participante):
         $etapa = $participante->getActoadminEtapa();
@@ -30,7 +33,7 @@ use_helper('Object', 'jQuery');
         $palabras = preg_split('/\s+/', trim($nombre), -1, PREG_SPLIT_NO_EMPTY);
         $iniciales = strtoupper(substr(isset($palabras[0]) ? $palabras[0] : '', 0, 1) . substr(isset($palabras[1]) ? $palabras[1] : '', 0, 1));
       ?>
-        <li class="flujo-participant-item">
+        <li class="flujo-participant-item" data-rol-id="<?php echo $participante->getRolusuarioactoadministvoId(); ?>">
           <span class="flujo-drag-handle" title="Arrastrar para reordenar"><span class="glyphicon glyphicon-resize-vertical"></span></span>
           <?php if ($participante->getOrdenEjecucion()) { ?>
             <span class="flujo-order-badge"><?php echo $participante->getOrdenEjecucion(); ?></span>

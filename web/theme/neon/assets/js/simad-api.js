@@ -3227,11 +3227,17 @@ jQuery(document).ready(function ($) {
 	// participantes y resaltar empates de orden (dos o más con el mismo número).
 	function actualizarOrdenFlujo($lista) {
 		var conteos = {};
+		var ordenMaximo = null;
 		$lista.find('.flujo-order-input').each(function () {
 			var val = jQuery(this).val();
-			if (val !== '') { conteos[val] = (conteos[val] || 0) + 1; }
+			if (val !== '') {
+				conteos[val] = (conteos[val] || 0) + 1;
+				var num = parseInt(val, 10);
+				if (ordenMaximo === null || num > ordenMaximo) { ordenMaximo = num; }
+			}
 		});
 		var hayEmpate = false;
+		var rolesEnOrdenMaximo = [];
 		$lista.find('.flujo-participant-item').each(function () {
 			var $item = jQuery(this);
 			var val = $item.find('.flujo-order-input').val();
@@ -3243,8 +3249,20 @@ jQuery(document).ready(function ($) {
 			} else {
 				$badge.removeClass('flujo-order-badge-tie');
 			}
+			if (ordenMaximo !== null && parseInt(val, 10) === ordenMaximo) {
+				rolesEnOrdenMaximo.push($item.data('rol-id'));
+			}
 		});
 		$lista.closest('.tab-pane').find('.flujo-tie-alert').toggle(hayEmpate);
+		//*************************************************************************************************
+		// UARIV-202605: el/los participante(s) con el orden más alto deben ser Firmante(s) (rol 2).
+		var faltaFirmanteAlFinal = false;
+		if (ordenMaximo !== null) {
+			faltaFirmanteAlFinal = rolesEnOrdenMaximo.length === 0 || rolesEnOrdenMaximo.some(function (rol) { return rol != 2; });
+		}
+		var $btnGuardar = $lista.closest('.tab-content').siblings('.flujo-actions').find('input[name="guardarFlujo"]');
+		$lista.closest('.tab-pane').find('.flujo-firmante-alert').toggle(faltaFirmanteAlFinal);
+		$btnGuardar.prop('disabled', faltaFirmanteAlFinal);
 	}
 
 	jQuery('.flujo-participant-list').each(function () {

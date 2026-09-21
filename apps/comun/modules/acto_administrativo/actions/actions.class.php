@@ -1755,6 +1755,45 @@ class acto_administrativoActions extends sfActions
     try {
       // participantes[<actoadministrativoUsuario_id>][orden] / [puede_editar]
       $participantes = $request->getParameter('participantes') ? $request->getParameter('participantes') : array();
+      //*****************************************************************************************************
+      // UARIV-202605: si se configura un orden manual, el/los participante(s) con el orden más alto
+      // deben ser Firmante(s) (rol 2) — es quien cierra el flujo y genera el radicado. Se valida sobre
+      // el estado FINAL que se está proponiendo, antes de guardar nada.
+      $ordenMaximo = null;
+      $rolesEnOrdenMaximo = array();
+      foreach ($participantes as $actoadministrativousuario_id => $datos) {
+        $fila = ActoadministrativoUsuarioPeer::retrieveByPk($actoadministrativousuario_id);
+        if ($fila == null || $fila->getActoadministrativoId() != $actoadministrativo_id) {
+          continue;
+        }
+        $orden = isset($datos['orden']) ? trim($datos['orden']) : '';
+        if ($orden === '' || !is_numeric($orden)) {
+          continue;
+        }
+        $ordenNum = (int)$orden;
+        if ($ordenMaximo === null || $ordenNum > $ordenMaximo) {
+          $ordenMaximo = $ordenNum;
+          $rolesEnOrdenMaximo = array($fila->getRolusuarioactoadministvoId());
+        } elseif ($ordenNum == $ordenMaximo) {
+          $rolesEnOrdenMaximo[] = $fila->getRolusuarioactoadministvoId();
+        }
+      }
+      //*****************************************************************************************************
+      if ($ordenMaximo !== null) {
+        $ultimoEsSoloFirmantes = count($rolesEnOrdenMaximo) > 0;
+        foreach ($rolesEnOrdenMaximo as $rol_id) {
+          if ($rol_id != 2) {
+            $ultimoEsSoloFirmantes = false;
+            break;
+          }
+        }
+        if (!$ultimoEsSoloFirmantes) {
+          $response_data = array('status' => 400, 'message' => 'El último participante del orden configurado debe ser un Firmante: es quien cierra el flujo y genera el radicado. Ajuste el orden antes de guardar.');
+          $this->getResponse()->setContentType('application/json');
+          return $this->renderText(json_encode($response_data));
+        }
+      }
+      //*****************************************************************************************************
       foreach ($participantes as $actoadministrativousuario_id => $datos) {
         $fila = ActoadministrativoUsuarioPeer::retrieveByPk($actoadministrativousuario_id);
         if ($fila == null || $fila->getActoadministrativoId() != $actoadministrativo_id) {
@@ -1961,10 +2000,30 @@ class acto_administrativoActions extends sfActions
     $acto_administrativo->setRegionalId($regional_id);
     $acto_administrativo->save();
     //***************************************************************************************************************
+    // UARIV-202605 CA-1.2.3/CA-3.1: captura el participante (firmante) que radica ANTES de que las
+    // actualizaciones masivas de abajo le quiten ESTA_ASIGNADA, para poder registrar en la bitácora
+    // del flujo la firma y el cierre del proceso. Este "Firmar y Generar" es un camino distinto (con
+    // SQL masivo) al del resto del motor de aprobación, así que nunca pasaba por cerrarPasoYRegistrarBitacora().
+    $ucom_firmante = ActoAdministrativoPeer::getIsUserAsignado($acto_administrativo->getPrimaryKey(), $usuariologuiado, 1, true);
+    //***************************************************************************************************************
     ActoAdministrativoPeer::updateEstadosObj($acto_administrativo->getPrimaryKey());
     ActoAdministrativoPeer::updateAproFirmaObjAll($acto_administrativo->getPrimaryKey());
     ActoAdministrativoPeer::updateAproObjAllProcess($acto_administrativo->getPrimaryKey(), $usuariologuiado);
     ActoAdministrativoPeer::AsignarUserDestinoByPk($acto_administrativo->getPrimaryKey());
+    //***************************************************************************************************************
+    if ($ucom_firmante != null) {
+      $etapa_firmante_id = $ucom_firmante->getActoadminetapaId();
+      if (empty($etapa_firmante_id)) {
+        $etapa_firmante = ActoadminEtapaPeer::getEtapaByRol($ucom_firmante->getRolusuarioactoadministvoId());
+        $etapa_firmante_id = $etapa_firmante ? $etapa_firmante->getPrimaryKey() : null;
+      }
+      if ($etapa_firmante_id) {
+        ActoadminEtapaBitacoraPeer::addBitacora($acto_administrativo->getPrimaryKey(), $etapa_firmante_id, $usuariologuiado,
+          $ucom_firmante->getRolusuarioactoadministvoId(), $estadoactoadmin_id, ActoadminEtapaBitacoraPeer::ACCION_FIRMA);
+        ActoadminEtapaBitacoraPeer::addBitacora($acto_administrativo->getPrimaryKey(), $etapa_firmante_id, $usuariologuiado,
+          $ucom_firmante->getRolusuarioactoadministvoId(), $estadoactoadmin_id, ActoadminEtapaBitacoraPeer::ACCION_RADICACION);
+      }
+    }
     //***************************************************************************************************************
     $info_uradica['pkcom_id'] = $acto_administrativo->getPrimaryKey();
     $info_uradica['esta_asignada'] = 0;
