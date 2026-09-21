@@ -1179,10 +1179,19 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $estado_documento = 1;
                 //******************************************************************************
                 //Si la plantilla trae numero de resolucion, se conserva tal cual y el acto
-                //queda radicado de inmediato (estado 6), sin generar un consecutivo nuevo.
+                //queda radicado de inmediato (estado 6), sin generar un consecutivo nuevo. La
+                //fecha de resolucion solo aplica junto con el numero; si el numero no viene, la
+                //fecha se descarta (no tiene sentido sin el numero al que pertenece).
                 $numero_resolucion_externo = trim($row->getNumeroResolucion()) ?: null;
                 if (!empty($numero_resolucion_externo)) {
                     $estado_documento = 6;
+                    if (empty(trim($row->getFechaResolucion()))) {
+                        $row->setEstadoMigracion('ERROR_RADICANDO');
+                        $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                        $row->setMensajeInfo("FECHA_RESOLUCION ES OBLIGATORIA CUANDO SE INFORMA NUMERO DE RADICADO (RESOLUCION)");
+                        $row->save();
+                        continue;
+                    }
                 }
                 //******************************************************************************
                 $file_source = $outfile_zip . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
@@ -1299,7 +1308,8 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $params['id_suborigen'] = trim($row->getIdSuborigen());
                 $params['numero_resolucion'] = $numero_resolucion_externo;
                 //******************************************************************************
-                if (trim($row->getFechaResolucion())) {
+                //La fecha solo se toma en cuenta junto con el numero de resolucion externo.
+                if (!empty($numero_resolucion_externo) && trim($row->getFechaResolucion())) {
                     try {
                         $date = new DateTime(trim($row->getFechaResolucion()));
                         $params['fecha_resolucion'] = $date->format('Y-m-d');

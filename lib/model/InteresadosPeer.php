@@ -194,7 +194,8 @@ class InteresadosPeer extends BaseInteresadosPeer
             //*******************************************************************************
             //CIUDAD_INTERESADO en la plantilla trae el codigo DANE, no el nombre.
             $ciudad = CiudadPeer::getCiudadByNombAndCod(null, trim($ciudadCodigo), true);
-            $tipoidentificacion_id = TipoIdentificacionPeer::getTipoIdentificacionPkByName(trim($tipoDocInteresado));
+            //TIPODOC_INTERESADO en la plantilla trae la sigla (ej. CC, TI, CE), no el nombre.
+            $tipoidentificacion_id = TipoIdentificacionPeer::getTipoIdentificacionPkBySigla(trim($tipoDocInteresado));
             //*******************************************************************************
             $info_data = array(
                 'PRIMER_NOMBRE' => $pnombre,
