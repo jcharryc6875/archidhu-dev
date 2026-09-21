@@ -899,6 +899,52 @@ jQuery(document).ready(function ($) {
 		}
 	};
 
+	/**
+	 * $.initListaDatosRadMasivaTable()
+	 * Inicializa el datatable de la "Lista Datos" de radicacion masiva (Actos Administrativos,
+	 * Enviadas, Recibidas, Internas) con soporte responsive y filtro por columna.
+	 * @param tableSelector string selector jQuery de la tabla (ej. '#table-1')
+	 */
+	$.initListaDatosRadMasivaTable = function (tableSelector) {
+		var tableContainer = $(tableSelector);
+		if (tableContainer.length === 0) { return; }
+
+		var responsiveHelper;
+		var breakpointDefinition = { tablet: 1024, phone: 480 };
+
+		tableContainer.dataTable({
+			"sPaginationType": "bootstrap",
+			"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+			"bStateSave": true,
+			"language": {
+				"lengthMenu": "Mostrando _MENU_ registros por pagina",
+				"zeroRecords": "Lo sentimos, Ningun registro encontrado",
+				"info": "Mostrado _START_ a _END_ de _TOTAL_ registros",
+				"infoEmpty": "Ningun registro encontrado",
+				"search": "Buscar:",
+				"infoFiltered": "(Registros filtrados de un total de _MAX_ registros)"
+			},
+			bAutoWidth: false,
+			fnPreDrawCallback: function () {
+				if (!responsiveHelper) {
+					responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				}
+			},
+			fnRowCallback: function (nRow) {
+				responsiveHelper.createExpandIcon(nRow);
+			},
+			fnDrawCallback: function () {
+				responsiveHelper.respond();
+			}
+		});
+
+		tableContainer.columnFilter({ "sPlaceHolder": "head:after" });
+
+		$(".dataTables_wrapper select").select2({ minimumResultsForSearch: -1 });
+
+		$('[data-toggle="tooltip"]').tooltip();
+	};
+
 	$.batchMigResultRec = function (data) {
 		try {
 			var response = JSON.parse(data);

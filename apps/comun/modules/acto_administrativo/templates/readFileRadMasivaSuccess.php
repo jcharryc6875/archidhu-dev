@@ -11,21 +11,6 @@ $print_header = 0;
 $count_header = 0;
 ?>
 
-<style>
-	table .replace-inputs input{
-		color: #0b0b0b4a !important;
-		border: 1px solid #07070721;
-		font-size: 9px;
-	}
-
-	
-	table td{
-		text-overflow: ellipsis;
-		overflow: hidden;
-		white-space: nowrap;
-	}
-</style>
-
 <div id="tablelist" >
 	<?php if(count($sheetData) == 0): ?>
 		<div class="panel panel-success">
@@ -49,8 +34,8 @@ $count_header = 0;
 						'url'  => url_for('acto_administrativo/verifyComBatchData'),
 						'script' => true,
 						'with'    => " 'fileuploadtmp=".$inputFileName."&sheetData=".$sheetDataSerialize."'",
-						'loading' => '$(".next").addClass("disabled");javascript:jQuery.LoadingStructData();',
-						'complete' => 'javascript:jQuery.setInlineErrorMig(XMLHttpRequest.responseText,"modal-2", $(".btnvalidinfo"));javascript:jQuery.CloseLoadingStructData();',
+						'loading' => 'jQuery(".next").addClass("disabled");javascript:jQuery.LoadingStructData();',
+						'complete' => 'javascript:jQuery.setInlineErrorMig(XMLHttpRequest.responseText,"modal-2", jQuery(".btnvalidinfo"));javascript:jQuery.CloseLoadingStructData();',
 						),array('class'=>'btn btn-orange tooltip-primary btnvalidinfo','data-toggle'=>'tooltip', 'data-original-title'=>'Validar informacioacute;n para radicar')
 					);
 					echo '&nbsp;&nbsp;&nbsp;';
@@ -60,7 +45,8 @@ $count_header = 0;
 					?>
 				</div>
 			</div>
-			<table class="table table-bordered table-hover datatable" id="table-1">
+			<div class="table-responsive">
+			<table class="table table-bordered table-hover datatable table-lista-datos-migmasivo" id="table-1">
 				<thead>
 					<tr class="replace-inputs">
 						<?php 
@@ -103,58 +89,12 @@ $count_header = 0;
 					?>
 				</tbody>
 			</table>
+			</div>
 		</div>
 	<?php endif; ?>
 </div>
 <script type="text/javascript">
-	var responsiveHelper;
-	var breakpointDefinition = {
-		tablet: 1024,
-		phone : 480
-	};
-	var tableContainer;
-
 	jQuery(document).ready(function($){
-		tableContainer = $("#table-1");
-		
-		tableContainer.dataTable({
-			"sPaginationType": "bootstrap",
-			"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-			"bStateSave": true,
-			"language": {
-				"lengthMenu": "Mostrando _MENU_ registros por pagina",
-				"zeroRecords": "Lo sentimos, Ningun registro encontrado",
-				/*"info": "Mostrado Pagina _PAGE_ de _PAGES_",*/
-				"info": "Mostrado _START_ a _END_ de _TOTAL_ registros",
-				"infoEmpty": "Ningun registro encontrado",
-				"search": "Buscar:",
-				"infoFiltered": "(Registros filtrados de un total de _MAX_ registros)"
-			},
-
-			// Responsive Settings
-			bAutoWidth     : false,
-			fnPreDrawCallback: function () {
-				// Initialize the responsive datatables helper once.
-				if (!responsiveHelper) {
-					responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
-				}
-			},
-			fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-				responsiveHelper.createExpandIcon(nRow);
-			},
-			fnDrawCallback : function (oSettings) {
-				responsiveHelper.respond();
-			}
-		});
-		
-		tableContainer.columnFilter({
-			"sPlaceHolder" : "head:after"
-		});
-
-		$(".dataTables_wrapper select").select2({
-			minimumResultsForSearch: -1
-		});
-
-		$('[data-toggle="tooltip"]').tooltip();
+		$.initListaDatosRadMasivaTable('#table-1');
 	});
 </script>
