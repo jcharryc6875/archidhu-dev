@@ -45,7 +45,13 @@ class DocsControlCambio extends BaseDocsControlCambio
             // Limpiar HTML para mejor comparación
             $oldText = $this->cleanHtmlForComparison($oldContent);
             $newText = $this->cleanHtmlForComparison($newContent);
-            
+            //*********************************************************************************************
+            // UARIV-202605: si el texto de ambas versiones es idéntico, no hay nada que "diferenciar"; se
+            // marca explícitamente en vez de dejar que la vista intente renderizar un diff vacío.
+            if ($oldText === $newText) {
+                return array('diff' => null, 'sin_diferencias' => true, 'wysiwyg_editor' => null);
+            }
+            //*********************************************************************************************
             // options for Diff class
             $diffOptions = [
                 // show how many neighbor lines
@@ -109,7 +115,7 @@ class DocsControlCambio extends BaseDocsControlCambio
                 // this should bring better readability but set this to empty array if you do not want it
                 'wordGlues' => [' ', '-'],
                 // change this value to a string as the returned diff if the two input strings are identical
-                'resultForIdenticals' => '<p style="padding:12px;color:#718096;">No hay diferencias de contenido entre estas dos versiones.</p>',
+                'resultForIdenticals' => null,
                 // extra HTML classes added to the DOM of the diff container
                 'wrapperClasses' => ['diff-wrapper'],
                 'diff.render.html.inline' => true,
@@ -126,7 +132,7 @@ class DocsControlCambio extends BaseDocsControlCambio
 
             $process_editor = null;
             //*********************************************************************************************
-            return array('diff' => $diff,'wysiwyg_editor' => $process_editor);
+            return array('diff' => $diff, 'sin_diferencias' => false, 'wysiwyg_editor' => $process_editor);
         } catch (PropelException $ex) {
             return null;
         } catch (\Exception $ex) {

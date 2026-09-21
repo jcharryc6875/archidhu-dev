@@ -1819,8 +1819,9 @@ class acto_administrativoActions extends sfActions
     }
     //***************************************************************************************************
     $this->diff_data = $last_controldoc->compareVersions('Inline');
-    if ($this->diff_data == null) {
-      $this->diff_data = array('diff' => '<p style="padding:12px;color:#a94442;">No fue posible generar la comparación de estas dos versiones.</p>');
+    $this->huboErrorComparacion = ($this->diff_data == null);
+    if ($this->huboErrorComparacion) {
+      $this->diff_data = array('diff' => null, 'sin_diferencias' => false);
     }
     //***************************************************************************************************
     $this->forward404Unless($this->acto_administrativo);

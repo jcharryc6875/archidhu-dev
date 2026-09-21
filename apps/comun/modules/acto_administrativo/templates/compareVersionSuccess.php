@@ -5,39 +5,54 @@
     $path_theme = sfConfig::get('theme_simad');
     $base_path = sfConfig::get('base_simad');
     $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
+    $sinDiferencias = !empty($diff_data['sin_diferencias']);
 ?>
 
-<div id="diff-content">
-    <div id="editor-content" class="col-sm-11">
-        <textarea id="contenido" name="contenido" class="form-control input-sm">
-            <?php echo $diff_data['diff']; ?>
-        </textarea>
+<?php if ($huboErrorComparacion || $sinDiferencias) { ?>
+    <div class="text-center" style="padding: 70px 20px;">
+        <?php if ($huboErrorComparacion) { ?>
+            <span class="glyphicon glyphicon-exclamation-sign" style="font-size: 46px; color: #d9534f;"></span>
+            <h4 style="margin-top: 14px;">No fue posible generar la comparación</h4>
+            <p class="text-muted">Ocurrió un error al comparar estas dos versiones. Intente nuevamente o contacte al administrador si el problema persiste.</p>
+        <?php } else { ?>
+            <span class="glyphicon glyphicon-ok-circle" style="font-size: 46px; color: #5cb85c;"></span>
+            <h4 style="margin-top: 14px;">Sin diferencias de contenido</h4>
+            <p class="text-muted">El texto de estas dos versiones es idéntico. Es posible que solo hayan cambiado otros datos del registro.</p>
+        <?php } ?>
     </div>
-</div>
+<?php } else { ?>
+    <div id="diff-content">
+        <div id="editor-content" class="col-sm-11">
+            <textarea id="contenido" name="contenido" class="form-control input-sm">
+                <?php echo $diff_data['diff']; ?>
+            </textarea>
+        </div>
+    </div>
 
-<script type="text/javascript">
-    jQuery(document).ready(function()
-    {
-        const bottomMargin = 150;
-        const heditor = parent.window.innerHeight - bottomMargin;
-        
-        CKEDITOR.replace('contenido', {
-            toolbar: [
-                { name: 'basicstyles', items: [ 'Bold', 'Italic' ] },
-                { name: 'paragraph',   items: [ 'BulletedList', 'NumberedList' ] },
-                { name: 'links',       items: [ 'Link', 'Unlink' ] }
-            ],
-            height: heditor,
-            removePlugins: 'elementspath,autogrow',
-            allowedContent: true,
-            extraAllowedContent: 'ins[*];del[*]',
-            readOnly: true,
-            contentsCss: [
-                CKEDITOR.basePath + 'contents.css',
-                CKEDITOR.basePath + 'contents-diff.css',
-                CKEDITOR.basePath + 'pastefromword.css'
-            ],
-            bodyClass: 'document-editor',
-        });        
-    });
-</script>
+    <script type="text/javascript">
+        jQuery(document).ready(function()
+        {
+            const bottomMargin = 150;
+            const heditor = parent.window.innerHeight - bottomMargin;
+
+            CKEDITOR.replace('contenido', {
+                toolbar: [
+                    { name: 'basicstyles', items: [ 'Bold', 'Italic' ] },
+                    { name: 'paragraph',   items: [ 'BulletedList', 'NumberedList' ] },
+                    { name: 'links',       items: [ 'Link', 'Unlink' ] }
+                ],
+                height: heditor,
+                removePlugins: 'elementspath,autogrow',
+                allowedContent: true,
+                extraAllowedContent: 'ins[*];del[*]',
+                readOnly: true,
+                contentsCss: [
+                    CKEDITOR.basePath + 'contents.css',
+                    CKEDITOR.basePath + 'contents-diff.css',
+                    CKEDITOR.basePath + 'pastefromword.css'
+                ],
+                bodyClass: 'document-editor',
+            });
+        });
+    </script>
+<?php } ?>
