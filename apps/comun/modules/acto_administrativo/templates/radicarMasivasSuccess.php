@@ -224,20 +224,18 @@
     </div>
 </div>
 
-<!-- Modal 2 (Custom Width)-->
-<div class="modal fade custom-width modal-lista-errores" id="modal-2" data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Lista Errores</h4>
-            </div>
-            
-            <div class="modal-body"></div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-red" data-dismiss="modal">Cerrar</button>
-            </div>
+<!-- Modal 2 (Lista Errores) - se abre via fancybox (tipo inline), igual que Configurar Flujo -->
+<div id="modal-2" class="modal-lista-errores" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" onclick="jQuery.CloseModalSIMAD();" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Lista Errores</h4>
+        </div>
+
+        <div class="modal-body"></div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-red" onclick="jQuery.CloseModalSIMAD();">Cerrar</button>
         </div>
     </div>
 </div>

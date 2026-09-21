@@ -817,7 +817,15 @@ jQuery(document).ready(function ($) {
 					items += '<li style="word-wrap: break-word;">' + item + '</li>';
 				});
 				$('#' + modal_name + ' .modal-body').append("<ul>" + items + "</ul>");
-				$('#' + modal_name).modal('show', { backdrop: 'static' });
+				$.fancybox.open({
+					href: '#' + modal_name,
+					type: 'inline',
+					autoSize: true,
+					closeClick: false,
+					helpers: {
+						overlay: { closeClick: false }
+					}
+				});
 			}
 		} catch (err) {
 			$.CloseLoadingStructData();

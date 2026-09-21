@@ -1445,18 +1445,15 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
     font-size: 9px;
 }
 
-/* Modal "Lista Errores" de radicacion masiva: mantiene cabecera y pie visibles,
-   con scroll interno solo en el cuerpo cuando hay muchos errores. */
-.modal-lista-errores .modal-dialog {
-    width: 60%;
-    margin: 60px auto;
+/* Modal "Lista Errores" de radicacion masiva: contenido abierto via fancybox
+   (tipo inline), fancybox se encarga de centrar y del overlay; aqui solo se
+   limita la altura del cuerpo para que la cabecera y el pie sean siempre visibles. */
+.modal-lista-errores {
+    width: 600px;
+    max-width: 90vw;
 }
 .modal-lista-errores .modal-body {
-    max-height: 60vh;
+    max-height: 55vh;
     overflow-y: auto;
-}
-@media (max-width: 768px) {
-    .modal-lista-errores .modal-dialog {
-        width: 94%;
-    }
+    padding: 15px;
 }
