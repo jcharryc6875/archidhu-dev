@@ -824,6 +824,8 @@ jQuery(document).ready(function ($) {
 					width: '50%',
 					height: '50%',
 					autoSize: false,
+					padding: 0,
+					closeBtn: false,
 
 					helpers: {
 						overlay: { closeClick: false }

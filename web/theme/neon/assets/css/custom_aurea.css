@@ -1449,11 +1449,15 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
    (tipo inline), fancybox se encarga de centrar y del overlay; aqui solo se
    limita la altura del cuerpo para que la cabecera y el pie sean siempre visibles. */
 .modal-lista-errores {
-    width: 600px;
-    max-width: 90vw;
+    height: 100%;
+}
+.modal-lista-errores .modal-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 .modal-lista-errores .modal-body {
-    max-height: 55vh;
+    flex: 1;
     overflow-y: auto;
     padding: 15px;
 }
