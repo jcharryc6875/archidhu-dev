@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Skeleton subclass for representing a row from the 'ACTO_ADMINISTRATIVO' table.
  *
@@ -32,15 +33,15 @@ class ActoAdministrativo extends BaseActoAdministrativo
     {
         $area_codigo = trim($this->getDependencia()->getCodigo());
         $subserie_cons = trim($this->getSubserieId());
-        return $area_codigo.'_'.$subserie_cons.'_'.trim($this->getNumeroResolucion()).'_'.$this->getFechaCreacion("Y");
+        return $area_codigo . '_' . $subserie_cons . '_' . trim($this->getNumeroResolucion()) . '_' . $this->getFechaCreacion("Y");
     }
 
     public function getRadicadoCompuesto()
     {
-        if(!in_array($this->getEstadoactoadministrativoId(),array(1,2,3,4))){
+        if (!in_array($this->getEstadoactoadministrativoId(), array(1, 2, 3, 4))) {
             $area_codigo = trim($this->getDependencia()->getCodigo());
-            return $this->getFechaCreacion("Y").'-'.$area_codigo.'-'.trim($this->getNumeroResolucion());
-        }else{
+            return $this->getFechaCreacion("Y") . '-' . $area_codigo . '-' . trim($this->getNumeroResolucion());
+        } else {
             return "Sin Radicar";
         }
     }
@@ -48,24 +49,24 @@ class ActoAdministrativo extends BaseActoAdministrativo
     public function getPathImageDigitByCom()
     {
         try {
-            $digitDocumentFile = "";		
+            $digitDocumentFile = "";
             $dirRaiz = ParametroPeer::retrieveByPk(75)->getValortexto();
             $dir_adj_object  = ParametroPeer::retrieveByPk(76)->getValortexto();
-            $extensions = explode(";",ParametroPeer::retrieveByPk(31)->getValortexto());
+            $extensions = explode(";", ParametroPeer::retrieveByPk(31)->getValortexto());
             $periodo_com =  $this->getPeriodoId();
             //******************************************************************************************
             $directorio_raiz = $dirRaiz;
             $entidad_text = trim($this->getRegional()->getEntidad()->getDirectorioName());
             $regional_text = trim($this->getRegional()->getDirectorioName());
-            $entidad_text = empty($entidad_text) ? "" : (empty($regional_text) ?  $entidad_text : $entidad_text.'/'.$regional_text);
-            $directorio_entidad = empty($entidad_text) ? $directorio_raiz : $directorio_raiz.$entidad_text."/";
-            $directorio_com = $dir_adj_object."/".$periodo_com."/";
-            $directorio_final = $directorio_entidad.$directorio_com;
-			$file_name = $this->getRadicadoCustom();
+            $entidad_text = empty($entidad_text) ? "" : (empty($regional_text) ?  $entidad_text : $entidad_text . '/' . $regional_text);
+            $directorio_entidad = empty($entidad_text) ? $directorio_raiz : $directorio_raiz . $entidad_text . "/";
+            $directorio_com = $dir_adj_object . "/" . $periodo_com . "/";
+            $directorio_final = $directorio_entidad . $directorio_com;
+            $file_name = $this->getRadicadoCustom();
             //******************************************************************************************			
-            foreach($extensions as $format){
-                if(file_exists($directorio_final.$file_name.'.'.$format)){
-                    $digitDocumentFile = $directorio_final.$file_name.'.'.$format;
+            foreach ($extensions as $format) {
+                if (file_exists($directorio_final . $file_name . '.' . $format)) {
+                    $digitDocumentFile = $directorio_final . $file_name . '.' . $format;
                     break;
                 }
             }
@@ -78,40 +79,41 @@ class ActoAdministrativo extends BaseActoAdministrativo
         return $digitDocumentFile;
     }
 
-    public function getUriImageDigitById(){
+    public function getUriImageDigitById()
+    {
         $response_process = array('status' => 400, 'message' => 'Error interno del servidor');
         $base_web = sfConfig::get('base_simad');
         //**********************************************************************************************
         try {
             $file_name = $this->getRadicadoCustom();
-			
+
             $digitDocumentFile = $this->getPathImageDigitByCom();
             $existe_file = empty($digitDocumentFile) ? false : true;
             //******************************************************************************************
-            if($existe_file){
+            if ($existe_file) {
                 $extension = pathinfo($digitDocumentFile, PATHINFO_EXTENSION);
-                $filename_tmp = md5($file_name.time()).'.'.$extension;
-                $pathtmp = sfConfig::get('sf_web_dir'). DIRECTORY_SEPARATOR .'tmp'. DIRECTORY_SEPARATOR . $filename_tmp;
+                $filename_tmp = md5($file_name . time()) . '.' . $extension;
+                $pathtmp = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $filename_tmp;
                 if (copy($digitDocumentFile, $pathtmp)) {
-                    $url_viewer = $base_web.'/tmp/'.$filename_tmp;
-                    if(strtolower($extension) == 'pdf'){
-                        $url_viewer = $base_web.'/viewerEx.php?fileview='.$filename_tmp;
-                        if($this->getEstadoactoadministrativoId() == 4){
+                    $url_viewer = $base_web . '/tmp/' . $filename_tmp;
+                    if (strtolower($extension) == 'pdf') {
+                        $url_viewer = $base_web . '/viewerEx.php?fileview=' . $filename_tmp;
+                        if ($this->getEstadoactoadministrativoId() == 4) {
                             $tanulado = "DOCUMENTO ANULADO";
                             $fanulado = $this->getFechaDeAnulacion();
                             $pdfTools = new PdfTools();
-                            $fnewTmp = $pdfTools->setPdfWatherMark($pathtmp,$tanulado,$fanulado);
-                            $url_viewer = $base_web.'/viewerEx.php?fileview='.$fnewTmp;
+                            $fnewTmp = $pdfTools->setPdfWatherMark($pathtmp, $tanulado, $fanulado);
+                            $url_viewer = $base_web . '/viewerEx.php?fileview=' . $fnewTmp;
                         }
                         //*******************************************************************************
                         $response_process = array('status' => 200, 'message' => 'Archivo generado y enviado para visualización', 'url_file' => $url_viewer);
-                    }else{
+                    } else {
                         $response_process = array('status' => 200, 'message' => 'Archivo generado y enviado para visualización', 'url_file' => $url_viewer);
                     }
-                }else{
+                } else {
                     $response_process['message'] = 'Ocurrio un error con el archivo o este no existe en el servidor';
                 }
-            }else{
+            } else {
                 $response_process['message'] = 'Ocurrio un error con el archivo o este no existe en el servidor';
             }
         } catch (PropelException $th) {
@@ -123,229 +125,239 @@ class ActoAdministrativo extends BaseActoAdministrativo
         return $response_process;
     }
 
-    public function getBasicUrlDigitCom($dir_raiz,$digit_com)
-	{
-		$array_url = array();
-		//*****************************************************************************************
-		$usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    public function getBasicUrlDigitCom($dir_raiz, $digit_com)
+    {
+        $array_url = array();
+        //*****************************************************************************************
+        $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $entidad_conectado = sfContext::getInstance()->getUser()->getAttribute('entidad_id', '', 'subscriber');
         $regional_conectado = sfContext::getInstance()->getUser()->getAttribute('regional_id', '', 'subscriber');
-		//*****************************CREANDO ESTRUCTURA DE DIRECTORIOS***************************
+        //*****************************CREANDO ESTRUCTURA DE DIRECTORIOS***************************
         $folder_entidad = trim($this->getRegional()->getEntidad()->getDirectorioName());
         $folder_regional = trim($this->getRegional()->getDirectorioName());
         //*****************************************************************************************
         $periodo = $this->getPeriodoId();
-		$entidad_text = $folder_entidad ? $folder_entidad : "";
-		$entidad_text = $entidad_text ? ($folder_regional ? $entidad_text.DIRECTORY_SEPARATOR.$folder_regional : $entidad_text) : $folder_regional;
-        $basic_path = $dir_raiz . $entidad_text .DIRECTORY_SEPARATOR. $digit_com .DIRECTORY_SEPARATOR. $periodo;
-		//*****************************************************************************************
-        $basic_path = preg_replace("#/+#",DIRECTORY_SEPARATOR,$basic_path);
-		$array_url['storage_path'] = simad_util::createPath($basic_path);
-		//*****************************************************************************************
-		return $array_url;
-	}
-    
-	/**
+        $entidad_text = $folder_entidad ? $folder_entidad : "";
+        $entidad_text = $entidad_text ? ($folder_regional ? $entidad_text . DIRECTORY_SEPARATOR . $folder_regional : $entidad_text) : $folder_regional;
+        $basic_path = $dir_raiz . $entidad_text . DIRECTORY_SEPARATOR . $digit_com . DIRECTORY_SEPARATOR . $periodo;
+        //*****************************************************************************************
+        $basic_path = preg_replace("#/+#", DIRECTORY_SEPARATOR, $basic_path);
+        $array_url['storage_path'] = simad_util::createPath($basic_path);
+        //*****************************************************************************************
+        return $array_url;
+    }
+
+    /**
      * objectActions::getUserIdComObjectByRol()
-    * funcion que devuelve el o los ids de los usuarios asignados a la comunicacion 
-    * @return mixed or single id
-    * @rol_id parametro que especifica el usuario con el rol a retornar, el valor cero retorna todos los roles
-    */ 
+     * funcion que devuelve el o los ids de los usuarios asignados a la comunicacion 
+     * @return mixed or single id
+     * @rol_id parametro que especifica el usuario con el rol a retornar, el valor cero retorna todos los roles
+     */
     public function getUserIdComObjectByRol($rol_id = 0)
     {
         $index = 0;
         $users_id = array();
         $object_usuarios = $this->getActoadministrativoUsuarios();
-        foreach ($object_usuarios as $object){
-            if($object->getRolusuarioactoadministvoId() == $rol_id){
+        foreach ($object_usuarios as $object) {
+            if ($object->getRolusuarioactoadministvoId() == $rol_id) {
                 return $object->getUsuarioId();
-            }elseif($rol_id == 0){
+            } elseif ($rol_id == 0) {
                 $users_id[$index] = $object->getUsuarioId();
                 $index++;
             }
         }
         return $users_id;
     }
-	
+
     /**
-    * objectActions::signDocumentProcess()
-    * Inicia proceso de firmado digital del documento, usando la integracion con alguno de los proveedores de firma digital
-    * @param bool $signAllPages indica que se debe adicionarse la firma visible en todas las paginas
-    * @return mixed array('httpStatus' => 200|400, 'message' => 'resultado de la operacion de firma')
-    */ 
-	public function signDocumentProcess($signAllPages = false)
+     * objectActions::signDocumentProcess()
+     * Inicia proceso de firmado digital del documento, usando la integracion con alguno de los proveedores de firma digital
+     * @param bool $signAllPages indica que se debe adicionarse la firma visible en todas las paginas
+     * @return mixed array('httpStatus' => 200|400, 'message' => 'resultado de la operacion de firma')
+     */
+    public function signDocumentProcess($signAllPages = false)
     {
-		try{
-            if(in_array($this->getEstadoactoadministrativoId(),array(6,9))){
+        try {
+            if (in_array($this->getEstadoactoadministrativoId(), array(6, 9))) {
                 return $this->signDocumentProcessAndes($signAllPages);
                 //return $this->singDocumentProcessGse($signAllPages);
-            }else{
+            } else {
                 return array('httpStatus' => 400, 'message' => 'Este radicado no se puede firmar(no cuenta con un consecutivo de radicación), esta anulado o es un borrador');
             }
-		} catch (\PropelException $ex) {
-            return array('httpStatus' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
-        }catch (\Throwable $th) {
+        } catch (\PropelException $ex) {
+            return array('httpStatus' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
+        } catch (\Throwable $th) {
             //throw $th;
             return array('httpStatus' => 400, 'message' => $th->getMessage());
         }
-	}
+    }
 
     /**
      * objectActions::signDocumentProcessAndes()
-    * firma la comunicacion digitalmente
-    * @param bool $signAllPages indica que se debe adicionarse la firma visible en todas las paginas
-    * @return mixed array('httpStatus' => 200|400, 'message' => 'resultado de la operacion de firma')
-    */ 
+     * firma la comunicacion digitalmente
+     * @param bool $signAllPages indica que se debe adicionarse la firma visible en todas las paginas
+     * @return mixed array('httpStatus' => 200|400, 'message' => 'resultado de la operacion de firma')
+     */
     public function signDocumentProcessAndes($signAllPages = false)
     {
-        try{
+        try {
             $firmaApi = new WsFirmaApiAndes();
             //***************************************************************************************************
             $dir_raiz   = ParametroPeer::retrieveByPk(75)->getValortexto();
             $digit_dir  = ParametroPeer::retrieveByPk(76)->getValortexto();
-            $filename   = sprintf("%s.%s",trim($this->getRadicadoCustom()),'pdf');
+            $filename   = sprintf("%s.%s", trim($this->getRadicadoCustom()), 'pdf');
             //***************************************************************************************************
             //$tempdir_firma = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.md5(date("YmdGis"));
             $ulist_firma = ActoadministrativoUsuarioPeer::getAllUserFirmaDigitalObj($this->getPrimaryKey());
             $isFirmaDigital = count($ulist_firma) ? true : false;
             //***************************************************************************************************
-            if(!empty($this->getUrlFileWord()) && file_exists($this->getUrlFileWord())){
-                $file_attach = $this->generatePdfByFile($this->getUrlFileWord(),true);
-            }else{
-                $margins = array('top' => 30,'left' => 20,'buttom' => 25,'rigth' => 18);
-                $file_attach = $this->generateFileInDisk($margins,$isFirmaDigital);
+            if (!empty($this->getUrlFileWord()) && file_exists($this->getUrlFileWord())) {
+                $file_attach = $this->generatePdfByFile($this->getUrlFileWord(), true);
+            } else {
+                $margins = array('top' => 30, 'left' => 20, 'buttom' => 25, 'rigth' => 18);
+                $file_attach = $this->generateFileInDisk($margins, $isFirmaDigital);
             }
             //***************************************************************************************************
-            if(file_exists($file_attach)){
-                $storage_com = $this->getBasicUrlDigitCom($dir_raiz,$digit_dir);
+            if (file_exists($file_attach)) {
+                $storage_com = $this->getBasicUrlDigitCom($dir_raiz, $digit_dir);
                 $targetpath = $storage_com['storage_path'] . DIRECTORY_SEPARATOR . $filename;
                 //***********************************************************************************************
-                $filesing = $file_attach;$response_list = array();
+                $filesing = $file_attach;
+                $response_list = array();
                 //***********************************************************************************************
-                if(WsFirmaApiAndes::SERVICE_ENABLE_WS){
-					if(count($ulist_firma) <= 0){
-						$this->setFirmadoDigital(4);//EL DOCUMENTO NO SE FIRMA DIGITAL
+                if (WsFirmaApiAndes::SERVICE_ENABLE_WS) {
+                    if (count($ulist_firma) <= 0) {
+                        $this->setFirmadoDigital(4); //EL DOCUMENTO NO SE FIRMA DIGITAL
                         $this->save();
                         //***************************************************************************************
                         $msg_info = 'Ninguno de los usuarios que firman la comunicaci&oacute;n tienen habilitada la firma digital';
                         //***************************************************************************************
-                        if(!rename($file_attach,$targetpath)){
+                        if (!rename($file_attach, $targetpath)) {
                             $msg_info = $msg_info . ", Ocurrio un error enviando el archivo al repositorio de actos administrativos";
                         }
                         //***************************************************************************************
-						return $response_process = array('httpStatus' => 400, 'message' => $msg_info);
-					}
-					//*******************************************************************************************
-                    if($signAllPages){
-                        //$filesing = $firmaApi->addSignVisbleAll($file_attach,$ulist_firma);
-                    }else{
-						//$filesing = simad_util::getConvertFileToB64($file_attach);
+                        return $response_process = array('httpStatus' => 400, 'message' => $msg_info);
                     }
                     //*******************************************************************************************
-					$Xc = 5;$Yc = 640;$Wc = 40;$Hc = 120;$fy1=100;
+                    if ($signAllPages) {
+                        //$filesing = $firmaApi->addSignVisbleAll($file_attach,$ulist_firma);
+                    } else {
+                        //$filesing = simad_util::getConvertFileToB64($file_attach);
+                    }
                     //*******************************************************************************************
-                    $isSingned = true;$ubicacionFirma = array('x' => $Xc,'y' => $Yc,'w' => $Wc,'h' => $Hc);
+                    $Xc = 5;
+                    $Yc = 640;
+                    $Wc = 40;
+                    $Hc = 120;
+                    $fy1 = 100;
+                    //*******************************************************************************************
+                    $isSingned = true;
+                    $ubicacionFirma = array('x' => $Xc, 'y' => $Yc, 'w' => $Wc, 'h' => $Hc);
                     foreach ($ulist_firma as $eufirma) {
                         $firma_info = $eufirma->getNombreApellido();
                         //***************************************************************************************
-                        $b64firma = sfConfig::get("sf_lib_dir").DIRECTORY_SEPARATOR.'efirma'.DIRECTORY_SEPARATOR.WsFirmaApiAndes::FIRMA_VISIBLE_IMAGE;
-						//***************************************************************************************
-                        $response_sing = $firmaApi->documentWsApiFirmaAndes($eufirma->getLoginFirma(),base64_decode($eufirma->getPassFirma()),$filesing,$targetpath,$b64firma,$ubicacionFirma);
+                        $b64firma = sfConfig::get("sf_lib_dir") . DIRECTORY_SEPARATOR . 'efirma' . DIRECTORY_SEPARATOR . WsFirmaApiAndes::FIRMA_VISIBLE_IMAGE;
+                        //***************************************************************************************
+                        $response_sing = $firmaApi->documentWsApiFirmaAndes($eufirma->getLoginFirma(), base64_decode($eufirma->getPassFirma()), $filesing, $targetpath, $b64firma, $ubicacionFirma);
                         //***************************************************************************************
                         $response_list[] = array('error' => $response_sing['error'], 'mesagge' => $response_sing['msg_info'], 'usuario' => $firma_info);
-                        if(!$response_sing['error']){
-                            $Yc = ($Yc-$fy1);
+                        if (!$response_sing['error']) {
+                            $Yc = ($Yc - $fy1);
                             //***********************************************************************************
                             $filesing = $response_sing['filesing'];
-							$ubicacionFirma = array('x' => $Xc,'y' => $Yc,'w' => $Wc,'h' => $Hc);
-                        }else{
+                            $ubicacionFirma = array('x' => $Xc, 'y' => $Yc, 'w' => $Wc, 'h' => $Hc);
+                        } else {
                             $isSingned = false;
                             break;
                         }
                     }
                     //*******************************************************************************************
-					if(!is_file($response_sing['filesing'])){
-						if($isSingned){ $isSingned = simad_util::getConvertB64ToFile($response_sing['filesing'],$targetpath); }
-					}
+                    if (!is_file($response_sing['filesing'])) {
+                        if ($isSingned) {
+                            $isSingned = simad_util::getConvertB64ToFile($response_sing['filesing'], $targetpath);
+                        }
+                    }
                     //*******************************************************************************************
-                    if($isSingned){
+                    if ($isSingned) {
                         $singOnMsg = 'Documento firmado existosamente!';
-						$this->setEstadodigitalizacionId(2);
-                        $this->setFirmadoDigital(1);//FIRMA EXITOSA
+                        $this->setEstadodigitalizacionId(2);
+                        $this->setFirmadoDigital(1); //FIRMA EXITOSA
                         $this->save();
                         //***************************************************************************************
                         $response_process = array('httpStatus' => 200, 'message' => $singOnMsg);
-                    }else{
-                        $this->setFirmadoDigital(3);//ERROR SERVIDOR PROVEEDOR FIRMA
+                    } else {
+                        $this->setFirmadoDigital(3); //ERROR SERVIDOR PROVEEDOR FIRMA
                         $this->save();
                         //***************************************************************************************
                         $singOnMsg = 'Ocurrio un error con el proveedor de firma digital(error de archivo), el documento no se firmo!';
                         //***************************************************************************************
-                        if(!rename($file_attach,$targetpath)){
+                        if (!rename($file_attach, $targetpath)) {
                             $singOnMsg = $singOnMsg . ", Ocurrio un error enviando el archivo al repositorio de actos administrativos";
                         }
                         //***************************************************************************************
                         foreach ($response_list as $item_error) {
-                            if($item_error['error']){
-                                $singOnMsg .= ", ".$item_error['mesagge'];
+                            if ($item_error['error']) {
+                                $singOnMsg .= ", " . $item_error['mesagge'];
                             }
                         }
                         //***************************************************************************************
                         $response_process = array('httpStatus' => 400, 'message' => $singOnMsg);
                     }
                     //*******************************************************************************************
-                }else{
+                } else {
                     $response_process = array('httpStatus' => 400, 'message' => 'El servicio de firma digital no esta habilitado');
                 }
-            }else{
+            } else {
                 $response_process = array('httpStatus' => 400, 'message' => 'Error al generar el archivo pdf');
             }
             //***************************************************************************************************
-            if(file_exists($file_attach)){ unlink($file_attach); }
+            if (file_exists($file_attach)) {
+                unlink($file_attach);
+            }
             return $response_process;
-		} catch (PropelException $ex) {
-            return array('httpStatus' => 400, 'message' => 'Error(PropelException) interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
+        } catch (PropelException $ex) {
+            return array('httpStatus' => 400, 'message' => 'Error(PropelException) interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $ex) {
-            return array('httpStatus' => 400, 'message' => 'Error(Exception) interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
-        }catch (\Throwable $th) {
-            return array('httpStatus' => 400, 'message' => 'Error(Throwable) interno del servidor, Por favor comuniquese con el administrador,'.$th->getMessage());
+            return array('httpStatus' => 400, 'message' => 'Error(Exception) interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
+        } catch (\Throwable $th) {
+            return array('httpStatus' => 400, 'message' => 'Error(Throwable) interno del servidor, Por favor comuniquese con el administrador,' . $th->getMessage());
         }
     }
 
     /**
-    * objectActions::generatePdfByFile()
-    * genera un archivo pdf teniendo como base un documento de word cargado previamente
-    * @return string ruta al archivo pdf generado
-    * @param inputFileName string ruta absoluta al archivo de word
-    * @param returnFullPath bool indica si retorna la ruta absoluta o unicamente el nombre al archivo pdf generado
-    * @param deleteFile bool indica si los archivos temporales utilizados
-    */
+     * objectActions::generatePdfByFile()
+     * genera un archivo pdf teniendo como base un documento de word cargado previamente
+     * @return string ruta al archivo pdf generado
+     * @param inputFileName string ruta absoluta al archivo de word
+     * @param returnFullPath bool indica si retorna la ruta absoluta o unicamente el nombre al archivo pdf generado
+     * @param deleteFile bool indica si los archivos temporales utilizados
+     */
     public function generatePdfByFile($inputFileName, $returnFullPath = false, $deleteFile = false)
     {
-		$typefile = strtolower(pathinfo($inputFileName, PATHINFO_EXTENSION));
-        if($typefile == 'pdf'){
-            return $this->readPdfAndGenPdf($inputFileName,$returnFullPath,$deleteFile);
-        }elseif($typefile == 'doc' || $typefile == 'docx'){
+        $typefile = strtolower(pathinfo($inputFileName, PATHINFO_EXTENSION));
+        if ($typefile == 'pdf') {
+            return $this->readPdfAndGenPdf($inputFileName, $returnFullPath, $deleteFile);
+        } elseif ($typefile == 'doc' || $typefile == 'docx') {
             $key_config = simad_util::readConfigFileApp(array('strategy_gen_word_to_pdf'));
             $word_to_pdf = isset($key_config['strategy_gen_word_to_pdf']) ? trim($key_config['strategy_gen_word_to_pdf']) : "PhpWord";
             //***************************************************************************
-            if($word_to_pdf == "PhpWord")
-                return $this->readPlantillaWordAndGenPdf($inputFileName,$returnFullPath,$deleteFile);
+            if ($word_to_pdf == "PhpWord")
+                return $this->readPlantillaWordAndGenPdf($inputFileName, $returnFullPath, $deleteFile);
             else
                 return $this->readDocWordAndGenPdf($inputFileName, $returnFullPath, $deleteFile);
-        }else{
+        } else {
             return null;
         }
     }
 
     public function readPdfAndGenPdf($inputFileName, $returnFullPath = false, $deleteFile = false)
     {
-        require_once(sfConfig::get('sf_lib_dir').'/PdfTools/fpdf/fpdf.php');
-		require_once(sfConfig::get('sf_lib_dir').'/PdfTools/fpdi/autoload.php');
-        require_once(sfConfig::get('sf_lib_dir').'/PdfTools/fpdi/PDF-Parser-1.5/autoload.php');
+        require_once(sfConfig::get('sf_lib_dir') . '/PdfTools/fpdf/fpdf.php');
+        require_once(sfConfig::get('sf_lib_dir') . '/PdfTools/fpdi/autoload.php');
+        require_once(sfConfig::get('sf_lib_dir') . '/PdfTools/fpdi/PDF-Parser-1.5/autoload.php');
         /*require_once(sfConfig::get('sf_lib_dir').'/PdfTools/fpdi/Fpdi.php');*/
         //**********************************************************************************************
-        $tmp_dir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp';
+        $tmp_dir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
         $directorio_tmp = simad_util::createPath($tmp_dir);
         $source_filename = pathinfo($inputFileName, PATHINFO_FILENAME);
         $target_dir = md5(date("YmdGis"));
@@ -354,10 +366,10 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $ini_array = simad_util::readConfigFileApp($read_sections);
         $genQR = isset($ini_array['acto_administrativo_sticker']) ? $ini_array['acto_administrativo_sticker'] : 'CODEBAR';
         //**********************************************************************************************
-        if (trim($inputFileName)){
+        if (trim($inputFileName)) {
             try {
-                $pathToSave = simad_util::createPath($directorio_tmp.DIRECTORY_SEPARATOR.$target_dir);
-                $codebar = $tmp_dir.DIRECTORY_SEPARATOR.$this->generateImgCodeCom(array('clearlabels' => true));
+                $pathToSave = simad_util::createPath($directorio_tmp . DIRECTORY_SEPARATOR . $target_dir);
+                $codebar = $tmp_dir . DIRECTORY_SEPARATOR . $this->generateImgCodeCom(array('clearlabels' => true));
                 //**************************************************************************************
                 // initiate FPDI
                 $pdf = new Fpdi();
@@ -372,63 +384,63 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 $pdf->AddPage();
                 // use the imported page and place it at point 10,10 with a width of 100 mm
                 $pdf->useTemplate($tplId, null, null, null, null, true);
-                $pdf->SetFont('Arial','B',7);
+                $pdf->SetFont('Arial', 'B', 7);
                 //**************************************************************************************
-                if($genQR == "CODEBAR"){
+                if ($genQR == "CODEBAR") {
                     $pdf->Cell(0, 10, "F-OAP-018-CAR", 0, 0, 'R');
                     $pdf->Ln($ptln);
                 }
                 //**************************************************************************************
-                if($genQR == "CODEBAR"){
-                    $pdf->Cell(0, 10, $pdf->Image($codebar,157.5,16.5,0,0,'png'), 0, 0, 'R');
-                }elseif($genQR == "QR"){
-                    $imgW = 15;// ancho del QR en mm
+                if ($genQR == "CODEBAR") {
+                    $pdf->Cell(0, 10, $pdf->Image($codebar, 157.5, 16.5, 0, 0, 'png'), 0, 0, 'R');
+                } elseif ($genQR == "QR") {
+                    $imgW = 15; // ancho del QR en mm
                     $y    = 10.5;
                     //**********************************************************************************
                     $x = $pdf->GetPageWidth() - $imgW - 10; // 5 mm del borde
                     //**********************************************************************************
                     $pdf->Cell(0, 10, $pdf->Image($codebar, $x, $y, $imgW, 0, 'PNG'), 0, 0, 'R');
-                    $pdf->Ln($ptln+6);
-                    $pdf->SetFont('Arial','B',4);
-                    $pdf->Cell(0, 10, "Rad No.: ".$this->getRadicadoCompuesto(), 0, 0, 'R');
-                }else{
-                    $pdf->Cell(0, 10, $pdf->Image($codebar,157.5,16.5,0,0,'png'), 0, 0, 'R');
+                    $pdf->Ln($ptln + 6);
+                    $pdf->SetFont('Arial', 'B', 4);
+                    $pdf->Cell(0, 10, "Rad No.: " . $this->getRadicadoCompuesto(), 0, 0, 'R');
+                } else {
+                    $pdf->Cell(0, 10, $pdf->Image($codebar, 157.5, 16.5, 0, 0, 'png'), 0, 0, 'R');
                 }
                 $pdf->Ln($ptln);
                 //**************************************************************************************
-                if($genQR == "CODEBAR"){
-                    $pdf->SetFont('Arial','B',8);
+                if ($genQR == "CODEBAR") {
+                    $pdf->SetFont('Arial', 'B', 8);
                     $pdf->Cell(0, 10, "Al contestar por favor cite estos datos:", 0, 0, 'R');
-                    $pdf->Ln($ptln-1);
-                    $pdf->SetFont('Arial','',8);
+                    $pdf->Ln($ptln - 1);
+                    $pdf->SetFont('Arial', '', 8);
                     $pdf->Cell(164, 10, "Radicado No.:", 0, 0, 'R');
-                    $pdf->SetFont('Arial','B',9);
+                    $pdf->SetFont('Arial', 'B', 9);
                     $pdf->Cell(0, 10, $this->getRadicadoCompuesto(), 0, 0, 'R');
-                    $pdf->Ln($ptln-1);
-                    $pdf->SetFont('Arial','',8);
+                    $pdf->Ln($ptln - 1);
+                    $pdf->SetFont('Arial', '', 8);
                     $pdf->Cell(154, 10, "Fecha:", 0, 0, 'R');
-                    $pdf->SetFont('Arial','',9);
+                    $pdf->SetFont('Arial', '', 9);
                     $pdf->Cell(0, 10, $this->getFechaCreacion("d/m/Y H:i:s A"), 0, 0, 'R');
                 }
                 //***************************************************************************************
-                for($pageNo = ($pageNo + 1); $pageNo <= $pagecount; $pageNo++){
+                for ($pageNo = ($pageNo + 1); $pageNo <= $pagecount; $pageNo++) {
                     $tplIdx = $pdf->importPage($pageNo);
                     //$size_unit = $pdf->getTemplateSize($tplIdx);
                     $pdf->AddPage();
                     $pdf->useTemplate($tplIdx, null, null, null, null, true);
                 }
                 //***************************************************************************************
-                $pdf->Output('F',$pathToSave.DIRECTORY_SEPARATOR.$source_filename.'.pdf');
-                $source_filename = $returnFullPath ? ($pathToSave.DIRECTORY_SEPARATOR.$source_filename).'.pdf' : ($target_dir.'/'.$source_filename.'.pdf');
-            } catch(Exception $e) {
+                $pdf->Output('F', $pathToSave . DIRECTORY_SEPARATOR . $source_filename . '.pdf');
+                $source_filename = $returnFullPath ? ($pathToSave . DIRECTORY_SEPARATOR . $source_filename) . '.pdf' : ($target_dir . '/' . $source_filename . '.pdf');
+            } catch (Exception $e) {
                 echo $e->getMessage();
                 $source_filename = null;
             }
-        }else{
+        } else {
             $source_filename = null;
         }
-		//echo $source_filename;exit;
-		//si hay un error al crear el pdf se debe controlar para mostrarle al usuario o tambien para retornar al web service
+        //echo $source_filename;exit;
+        //si hay un error al crear el pdf se debe controlar para mostrarle al usuario o tambien para retornar al web service
         //***********************************************************************************************
         return $source_filename;
     }
@@ -437,27 +449,27 @@ class ActoAdministrativo extends BaseActoAdministrativo
     {
         require_once sfConfig::get('sf_lib_dir') . '/PHPOffice/PHPWord/bootstrap.php';
         require_once sfConfig::get('sf_lib_dir') . '/PHPOffice/PHPWord/vendor/dompdf/autoload.inc.php';
-        $domPdfPath = realpath(sfConfig::get('sf_lib_dir') . '/PHPOffice/PHPWord/vendor/dompdf/src');      
-        Settings::setPdfRenderer( Settings::PDF_RENDERER_DOMPDF, $domPdfPath );
+        $domPdfPath = realpath(sfConfig::get('sf_lib_dir') . '/PHPOffice/PHPWord/vendor/dompdf/src');
+        Settings::setPdfRenderer(Settings::PDF_RENDERER_DOMPDF, $domPdfPath);
         //*************************************************************************************************************
-        $tmp_dir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp';
+        $tmp_dir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
         $directorio_tmp = simad_util::createPath($tmp_dir);
         //*************************************************************************************************************
-		$outFileName = md5(date("YmdGis"));
-        $pathToSave = $directorio_tmp.DIRECTORY_SEPARATOR.$outFileName;
+        $outFileName = md5(date("YmdGis"));
+        $pathToSave = $directorio_tmp . DIRECTORY_SEPARATOR . $outFileName;
         //*************************************************************************************************************
-        if (trim($inputFileName)){
+        if (trim($inputFileName)) {
             try {
-				$phpWord = \PhpOffice\PhpWord\IOFactory::load($inputFileName);
-                $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord , 'PDF');
-                $xmlWriter->save($pathToSave.'.pdf', true);
+                $phpWord = \PhpOffice\PhpWord\IOFactory::load($inputFileName);
+                $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'PDF');
+                $xmlWriter->save($pathToSave . '.pdf', true);
                 //*****************************************************************************************************
-                return $returnFullPath ? $pathToSave.'.pdf' : $outFileName.'.pdf';
-            } catch(Exception $e) {
+                return $returnFullPath ? $pathToSave . '.pdf' : $outFileName . '.pdf';
+            } catch (Exception $e) {
                 echo $e->getMessage();
                 return null;
             }
-        }else{
+        } else {
             return null;
         }
         //*************************************************************************************************************
@@ -472,17 +484,17 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //*************************************************************************************************************
         $outFileName = md5(date("YmdGis")) . '.pdf';
         $pathToSave = $directorio_tmp . DIRECTORY_SEPARATOR . $outFileName;
-        $temp_name = dirname($pathToSave).DIRECTORY_SEPARATOR.$path_info['filename'] . '.pdf';
+        $temp_name = dirname($pathToSave) . DIRECTORY_SEPARATOR . $path_info['filename'] . '.pdf';
         $replacement_images = array();
         //*************************************************************************************************************
         if (trim($inputFileName) && file_exists($inputFileName)) {
             try {
-                if(file_exists($temp_name)){
+                if (file_exists($temp_name)) {
                     unlink($temp_name);
                 }
                 //*****************************************************************************************************
                 $docxSalida = $tmp_dir . DIRECTORY_SEPARATOR . basename($inputFileName);
-                if(file_exists($docxSalida)){
+                if (file_exists($docxSalida)) {
                     @unlink($docxSalida);
                 }
                 //*****************************************************************************************************
@@ -501,7 +513,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 foreach ($ilfirmates_pks as $idx_firmante => $firmante_pk) {
                     $usuario_firmante = UsuarioPeer::retrieveByPK($firmante_pk);
                     $urlfmecanica_firmante = "";
-                    if(trim($this->getFirmaElectronica()) && (!in_array($this->getEstadoactoadministrativoId(),array(1,2,3,4)))){
+                    if (trim($this->getFirmaElectronica()) && (!in_array($this->getEstadoactoadministrativoId(), array(1, 2, 3, 4)))) {
                         $urlfmecanica_firmante = trim($usuario_firmante->getFirmaElectronica()) ? trim($usuario_firmante->getFirmaElectronica()) : '';
                     }
                     $firmantes_datos[] = array(
@@ -513,8 +525,8 @@ class ActoAdministrativo extends BaseActoAdministrativo
                     );
                 }
                 //*****************************************************************************************************
-                $tmp_codebar = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR;
-                $codebar_radicado = $tmp_codebar.simad_util::generateCodeBarInFile(trim($this->getRadicadoCompuesto()));
+                $tmp_codebar = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
+                $codebar_radicado = $tmp_codebar . simad_util::generateCodeBarInFile(trim($this->getRadicadoCompuesto()));
                 $replacement_images['CODEBAR_COM'] = ['path' => $codebar_radicado, 'wcm' => 150, 'hcm' => 40];
                 //*****************************************************************************************************
                 // Si hay mas de un firmante, se envuelve (sin que el usuario tenga que tocar su plantilla)
@@ -523,13 +535,17 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 // tiene ese bloque (o solo hay un firmante), se conserva el comportamiento historico.
                 $docxOrigenTpl = $inputFileName;
                 $bloqueFirmasInsertado = false;
-                if($cantidad_firmantes > 1){
-                    $docxConMarcadores = $tmp_dir . DIRECTORY_SEPARATOR . 'marcado_'.basename($inputFileName);
+                if ($cantidad_firmantes > 1) {
+                    $docxConMarcadores = $tmp_dir . DIRECTORY_SEPARATOR . 'marcado_' . basename($inputFileName);
                     $bloqueFirmasInsertado = DocxPlaceholderUtil::insertRepeatingBlockMarkers(
-                        $inputFileName, $docxConMarcadores, 'BLOQUE_FIRMAS',
-                        array('FIRMA_MECANICA','FIRMAS_NOMBRE','FIRMAS_CARGOS','FIRMAS_DEPENDENCIA','FIRMAS_REGIONAL')
+                        $inputFileName,
+                        $docxConMarcadores,
+                        'BLOQUE_FIRMAS',
+                        array('FIRMA_MECANICA', 'FIRMAS_NOMBRE', 'FIRMAS_CARGOS', 'FIRMAS_DEPENDENCIA', 'FIRMAS_REGIONAL')
                     );
-                    if($bloqueFirmasInsertado){ $docxOrigenTpl = $docxConMarcadores; }
+                    if ($bloqueFirmasInsertado) {
+                        $docxOrigenTpl = $docxConMarcadores;
+                    }
                 }
                 //*****************************************************************************************************
                 $datos = [
@@ -548,34 +564,33 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 ];
                 //*****************************************************************************************************
                 // Un solo firmante (o sin bloque duplicable en la plantilla): comportamiento historico, sin cambios.
-                if($cantidad_firmantes <= 1 || !$bloqueFirmasInsertado){
+                if ($cantidad_firmantes <= 1 || !$bloqueFirmasInsertado) {
                     $primer_firmante = $firmantes_datos[0];
                     $datos['FIRMAS_NOMBRE'] = $primer_firmante['FIRMAS_NOMBRE'];
                     $datos['FIRMAS_CARGOS'] = $primer_firmante['FIRMAS_CARGOS'];
                     $datos['FIRMAS_DEPENDENCIA'] = $primer_firmante['FIRMAS_DEPENDENCIA'];
                     $datos['FIRMAS_REGIONAL'] = $primer_firmante['FIRMAS_REGIONAL'];
-                    if(!empty($primer_firmante['FIRMA_MECANICA'])){
+                    if (!empty($primer_firmante['FIRMA_MECANICA'])) {
                         $replacement_images['FIRMA_MECANICA'] = ['path' => $primer_firmante['FIRMA_MECANICA'], 'wcm' => 120, 'hcm' => 80];
-                    }else{
+                    } else {
                         $datos['FIRMA_MECANICA'] = "";
                     }
                 }
                 //*****************************************************************************************************
-                if(isset($actlist_users['fmecanica_radicador']) && !empty($actlist_users['fmecanica_radicador'])){
+                if (isset($actlist_users['fmecanica_radicador']) && !empty($actlist_users['fmecanica_radicador'])) {
                     $replacement_images['RADICADOR_FMECANICA'] = ['path' => $actlist_users['fmecanica_radicador'], 'wcm' => 50, 'hcm' => 30];
-                }else{
+                } else {
                     $datos['RADICADOR_FMECANICA'] = "";
                 }
                 //*****************************************************************************************************
-                if(isset($actlist_users['fmecanica_creador']) && !empty($actlist_users['fmecanica_creador'])){
+                if (isset($actlist_users['fmecanica_creador']) && !empty($actlist_users['fmecanica_creador'])) {
                     $replacement_images['UPROYECTA_FMECANICA'] = ['path' => $actlist_users['fmecanica_creador'], 'wcm' => 50, 'hcm' => 30];
-                }else{
+                } else {
                     $datos['UPROYECTA_FMECANICA'] = "";
                 }
                 //*****************************************************************************************************
-                $com_destino = ActoAdministrativoPeer::getUserComByRol($this->getPrimaryKey(),6);
-                if(!empty($com_destino))
-                {	
+                $com_destino = ActoAdministrativoPeer::getUserComByRol($this->getPrimaryKey(), 6);
+                if (!empty($com_destino)) {
                     $datos['DESTINO_PREFIJO'] = $com_destino->getUsuario()->getPrefijo();
                     $datos['DESTINO_NOMBRE'] = $com_destino->getUsuario()->getNombreApellido();
                     $datos['DESTINO_FUNCIONARIO'] = "";
@@ -589,11 +604,11 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 // sola etiqueta con implode() — se perdia el cargo/area/firma individual de cada uno).
                 $gestores_count = isset($actlist_users['gestores_pkusers']) ? count($actlist_users['gestores_pkusers']) : 0;
                 $gestores_filas = array();
-                if($gestores_count > 0){
+                if ($gestores_count > 0) {
                     foreach ($actlist_users['gestores_pkusers'] as $idx_gestor => $pk_gestor) {
                         $cacto_gestuser = $actlist_users['gestores_uobjs'][$idx_gestor];
                         $fmecanica_gestor = '';
-                        if($cacto_gestuser->getEstaAprobado() && !empty($cacto_gestuser->getUsuario()->getFirmaElectronica())){
+                        if ($cacto_gestuser->getEstaAprobado() && !empty($cacto_gestuser->getUsuario()->getFirmaElectronica())) {
                             $fmecanica_gestor = trim($cacto_gestuser->getUsuario()->getFirmaElectronica());
                         }
                         $gestores_filas[] = array(
@@ -603,30 +618,30 @@ class ActoAdministrativo extends BaseActoAdministrativo
                             'APROBADOR_FMECANICA' => $fmecanica_gestor,
                         );
                     }
-                }else{
+                } else {
                     $datos['APROBADOR_NOMBRE'] = '';
                     $datos['APROBADOR_CARGO'] = '';
                     $datos['APROBADOR_AREA'] = '';
                     $datos['APROBADOR_FMECANICA'] = '';
                 }
-                if($gestores_count == 1){
+                if ($gestores_count == 1) {
                     $datos['APROBADOR_NOMBRE'] = $gestores_filas[0]['APROBADOR_NOMBRE'];
                     $datos['APROBADOR_CARGO'] = $gestores_filas[0]['APROBADOR_CARGO'];
                     $datos['APROBADOR_AREA'] = $gestores_filas[0]['APROBADOR_AREA'];
-                    if(!empty($gestores_filas[0]['APROBADOR_FMECANICA'])){
+                    if (!empty($gestores_filas[0]['APROBADOR_FMECANICA'])) {
                         $replacement_images['APROBADOR_FMECANICA'] = ['path' => $gestores_filas[0]['APROBADOR_FMECANICA'], 'wcm' => 50, 'hcm' => 30];
-                    }else{
+                    } else {
                         $datos['APROBADOR_FMECANICA'] = '';
                     }
                 }
                 //***********************************INICIA SECCION DE REVISORES**************************************
                 $revisores_count = isset($actlist_users['revisores_pkusers']) ? count($actlist_users['revisores_pkusers']) : 0;
                 $revisores_filas = array();
-                if($revisores_count > 0){
+                if ($revisores_count > 0) {
                     foreach ($actlist_users['revisores_pkusers'] as $idx_revisor => $pk_revisor) {
                         $cacto_revuser = $actlist_users['revisores_uobjs'][$idx_revisor];
                         $fmecanica_revisor = '';
-                        if($cacto_revuser->getEstaAprobado() && !empty($cacto_revuser->getUsuario()->getFirmaElectronica())){
+                        if ($cacto_revuser->getEstaAprobado() && !empty($cacto_revuser->getUsuario()->getFirmaElectronica())) {
                             $fmecanica_revisor = trim($cacto_revuser->getUsuario()->getFirmaElectronica());
                         }
                         $revisores_filas[] = array(
@@ -636,24 +651,24 @@ class ActoAdministrativo extends BaseActoAdministrativo
                             'REVISOR_FMECANICA' => $fmecanica_revisor,
                         );
                     }
-                }else{
+                } else {
                     $datos['REVISOR_NOMBRE'] = '';
                     $datos['REVISOR_CARGO'] = '';
                     $datos['REVISOR_AREA'] = '';
                     $datos['REVISOR_FMECANICA'] = '';
                 }
-                if($revisores_count == 1){
+                if ($revisores_count == 1) {
                     $datos['REVISOR_NOMBRE'] = $revisores_filas[0]['REVISOR_NOMBRE'];
                     $datos['REVISOR_CARGO'] = $revisores_filas[0]['REVISOR_CARGO'];
                     $datos['REVISOR_AREA'] = $revisores_filas[0]['REVISOR_AREA'];
-                    if(!empty($revisores_filas[0]['REVISOR_FMECANICA'])){
+                    if (!empty($revisores_filas[0]['REVISOR_FMECANICA'])) {
                         $replacement_images['REVISOR_FMECANICA'] = ['path' => $revisores_filas[0]['REVISOR_FMECANICA'], 'wcm' => 50, 'hcm' => 30];
-                    }else{
+                    } else {
                         $datos['REVISOR_FMECANICA'] = '';
                     }
                 }
                 //*******************************************************************************************************
-                $docxTpl = $tmp_dir . DIRECTORY_SEPARATOR . 'tpl_'.basename($inputFileName);
+                $docxTpl = $tmp_dir . DIRECTORY_SEPARATOR . 'tpl_' . basename($inputFileName);
                 DocxPlaceholderUtil::convertCurlyPlaceholdersToPhpWordTpl($docxOrigenTpl, $docxTpl);
                 //*******************************************************************************************************
                 $tpl = new TemplateProcessor($docxTpl);
@@ -663,35 +678,35 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 }
                 //*******************************************************************************************************
                 // Duplicar el bloque de firmantes (2 o mas) que se marco mas arriba con {[BLOQUE_FIRMAS]}
-                if($cantidad_firmantes > 1 && $bloqueFirmasInsertado){
+                if ($cantidad_firmantes > 1 && $bloqueFirmasInsertado) {
                     $tpl->cloneBlock('BLOQUE_FIRMAS', $cantidad_firmantes, true, true);
                     foreach ($firmantes_datos as $idx_firmante => $fila_firmante) {
                         $numero_firmante = $idx_firmante + 1;
-                        foreach (array('FIRMAS_NOMBRE','FIRMAS_CARGOS','FIRMAS_DEPENDENCIA','FIRMAS_REGIONAL') as $campo_firmante) {
-                            $tpl->setValue($campo_firmante.'#'.$numero_firmante, $fila_firmante[$campo_firmante]);
+                        foreach (array('FIRMAS_NOMBRE', 'FIRMAS_CARGOS', 'FIRMAS_DEPENDENCIA', 'FIRMAS_REGIONAL') as $campo_firmante) {
+                            $tpl->setValue($campo_firmante . '#' . $numero_firmante, $fila_firmante[$campo_firmante]);
                         }
-                        if(!empty($fila_firmante['FIRMA_MECANICA'])){
-                            $replacement_images['FIRMA_MECANICA#'.$numero_firmante] = ['path' => $fila_firmante['FIRMA_MECANICA'], 'wcm' => 120, 'hcm' => 80];
-                        }else{
-                            $tpl->setValue('FIRMA_MECANICA#'.$numero_firmante, '');
+                        if (!empty($fila_firmante['FIRMA_MECANICA'])) {
+                            $replacement_images['FIRMA_MECANICA#' . $numero_firmante] = ['path' => $fila_firmante['FIRMA_MECANICA'], 'wcm' => 120, 'hcm' => 80];
+                        } else {
+                            $tpl->setValue('FIRMA_MECANICA#' . $numero_firmante, '');
                         }
                     }
                 }
                 //*******************************************************************************************************
                 // Duplicar la fila de la tabla de gestores/aprobadores (2 o mas) — no requiere marcadores,
                 // PhpWord ubica los limites de la fila (<w:tr>...</w:tr>) automaticamente a partir de la etiqueta.
-                if($gestores_count > 1){
+                if ($gestores_count > 1) {
                     try {
                         $tpl->cloneRow('APROBADOR_NOMBRE', $gestores_count);
                         foreach ($gestores_filas as $idx_gestor => $fila_gestor) {
                             $numero_gestor = $idx_gestor + 1;
-                            $tpl->setValue('APROBADOR_NOMBRE#'.$numero_gestor, $fila_gestor['APROBADOR_NOMBRE']);
-                            $tpl->setValue('APROBADOR_CARGO#'.$numero_gestor, $fila_gestor['APROBADOR_CARGO']);
-                            $tpl->setValue('APROBADOR_AREA#'.$numero_gestor, $fila_gestor['APROBADOR_AREA']);
-                            if(!empty($fila_gestor['APROBADOR_FMECANICA'])){
-                                $replacement_images['APROBADOR_FMECANICA#'.$numero_gestor] = ['path' => $fila_gestor['APROBADOR_FMECANICA'], 'wcm' => 50, 'hcm' => 30];
-                            }else{
-                                $tpl->setValue('APROBADOR_FMECANICA#'.$numero_gestor, '');
+                            $tpl->setValue('APROBADOR_NOMBRE#' . $numero_gestor, $fila_gestor['APROBADOR_NOMBRE']);
+                            $tpl->setValue('APROBADOR_CARGO#' . $numero_gestor, $fila_gestor['APROBADOR_CARGO']);
+                            $tpl->setValue('APROBADOR_AREA#' . $numero_gestor, $fila_gestor['APROBADOR_AREA']);
+                            if (!empty($fila_gestor['APROBADOR_FMECANICA'])) {
+                                $replacement_images['APROBADOR_FMECANICA#' . $numero_gestor] = ['path' => $fila_gestor['APROBADOR_FMECANICA'], 'wcm' => 50, 'hcm' => 30];
+                            } else {
+                                $tpl->setValue('APROBADOR_FMECANICA#' . $numero_gestor, '');
                             }
                         }
                     } catch (\Exception $e) {
@@ -704,18 +719,18 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 }
                 //*******************************************************************************************************
                 // Duplicar la fila de la tabla de revisores (2 o mas), mismo mecanismo que gestores/aprobadores.
-                if($revisores_count > 1){
+                if ($revisores_count > 1) {
                     try {
                         $tpl->cloneRow('REVISOR_NOMBRE', $revisores_count);
                         foreach ($revisores_filas as $idx_revisor => $fila_revisor) {
                             $numero_revisor = $idx_revisor + 1;
-                            $tpl->setValue('REVISOR_NOMBRE#'.$numero_revisor, $fila_revisor['REVISOR_NOMBRE']);
-                            $tpl->setValue('REVISOR_CARGO#'.$numero_revisor, $fila_revisor['REVISOR_CARGO']);
-                            $tpl->setValue('REVISOR_AREA#'.$numero_revisor, $fila_revisor['REVISOR_AREA']);
-                            if(!empty($fila_revisor['REVISOR_FMECANICA'])){
-                                $replacement_images['REVISOR_FMECANICA#'.$numero_revisor] = ['path' => $fila_revisor['REVISOR_FMECANICA'], 'wcm' => 50, 'hcm' => 30];
-                            }else{
-                                $tpl->setValue('REVISOR_FMECANICA#'.$numero_revisor, '');
+                            $tpl->setValue('REVISOR_NOMBRE#' . $numero_revisor, $fila_revisor['REVISOR_NOMBRE']);
+                            $tpl->setValue('REVISOR_CARGO#' . $numero_revisor, $fila_revisor['REVISOR_CARGO']);
+                            $tpl->setValue('REVISOR_AREA#' . $numero_revisor, $fila_revisor['REVISOR_AREA']);
+                            if (!empty($fila_revisor['REVISOR_FMECANICA'])) {
+                                $replacement_images['REVISOR_FMECANICA#' . $numero_revisor] = ['path' => $fila_revisor['REVISOR_FMECANICA'], 'wcm' => 50, 'hcm' => 30];
+                            } else {
+                                $tpl->setValue('REVISOR_FMECANICA#' . $numero_revisor, '');
                             }
                         }
                     } catch (\Exception $e) {
@@ -731,17 +746,17 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 $imgreal_replacement = array();
                 foreach ($replacement_images as $key => $row) {
                     $pathreal = null;
-                    if(!is_file($row['path']) && !empty($row['path'])){
-                        $pathreal = simad_paths_app::resolveRelativePath($row['path'],$pathDefault);
-                    }else if(file_exists($row['path']) && !empty($row['path'])){
+                    if (!is_file($row['path']) && !empty($row['path'])) {
+                        $pathreal = simad_paths_app::resolveRelativePath($row['path'], $pathDefault);
+                    } else if (file_exists($row['path']) && !empty($row['path'])) {
                         $pathreal = $row['path'];
                     }
-                    
+
                     $imgreal_replacement[$key] = ['path' => $pathreal, 'wcm' => $row['wcm'], 'hcm' => $row['hcm']];
                 }
                 //*******************************************************************************************************
                 foreach ($imgreal_replacement as $img_key => $img_value) {
-                    if(file_exists($img_value['path'])){
+                    if (file_exists($img_value['path'])) {
                         $tpl->setImageValue($img_key, [
                             'path'   => $img_value['path'],
                             'width'  => $img_value['wcm'],
@@ -751,22 +766,22 @@ class ActoAdministrativo extends BaseActoAdministrativo
                     }
                 }
                 //*******************************************************************************************************
-                $docxFinal = $tmp_dir . DIRECTORY_SEPARATOR . 'convert_'.basename($inputFileName);
-                if(file_exists($docxFinal)){
+                $docxFinal = $tmp_dir . DIRECTORY_SEPARATOR . 'convert_' . basename($inputFileName);
+                if (file_exists($docxFinal)) {
                     @unlink($docxFinal);
                 }
 
                 $tpl->saveAs($docxFinal);
                 //*******************************************************************************************************
-                if(file_exists($docxFinal)){
+                if (file_exists($docxFinal)) {
                     unlink($docxSalida);
-                    rename($docxFinal,$docxSalida);
+                    rename($docxFinal, $docxSalida);
                 }
                 //*******************************************************************************************************
                 $soffice_cli = simad_util::libreOfficeCliPath();
                 //*******************************************************************************************************
                 $command = sprintf(
-                    $soffice_cli.' --headless --convert-to pdf --outdir %s %s',
+                    $soffice_cli . ' --headless --convert-to pdf --outdir %s %s',
                     escapeshellarg(dirname($pathToSave)),
                     escapeshellarg($docxSalida)
                 );
@@ -778,8 +793,8 @@ class ActoAdministrativo extends BaseActoAdministrativo
                     return null;
                 }
                 //*******************************************************************************************************
-                if(file_exists($temp_name)){
-                    @rename($temp_name,$pathToSave);
+                if (file_exists($temp_name)) {
+                    @rename($temp_name, $pathToSave);
                 }
                 //*******************************************************************************************************
                 return $returnFullPath ? $pathToSave : $outFileName;
@@ -794,18 +809,18 @@ class ActoAdministrativo extends BaseActoAdministrativo
         return $outFileName;
     }
 
-	/**
-    * objectActions::addNewAttachDocument()
-    * funcion para adjuntar un nuevo archivo al registro del acto administrativo
-    * @return mixed resultado proceso array('isError' => true|false, list_files => array('filename' => $file, 'info' => xxx, 'isError' => true|false))
-    * @files_new mixed lista con ruta de los arhivos adjuntos
-    * @userid_attach int usuario id que adjunta el documento
-    */
-    public function addNewAttachDocument($files_new = array(),$userid_attach = null)
+    /**
+     * objectActions::addNewAttachDocument()
+     * funcion para adjuntar un nuevo archivo al registro del acto administrativo
+     * @return mixed resultado proceso array('isError' => true|false, list_files => array('filename' => $file, 'info' => xxx, 'isError' => true|false))
+     * @files_new mixed lista con ruta de los arhivos adjuntos
+     * @userid_attach int usuario id que adjunta el documento
+     */
+    public function addNewAttachDocument($files_new = array(), $userid_attach = null)
     {
-        try{
+        try {
             $current_ruta = !empty($this->getRuta()) ? trim($this->getRuta()) : "";
-            $current_files = preg_split("/[,]+/",$current_ruta, -1, PREG_SPLIT_NO_EMPTY);
+            $current_files = preg_split("/[,]+/", $current_ruta, -1, PREG_SPLIT_NO_EMPTY);
             //********************************************************************************
             $rolu_proyecta = 1;
             $usuario_attach = !empty($userid_attach) ? UsuarioPeer::retrieveByPK($userid_attach) : null;
@@ -819,51 +834,51 @@ class ActoAdministrativo extends BaseActoAdministrativo
             //********************************************************************************
             $entidad_folder = $usuario->getRegional()->getEntidad()->getDirectorioName();
             $regional_folder = $usuario->getRegional()->getDirectorioName();
-            $entidad_text = $entidad_folder.'/'.$regional_folder;
+            $entidad_text = $entidad_folder . '/' . $regional_folder;
             $directorio_entidad = $dirRaiz . $entidad_text;
-            $directorio_com = $dir_object.'/'.($usuario_name);
-            $directorio_final = simad_util::NormalizePath($directorio_entidad.'/'.$directorio_com);
-            $dirextorio_alias = $alias_object . $entidad_text."/".$directorio_com;
+            $directorio_com = $dir_object . '/' . ($usuario_name);
+            $directorio_final = simad_util::NormalizePath($directorio_entidad . '/' . $directorio_com);
+            $dirextorio_alias = $alias_object . $entidad_text . "/" . $directorio_com;
             //********************************************************************************
             $isError = false;
             $list_state = array();
             //********************************************************************************
-            if(count($files_new)){
-                foreach($files_new as $nfile){
-                    try{            
-                        if(!empty($nfile)){
+            if (count($files_new)) {
+                foreach ($files_new as $nfile) {
+                    try {
+                        if (!empty($nfile)) {
                             $info_file = new SplFileInfo($nfile);
-                            $filename_new = uniqid().'_'.$simad_util->clean_name_fileinfo($info_file);
+                            $filename_new = uniqid() . '_' . $simad_util->clean_name_fileinfo($info_file);
                             //*********************************************************************
                             $path_source = $info_file->getRealPath();
-                            if(file_exists($path_source)){
-                                $path_target = simad_util::createPath($directorio_final). DIRECTORY_SEPARATOR. $filename_new;
-                                if(copy($path_source, $path_target)){
+                            if (file_exists($path_source)) {
+                                $path_target = simad_util::createPath($directorio_final) . DIRECTORY_SEPARATOR . $filename_new;
+                                if (copy($path_source, $path_target)) {
                                     $current_files[] = $dirextorio_alias . "/" . $filename_new;
                                     $list_state[] = array('filename' => $nfile, 'info' => 'El archivo se adjunto correctamente', 'isError' => false);
                                     unlink($path_source);
-                                }else{
+                                } else {
                                     $isError = true;
                                     $list_state[] = array('filename' => $nfile, 'info' => 'No fue posible copiar el archivo en la carpeta final');
                                 }
-                            }else{
+                            } else {
                                 $isError = true;
                                 $list_state[] = array('filename' => $nfile, 'info' => 'el archivo no se encontro en el servidor', 'isError' => true);
                             }
-                        }else{
+                        } else {
                             $isError = true;
                             $list_state[] = array('filename' => $nfile ? $nfile : 'null', 'info' => 'nombre del archivo no es valido o es nulo', 'isError' => true);
                         }
-                    }catch(Exception $ex){
+                    } catch (Exception $ex) {
                         $isError = true;
                         $list_state[] = array('filename' => $nfile, 'info' => $ex->getMessage(), 'isError' => true);
                     }
                 }
-            }else{
+            } else {
                 $isError = true;
             }
             //********************************************************************************
-            $this->setRuta(implode(",",$current_files));
+            $this->setRuta(implode(",", $current_files));
             $this->save();
         } catch (PropelException $ex) {
             $isError = true;
@@ -878,61 +893,77 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //********************************************************************************
         return array('isError' => $isError, 'list_state' => $list_state);
     }
-	
-	public function getUsuariosListCom()
+
+    public function getUsuariosListCom()
     {
         $list_users = array();
-        $firmas_list = array();$ilfirmas_names = array();$ilfirmas_ucargo = array();
-        $revisores_list = array();$ilrevisores_names = array();$ilrevisores_ucargo = array();$ilrevisores_uobjs = array();
-        $gestores_list = array();$ilgestores_names = array();$ilgestores_ucargo = array();$ilgestores_uobjs  = array();
-        $destino_list = array();$ildestino_names = array();$ildestino_ucargo = array();$ildestino_uobjs = array();
-        $usuario_asigando = array();$object_asignado = null;$ilfirmas_areas = array();
-        $ilfirmas_ncargos = array();$ilrevisores_ncargos = array();$ilgestores_ncargos = array();
-        $ilgestores_nareas = array();$ilrevisores_nareas = array();
+        $firmas_list = array();
+        $ilfirmas_names = array();
+        $ilfirmas_ucargo = array();
+        $revisores_list = array();
+        $ilrevisores_names = array();
+        $ilrevisores_ucargo = array();
+        $ilrevisores_uobjs = array();
+        $gestores_list = array();
+        $ilgestores_names = array();
+        $ilgestores_ucargo = array();
+        $ilgestores_uobjs  = array();
+        $destino_list = array();
+        $ildestino_names = array();
+        $ildestino_ucargo = array();
+        $ildestino_uobjs = array();
+        $usuario_asigando = array();
+        $object_asignado = null;
+        $ilfirmas_areas = array();
+        $ilfirmas_ncargos = array();
+        $ilrevisores_ncargos = array();
+        $ilgestores_ncargos = array();
+        $ilgestores_nareas = array();
+        $ilrevisores_nareas = array();
         //***********************************************************************************
-        try{
-            foreach($this->getActoadministrativoUsuarios() as $usuario_obj){
-                if($usuario_obj->getRolusuarioactoadministvoId() == 1){
+        try {
+            foreach ($this->getActoadministrativoUsuarios() as $usuario_obj) {
+                if ($usuario_obj->getRolusuarioactoadministvoId() == 1) {
                     $list_users['creador'] = $usuario_obj->getUsuario()->getNombreApellido();
                     $list_users['dependencia_creador'] = $usuario_obj->getUsuario()->getDependencia()->getNombre();
                     $list_users['cargo_creador'] = $usuario_obj->getCargoUsuario()->getCargo()->getDescripcion();
-                    if(!empty($usuario_obj->getUsuario()->getFirmaElectronica())){
+                    if (!empty($usuario_obj->getUsuario()->getFirmaElectronica())) {
                         //$list_users['fmecanica_creador'] = '<img src="'.trim($usuario_obj->getUsuario()->getFirmaElectronica()).'" height="40px" width="60px">';
                         $list_users['fmecanica_creador'] = trim($usuario_obj->getUsuario()->getFirmaElectronica());
-                    }else{
+                    } else {
                         $list_users['fmecanica_creador'] = '';
                     }
-                }elseif($usuario_obj->getRolusuarioactoadministvoId() == 2){//firmas
+                } elseif ($usuario_obj->getRolusuarioactoadministvoId() == 2) { //firmas
                     $ilfirmas_names[] = $usuario_obj->getUsuario()->getNombreApellido();
                     $firmas_list[] = $usuario_obj->getUsuarioId();
                     $ilfirmas_ucargo[] = $usuario_obj->getCargousuarioId();
                     $ilfirmas_areas[] = $usuario_obj->getUsuario()->getNombreDependencia();
                     $ilfirmas_ncargos[] = $usuario_obj->getCargoUsuario()->getCargo();
-                }elseif($usuario_obj->getRolusuarioactoadministvoId() == 3){//revisores
+                } elseif ($usuario_obj->getRolusuarioactoadministvoId() == 3) { //revisores
                     $ilrevisores_names[] = $usuario_obj->getUsuario()->getNombreApellido();
                     $revisores_list[] = $usuario_obj->getUsuarioId();
                     $ilrevisores_ucargo[] = $usuario_obj->getCargousuarioId();
                     $ilrevisores_uobjs[] = $usuario_obj;
                     $ilrevisores_ncargos[] = $usuario_obj->getCargoUsuario()->getCargo();
                     $ilrevisores_nareas[] = $usuario_obj->getUsuario()->getDependencia()->getNombre();
-                }elseif($usuario_obj->getRolusuarioactoadministvoId() == 4){//gestores                    
+                } elseif ($usuario_obj->getRolusuarioactoadministvoId() == 4) { //gestores                    
                     $ilgestores_names[] = $usuario_obj->getUsuario()->getNombreApellido();
                     $gestores_list[] = $usuario_obj->getUsuarioId();
                     $ilgestores_ucargo[] = $usuario_obj->getCargousuarioId();
                     $ilgestores_uobjs[] = $usuario_obj;
                     $ilgestores_ncargos[] = $usuario_obj->getCargoUsuario()->getCargo();
                     $ilgestores_nareas[] = $usuario_obj->getUsuario()->getDependencia()->getNombre();
-                }elseif($usuario_obj->getRolusuarioactoadministvoId() == 5){
+                } elseif ($usuario_obj->getRolusuarioactoadministvoId() == 5) {
                     $list_users['radicador'] = $usuario_obj->getUsuario()->getNombreApellido();
                     $list_users['dependencia_radicador'] = $usuario_obj->getUsuario()->getDependencia()->getNombre();
                     $list_users['fmecanica_radicador'] = trim($usuario_obj->getUsuario()->getFirmaElectronica());
                     $list_users['cargo_radicador'] = $usuario_obj->getCargoUsuario()->getCargo()->getDescripcion();
-                }elseif($usuario_obj->getRolusuarioactoadministvoId() == 6){//destinatario
+                } elseif ($usuario_obj->getRolusuarioactoadministvoId() == 6) { //destinatario
                     $ildestino_names[] = $usuario_obj->getUsuario()->getNombreApellido();
                     $destino_list[] = $usuario_obj->getUsuarioId();
                     $ildestino_ucargo[] = $usuario_obj->getCargousuarioId();
                     $ildestino_uobjs[] = $usuario_obj;
-                }elseif($usuario_obj->getRolusuarioactoadministvoId() == 7){//copias internas                    
+                } elseif ($usuario_obj->getRolusuarioactoadministvoId() == 7) { //copias internas                    
                     $ilcopias_names[] = $usuario_obj->getUsuario()->getNombreApellido();
                     $copias_list[] = $usuario_obj->getUsuarioId();
                     $ilcopias_ucargo[] = $usuario_obj->getCargousuarioId();
@@ -969,7 +1000,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 $list_users['destino_ucargo'] = $ildestino_ucargo;
                 $list_users['destino_uobjs'] = $ildestino_uobjs;
                 //****************************************************************************
-                if($usuario_obj->getEstaAsignada() == 1){
+                if ($usuario_obj->getEstaAsignada() == 1) {
                     $usuario_asigando[] = $usuario_obj->getUsuarioId();
                     $object_asignado = $usuario_obj;
                 }
@@ -988,34 +1019,37 @@ class ActoAdministrativo extends BaseActoAdministrativo
 
     public function getUsuariosListComIds($isArray = false)
     {
-        $list_users = array();$revisa_list = array();$firmas_list = array();$destino_list = array();
+        $list_users = array();
+        $revisa_list = array();
+        $firmas_list = array();
+        $destino_list = array();
         $gestiona_list = array();
-        foreach($this->getActoadministrativoUsuarios() as $usuario_com){
-            if($usuario_com->getRolusuarioactoadministvoId() == 1){
+        foreach ($this->getActoadministrativoUsuarios() as $usuario_com) {
+            if ($usuario_com->getRolusuarioactoadministvoId() == 1) {
                 $list_users['proyecta'] = $usuario_com->getUsuarioId();
-            }elseif($usuario_com->getRolusuarioactoadministvoId() == 2){
+            } elseif ($usuario_com->getRolusuarioactoadministvoId() == 2) {
                 $firmas_list[] = $usuario_com->getUsuarioId();
-            }elseif($usuario_com->getRolusuarioactoadministvoId() == 3){
+            } elseif ($usuario_com->getRolusuarioactoadministvoId() == 3) {
                 $revisa_list[] = $usuario_com->getUsuarioId();
-            }elseif($usuario_com->getRolusuarioactoadministvoId() == 4){
+            } elseif ($usuario_com->getRolusuarioactoadministvoId() == 4) {
                 $gestiona_list[] = $usuario_com->getUsuarioId();
-            }elseif($usuario_com->getRolusuarioactoadministvoId() == 5){
+            } elseif ($usuario_com->getRolusuarioactoadministvoId() == 5) {
                 $list_users['radicador'] = $usuario_com->getUsuarioId();
-            }elseif($usuario_com->getRolusuarioactoadministvoId() == 6){
+            } elseif ($usuario_com->getRolusuarioactoadministvoId() == 6) {
                 $destino_list[] = $usuario_com->getUsuarioId();
             }
             //**************************************************************************
-            $list_users['firmas'] = $isArray ? $firmas_list : implode(",",$firmas_list);
-            $list_users['revisores'] = $isArray ? $revisa_list : implode(",",$revisa_list);
-            $list_users['gestores'] = $isArray ? $gestiona_list : implode(",",$gestiona_list);
-            $list_users['destino'] = $isArray ? $destino_list : implode(",",$destino_list);
+            $list_users['firmas'] = $isArray ? $firmas_list : implode(",", $firmas_list);
+            $list_users['revisores'] = $isArray ? $revisa_list : implode(",", $revisa_list);
+            $list_users['gestores'] = $isArray ? $gestiona_list : implode(",", $gestiona_list);
+            $list_users['destino'] = $isArray ? $destino_list : implode(",", $destino_list);
         }
         //******************************************************************************
         return $list_users;
     }
 
-    public function getRutaAdjuntos($files_new,$is_files_old=false,$files_old_text="")
-	{
+    public function getRutaAdjuntos($files_new, $is_files_old = false, $files_old_text = "")
+    {
         $url_files = "";
         //********************************************************************************
         $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
@@ -1028,25 +1062,25 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
         $entidad_folder = $usuario->getRegional()->getEntidad()->getDirectorioName();
         $regional_folder = $usuario->getRegional()->getDirectorioName();
-        $entidad_text = $entidad_folder.'/'.$regional_folder;
+        $entidad_text = $entidad_folder . '/' . $regional_folder;
         $directorio_entidad = $dirRaiz . $entidad_text;
-        $directorio_com = $dir_object.'/'.($usuario_name) . "/";  	
-        $directorio_tmp = simad_util::NormalizePath($dirRaiz.$entidad_folder.DIRECTORY_SEPARATOR.$dirTmp.DIRECTORY_SEPARATOR);
-        $directorio_final = simad_util::NormalizePath($directorio_entidad.'/'.$directorio_com);
-        $dirextorio_alias = $alias_object . $entidad_text."/".$directorio_com;
+        $directorio_com = $dir_object . '/' . ($usuario_name) . "/";
+        $directorio_tmp = simad_util::NormalizePath($dirRaiz . $entidad_folder . DIRECTORY_SEPARATOR . $dirTmp . DIRECTORY_SEPARATOR);
+        $directorio_final = simad_util::NormalizePath($directorio_entidad . '/' . $directorio_com);
+        $dirextorio_alias = $alias_object . $entidad_text . "/" . $directorio_com;
         //********************************************************************************
-        if($is_files_old){
-            $files_adjuntos = preg_split("/[,]+/",$files_old_text, -1, PREG_SPLIT_NO_EMPTY);
-            $files_text = preg_split("/[,]+/",$files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for($j=0; $j < count($files_text); $j++){
+        if ($is_files_old) {
+            $files_adjuntos = preg_split("/[,]+/", $files_old_text, -1, PREG_SPLIT_NO_EMPTY);
+            $files_text = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
+            for ($j = 0; $j < count($files_text); $j++) {
                 $url = simad_util::strpos_array($files_text[$j], $files_adjuntos);
-                if(!is_null($url)){
+                if (!is_null($url)) {
                     $url_files .= $url . ",";
-                }else{
+                } else {
                     $file_name = basename($files_text[$j]);
                     $filenamesource = $directorio_tmp . $file_name;
                     $filenametarget = $directorio_final . $file_name;
-                    if(file_exists($filenamesource)){
+                    if (file_exists($filenamesource)) {
                         $directorio_final = simad_util::createPath($directorio_final);
                         copy($filenamesource, $filenametarget);
                         unlink($filenamesource);
@@ -1054,14 +1088,14 @@ class ActoAdministrativo extends BaseActoAdministrativo
                     }
                 }
             }
-        }else{
-            $files_adjuntos = preg_split("/[,]+/",$files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for($j=0; $j <= count($files_adjuntos); $j++){
-                if(trim($files_adjuntos[$j])){
+        } else {
+            $files_adjuntos = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
+            for ($j = 0; $j <= count($files_adjuntos); $j++) {
+                if (trim($files_adjuntos[$j])) {
                     $file_name = basename($files_adjuntos[$j]);
                     $filenamesource = $directorio_tmp . basename($files_adjuntos[$j]);
                     $filenametarget = $directorio_final . basename($files_adjuntos[$j]);
-                    if(file_exists($filenamesource)){
+                    if (file_exists($filenamesource)) {
                         $directorio_final = simad_util::createPath($directorio_final);
                         copy($filenamesource, $filenametarget);
                         unlink($filenamesource);
@@ -1074,36 +1108,36 @@ class ActoAdministrativo extends BaseActoAdministrativo
         return $url_files;
     }
 
-    public function generateFileInDisk($margins_list = null,$isFirmaDigital = false)
+    public function generateFileInDisk($margins_list = null, $isFirmaDigital = false)
     {
         $base_path = sfConfig::get('base_simad');
         //*********************************************************************************************
-        if($this->getPlantillascomId()){
-            if($this->getPlantillasCom()->getUseHeaders()){
+        if ($this->getPlantillascomId()) {
+            if ($this->getPlantillasCom()->getUseHeaders()) {
                 $this->generateFilePdf($isFirmaDigital);
-            }else{
+            } else {
                 $this->getFieldsMergeAll();
             }
-        }else{
+        } else {
             return null;
         }
         //*********************************************************************************************
-        $filedata = $this->getPrimaryKey().'.php';
-        $url_site = "http://".$_SERVER["HTTP_HOST"];
-        $url = $url_site.'/com_html/acto_administrativo/'.$filedata;
+        $filedata = $this->getPrimaryKey() . '.php';
+        $url_site = "http://" . $_SERVER["HTTP_HOST"];
+        $url = $url_site . '/com_html/acto_administrativo/' . $filedata;
         //*********************************************************************************************
         //MARGENES DE IMPRESION
-        if($margins_list == null){
+        if ($margins_list == null) {
             $margins_list['top'] = 30;
             $margins_list['left'] = 20;
             $margins_list['buttom'] = 25;
             $margins_list['rigth'] = 18;
         }
         //*********************************************************************************************
-        $filename = md5(date("YmdGis").$this->getPrimaryKey()).".pdf"; 
-        $dir_jar = sfConfig::get('sf_lib_dir').DIRECTORY_SEPARATOR.'pd4ml'.DIRECTORY_SEPARATOR.'pd4ml.jar';
-        $dir_font = sfConfig::get('sf_lib_dir').DIRECTORY_SEPARATOR.'pd4ml'.DIRECTORY_SEPARATOR.'fonts'.DIRECTORY_SEPARATOR;
-        $fullpath_source = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$filename;
+        $filename = md5(date("YmdGis") . $this->getPrimaryKey()) . ".pdf";
+        $dir_jar = sfConfig::get('sf_lib_dir') . DIRECTORY_SEPARATOR . 'pd4ml' . DIRECTORY_SEPARATOR . 'pd4ml.jar';
+        $dir_font = sfConfig::get('sf_lib_dir') . DIRECTORY_SEPARATOR . 'pd4ml' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR;
+        $fullpath_source = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $filename;
         //*********************************************************************************************
         $java = simad_util::getJavaJdkRoot();
         $format_page = "A4";
@@ -1111,70 +1145,72 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $font_use = "-ttf $dir_font";
         $adjustwidth = "-adjustwidth";
         //$margins = '-insets 10,23,8,17,mm';//superior=3,izquierda=3,inferior=2,derecha=2
-        $margins = '-insets '.$margins_list['top'].','.$margins_list['left'].','.$margins_list['buttom'].','.$margins_list['rigth'].',mm';
+        $margins = '-insets ' . $margins_list['top'] . ',' . $margins_list['left'] . ',' . $margins_list['buttom'] . ',' . $margins_list['rigth'] . ',mm';
         $outfile = "-out $fullpath_source";
         $orientation = "";
         //*********************************************************************************************
-        if($this->getPlantillasCom()->getUseMembrete()){
+        if ($this->getPlantillasCom()->getUseMembrete()) {
             $image_membrete = $this->getPlantillasCom()->getImageMembrete();
             //*****************************************************************************************
-            $filepath = "/images%sencabezado_carta%s".$image_membrete;
-            $web_path = sprintf($filepath,"/","/");            
-            $fullpath = sprintf($filepath,DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR);
-            $realpath = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.$fullpath;
-            if(file_exists($realpath)){
+            $filepath = "/images%sencabezado_carta%s" . $image_membrete;
+            $web_path = sprintf($filepath, "/", "/");
+            $fullpath = sprintf($filepath, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+            $realpath = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . $fullpath;
+            if (file_exists($realpath)) {
                 $watermark = "-bgimage " . $url_site . $web_path;
             }
         }
         //*********************************************************************************************
-        if ( strpos(php_uname(), 'Windows' ) !== FALSE) { 
+        if (strpos(php_uname(), 'Windows') !== FALSE) {
             $dir_jar = preg_replace('/\//', "\\", $dir_jar);
             $cmdline = "$java -Xmx512m -cp $dir_jar Pd4Cmd \"$url\" $size_point_page $format_page $orientation $margins $adjustwidth $watermark $font_use $outfile";
         } else {
             $font_use = "";
             $cmdline = "$java -XX:MaxHeapSize=8m -XX:CompressedClassSpaceSize=64m -XX:+UseSerialGC -Djava.awt.headless=true -cp $dir_jar Pd4Cmd \"$url\" $size_point_page $format_page $orientation $margins $adjustwidth $watermark $font_use $outfile";
-        }        
+        }
         //*********************************************************************************************
         //echo $cmdline;exit;
         shell_exec($cmdline);
         //*********************************************************************************************
-        if(file_exists($fullpath_source)){
+        if (file_exists($fullpath_source)) {
             return $fullpath_source;
-        }else{
+        } else {
             return null;
         }
     }
 
-    public function getFirstUsurioFirma($pkobj_id,$rol_id=2,$IsIdPk = true)
-    { 
+    public function getFirstUsurioFirma($pkobj_id, $rol_id = 2, $IsIdPk = true)
+    {
         // consultar firmante inicial
-        $c=  new Criteria();
+        $c =  new Criteria();
         $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID, $pkobj_id);
         $c->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID, $rol_id);
-        $result = ActoadministrativoUsuarioPeer::doSelect($c);    
+        $result = ActoadministrativoUsuarioPeer::doSelect($c);
         $cont = 0;
-        foreach($result as $res){
-            if($cont==0) { $firmante = $IsIdPk ? $res->getUsuarioId() : $res->getUsuario()->getFullNombre(); }
-            $cont=1;
+        foreach ($result as $res) {
+            if ($cont == 0) {
+                $firmante = $IsIdPk ? $res->getUsuarioId() : $res->getUsuario()->getFullNombre();
+            }
+            $cont = 1;
         }
-        return $firmante;        
+        return $firmante;
     }
 
     public function getRadicadoFormat()
-	{
-        $numero_radicado = ActoAdministrativoPeer::getNumeroRadicacion($this->getSubserieId(),$this->getDependenciaId(),$this->getPeriodoId());
-		$numero_resolucion = sprintf("%06d",$numero_radicado);
-        $this->setNumeroResolucion($numero_resolucion);        
-		//*******************************************************************************************************
-		return $numero_resolucion;
-	}
+    {
+        $numero_radicado = ActoAdministrativoPeer::getNumeroRadicacion($this->getSubserieId(), $this->getDependenciaId(), $this->getPeriodoId());
+        $numero_resolucion = sprintf("%06d", $numero_radicado);
+        $this->setNumeroResolucion($numero_resolucion);
+        //*******************************************************************************************************
+        return $numero_resolucion;
+    }
 
     /**
      * objectActions::addNewTransferenciaAndContenido()
-    * funcion para crear una transferencia automatica, crea el contenido documental
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => message)
-    */
-    public function addNewTransferenciaAndContenido($origentransfer_id,$usuariosolicita_id)
+     * funcion para crear una transferencia automatica, crea el contenido documental
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => message)
+     */
+    public function addNewTransferenciaAndContenido($origentransfer_id, $usuariosolicita_id)
     {
         try {
             $tipodocumental_id = $this->getTipoDocumentalCod();
@@ -1185,19 +1221,19 @@ class ActoAdministrativo extends BaseActoAdministrativo
             $fecha_acepta = null;
             $observaciones = "Transferencia automatica desde actos administrativos";
             //***************************************************************************************************
-            if($localizacionexp_id == 1){
+            if ($localizacionexp_id == 1) {
                 $destinotransferencia_id = 1;
                 $fecha_acepta = date('Y-m-d G:i:s');
                 $estadotrans_id = 2;
-            }elseif($localizacionexp_id == 2){
+            } elseif ($localizacionexp_id == 2) {
                 $destinotransferencia_id = 2;
                 $estadotrans_id = 1;
-            }else{
+            } else {
                 $destinotransferencia_id = 3;
                 $estadotrans_id = 1;
             }
             //***************************************************************************************************
-            if($unidad_documental != null){
+            if ($unidad_documental != null) {
                 $data = array();
                 $data['actoadministrativo_id'] = $this->getPrimaryKey();
                 $data['estadotrans_id'] = $estadotrans_id;
@@ -1210,9 +1246,9 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 //***********************************************************************************************
                 $transferencia = TransferenciaPeer::createDefaultTransfer($data);
                 //***********************************************************************************************
-                if($transferencia != null){
-                    $transferencia_user = TransferenciaPeer::createUserTransferencia($transferencia,$usuariosolicita_id,1);
-                    if($transferencia_user == null){
+                if ($transferencia != null) {
+                    $transferencia_user = TransferenciaPeer::createUserTransferencia($transferencia, $usuariosolicita_id, 1);
+                    if ($transferencia_user == null) {
                         $transferencia->delete();
                         return null;
                     }
@@ -1220,14 +1256,14 @@ class ActoAdministrativo extends BaseActoAdministrativo
                     $transferencia->transferirGestion($usuariosolicita_id);
                     //*******************************************************************************************
                     if ($transferencia->getDestinotransferenciaId() == 1) {
-                        TransferenciaPeer::createUserTransferencia($transferencia,$usuariosolicita_id);
+                        TransferenciaPeer::createUserTransferencia($transferencia, $usuariosolicita_id);
                     }
                     //*******************************************************************************************
                     return array('isError' => false, 'message' => 'Acto administrativo archivado correctamente');
-                }else{
+                } else {
                     return array('isError' => true, 'message' => 'Ocurrio un error y no se pudo transferir el acto administrativo');
                 }
-            }else{
+            } else {
                 return array('isError' => true, 'message' => 'El expediente no es valido, se puede transferir el acto administrativo');
             }
         } catch (\Throwable $th) {
@@ -1239,16 +1275,16 @@ class ActoAdministrativo extends BaseActoAdministrativo
     {
         //*********************MANEJO PARA CRAACION DIRECTORIO Y ARCHIVO A CONVERTIR************************
         $base_path = sfConfig::get('base_simad');
-        $dir_tmp = sfConfig::get('sf_web_dir')."/com_html/acto_administrativo/";//directorio temporal para guardar los archivos a convertir a pdf    
-        if (!is_dir($dir_tmp)) {//verificar si el directorio existe de lo contrario se crea
-            @mkdir($dir_tmp,0766);//crea el directorio destiono
+        $dir_tmp = sfConfig::get('sf_web_dir') . "/com_html/acto_administrativo/"; //directorio temporal para guardar los archivos a convertir a pdf    
+        if (!is_dir($dir_tmp)) { //verificar si el directorio existe de lo contrario se crea
+            @mkdir($dir_tmp, 0766); //crea el directorio destiono
         }
         //**************************************************************************************************
-        $nomb_file_html = $this->getPrimaryKey().".php";//nombre del archivo temporal que contiene los datos a convertir    
-        if(file_exists($dir_tmp.$nomb_file_html)){//verificar si ya esta generado el archivo a convertir
-            unlink($dir_tmp.$nomb_file_html);//se elimina para actualizar el contenido del documento
+        $nomb_file_html = $this->getPrimaryKey() . ".php"; //nombre del archivo temporal que contiene los datos a convertir    
+        if (file_exists($dir_tmp . $nomb_file_html)) { //verificar si ya esta generado el archivo a convertir
+            unlink($dir_tmp . $nomb_file_html); //se elimina para actualizar el contenido del documento
         }
-        $pt = fopen($dir_tmp.$nomb_file_html, 'w');//se crea el archivo a convertir
+        $pt = fopen($dir_tmp . $nomb_file_html, 'w'); //se crea el archivo a convertir
         //**************************************************************************************************
         $contenedor_logos = '../../images/encabezado_carta/';
         $radicado_compuesto = "";
@@ -1257,34 +1293,34 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $radicado_compuesto = $this->getNumeroResolucion();
         //**************************************************************************************************
         //firmantes
-        $cD=new Criteria();
-        $cD->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$this->getPrimaryKey());
+        $cD = new Criteria();
+        $cD->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID, $this->getPrimaryKey());
         $cD->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID, 2);
         $enviada_usuario_firma = ActoadministrativoUsuarioPeer::doSelect($cD);
         //**************************************************************************************************
         //creador proyecto
-        $cD=new Criteria();
-        $cD->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$this->getPrimaryKey());
+        $cD = new Criteria();
+        $cD->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID, $this->getPrimaryKey());
         $cD->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID, 1);
         $enviada_usuario_proyecto = ActoadministrativoUsuarioPeer::doSelectOne($cD);
         //**************************************************************************************************
-		//revisores
-        $cr=new Criteria();
-        $cr->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$this->getPrimaryKey());
+        //revisores
+        $cr = new Criteria();
+        $cr->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID, $this->getPrimaryKey());
         $cr->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID, 3);
-		$cr->add(ActoadministrativoUsuarioPeer::ESTA_APROBADO, 1);
+        $cr->add(ActoadministrativoUsuarioPeer::ESTA_APROBADO, 1);
         $enviada_usuario_revision = ActoadministrativoUsuarioPeer::doSelect($cr);
         //**************************************************************************************************
         //gestores
         $cG = new Criteria();
-        $cG->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$this->getPrimaryKey());
+        $cG->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID, $this->getPrimaryKey());
         $cG->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID, 4);
         $cG->add(ActoadministrativoUsuarioPeer::ESTA_APROBADO, 1);
         $enviada_usuario_gestores = ActoadministrativoUsuarioPeer::doSelect($cG);
         //**************************************************************************************************
         $enviada_interesados = ActoAdministrativoPeer::getListIntersadosByComId($this->getPrimaryKey());
         //**************************************************************************************************
-        $contneidoHtml="";
+        $contneidoHtml = "";
         $copias = "";
         $anexosHtml = "";
         $proyecto = "";
@@ -1295,7 +1331,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $dir_regional = $this->getRegional()->getDireccion();
         //**************************************************************************************************
         $is_borrador = false;
-        if(in_array($this->getEstadoactoadministrativoId(),array(1,2,3,4))){
+        if (in_array($this->getEstadoactoadministrativoId(), array(1, 2, 3, 4))) {
             $correspondenciaEnBorrador = " - BORRADOR";
             $is_borrador = true;
         }
@@ -1306,49 +1342,89 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $timestamp_carta = strtotime($FechaMensaje);
         $asunto_title = "";
         $fecha_carta = "";
-        if($FechaMensaje==""){ $FechaMensaje = date("Y-m-d h:m:s"); }
+        if ($FechaMensaje == "") {
+            $FechaMensaje = date("Y-m-d h:m:s");
+        }
         //**************************************************************************************************
         if ($timestamp_carta == -1) {
             echo "La cadena ($FechaMensaje) no es v&aacute;lida.";
         } else {
-            $fecha_carta = date("d",$timestamp_carta);
-            $fecha_carta.=" de ";
-            $mes = date( "n",$timestamp_carta );
-            switch($mes)
-            {
-                case 1: {$fecha_carta.= "Enero"; break;}
-                case 2: {$fecha_carta.= "Febrero"; break;}
-                case 3: {$fecha_carta.= "Marzo"; break;}
-                case 4: {$fecha_carta.= "Abril"; break;}
-                case 5: {$fecha_carta.= "Mayo"; break;}
-                case 6: {$fecha_carta.= "Junio"; break;}
-                case 7: {$fecha_carta.= "Julio"; break;}
-                case 8: {$fecha_carta.= "Agosto"; break;}
-                case 9: {$fecha_carta.= "Septiembre"; break;}
-                case 10: {$fecha_carta.= "Octubre"; break;}
-                case 11: {$fecha_carta.= "Noviembre"; break;}
-                case 12: {$fecha_carta.= "Diciembre"; break;}
+            $fecha_carta = date("d", $timestamp_carta);
+            $fecha_carta .= " de ";
+            $mes = date("n", $timestamp_carta);
+            switch ($mes) {
+                case 1: {
+                        $fecha_carta .= "Enero";
+                        break;
+                    }
+                case 2: {
+                        $fecha_carta .= "Febrero";
+                        break;
+                    }
+                case 3: {
+                        $fecha_carta .= "Marzo";
+                        break;
+                    }
+                case 4: {
+                        $fecha_carta .= "Abril";
+                        break;
+                    }
+                case 5: {
+                        $fecha_carta .= "Mayo";
+                        break;
+                    }
+                case 6: {
+                        $fecha_carta .= "Junio";
+                        break;
+                    }
+                case 7: {
+                        $fecha_carta .= "Julio";
+                        break;
+                    }
+                case 8: {
+                        $fecha_carta .= "Agosto";
+                        break;
+                    }
+                case 9: {
+                        $fecha_carta .= "Septiembre";
+                        break;
+                    }
+                case 10: {
+                        $fecha_carta .= "Octubre";
+                        break;
+                    }
+                case 11: {
+                        $fecha_carta .= "Noviembre";
+                        break;
+                    }
+                case 12: {
+                        $fecha_carta .= "Diciembre";
+                        break;
+                    }
             }
             $asunto_title = "<b>Asunto:</b> ";
             $proyecto_text = $enviada_usuario_proyecto->getUsuario()->getNombreAndDependencia();
-            $proyecto = '<div width="100%" style="text-align:left; font-size: 6pt;"><b>Elaborado por:</b> '.($proyecto_text)."</div>";
+            $proyecto = '<div width="100%" style="text-align:left; font-size: 6pt;"><b>Elaborado por:</b> ' . ($proyecto_text) . "</div>";
 
             $fecha_carta .= " de ";
-            $fecha_carta .= date( "Y ",$timestamp_carta );
+            $fecha_carta .= date("Y ", $timestamp_carta);
         }
         //**************************************************************************************************
         $asunto = $this->getAsunto();
         $mensaje = $this->getContenido();
         //**************************************************************************************************
-        $firma_nombres = array();$firma_cargos = array();$firma_area = array();$firma_mecanica = array();
-        foreach ($enviada_usuario_firma as $enviada_usuario_firmaOne){
-            if(trim($this->getFirmaElectronica()) && (!in_array($enviada_usuario_firmaOne->getEstadoactoadministrativoId(),array(1,2,3,4)))){
-                if(trim($enviada_usuario_firmaOne->getUsuario()->getFirmaElectronica())){
-                    $firma_mecanica[] = '<img src="'.trim($enviada_usuario_firmaOne->getUsuario()->getFirmaElectronica()).'" min-height="80px" max-height="150px" width="180px">';
-                }else{
+        $firma_nombres = array();
+        $firma_cargos = array();
+        $firma_area = array();
+        $firma_mecanica = array();
+        foreach ($enviada_usuario_firma as $enviada_usuario_firmaOne) {
+            if (trim($this->getFirmaElectronica()) && (!in_array($enviada_usuario_firmaOne->getEstadoactoadministrativoId(), array(1, 2, 3, 4)))) {
+                if (trim($enviada_usuario_firmaOne->getUsuario()->getFirmaElectronica())) {
+                    $firma_mecanica[] = '<img src="' . trim($enviada_usuario_firmaOne->getUsuario()->getFirmaElectronica()) . '" min-height="80px" max-height="150px" width="180px">';
+                } else {
                     $firma_mecanica[] = '&nbsp;';
                 }
-            }else{
+            } else {
                 $firma_mecanica[] = '&nbsp;';
             }
             //**********************************************************************************************
@@ -1356,10 +1432,10 @@ class ActoAdministrativo extends BaseActoAdministrativo
             $firma_cargos[] = $enviada_usuario_firmaOne->getCargousuarioId() ? ($enviada_usuario_firmaOne->getCargoUsuario()->getCargo()->getDescripcion()) : "";
             $dependencia_id = $enviada_usuario_firmaOne->getCargoUsuario()->getDependenciaId();
 
-            if(!empty($dependencia_id)){
+            if (!empty($dependencia_id)) {
                 $area_encargo = DependenciaPeer::retrieveByPK($dependencia_id);
                 $firma_area[] = $area_encargo != null ? $area_encargo->getNombre() : $enviada_usuario_firmaOne->getUsuario()->getDependencia()->getNombre();
-            }else{
+            } else {
                 $firma_area[] = $enviada_usuario_firmaOne->getUsuario()->getDependencia()->getNombre();
             }
         }
@@ -1372,73 +1448,88 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $contFirmas = 0;
         $useHeadersTpl = $this->getPlantillascomId() ? ($this->getPlantillasCom()->getUseHeaders() ? true : false) : true;
         $isAddCargo = true;
-        if($useHeadersTpl){
+        if ($useHeadersTpl) {
             $firmas = '<br /><table border="0" cellspacing="1" cellpadding="1" width="99%" align="left">';
             $isAddCargo = $this->getPlantillascomId() == 6 ? false : true;
-        }else{
+        } else {
             $firmas = '<br /><br /><div style="text-align:center;">';
             $firmas .= '<table border="0" style="margin: 0 auto;">';
             $isAddCargo = $this->getPlantillascomId() == 6 ? false : true;
         }
         //**************************************************************************************************
-        $usuario_firmas = array();$cargos_firmas = array();$areas_firmas = array();$mecanica_firmas = array();
-        $contFirmas = 0;$contCopias = 0;$contCargos = 0;
+        $usuario_firmas = array();
+        $cargos_firmas = array();
+        $areas_firmas = array();
+        $mecanica_firmas = array();
+        $contFirmas = 0;
+        $contCopias = 0;
+        $contCargos = 0;
         //$firmas .= '<tr>';
         //**************************************************************************************************
-        foreach($dataFirmas['firma_nombres'] as $row_firma){
-            if($contFirmas > 0){
-                if($contFirmas%2 == 0){
+        foreach ($dataFirmas['firma_nombres'] as $row_firma) {
+            if ($contFirmas > 0) {
+                if ($contFirmas % 2 == 0) {
                     //print_r($cargos_firmas);
                     $firmas .= $this->getDataAreasOrCargosFirmas($mecanica_firmas);
-                    $firmas .= $this->getDataAreasOrCargosFirmas($usuario_firmas,false);
+                    $firmas .= $this->getDataAreasOrCargosFirmas($usuario_firmas, false);
                     $firmas .= $this->getDataAreasOrCargosFirmas($cargos_firmas);
                     $firmas .= $this->getDataAreasOrCargosFirmas($areas_firmas);
-                    $usuario_firmas = array();$cargos_firmas = array();$areas_firmas = array();$mecanica_firmas = array();
+                    $usuario_firmas = array();
+                    $cargos_firmas = array();
+                    $areas_firmas = array();
+                    $mecanica_firmas = array();
                     $firmas .= $this->getDataEmptyRowFirmas(3);
                 }
             }
             //**********************************************************************************************
-            if($dataFirmas['firma_mecanica'][$contFirmas] != null){
+            if ($dataFirmas['firma_mecanica'][$contFirmas] != null) {
                 $mecanica_firmas[] = $dataFirmas['firma_mecanica'][$contFirmas];
             }
             //**********************************************************************************************
-            $usuario_firmas[] = '<td style="{%class%}"><b>'.$row_firma.'</b></td>';
+            $usuario_firmas[] = '<td style="{%class%}"><b>' . $row_firma . '</b></td>';
             $cargos_firmas[] = $dataFirmas['firma_cargos'][$contFirmas];
-            $areas_firmas[] = $dataFirmas['firma_areas'][$contFirmas];		
+            $areas_firmas[] = $dataFirmas['firma_areas'][$contFirmas];
             $contFirmas++;
         }
         //**************************************************************************************************
-        if(count($cargos_firmas)){
+        if (count($cargos_firmas)) {
             $firmas .= $this->getDataAreasOrCargosFirmas($mecanica_firmas);
-            $firmas .= $this->getDataAreasOrCargosFirmas($usuario_firmas,false);
-            if($isAddCargo){  $firmas .= $this->getDataAreasOrCargosFirmas($cargos_firmas); }
+            $firmas .= $this->getDataAreasOrCargosFirmas($usuario_firmas, false);
+            if ($isAddCargo) {
+                $firmas .= $this->getDataAreasOrCargosFirmas($cargos_firmas);
+            }
             $firmas .= $this->getDataAreasOrCargosFirmas($areas_firmas);
-            $usuario_firmas = array();$cargos_firmas = array();$areas_firmas = array();$mecanica_firmas = array();
+            $usuario_firmas = array();
+            $cargos_firmas = array();
+            $areas_firmas = array();
+            $mecanica_firmas = array();
         }
         //**************************************************************************************************
-        if($useHeadersTpl){
+        if ($useHeadersTpl) {
             $firmas .= '</table>';
-        }else{
+        } else {
             $firmas .= '</table></div>';
             $firmas = str_replace("{%class%}", "text-align: center", $firmas);
         }
         //**************************************************************************************************
         $list_revisores = array();
-        foreach ($enviada_usuario_revision as $usuario_revisor){
-            if(!in_array($usuario_revisor->getUsuarioId(),$list_revisores)){
+        foreach ($enviada_usuario_revision as $usuario_revisor) {
+            if (!in_array($usuario_revisor->getUsuarioId(), $list_revisores)) {
                 $revisor_text = $usuario_revisor->getUsuario()->getFullNombre();
-                $revisor_area = $usuario_revisor->getUsuario()->getDependencia()->getNombre();				
-				$dependencia_id = $usuario_revisor->getCargoUsuario()->getDependenciaId();
-				
-				if(!empty($dependencia_id)){ $revisor_area = $usuario_revisor->getCargoUsuario()->getDependencia()->getNombre(); }				
-                $proyecto .= '<div width="100%" style="margin-top:5px;text-align:left; font-size: 6pt;"><b>Revisado por:</b> '.(sprintf('%s - %s',$revisor_text,$revisor_area))."</div>";
+                $revisor_area = $usuario_revisor->getUsuario()->getDependencia()->getNombre();
+                $dependencia_id = $usuario_revisor->getCargoUsuario()->getDependenciaId();
+
+                if (!empty($dependencia_id)) {
+                    $revisor_area = $usuario_revisor->getCargoUsuario()->getDependencia()->getNombre();
+                }
+                $proyecto .= '<div width="100%" style="margin-top:5px;text-align:left; font-size: 6pt;"><b>Revisado por:</b> ' . (sprintf('%s - %s', $revisor_text, $revisor_area)) . "</div>";
                 $list_revisores[] = $usuario_revisor->getUsuarioId();
             }
         }
         //******************************************************ANEXOS**************************************
-        if(trim($this->getAnexos()) != ""){
+        if (trim($this->getAnexos()) != "") {
             //$anexosHtml = " <h6>Anexos: ".$this->getAnexos()." </h6>";
-            $anexosHtml .= '<div width="100%" style="text-align:left; font-size: 6pt;">Anexos: <b>'.($this->getAnexos())."</b></div>";
+            $anexosHtml .= '<div width="100%" style="text-align:left; font-size: 6pt;">Anexos: <b>' . ($this->getAnexos()) . "</b></div>";
         }
         //**************************************************************************************************
         $htmlcontent = '';
@@ -1453,7 +1544,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //se crea el html para el encabezado de la carta
         $htmlencabezado = '<pd4ml:page.header>';
         //**************************************************************************************************
-        if($isFirmaDigital){
+        if ($isFirmaDigital) {
             $texto_firma = "Documento firmado electr&oacute;nicamente de acuerdo con la Ley 527 de 1999 y el Decreto 2364 de 2012";
             $htmlencabezado .= '<div width="100%" style="text-align:left;font-size: 8pt;font-style: italic;font-family: Segoe UI, Arial, sans-serif; font-weight: lighter;">' . ($texto_firma) . '</div>';
         }
@@ -1471,28 +1562,28 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $struct_init = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title>
         <style type="text/css">body {font-family:Work Sans,sans-serif;font-size: 12pt;}</style></head><body>';
         fputs($pt, ($struct_init));
-        /***********************************definir font para el documento********************************/   
-        if(!$useHeadersTpl){
+        /***********************************definir font para el documento********************************/
+        if (!$useHeadersTpl) {
             $htmlcontent .= '';
-        }else{
+        } else {
             $htmlcontent .= '<br/><br/><br/><table border="0" cellspacing="1" cellpadding="1"><tr><td width="60px" valign="top">';
-            $htmlcontent .= $asunto_title.'</td><td width="99%"><p style="text-align: justify">'.($asunto).'</p></td></tr></table><br/><br/>';
+            $htmlcontent .= $asunto_title . '</td><td width="99%"><p style="text-align: justify">' . ($asunto) . '</p></td></tr></table><br/><br/>';
         }
         //**************************************************************************************************
-        fputs($pt, ($htmlcontent));    
+        fputs($pt, ($htmlcontent));
         //**************************************************************************************************
-        $contneidoHtml = ''.($mensaje).'';
+        $contneidoHtml = '' . ($mensaje) . '';
         fputs($pt, ($contneidoHtml));
         //**************************************************************************************************
-        if(trim($firmas) != ""){      
+        if (trim($firmas) != "") {
             fputs($pt, ($firmas));
         }
         //**************************************************************************************************
-        if(trim($anexosHtml) != ""){   
+        if (trim($anexosHtml) != "") {
             fputs($pt, ($anexosHtml));
         }
         //**************************************************************************************************
-        if(!empty($proyecto)){
+        if (!empty($proyecto)) {
             fputs($pt, ($proyecto));
         }
         //**************************************************************************************************
@@ -1539,7 +1630,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $patrones[28] = "{[DESTINO_FUNCIONARIO]}";
         $patrones[29] = "{[CODEBAR_COM]}";
         //**************************************************************************************************
-        $actlist_users = $this->getUsuariosListCom();        
+        $actlist_users = $this->getUsuariosListCom();
         $ilfirmates_names = $actlist_users['firmas_names'];
         $ilfirmates_pks = $actlist_users['firmas_pkusers'];
         $ilfirmates_ucargo = $actlist_users['firmas_ucargo'];
@@ -1548,13 +1639,13 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //**************************************************************************************************
         $usfirma = UsuarioPeer::retrieveByPK($ilfirmates_pks[0]);
         $firma_mecanica = "";
-        if(trim($this->getFirmaElectronica()) && (!in_array($this->getEstadoactoadministrativoId(),array(1,2,3,4)))){
-            if(trim($usfirma->getFirmaElectronica())){
-                $firma_mecanica = '<img src="'.trim($usfirma->getFirmaElectronica()).'" height="30px" width="50px">';
-            }else{
+        if (trim($this->getFirmaElectronica()) && (!in_array($this->getEstadoactoadministrativoId(), array(1, 2, 3, 4)))) {
+            if (trim($usfirma->getFirmaElectronica())) {
+                $firma_mecanica = '<img src="' . trim($usfirma->getFirmaElectronica()) . '" height="30px" width="50px">';
+            } else {
                 $firma_mecanica = '&nbsp;';
             }
-        }else{
+        } else {
             $firma_mecanica = '&nbsp;';
         }
         //**************************************************************************************************
@@ -1562,13 +1653,13 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $ite01 = 0;
         foreach ($actlist_users['revisores_pkusers'] as $pkrevisor) {
             $cacto_revuser = $actlist_users['revisores_uobjs'][$ite01++];
-            if($cacto_revuser->getEstaAprobado()){
-                $cusuario_revisor = CargoUsuarioPeer::getCargoUsuarioByIdUser($pkrevisor,true);
+            if ($cacto_revuser->getEstaAprobado()) {
+                $cusuario_revisor = CargoUsuarioPeer::getCargoUsuarioByIdUser($pkrevisor, true);
                 $list_urevisor['dependencia_revisor'][] = $cusuario_revisor->getUsuario()->getDependencia()->getNombre();
                 $list_urevisor['cargo_revisor'][] = $cusuario_revisor->getCargo()->getDescripcion();
-                if(!empty($cusuario_revisor->getUsuario()->getFirmaElectronica())){
-                    $list_urevisor['fmecanica_revisor'][] = '<img src="'.trim($cusuario_revisor->getUsuario()->getFirmaElectronica()).'" height="30px" width="50px">';
-                }else{
+                if (!empty($cusuario_revisor->getUsuario()->getFirmaElectronica())) {
+                    $list_urevisor['fmecanica_revisor'][] = '<img src="' . trim($cusuario_revisor->getUsuario()->getFirmaElectronica()) . '" height="30px" width="50px">';
+                } else {
                     $list_urevisor['fmecanica_revisor'][] = '&nbsp;';
                 }
             }
@@ -1578,13 +1669,13 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $ite02 = 0;
         foreach ($actlist_users['gestores_pkusers'] as $pkgestor) {
             $cacto_gestuser = $actlist_users['gestores_uobjs'][$ite02++];
-            if($cacto_gestuser->getEstaAprobado()){
-                $cusuario_gestor = CargoUsuarioPeer::getCargoUsuarioByIdUser($pkgestor,true);
+            if ($cacto_gestuser->getEstaAprobado()) {
+                $cusuario_gestor = CargoUsuarioPeer::getCargoUsuarioByIdUser($pkgestor, true);
                 $list_ugestor['dependencia_gestor'][] = $cusuario_gestor->getUsuario()->getDependencia()->getNombre();
                 $list_ugestor['cargo_gestor'][] = $cusuario_gestor->getCargo()->getDescripcion();
-                if(!empty($cusuario_gestor->getUsuario()->getFirmaElectronica())){
-                    $list_ugestor['fmecanica_gestor'][] = '<img src="'.trim($cusuario_gestor->getUsuario()->getFirmaElectronica()).'" height="30px" width="50px">';
-                }else{
+                if (!empty($cusuario_gestor->getUsuario()->getFirmaElectronica())) {
+                    $list_ugestor['fmecanica_gestor'][] = '<img src="' . trim($cusuario_gestor->getUsuario()->getFirmaElectronica()) . '" height="30px" width="50px">';
+                } else {
                     $list_ugestor['fmecanica_gestor'][] = '&nbsp;';
                 }
             }
@@ -1608,24 +1699,24 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $sustituciones[5] = $actlist_users['creador'];
         //**************************************************************************************************
         //$sustituciones[6] = isset($actlist_users['revisores_names']) ? $actlist_users['revisores_names'][0] : "";
-        if(isset($actlist_users['revisores_names'])){
-            if(is_array($actlist_users['revisores_names']) && count($actlist_users['revisores_names']) > 1){
-                $sustituciones[6] = implode("<br><br>",$actlist_users['revisores_names']);
-            }else{
+        if (isset($actlist_users['revisores_names'])) {
+            if (is_array($actlist_users['revisores_names']) && count($actlist_users['revisores_names']) > 1) {
+                $sustituciones[6] = implode("<br><br>", $actlist_users['revisores_names']);
+            } else {
                 $sustituciones[6] = $actlist_users['revisores_names'][0];
             }
-        }else{
+        } else {
             $sustituciones[6] = '&nbsp;';
         }
         //**************************************************************************************************
         //$sustituciones[7] = isset($actlist_users['gestores_names']) ? $actlist_users['gestores_names'][0] : "";
-        if(isset($actlist_users['gestores_names'])){
-            if(is_array($actlist_users['gestores_names']) && count($actlist_users['gestores_names']) > 1){
-                $sustituciones[7] = implode("<br><br>",$actlist_users['gestores_names']);
-            }else{
+        if (isset($actlist_users['gestores_names'])) {
+            if (is_array($actlist_users['gestores_names']) && count($actlist_users['gestores_names']) > 1) {
+                $sustituciones[7] = implode("<br><br>", $actlist_users['gestores_names']);
+            } else {
                 $sustituciones[7] = $actlist_users['gestores_names'][0];
             }
-        }else{
+        } else {
             $sustituciones[7] = '&nbsp;';
         }
         //**************************************************************************************************
@@ -1635,71 +1726,71 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $sustituciones[11] = trim($this->getNumeroResolucion()) ? trim($this->getNumeroResolucion()) : "Sin Radicar";
         $sustituciones[12] = $actlist_users['cargo_creador'];
         $sustituciones[13] = $actlist_users['dependencia_creador'];
-        $sustituciones[14] = $actlist_users['fmecanica_creador'];
+        $sustituciones[14] = trim($actlist_users['fmecanica_creador']) ? '<img src="' . trim($actlist_users['fmecanica_creador']) . '" height="30px" width="50px"/>' : "&nbsp;";
         //**************************************************************************************************
         //$sustituciones[15] = isset($list_urevisor['cargo_revisor']) ? $list_urevisor['cargo_revisor'] : "";
-        if(isset($list_urevisor['cargo_revisor'])){
-            if(is_array($list_urevisor['cargo_revisor']) && count($list_urevisor['cargo_revisor']) > 1){
-                $sustituciones[15] = implode("<br><br>",$list_urevisor['cargo_revisor']);
-            }else{
+        if (isset($list_urevisor['cargo_revisor'])) {
+            if (is_array($list_urevisor['cargo_revisor']) && count($list_urevisor['cargo_revisor']) > 1) {
+                $sustituciones[15] = implode("<br><br>", $list_urevisor['cargo_revisor']);
+            } else {
                 $sustituciones[15] = $list_urevisor['cargo_revisor'][0];
             }
-        }else{
+        } else {
             $sustituciones[15] = '&nbsp;';
         }
         //**************************************************************************************************
         //$sustituciones[16] = isset($list_urevisor['dependencia_revisor']) ? $list_urevisor['dependencia_revisor'] : "";
-        if(isset($list_urevisor['dependencia_revisor'])){
-            if(is_array($list_urevisor['dependencia_revisor']) && count($list_urevisor['dependencia_revisor']) > 1){
-                $sustituciones[16] = implode("<br><br>",$list_urevisor['dependencia_revisor']);
-            }else{
+        if (isset($list_urevisor['dependencia_revisor'])) {
+            if (is_array($list_urevisor['dependencia_revisor']) && count($list_urevisor['dependencia_revisor']) > 1) {
+                $sustituciones[16] = implode("<br><br>", $list_urevisor['dependencia_revisor']);
+            } else {
                 $sustituciones[16] = $list_urevisor['dependencia_revisor'][0];
             }
-        }else{
+        } else {
             $sustituciones[16] = '&nbsp;';
         }
         //**************************************************************************************************
         //$sustituciones[17] = isset($list_urevisor['fmecanica_revisor']) ? $list_urevisor['fmecanica_revisor'] : "";
-        if(isset($list_urevisor['fmecanica_revisor'])){
-            if(is_array($list_urevisor['fmecanica_revisor']) && count($list_urevisor['fmecanica_revisor']) > 1){
-                $sustituciones[17] = implode("<br><br>",$list_urevisor['fmecanica_revisor']);
-            }else{
+        if (isset($list_urevisor['fmecanica_revisor'])) {
+            if (is_array($list_urevisor['fmecanica_revisor']) && count($list_urevisor['fmecanica_revisor']) > 1) {
+                $sustituciones[17] = implode("<br><br>", $list_urevisor['fmecanica_revisor']);
+            } else {
                 $sustituciones[17] = $list_urevisor['fmecanica_revisor'][0];
             }
-        }else{
+        } else {
             $sustituciones[17] = '&nbsp;';
         }
         //**************************************************************************************************
         //$sustituciones[18] = isset($list_ugestor['cargo_gestor']) ? $list_ugestor['cargo_gestor'] : "";
-        if(isset($list_ugestor['cargo_gestor'])){
-            if(is_array($list_ugestor['cargo_gestor']) && count($list_ugestor['cargo_gestor']) > 1){
-                $sustituciones[18] = implode("<br><br>",$list_ugestor['cargo_gestor']);
-            }else{
+        if (isset($list_ugestor['cargo_gestor'])) {
+            if (is_array($list_ugestor['cargo_gestor']) && count($list_ugestor['cargo_gestor']) > 1) {
+                $sustituciones[18] = implode("<br><br>", $list_ugestor['cargo_gestor']);
+            } else {
                 $sustituciones[18] = $list_ugestor['cargo_gestor'][0];
             }
-        }else{
+        } else {
             $sustituciones[18] = '&nbsp;';
         }
         //**************************************************************************************************
         //$sustituciones[19] = isset($list_ugestor['dependencia_gestor']) ? $list_ugestor['dependencia_gestor'] : "";
-        if(isset($list_ugestor['dependencia_gestor'])){
-            if(is_array($list_ugestor['dependencia_gestor']) && count($list_ugestor['dependencia_gestor']) > 1){
-                $sustituciones[19] = implode("<br><br>",$list_ugestor['dependencia_gestor']);
-            }else{
+        if (isset($list_ugestor['dependencia_gestor'])) {
+            if (is_array($list_ugestor['dependencia_gestor']) && count($list_ugestor['dependencia_gestor']) > 1) {
+                $sustituciones[19] = implode("<br><br>", $list_ugestor['dependencia_gestor']);
+            } else {
                 $sustituciones[19] = $list_ugestor['dependencia_gestor'][0];
             }
-        }else{
+        } else {
             $sustituciones[19] = '&nbsp;';
         }
         //**************************************************************************************************
         //$sustituciones[20] = isset($list_ugestor['fmecanica_gestor']) ? $list_ugestor['fmecanica_gestor'] : "";
-        if(isset($list_ugestor['fmecanica_gestor'])){
-            if(is_array($list_ugestor['fmecanica_gestor']) && count($list_ugestor['fmecanica_gestor']) > 1){
-                $sustituciones[20] = implode("<br><br>",$list_ugestor['fmecanica_gestor']);
-            }else{
+        if (isset($list_ugestor['fmecanica_gestor'])) {
+            if (is_array($list_ugestor['fmecanica_gestor']) && count($list_ugestor['fmecanica_gestor']) > 1) {
+                $sustituciones[20] = implode("<br><br>", $list_ugestor['fmecanica_gestor']);
+            } else {
                 $sustituciones[20] = $list_ugestor['fmecanica_gestor'][0];
             }
-        }else{
+        } else {
             $sustituciones[20] = '&nbsp;';
         }
         //**************************************************************************************************
@@ -1708,9 +1799,9 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $sustituciones[23] = $actlist_users['creador'];
         $sustituciones[24] = $actlist_users['dependencia_creador'];
         //**************************************************************************************************
-        if(trim($actlist_users['fmecanica_creador'])){
-            $sustituciones[25] = '<img src="'.trim($actlist_users['fmecanica_creador']).'" height="30px" width="50px"/>';
-        }else{
+        if (trim($actlist_users['fmecanica_creador'])) {
+            $sustituciones[25] = '<img src="' . trim($actlist_users['fmecanica_creador']) . '" height="30px" width="50px"/>';
+        } else {
             $sustituciones[25] = "";
         }
         //**************************************************************************************************
@@ -1719,20 +1810,20 @@ class ActoAdministrativo extends BaseActoAdministrativo
         $sustituciones[28] = $list_udestino['nombre_udestino'];
         //**************************************************************************************************
         $codebar_radicado = simad_util::generateCodeBarInFile(trim($this->getRadicadoCompuesto()));
-        $sustituciones[29] = '<img src="'.$base_path.'/tmp/'.$codebar_radicado.'"/>';
+        $sustituciones[29] = '<img src="' . $base_path . '/tmp/' . $codebar_radicado . '"/>';
         //*****************************************REMPLAZAR DATOS *****************************************
-        $contenido_merge = str_replace($patrones,$sustituciones,$this->getContenido());
+        $contenido_merge = str_replace($patrones, $sustituciones, $this->getContenido());
         //*********************MANEJO PARA CRAACION DIRECTORIO Y ARCHIVO A CONVERTIR************************
-        $dir_tmp = sfConfig::get('sf_web_dir')."/com_html/acto_administrativo/";//directorio temporal para guardar los archivos a convertir a pdf    
-        if (!is_dir($dir_tmp)) {//verificar si el directorio existe de lo contrario se crea
-            @mkdir($dir_tmp,0766);//crea el directorio destiono
+        $dir_tmp = sfConfig::get('sf_web_dir') . "/com_html/acto_administrativo/"; //directorio temporal para guardar los archivos a convertir a pdf    
+        if (!is_dir($dir_tmp)) { //verificar si el directorio existe de lo contrario se crea
+            @mkdir($dir_tmp, 0766); //crea el directorio destiono
         }
         //**************************************************************************************************
-        $nomb_file_html = $this->getPrimaryKey().".php";//nombre del archivo temporal que contiene los datos a convertir    
-        if(file_exists($dir_tmp.$nomb_file_html)){//verificar si ya esta generado el archivo a convertir
-            unlink($dir_tmp.$nomb_file_html);//se elimina para actualizar el contenido del documento
+        $nomb_file_html = $this->getPrimaryKey() . ".php"; //nombre del archivo temporal que contiene los datos a convertir    
+        if (file_exists($dir_tmp . $nomb_file_html)) { //verificar si ya esta generado el archivo a convertir
+            unlink($dir_tmp . $nomb_file_html); //se elimina para actualizar el contenido del documento
         }
-        $pt = fopen($dir_tmp.$nomb_file_html, 'w');//se crea el archivo a convertir        
+        $pt = fopen($dir_tmp . $nomb_file_html, 'w');//se crea el archivo a convertir        
         /********************************definir font para el documento************************************/
         $struct_init = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title>
         <style type="text/css">body {font-family:Work Sans,sans-serif;font-size: 12pt;}</style></head><body>';
@@ -1755,7 +1846,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
     public function getDataEmptyRowFirmas($emptyRows = 2)
     {
         $fila_html = '';
-        for($i = 0; $i < $emptyRows; $i++){
+        for ($i = 0; $i < $emptyRows; $i++) {
             $fila_html .= '<tr><td>&nbsp;</td></tr>';
         }
         return $fila_html;
@@ -1763,16 +1854,18 @@ class ActoAdministrativo extends BaseActoAdministrativo
 
     public function getDataAreasOrCargosFirmas($data_str, $add_td = true)
     {
-        if(!count($data_str)){ return ''; }
+        if (!count($data_str)) {
+            return '';
+        }
         $fila_html = '';
-        foreach($data_str as $row_str){
-            if($add_td){
-                $fila_html .= '<td style="{%class%}">'.$row_str.'</td>';
-            }else{
+        foreach ($data_str as $row_str) {
+            if ($add_td) {
+                $fila_html .= '<td style="{%class%}">' . $row_str . '</td>';
+            } else {
                 $fila_html .= $row_str;
             }
         }
-        return '<tr>'.$fila_html.'</tr>';
+        return '<tr>' . $fila_html . '</tr>';
     }
 
     public function generateImgCodeCom($params = array())
@@ -1782,23 +1875,20 @@ class ActoAdministrativo extends BaseActoAdministrativo
             $ini_array = simad_util::readConfigFileApp($read_sections);
             $genQR = isset($ini_array['acto_administrativo_sticker']) ? $ini_array['acto_administrativo_sticker'] : 'CODEBAR';
 
-            if($genQR == 'QR')
-            {
+            if ($genQR == 'QR') {
                 $keyprivate = isset($ini_array['keyprivate_watermark']) ? $ini_array['keyprivate_watermark'] : null;
                 $urlvirtual = isset($ini_array['url_virtual']) ? $ini_array['url_virtual'] : null;
 
                 $hash_interno = ActoAdministrativoPeer::getHashComData($this);
                 $encrypted_string = simad_util::encrypt_decrypt('encrypt', $hash_interno, $keyprivate);
-                
+
                 $text_radicado = sprintf('%s/%s=%s', sfConfig::get('publicUrl'), $urlvirtual, $encrypted_string);
                 $tamano = isset($params['tamano']) ? $params['tamano'] : 10;
-                $level = isset($params['level']) ? $params['level'] : 'H' ;
+                $level = isset($params['level']) ? $params['level'] : 'H';
                 $framesize = isset($params['framesize']) ? $params['framesize'] : 3;
 
                 return simad_util::generateCodeQrInFile($text_radicado, $tamano, $level, $framesize);
-            }
-            else
-            {
+            } else {
                 $text_radicado = $this->getRadicadoCompuesto();
                 $clearlabels = isset($params['clearlabels']) ? $params['clearlabels'] : false;
                 $scale = isset($params['scale']) ? $params['scale'] : 1;
@@ -1810,9 +1900,9 @@ class ActoAdministrativo extends BaseActoAdministrativo
             }
         } catch (PropelException $ex) {
             return null;
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             return null;
-        }catch (\Throwable $ex) {
+        } catch (\Throwable $ex) {
             return null;
         }
     }
@@ -1822,7 +1912,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         try {
             $text_radicado = $this->getRadicadoCompuesto();
             return simad_util::generateCodeBarInFile($text_radicado, $clearlabels, $scale, $height, $fsize, $dpi);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return null;
         }
     }
@@ -2022,38 +2112,36 @@ class ActoAdministrativo extends BaseActoAdministrativo
         return $usuarios;
     }
 
-	/**
-    * objectActions::getComIsArchivedExpediente()
-    * valida si la comunicacion esta archivada
-    * @return void
-    */ 
+    /**
+     * objectActions::getComIsArchivedExpediente()
+     * valida si la comunicacion esta archivada
+     * @return void
+     */
     public function getComIsArchivedExpediente()
     {
-        try
-        {
-            if(!empty($this->getMarcaVinculacion()))
-            {
+        try {
+            if (!empty($this->getMarcaVinculacion())) {
                 $expediente_info = array();
                 //********************************************************************************************
                 $contenidodoc_id = $this->getContenidodocId();
                 $contenido_unidad_documental = ContenidoUnidadDocumentalPeer::retrieveByPk($contenidodoc_id);
                 //********************************************************************************************
-                if($contenido_unidad_documental == null){
+                if ($contenido_unidad_documental == null) {
                     //no se encontro el contenido documental
-                    return array('existe_expediente' => false,'titulo_expediente' => null);
+                    return array('existe_expediente' => false, 'titulo_expediente' => null);
                 }
                 //********************************************************************************************
                 $unidaddocumental_id = $contenido_unidad_documental->getUnidaddocumentalId();
                 $unidad_documental = $contenido_unidad_documental->getUnidadDocumental();
-                if($unidad_documental == null){
+                if ($unidad_documental == null) {
                     //no se encontro el tipo documental
-                    return array('existe_expediente' => false,'titulo_expediente' => null);
+                    return array('existe_expediente' => false, 'titulo_expediente' => null);
                 }
                 //********************************************************************************************
                 $subserie = $unidad_documental->getSubserie();
-                if($subserie == null){
+                if ($subserie == null) {
                     //no se encontro la subserie
-                    return array('existe_expediente' => false,'titulo_expediente' => null);
+                    return array('existe_expediente' => false, 'titulo_expediente' => null);
                 }
                 //********************************************************************************************
                 $expediente_info['existe_expediente'] = true;
@@ -2064,32 +2152,32 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 //********************************************************************************************                
                 return $expediente_info;
             }
-        }catch (PropelException $th) {
-            return array('existe_expediente' => false,'titulo_expediente' => null);
-        }catch (\Exception $th) {
-            return array('existe_expediente' => false,'titulo_expediente' => null);
-        }catch (\Throwable $th) {
-            return array('existe_expediente' => false,'titulo_expediente' => null);
+        } catch (PropelException $th) {
+            return array('existe_expediente' => false, 'titulo_expediente' => null);
+        } catch (\Exception $th) {
+            return array('existe_expediente' => false, 'titulo_expediente' => null);
+        } catch (\Throwable $th) {
+            return array('existe_expediente' => false, 'titulo_expediente' => null);
         }
     }
 
     /**
      * ActoAdministrativo::addServicioByCom()
-    * crea una nueva solicitud de servicio con la informacion de la comunicacion 
-    * @return mixed array('isError' => true|false, 'message' => '', 'object' => objeto con los datos del servicio)
-    */ 
+     * crea una nueva solicitud de servicio con la informacion de la comunicacion 
+     * @return mixed array('isError' => true|false, 'message' => '', 'object' => objeto con los datos del servicio)
+     */
     public function addServicioByCom($usuario_servicio, $tiposervicio_id, $intersados_list = array(), $directorioexterno_id = null)
     {
         try {
             $estadoservicio_id = 1;
             $prioridadsolicitudservicio_id = 1;
-            $detalle = 'Solicitud servicio de Acto Administrativo con radicado '.$this->getRadicadoCompuesto();
+            $detalle = 'Solicitud servicio de Acto Administrativo con radicado ' . $this->getRadicadoCompuesto();
             $modulo_id = ModulesEnable::ActosAdministrativos;
             //****************************************************************************************
-			if(empty($tiposervicio_id) || $tiposervicio_id == 0){
-				return array('isError' => true, 'message' => 'El tipo de servicio no se encontro en el SGDEA', 'object' => null);
-			}
-			//****************************************************************************************
+            if (empty($tiposervicio_id) || $tiposervicio_id == 0) {
+                return array('isError' => true, 'message' => 'El tipo de servicio no se encontro en el SGDEA', 'object' => null);
+            }
+            //****************************************************************************************
             $servicio_com = array();
             $servicio_com['usuario_id'] = $usuario_servicio;
             $servicio_com['regional_id'] = $this->getRegionalId();
@@ -2101,43 +2189,43 @@ class ActoAdministrativo extends BaseActoAdministrativo
             $servicio_com['folios'] = $this->getFolios();
             $servicio_com['coll_interesados'] = $intersados_list;
             //****************************************************************************************
-            return ServicioPeer::createServicioByCom($servicio_com,$this->getPrimaryKey(),$modulo_id);
-        }catch (PropelException $th) {
+            return ServicioPeer::createServicioByCom($servicio_com, $this->getPrimaryKey(), $modulo_id);
+        } catch (PropelException $th) {
             return array('isError' => true, 'message' => $th->getMessage(), 'object' => null);
-        }catch (\Exception $th) {
+        } catch (\Exception $th) {
             return array('isError' => true, 'message' => $th->getMessage(), 'object' => null);
-        }catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return array('isError' => true, 'message' => $th->getMessage(), 'object' => null);
         }
     }
 
     /**
      * ActoAdministrativo::getAttachmentCom()
-    * Obtiene los anexos del registro
-    * @return mixed array(ruta_archivos)
-    */
+     * Obtiene los anexos del registro
+     * @return mixed array(ruta_archivos)
+     */
     public function getAttachmentCom()
-	{
-		try {
-			$attach_url = array();
-            $pathtmp = simad_util::createPath(sfConfig::get('sf_web_dir'). DIRECTORY_SEPARATOR .'tmp'. DIRECTORY_SEPARATOR);
+    {
+        try {
+            $attach_url = array();
+            $pathtmp = simad_util::createPath(sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR);
             $rootUrl = sfConfig::get('localUrl');
             //****************************************************************************************
-			if(in_array($this->getEstadoactoadministrativoId(),array(6,9,8))){
-				$files_adjuntos = preg_split("/[,]+/",$this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
-				//************************************************************************************
-				for($j = 0; $j < count($files_adjuntos); $j++){
-                    if(trim($files_adjuntos[$j])){
+            if (in_array($this->getEstadoactoadministrativoId(), array(6, 9, 8))) {
+                $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
+                //************************************************************************************
+                for ($j = 0; $j < count($files_adjuntos); $j++) {
+                    if (trim($files_adjuntos[$j])) {
                         try {
                             $filename = basename($files_adjuntos[$j]);
-                            echo $fileurl = $rootUrl.$files_adjuntos[$j];
+                            echo $fileurl = $rootUrl . $files_adjuntos[$j];
 
-                            if(@file_exists($pathtmp.$filename)){
-                                @unlink($pathtmp.$filename);
-							}
+                            if (@file_exists($pathtmp . $filename)) {
+                                @unlink($pathtmp . $filename);
+                            }
 
                             $ch = curl_init($fileurl);
-                            $fp = fopen($pathtmp.$filename, 'wb');
+                            $fp = fopen($pathtmp . $filename, 'wb');
                             curl_setopt($ch, CURLOPT_FILE, $fp);
                             curl_setopt($ch, CURLOPT_HEADER, 0);
                             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -2151,40 +2239,40 @@ class ActoAdministrativo extends BaseActoAdministrativo
                             fclose($fp);
 
                             // Verificar integridad del archivo
-                            if (!simad_util::verificarIntegridadArchivo($pathtmp.$filename, $tamanoDescargado)) {
-                                @unlink($pathtmp.$filename);
+                            if (!simad_util::verificarIntegridadArchivo($pathtmp . $filename, $tamanoDescargado)) {
+                                @unlink($pathtmp . $filename);
                                 continue;
                             }
 
-                            if(file_exists($pathtmp.$filename)){
-                                $attach_url[] = $pathtmp.$filename;
+                            if (file_exists($pathtmp . $filename)) {
+                                $attach_url[] = $pathtmp . $filename;
                             }
                         } catch (\Exception $th) {
                             //throw $th;
                         }
                     }
                 }
-			}
+            }
         } catch (PropelException $th) {
-			$attach_url = null;
-		} catch (\Exception $th) {
-			$attach_url = null;
-		}
-		//*********************************************************************************************
-		return $attach_url;
-	}
+            $attach_url = null;
+        } catch (\Exception $th) {
+            $attach_url = null;
+        }
+        //*********************************************************************************************
+        return $attach_url;
+    }
 
     /**
-    * objectActions::initServicioProcess()
-    * inicia el proceso de generacion de un servicio de forma automatica
-    * @return mixed
-    */ 
+     * objectActions::initServicioProcess()
+     * inicia el proceso de generacion de un servicio de forma automatica
+     * @return mixed
+     */
     public function initServicioProcess($usaurio_id = null)
     {
         $response_svc = array('isError' => true, 'message' => 'Ocurrio un error al realizar la automatizacion de la solicitud de servicio');
         //**********************************************************************************************
         try {
-            if(empty($this->getPlantillasCom()->getGeneraServicio())){
+            if (empty($this->getPlantillasCom()->getGeneraServicio())) {
                 return null;
             }
             //*****************************************************************************************
@@ -2192,7 +2280,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
             //$listalldep = sfContext::getInstance()->getUser()->checkPerm('TRD_LISTAR_DEPENDENCIAS_TODAS_ENTIDADES', $usuariologuiado);
             //*****************************************************************************************
             $dependencia_id = $this->getDependenciaId();
-            $response_svc = $this->addServicioBulkByCom($usuariologuiado,$dependencia_id);
+            $response_svc = $this->addServicioBulkByCom($usuariologuiado, $dependencia_id);
             //*****************************************************************************************
             /*if($listalldep){
                 $dependencia_id = $this->getDependenciaId();
@@ -2230,7 +2318,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
             $param_tplsrv = $this->getAutomaticServicioInfo();
             //****************************************************************************************
             $estadoservicio_id = 1;
-            $detalle = 'Solicitud servicio de acto administrativo con radicado '.$this->getRadicadoCompuesto();
+            $detalle = 'Solicitud servicio de acto administrativo con radicado ' . $this->getRadicadoCompuesto();
             //****************************************************************************************
             if (!isset($param_tplsrv["basic_data"]) || empty($param_tplsrv["basic_data"])) {
                 return array('isError' => true, 'message' => 'El tipo de servicio no se encontro en el SGDEA', 'object' => null);
@@ -2253,7 +2341,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
             //****************************************************************************************
             $resp_srv = ServicioPeer::createServicioByCom($servicio_com, $this->getPrimaryKey(), ModulesEnable::ActosAdministrativos);
             //****************************************************************************************
-            if($resp_srv['isError'] == false){
+            if ($resp_srv['isError'] == false) {
                 $servicio = $resp_srv["object"];
                 //************************************************************************************
                 $params['coll_interesados'] = $coll_interesados;
@@ -2262,7 +2350,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 $resp_integra = $servicio->initIntegraciones($params);
                 //************************************************************************************
                 return array('isError' => $resp_integra['isError'], 'message' => $resp_integra['message']);
-            }else{
+            } else {
                 return array('isError' => true, 'message' => "Error creando la solicitud de servicio, {$resp_srv['message']}");
             }
             //****************************************************************************************
@@ -2280,7 +2368,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
      * objectActions::getAutomaticServicioInfo()
      * obtiene la informacion parametrizada en el servicio de plantillas automatizado
      * @return mixed array('isError' => true|false, 'message' => '', 'basic_data' => objeto con los datos basicos del servicio)
-    */
+     */
     public function getAutomaticServicioInfo()
     {
         try {
@@ -2296,7 +2384,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
             $basic_data['tiposervicio_id'] = $config_data->getTiposervicioId();
             $basic_data['prioridadservicio_id'] = $config_data->getPrioridadsolicitudservicioId();
             //****************************************************************************************
-            return array('isError' => false, 'message' => 'Proceso realizado con exito','basic_data' => $basic_data);
+            return array('isError' => false, 'message' => 'Proceso realizado con exito', 'basic_data' => $basic_data);
         } catch (PropelException $th) {
             return array('isError' => true, 'message' => $th->getMessage());
         } catch (\Exception $th) {
