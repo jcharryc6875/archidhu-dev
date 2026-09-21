@@ -21,105 +21,105 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
 {
     /**
      * ComMigmasivoPeer::getIsValidByIdBatch()
-    * funcion para validar los datos de un lote de radicacion masiva
-    * @param idLote mixed id del lote de migracion
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    */
-    public static function getIsValidByIdBatch($idLote,$modulo_id = null)
+     * funcion para validar los datos de un lote de radicacion masiva
+     * @param idLote mixed id del lote de migracion
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     */
+    public static function getIsValidByIdBatch($idLote, $modulo_id = null)
     {
         try {
             $listall_valid = array();
             //*******************************************************************************************
-            if(empty($modulo_id) || empty($idLote)){
+            if (empty($modulo_id) || empty($idLote)) {
                 return array('Error de parametros de entrada');
             }
             //*******************************************************************************************
-            if($modulo_id == ModulesEnable::ComEnviada){
+            if ($modulo_id == ModulesEnable::ComEnviada) {
                 $listall_valid[] = ComMigmasivoPeer::getRegionalComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getDependenciaComBatchIsValid($idLote);
-                $listall_valid[] = ComMigmasivoPeer::getPlantillaComBatchIsValid($idLote,ModulesEnable::ComEnviada);
+                $listall_valid[] = ComMigmasivoPeer::getPlantillaComBatchIsValid($idLote, ModulesEnable::ComEnviada);
                 $listall_valid[] = ComMigmasivoPeer::getRecibidaRadComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getExpedienteCodComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getTipoDocCodComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getInteresadosComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getFirmasComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getTipoServicioComBatchIsValid($idLote);
-            }elseif($modulo_id == ModulesEnable::ComRecibida){
+            } elseif ($modulo_id == ModulesEnable::ComRecibida) {
                 $listall_valid[] = ComMigmasivoPeer::getRegionalComBatchIsValid($idLote);
                 //*******************************************************************************************
                 $inteOrTerceroError = ComMigmasivoPeer::getInteresadosOrTerceroComBatchIsValid($idLote);
-                if($inteOrTerceroError['isError']){
+                if ($inteOrTerceroError['isError']) {
                     return array('Error de parametros de entrada, algunos registros no tienen interesados o el tercero, y es obligatorio alguno de los dos datos');
                 }
                 //*******************************************************************************************
-                $resp_interesados = ComMigmasivoPeer::getInteresadosComBatchIsValid($idLote,true);
-                $resp_terceros = ComMigmasivoPeer::getTercerosComBatchIsValid($idLote,true);
+                $resp_interesados = ComMigmasivoPeer::getInteresadosComBatchIsValid($idLote, true);
+                $resp_terceros = ComMigmasivoPeer::getTercerosComBatchIsValid($idLote, true);
                 //*******************************************************************************************
-                if($resp_interesados['isError'] && $resp_terceros['isError'])
+                if ($resp_interesados['isError'] && $resp_terceros['isError'])
                     return array('Error de parametros de entrada, los interesados o el tercero son obligatorios');
                 //*******************************************************************************************
                 $listall_valid[] = ComMigmasivoPeer::getPrioridadComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getFormaRecepcionComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getTipoRecibidaComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getDependenciaComBatchIsValid($idLote);
-            }elseif($modulo_id == ModulesEnable::ActosAdministrativos){
+            } elseif ($modulo_id == ModulesEnable::ActosAdministrativos) {
                 $listall_valid[] = ComMigmasivoPeer::getRegionalComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getDependenciaComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getExpedienteCodComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getTipoDocCodComBatchIsValid($idLote);
                 //Si el interesado no existe aun, no bloquear el lote cuando los datos
                 //minimos de la plantilla permiten crearlo (se crea en el momento de radicar).
-                $listall_valid[] = ComMigmasivoPeer::getInteresadosComBatchIsValid($idLote,true);
+                $listall_valid[] = ComMigmasivoPeer::getInteresadosComBatchIsValid($idLote, true);
                 $listall_valid[] = ComMigmasivoPeer::getFirmasComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getDestinoInternoComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getTipoServicioComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getPrioridadComBatchIsValid($idLote);
-                $listall_valid[] = ComMigmasivoPeer::getPlantillaComBatchIsValid($idLote,ModulesEnable::ActosAdministrativos);
+                $listall_valid[] = ComMigmasivoPeer::getPlantillaComBatchIsValid($idLote, ModulesEnable::ActosAdministrativos);
                 $listall_valid[] = ComMigmasivoPeer::getSubserieWidthDependenciaComBatchIsValid($idLote);
-                $listall_valid[] = ComMigmasivoPeer::getTercerosComBatchIsValid($idLote,true);
+                $listall_valid[] = ComMigmasivoPeer::getTercerosComBatchIsValid($idLote, true);
                 $listall_valid[] = ComMigmasivoPeer::getMarcoNormativoBatchIsValid($idLote);
-            }else{
+            } else {
                 return array('Error de parametros de entrada');
             }
             //*******************************************************************************************
             $elist_msg = array();
             foreach ($listall_valid as $ierror) {
-                if(is_array($ierror)){
-                    if($ierror['isError']){
+                if (is_array($ierror)) {
+                    if ($ierror['isError']) {
                         $elist_msg[] = $ierror['message'];
                     }
-                }            
+                }
             }
             //*******************************************************************************************
             return $elist_msg;
         } catch (PropelException $th) {
             //throw $th;
-            return array('Error interno del servidor, '.$th->getMessage());
+            return array('Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
             //throw $th;
-            return array('Error interno del servidor, '.$th->getMessage());
+            return array('Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
             //throw $th;
-            return array('Error interno del servidor, '.$th->getMessage());
+            return array('Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::deleteBatchNotValid()
-    * permite eliminar un lote
-    * @param idLote mixed id del lote de migracion
-    * @return bool true|false dependiendo de si elimino o no el lote
-    */
+     * permite eliminar un lote
+     * @param idLote mixed id del lote de migracion
+     * @return bool true|false dependiendo de si elimino o no el lote
+     */
     public static function deleteBatchNotValid($idLote)
     {
         try {
-            if(empty($idLote)){
+            if (empty($idLote)) {
                 return false;
             }
             //*******************************************************************************************
             $conexion = Propel::getConnection();
             //*******************************************************************************************
-            $sql_delete = "DELETE %s WHERE %s = '".$idLote."'";			       
+            $sql_delete = "DELETE %s WHERE %s = '" . $idLote . "'";
             $sql_delete = sprintf($sql_delete, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID);
             $sentencia = $conexion->prepare($sql_delete);
             return $sentencia->execute();
@@ -137,11 +137,11 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
 
     /**
      * ComMigmasivoPeer::addNewRow()
-    * funcion para crear un registro nuevo para la radicacion masiva
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito', 'object' => 'objeto de la fila creada')
-    * @param dataRow mixed array con los datos de la fila
-    * @param modulo_id mixed id del modulo al que pertenece el registro
-    */
+     * funcion para crear un registro nuevo para la radicacion masiva
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito', 'object' => 'objeto de la fila creada')
+     * @param dataRow mixed array con los datos de la fila
+     * @param modulo_id mixed id del modulo al que pertenece el registro
+     */
     public static function addNewRow($dataRow, $modulo_id = 4)
     {
         try {
@@ -152,7 +152,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $com_migracion->setPuntoRadicacion($dataRow['PUNTO_RADICACION']);
             $com_migracion->setCodDependencia($dataRow['COD_DEPENDENCIA']);
             $com_migracion->setNombreDependencia($dataRow['NOMBRE_DEPENDENCIA']);
-            $com_migracion->setAsuntoCom($dataRow['ASUNTO_COM']); 
+            $com_migracion->setAsuntoCom($dataRow['ASUNTO_COM']);
             $com_migracion->setNumFolios($dataRow['NUM_FOLIOS']);
             $com_migracion->setTipoDocumento($dataRow['TIPO_DOCUMENTO']);
             $com_migracion->setObservacionesCom($dataRow['OBSERVACIONES_COM']);
@@ -173,12 +173,12 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $com_migracion->setTipodocInteresado($dataRow['TIPODOC_INTERESADO']);
             $com_migracion->setNuidInteresado($dataRow['NUID_INTERESADO']);
             $com_migracion->setCiudadInteresado($dataRow['CIUDAD_INTERESADO']);
-            $com_migracion->setEmailInteresado($dataRow['EMAIL_INTERESADO']);            
+            $com_migracion->setEmailInteresado($dataRow['EMAIL_INTERESADO']);
             $com_migracion->setNuidsFirmas($dataRow['NUIDS_FIRMAS']);
             $com_migracion->setNitDestinatario($dataRow['NIT_DESTINATARIO']);
             $com_migracion->setRazonSocial($dataRow['RAZON_SOCIAL']);
             $com_migracion->setDireccionRemitente($dataRow['DIRECCION_REMITENTE']);
-            $com_migracion->setCiudadRemitente($dataRow['CIUDAD_REMITENTE']);            
+            $com_migracion->setCiudadRemitente($dataRow['CIUDAD_REMITENTE']);
             $com_migracion->setTipodocRemitente($dataRow['TIPODOC_REMITENTE']);
             $com_migracion->setEmailRemitente($dataRow['EMAIL_REMITENTE']);
             $com_migracion->setFechaCreacion(date('Y-m-d G:i:s'));
@@ -192,419 +192,521 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $com_migracion->setCrearInteresado(isset($dataRow['CREAR_INTERESADO']) ? $dataRow['CREAR_INTERESADO'] : 0);
             $com_migracion->save();
             //******************************************************************************
-            return array('isError'=>false,'message'=>'Registro creado','object'=>$com_migracion);
+            return array('isError' => false, 'message' => 'Registro creado', 'object' => $com_migracion);
         } catch (PropelException $th) {
-            return array('isError'=>true,'message'=>$th->getMessage(),'object'=>null);
+            return array('isError' => true, 'message' => $th->getMessage(), 'object' => null);
         } catch (\Exception $th) {
-            return array('isError'=>true,'message'=>$th->getMessage(),'object'=>null);
+            return array('isError' => true, 'message' => $th->getMessage(), 'object' => null);
         } catch (\Throwable $th) {
-            return array('isError'=>true,'message'=>$th->getMessage(),'object'=>null);
+            return array('isError' => true, 'message' => $th->getMessage(), 'object' => null);
         }
     }
 
     /**
      * ComMigmasivoPeer::getRegionalComBatchIsValid()
-    * funcion para validar si los puntos de radicacion existen en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @param comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si los puntos de radicacion existen en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @param comlote_id mixed id del lote de migracion
+     */
     public static function getRegionalComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::PUNTO_RADICACION, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::PUNTO_RADICACION,
-                            RegionalPeer::DESCRIPCION, RegionalPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::PUNTO_RADICACION);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::PUNTO_RADICACION,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::PUNTO_RADICACION,
+                RegionalPeer::DESCRIPCION,
+                RegionalPeer::TABLE_NAME,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::PUNTO_RADICACION
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['PUNTO_RADICACION'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'El punto de radicacion '.implode(",",$coll_error).' no existe en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'El punto de radicacion ' . implode(",", $coll_error) . ' no existe en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'El punto de radicacion son validos');           
+                return array('isError' => false, 'message' => 'El punto de radicacion son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getPrioridadComBatchIsValid()
-    * funcion para validar si el campo prioridad existe en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @param comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si el campo prioridad existe en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @param comlote_id mixed id del lote de migracion
+     */
     public static function getPrioridadComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::PRIORIDAD_COM, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::PRIORIDAD_COM,
-                            PrioridadComPeer::DESCRIPCION, PrioridadComPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::PRIORIDAD_COM);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::PRIORIDAD_COM,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::PRIORIDAD_COM,
+                PrioridadComPeer::DESCRIPCION,
+                PrioridadComPeer::TABLE_NAME,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::PRIORIDAD_COM
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['PRIORIDAD_COM'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'El campo priodidad '.implode(",",$coll_error).' no existe en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'El campo priodidad ' . implode(",", $coll_error) . ' no existe en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'El campo priodidad son validos');           
+                return array('isError' => false, 'message' => 'El campo priodidad son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getFormaRecepcionComBatchIsValid()
-    * funcion para validar si el campo forma de recepcion existe en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @param comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si el campo forma de recepcion existe en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @param comlote_id mixed id del lote de migracion
+     */
     public static function getFormaRecepcionComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::FORMA_RECEPCION, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::FORMA_RECEPCION,
-                            FormaRecepcionPeer::DESCRIPCION, FormaRecepcionPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::FORMA_RECEPCION);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::FORMA_RECEPCION,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::FORMA_RECEPCION,
+                FormaRecepcionPeer::DESCRIPCION,
+                FormaRecepcionPeer::TABLE_NAME,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::FORMA_RECEPCION
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['FORMA_RECEPCION'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'La forma de recepcion '.implode(",",$coll_error).' no existe en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'La forma de recepcion ' . implode(",", $coll_error) . ' no existe en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'La forma de recepcion son validos');           
+                return array('isError' => false, 'message' => 'La forma de recepcion son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getTipoRecibidaComBatchIsValid()
-    * funcion para validar si el valor del campo tipo com recibidad existe en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @param comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si el valor del campo tipo com recibidad existe en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @param comlote_id mixed id del lote de migracion
+     */
     public static function getTipoRecibidaComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::TIPO_DOCUMENTO, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::TIPO_DOCUMENTO,
-                            TipoComRecibidaPeer::DESCRIPCION, TipoComRecibidaPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::TIPO_DOCUMENTO);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::TIPO_DOCUMENTO,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::TIPO_DOCUMENTO,
+                TipoComRecibidaPeer::DESCRIPCION,
+                TipoComRecibidaPeer::TABLE_NAME,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::TIPO_DOCUMENTO
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['TIPO_DOCUMENTO'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'El tipo de tramite '.implode(",",$coll_error).' no existe en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'El tipo de tramite ' . implode(",", $coll_error) . ' no existe en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'El tipo de tramite son validos');           
+                return array('isError' => false, 'message' => 'El tipo de tramite son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getTipoServicioComBatchIsValid()
-    * funcion para validar si los tipos de servicio existen en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si los tipos de servicio existen en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @comlote_id mixed id del lote de migracion
+     */
     public static function getTipoServicioComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::TIPO_NOTIFICACION, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::TIPO_NOTIFICACION,
-                            TipoServicioPeer::DESCRIPCION, TipoServicioPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::TIPO_NOTIFICACION);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::TIPO_NOTIFICACION,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::TIPO_NOTIFICACION,
+                TipoServicioPeer::DESCRIPCION,
+                TipoServicioPeer::TABLE_NAME,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::TIPO_NOTIFICACION
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['TIPO_NOTIFICACION'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'El tipo de servicio '.implode(",",$coll_error).' no existe en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'El tipo de servicio ' . implode(",", $coll_error) . ' no existe en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'Los tipos de servicio son validos');           
+                return array('isError' => false, 'message' => 'Los tipos de servicio son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getDependenciaComBatchIsValid()
-    * funcion para validar si las dependencias existen en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si las dependencias existen en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @comlote_id mixed id del lote de migracion
+     */
     public static function getDependenciaComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::COD_DEPENDENCIA, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::COD_DEPENDENCIA,
-                            DependenciaPeer::CODIGO, DependenciaPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::COD_DEPENDENCIA);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::COD_DEPENDENCIA,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::COD_DEPENDENCIA,
+                DependenciaPeer::CODIGO,
+                DependenciaPeer::TABLE_NAME,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::COD_DEPENDENCIA
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['COD_DEPENDENCIA'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'Las dependencias con codigo '.implode(",",$coll_error).' no existen en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Las dependencias con codigo ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'Las dependencias enviadas son validos');           
+                return array('isError' => false, 'message' => 'Las dependencias enviadas son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getSubserieWidthDependenciaComBatchIsValid()
-    * funcion para validar si la subserie y dependencia existen en el SGDEA existe y que la subserie este relacionada a la dependencia
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si la subserie y dependencia existen en el SGDEA existe y que la subserie este relacionada a la dependencia
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @comlote_id mixed id del lote de migracion
+     */
     public static function getSubserieWidthDependenciaComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s JOIN %s ON %s = %s JOIN %s ON %s = %s WHERE %s = %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::SUBSERIE_CODIGO, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::SUBSERIE_CODIGO,
-                            SubseriePeer::CODIGO, SubseriePeer::TABLE_NAME, SeriePeer::TABLE_NAME,SubseriePeer::SERIE_ID,SeriePeer::SERIE_ID,
-                            DependenciaPeer::TABLE_NAME,SeriePeer::DEPENDENCIA_ID,DependenciaPeer::DEPENDENCIA_ID,
-                            DependenciaPeer::CODIGO , ComMigmasivoPeer::COD_DEPENDENCIA,ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::SUBSERIE_CODIGO);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s JOIN %s ON %s = %s JOIN %s ON %s = %s WHERE %s = %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::SUBSERIE_CODIGO,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::SUBSERIE_CODIGO,
+                SubseriePeer::CODIGO,
+                SubseriePeer::TABLE_NAME,
+                SeriePeer::TABLE_NAME,
+                SubseriePeer::SERIE_ID,
+                SeriePeer::SERIE_ID,
+                DependenciaPeer::TABLE_NAME,
+                SeriePeer::DEPENDENCIA_ID,
+                DependenciaPeer::DEPENDENCIA_ID,
+                DependenciaPeer::CODIGO,
+                ComMigmasivoPeer::COD_DEPENDENCIA,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::SUBSERIE_CODIGO
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['COD_DEPENDENCIA'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'Las dependencias con codigo '.implode(",",$coll_error).' no existen en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Las dependencias con codigo ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'Las dependencias enviadas son validos');           
+                return array('isError' => false, 'message' => 'Las dependencias enviadas son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getPlantillaComBatchIsValid()
-    * funcion para validar si los tipos de plantillas existen en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si los tipos de plantillas existen en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @comlote_id mixed id del lote de migracion
+     */
     public static function getPlantillaComBatchIsValid($comlote_id, $modulo_id = 0)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = ".$modulo_id." AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::TIPO_DOCUMENTO, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::TIPO_DOCUMENTO,
-                            PlantillasComPeer::DESCRIPCION, PlantillasComPeer::TABLE_NAME, ComMigmasivoPeer::MODULO_ID,
-                            ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::TIPO_DOCUMENTO);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = " . $modulo_id . " AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::TIPO_DOCUMENTO,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::TIPO_DOCUMENTO,
+                PlantillasComPeer::DESCRIPCION,
+                PlantillasComPeer::TABLE_NAME,
+                ComMigmasivoPeer::MODULO_ID,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::TIPO_DOCUMENTO
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['TIPO_DOCUMENTO'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'Las plantillas con nombre '.implode(",",$coll_error).' no existen en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Las plantillas con nombre ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'Las plantillas enviadas son validas');           
+                return array('isError' => false, 'message' => 'Las plantillas enviadas son validas');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getRecibidaRadComBatchIsValid()
-    * funcion para validar si los radicados de entrada existen en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si los radicados de entrada existen en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @comlote_id mixed id del lote de migracion
+     */
     public static function getRecibidaRadComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::RADICADO_ENTRADA, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::RADICADO_ENTRADA,
-                            ComRecibidaPeer::RADICADO, ComRecibidaPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::RADICADO_ENTRADA);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::RADICADO_ENTRADA,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::RADICADO_ENTRADA,
+                ComRecibidaPeer::RADICADO,
+                ComRecibidaPeer::TABLE_NAME,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::RADICADO_ENTRADA
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['RADICADO_ENTRADA'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'Los radicados de entrada '.implode(",",$coll_error).' no existen en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Los radicados de entrada ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'Los radicados de entrada enviados son validos');           
+                return array('isError' => false, 'message' => 'Los radicados de entrada enviados son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getExpedienteCodComBatchIsValid()
-    * funcion para validar si los expedientes existen en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si los expedientes existen en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @comlote_id mixed id del lote de migracion
+     */
     public static function getExpedienteCodComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::NUMERO_EXPEDIENTE, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::NUMERO_EXPEDIENTE,
-                            UnidadDocumentalPeer::CODIGO_BARRAS, UnidadDocumentalPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::NUMERO_EXPEDIENTE);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::NUMERO_EXPEDIENTE,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::NUMERO_EXPEDIENTE,
+                UnidadDocumentalPeer::CODIGO_BARRAS,
+                UnidadDocumentalPeer::TABLE_NAME,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::NUMERO_EXPEDIENTE
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['NUMERO_EXPEDIENTE'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'Los numero de expediente '.implode(",",$coll_error).' no existen en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Los numero de expediente ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'Los expedientes enviados son validos');           
+                return array('isError' => false, 'message' => 'Los expedientes enviados son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getTipoDocCodComBatchIsValid()
-    * funcion para validar si los tipos documentales existen en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si los tipos documentales existen en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @comlote_id mixed id del lote de migracion
+     */
     public static function getTipoDocCodComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::COD_TIPO_DOC, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::COD_TIPO_DOC,
-                            TipoDocumentalPeer::CODIGO, TipoDocumentalPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::COD_TIPO_DOC);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::COD_TIPO_DOC,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::COD_TIPO_DOC,
+                TipoDocumentalPeer::CODIGO,
+                TipoDocumentalPeer::TABLE_NAME,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::COD_TIPO_DOC
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['COD_TIPO_DOC'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'Los tipos documentales '.implode(",",$coll_error).' no existen en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Los tipos documentales ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'Los tipos documentales enviados son validos');           
+                return array('isError' => false, 'message' => 'Los tipos documentales enviados son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getMarcoNormativoBatchIsValid()
-    * funcion para validar si el marco normativo existe en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si el marco normativo existe en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @comlote_id mixed id del lote de migracion
+     */
     public static function getMarcoNormativoBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::MARCO_NORMATIVO, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::MARCO_NORMATIVO,
-                            MarcoNormativoPeer::DESCRIPCION, MarcoNormativoPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::MARCO_NORMATIVO);
+            $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s WHERE %s NOT IN (SELECT %s FROM %s) AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::MARCO_NORMATIVO,
+                ComMigmasivoPeer::TABLE_NAME,
+                ComMigmasivoPeer::MARCO_NORMATIVO,
+                MarcoNormativoPeer::DESCRIPCION,
+                MarcoNormativoPeer::TABLE_NAME,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::MARCO_NORMATIVO
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['MARCO_NORMATIVO'];
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'Los tipos documentales '.implode(",",$coll_error).' no existen en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Los tipos documentales ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'Los tipos documentales enviados son validos');           
+                return array('isError' => false, 'message' => 'Los tipos documentales enviados son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servido, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servido, ' . $th->getMessage());
         }
     }
 
     /**
-    * ComMigmasivoPeer::getInteresadosOrTerceroComBatchIsValid()
-    * funcion para validar que en el lote existan datos de interesados o terceros para todos los registros
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @param string $comlote_id identificación del lote con el cual se debe validar la información de migración
-    * @param bool $validateCreate indica si se validan los datos para creacion en caso que no existan los registros
-    */
+     * ComMigmasivoPeer::getInteresadosOrTerceroComBatchIsValid()
+     * funcion para validar que en el lote existan datos de interesados o terceros para todos los registros
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @param string $comlote_id identificación del lote con el cual se debe validar la información de migración
+     * @param bool $validateCreate indica si se validan los datos para creacion en caso que no existan los registros
+     */
     public static function getInteresadosOrTerceroComBatchIsValid($comlote_id)
     {
         try {
             $c = new Criteria();
-            $c->add(ComMigmasivoPeer::NUID_INTERESADO,null,Criteria::ISNULL);
-            $c->add(ComMigmasivoPeer::PNOMBRE_INTERESADO,null,Criteria::ISNULL);
-            $c->add(ComMigmasivoPeer::PAPELLIDO_INTERESADO,null,Criteria::ISNULL);
-            $c->add(ComMigmasivoPeer::ESTADO_MIGRACION,"PENDIENTE VALIDAR");
-            $c->add(ComMigmasivoPeer::COMLOTE_ID,$comlote_id);
+            $c->add(ComMigmasivoPeer::NUID_INTERESADO, null, Criteria::ISNULL);
+            $c->add(ComMigmasivoPeer::PNOMBRE_INTERESADO, null, Criteria::ISNULL);
+            $c->add(ComMigmasivoPeer::PAPELLIDO_INTERESADO, null, Criteria::ISNULL);
+            $c->add(ComMigmasivoPeer::ESTADO_MIGRACION, "PENDIENTE VALIDAR");
+            $c->add(ComMigmasivoPeer::COMLOTE_ID, $comlote_id);
             $c->addAscendingOrderByColumn(ComMigmasivoPeer::COMLOTE_ID);
             //******************************************************************************
             $c->clearSelectColumns();
@@ -612,27 +714,27 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $stmt_interesado = ComMigmasivoPeer::doSelectStmt($c)->fetchAll();
             //******************************************************************************
             $c1 = new Criteria();
-            $c1->add(ComMigmasivoPeer::NIT_DESTINATARIO,null,Criteria::ISNULL);
-            $c1->add(ComMigmasivoPeer::RAZON_SOCIAL,null,Criteria::ISNULL);           
-            $c1->add(ComMigmasivoPeer::ESTADO_MIGRACION,"PENDIENTE VALIDAR");
-            $c1->add(ComMigmasivoPeer::COMLOTE_ID,$comlote_id);
+            $c1->add(ComMigmasivoPeer::NIT_DESTINATARIO, null, Criteria::ISNULL);
+            $c1->add(ComMigmasivoPeer::RAZON_SOCIAL, null, Criteria::ISNULL);
+            $c1->add(ComMigmasivoPeer::ESTADO_MIGRACION, "PENDIENTE VALIDAR");
+            $c1->add(ComMigmasivoPeer::COMLOTE_ID, $comlote_id);
             $c1->addAscendingOrderByColumn(ComMigmasivoPeer::COMLOTE_ID);
             //******************************************************************************
             $c1->clearSelectColumns();
             $c1->addSelectColumn(ComMigmasivoPeer::COMMIGMASIVO_ID);
-            $stmt_tercero = ComMigmasivoPeer::doSelectStmt($c1)->fetchAll();            
+            $stmt_tercero = ComMigmasivoPeer::doSelectStmt($c1)->fetchAll();
             //******************************************************************************
             $coll_error = array();
-            for ($i=0; $i < count($stmt_interesado); $i++) {
+            for ($i = 0; $i < count($stmt_interesado); $i++) {
                 $commigint_pk = $stmt_interesado[$i]['COMMIGMASIVO_ID'];
                 $commigter_pk = $stmt_tercero[$i]['COMMIGMASIVO_ID'];
 
-                if($commigint_pk === $commigter_pk){
+                if ($commigint_pk === $commigter_pk) {
                     $coll_error[$i] = 'Los datos de interesados y terceros son nulos o vacios';
                 }
             }
             //******************************************************************************
-            if(count($coll_error))
+            if (count($coll_error))
                 return array('isError' => true, 'message' => 'Los interesados o terceros no pueden estar vaciones, debe relacionar un interesado o un tercero');
             else
                 return array('isError' => false, 'message' => 'Los datos enviados son validos');
@@ -641,45 +743,56 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             return array('isError' => true, 'message' => 'RS0901, Error interno del servidor');
         } catch (\Exception $th) {
             //throw $th;
-            return array('isError' => true, 'message' => 'RS0902, Error interno del servidor, '.$th->getMessage());
+            return array('isError' => true, 'message' => 'RS0902, Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'RS0902, Error interno del servidor, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'RS0902, Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
-    * ComMigmasivoPeer::getInteresadosComBatchIsValid()
-    * funcion para validar si los interesados existen en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @param string $comlote_id identificación del lote con el cual se debe validar la información de migración
-    * @param bool $validateCreate indica si se validan los datos para creacion en caso que no existan los registros
-    */
-    public static function getInteresadosComBatchIsValid($comlote_id,$validateCreate = false)
+     * ComMigmasivoPeer::getInteresadosComBatchIsValid()
+     * funcion para validar si los interesados existen en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @param string $comlote_id identificación del lote con el cual se debe validar la información de migración
+     * @param bool $validateCreate indica si se validan los datos para creacion en caso que no existan los registros
+     */
+    public static function getInteresadosComBatchIsValid($comlote_id, $validateCreate = false)
     {
         try {
             $conexion = Propel::getConnection();
             $query = "SELECT COUNT(1) AS TOTAL, %s FROM %s ";
             $query .= "LEFT JOIN %s ON(%s = %s AND %s = %s AND %s=%s) ";
-            $query .= "WHERE %s IS NULL AND %s IS NOT NULL AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql      = sprintf($query, ComMigmasivoPeer::NUID_INTERESADO, ComMigmasivoPeer::TABLE_NAME, InteresadosPeer::TABLE_NAME,
-                            ComMigmasivoPeer::NUID_INTERESADO, InteresadosPeer::NUMERO_IDENTIFICACION, ComMigmasivoPeer::PNOMBRE_INTERESADO,InteresadosPeer::PRIMER_NOMBRE,
-                            ComMigmasivoPeer::PAPELLIDO_INTERESADO,InteresadosPeer::PRIMER_APELLIDO,InteresadosPeer::NUMERO_IDENTIFICACION,
-                            ComMigmasivoPeer::NUID_INTERESADO,ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::NUID_INTERESADO);
+            $query .= "WHERE %s IS NULL AND %s IS NOT NULL AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql      = sprintf(
+                $query,
+                ComMigmasivoPeer::NUID_INTERESADO,
+                ComMigmasivoPeer::TABLE_NAME,
+                InteresadosPeer::TABLE_NAME,
+                ComMigmasivoPeer::NUID_INTERESADO,
+                InteresadosPeer::NUMERO_IDENTIFICACION,
+                ComMigmasivoPeer::PNOMBRE_INTERESADO,
+                InteresadosPeer::PRIMER_NOMBRE,
+                ComMigmasivoPeer::PAPELLIDO_INTERESADO,
+                InteresadosPeer::PRIMER_APELLIDO,
+                InteresadosPeer::NUMERO_IDENTIFICACION,
+                ComMigmasivoPeer::NUID_INTERESADO,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::NUID_INTERESADO
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['NUID_INTERESADO'];
             }
             //******************************************************************************
-            if(count($coll_error) && $validateCreate)
-            {
+            if (count($coll_error) && $validateCreate) {
                 $c = new Criteria();
-                $c->add(ComMigmasivoPeer::COMLOTE_ID,$comlote_id);
-                $c->add(ComMigmasivoPeer::ESTADO_MIGRACION,"PENDIENTE VALIDAR");
+                $c->add(ComMigmasivoPeer::COMLOTE_ID, $comlote_id);
+                $c->add(ComMigmasivoPeer::ESTADO_MIGRACION, "PENDIENTE VALIDAR");
                 //**************************************************************************
                 $c->clearSelectColumns();
                 //**************************************************************************
@@ -693,7 +806,8 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $c->addSelectColumn(ComMigmasivoPeer::EMAIL_INTERESADO);
                 //**************************************************************************
                 $results = ComMigmasivoPeer::doSelectStmt($c)->fetchAll();
-                $info_interesado = array();$new_lieterrors = array();
+                $info_interesado = array();
+                $new_lieterrors = array();
                 foreach ($results as $row_item) {
                     $info_interesado['PRIMER_NOMBRE'] = trim($row_item['PNOMBRE_INTERESADO']);
                     $info_interesado['PRIMER_APELLIDO'] = trim($row_item['PAPELLIDO_INTERESADO']);
@@ -704,15 +818,15 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     //**********************************************************************
                     $resp_validate = InteresadosPeer::validateInfoNewInteresado($info_interesado);
                     //**********************************************************************
-                    if($resp_validate['IsValid'] == false){
+                    if ($resp_validate['IsValid'] == false) {
                         $idxdel = array_search($row_item['NUID_INTERESADO'], array_values($coll_error));
                         unset($coll_error[$idxdel]);
                         $coll_error = array_values($coll_error);
                         //******************************************************************
-                        $newdata = sprintf("<li>%s - %s %s</li>",trim($info_interesado['NUMERO_IDENTIFICACION']),trim($info_interesado['PRIMER_NOMBRE']),trim($info_interesado['PRIMER_APELLIDO']));
-                        if(array_search($newdata, array_values($coll_error)) !== false)
+                        $newdata = sprintf("<li>%s - %s %s</li>", trim($info_interesado['NUMERO_IDENTIFICACION']), trim($info_interesado['PRIMER_NOMBRE']), trim($info_interesado['PRIMER_APELLIDO']));
+                        if (array_search($newdata, array_values($coll_error)) !== false)
                             $new_lieterrors[] = $newdata;
-                    }else{
+                    } else {
                         $idxdel = array_search($info_interesado['NUMERO_IDENTIFICACION'], array_values($coll_error));
                         unset($coll_error[$idxdel]);
                         $coll_error = array_values($coll_error);
@@ -722,50 +836,59 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error = $new_lieterrors;
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'Los interesados con numero identificacion '.implode(",",$coll_error).' no existen en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Los interesados con numero identificacion ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los interesados enviados son validos');
         } catch (PropelException $th) {
             return array('isError' => true, 'message' => 'RS0901, Error interno del servidor');
         } catch (\Exception $th) {
-            return array('isError' => true, 'message' => 'RS0902, Error interno del servidor, '.$th->getMessage());
+            return array('isError' => true, 'message' => 'RS0902, Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('isError' => TRUE, 'message' => 'RS0902, Error interno del servidor, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'RS0902, Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getTercerosComBatchIsValid()
-    * funcion para validar si los terceros existen en el SGDEA o los datos enviados son validos para crear el tercero
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @param string $comlote_id identificación del lote con el cual se debe validar la información de migración
-    * @param bool $validateCreate indica si se validan los datos para creacion en caso que no existan los registros
-    */
-    public static function getTercerosComBatchIsValid($comlote_id,$validateCreate = false)
+     * funcion para validar si los terceros existen en el SGDEA o los datos enviados son validos para crear el tercero
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @param string $comlote_id identificación del lote con el cual se debe validar la información de migración
+     * @param bool $validateCreate indica si se validan los datos para creacion en caso que no existan los registros
+     */
+    public static function getTercerosComBatchIsValid($comlote_id, $validateCreate = false)
     {
         try {
             $conexion = Propel::getConnection();
             $query  = "SELECT COUNT(1) AS TOTAL, %s FROM %s ";
             $query .= "LEFT JOIN %s ON(%s = %s AND %s = %s) ";
-            $query .= "WHERE %s IS NOT NULL AND %s = '".$comlote_id."' GROUP BY %s";
-            $sql    = sprintf($query, ComMigmasivoPeer::NIT_DESTINATARIO, ComMigmasivoPeer::TABLE_NAME, DirectorioExternoPeer::TABLE_NAME,
-                            ComMigmasivoPeer::NIT_DESTINATARIO, DirectorioExternoPeer::NIT, ComMigmasivoPeer::RAZON_SOCIAL,DirectorioExternoPeer::NOMBRE,
-                            ComMigmasivoPeer::NIT_DESTINATARIO,ComMigmasivoPeer::COMLOTE_ID,ComMigmasivoPeer::NIT_DESTINATARIO);
+            $query .= "WHERE %s IS NOT NULL AND %s = '" . $comlote_id . "' GROUP BY %s";
+            $sql    = sprintf(
+                $query,
+                ComMigmasivoPeer::NIT_DESTINATARIO,
+                ComMigmasivoPeer::TABLE_NAME,
+                DirectorioExternoPeer::TABLE_NAME,
+                ComMigmasivoPeer::NIT_DESTINATARIO,
+                DirectorioExternoPeer::NIT,
+                ComMigmasivoPeer::RAZON_SOCIAL,
+                DirectorioExternoPeer::NOMBRE,
+                ComMigmasivoPeer::NIT_DESTINATARIO,
+                ComMigmasivoPeer::COMLOTE_ID,
+                ComMigmasivoPeer::NIT_DESTINATARIO
+            );
             $coll_error = array();
             //******************************************************************************
             $stmt = $conexion->prepare($sql);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
                 $coll_error[] = $object['NIT_DESTINATARIO'];
             }
             //******************************************************************************
-            if(count($coll_error) && $validateCreate)
-            {
+            if (count($coll_error) && $validateCreate) {
                 $c = new Criteria();
-                $c->add(ComMigmasivoPeer::COMLOTE_ID,$comlote_id);
-                $c->add(ComMigmasivoPeer::ESTADO_MIGRACION,"PENDIENTE VALIDAR");
+                $c->add(ComMigmasivoPeer::COMLOTE_ID, $comlote_id);
+                $c->add(ComMigmasivoPeer::ESTADO_MIGRACION, "PENDIENTE VALIDAR");
                 //**************************************************************************
                 $c->clearSelectColumns();
                 //**************************************************************************
@@ -776,7 +899,8 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $c->addSelectColumn(ComMigmasivoPeer::EMAIL_REMITENTE);
                 //**************************************************************************
                 $results = ComMigmasivoPeer::doSelectStmt($c)->fetchAll();
-                $info_tercero = array();$new_lieterrors = array();
+                $info_tercero = array();
+                $new_lieterrors = array();
                 foreach ($results as $row_item) {
                     $info_tercero['NOMBRE'] = trim($row_item['RAZON_SOCIAL']);
                     $info_tercero['NUMERO_IDENTIFICACION'] = trim($row_item['NIT_DESTINATARIO']);
@@ -786,15 +910,15 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     //**********************************************************************
                     $resp_validate = DirectorioExternoPeer::validateInfoRemitente($info_tercero);
                     //**********************************************************************
-                    if($resp_validate['IsValid'] == false){
+                    if ($resp_validate['IsValid'] == false) {
                         $idxdel = array_search($row_item['NIT_DESTINATARIO'], array_values($coll_error));
                         unset($coll_error[$idxdel]);
                         $coll_error = array_values($coll_error);
                         //******************************************************************
-                        $newdata = sprintf("<li>%s - %s</li>",trim($info_tercero['NUMERO_IDENTIFICACION']),trim($info_tercero['NOMBRE']));
-                        if(array_search($newdata, array_values($coll_error)) !== false)
+                        $newdata = sprintf("<li>%s - %s</li>", trim($info_tercero['NUMERO_IDENTIFICACION']), trim($info_tercero['NOMBRE']));
+                        if (array_search($newdata, array_values($coll_error)) !== false)
                             $new_lieterrors[] = $newdata;
-                    }else{
+                    } else {
                         $idxdel = array_search($info_tercero['NUMERO_IDENTIFICACION'], array_values($coll_error));
                         unset($coll_error[$idxdel]);
                         $coll_error = array_values($coll_error);
@@ -804,130 +928,136 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error = $new_lieterrors;
             }
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'Los terceros con numero identificacion '.implode(",",$coll_error).' no existen en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Los terceros con numero identificacion ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los terceros enviados son validos');
         } catch (PropelException $th) {
             return array('isError' => TRUE, 'message' => 'RS0901, Error interno del servidor');
         } catch (\Exception $th) {
-            return array('isError' => TRUE, 'message' => 'RS0902, Error interno del servidor, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'RS0902, Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('isError' => TRUE, 'message' => 'RS0902, Error interno del servidor, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'RS0902, Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getDestinoInternoComBatchIsValid()
-    * funcion para validar si los destinatarios existen en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si los destinatarios existen en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @comlote_id mixed id del lote de migracion
+     */
     public static function getDestinoInternoComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT DISTINCT %s AS STR_DESTINO FROM %s WHERE %s = '".$comlote_id."'";
+            $query = "SELECT DISTINCT %s AS STR_DESTINO FROM %s WHERE %s = '" . $comlote_id . "'";
             $query = sprintf($query, ComMigmasivoPeer::NUID_DESTINATARIO, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID);
-            $coll_firmas = array();$coll_error = array();$firmas_list = array();
+            $coll_firmas = array();
+            $coll_error = array();
+            $firmas_list = array();
             //******************************************************************************
             $stmt = $conexion->prepare($query);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
-                $row_firmas = preg_split("/[;]+/",$object['STR_DESTINO'], -1, PREG_SPLIT_NO_EMPTY);
-                foreach($row_firmas as $nuid_firma){
-                    if(!in_array($nuid_firma,$coll_firmas)){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
+                $row_firmas = preg_split("/[;]+/", $object['STR_DESTINO'], -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($row_firmas as $nuid_firma) {
+                    if (!in_array($nuid_firma, $coll_firmas)) {
                         $coll_firmas[] = $nuid_firma;
                     }
                 }
             }
             //******************************************************************************
             $c = new Criteria();
-            $c->add(UsuarioPeer::CEDULA,$coll_firmas,Criteria::IN);
-            $c->add(UsuarioPeer::ESTADOUSUARIO_ID,array(1,3),Criteria::IN);
+            $c->add(UsuarioPeer::CEDULA, $coll_firmas, Criteria::IN);
+            $c->add(UsuarioPeer::ESTADOUSUARIO_ID, array(1, 3), Criteria::IN);
             $c->clearSelectColumns();
             $c->addSelectColumn(UsuarioPeer::CEDULA);
             $lusers_nvalid = UsuarioPeer::doSelectStmt($c);
-            foreach($lusers_nvalid as $object){
+            foreach ($lusers_nvalid as $object) {
                 $firmas_list[] = $object['CEDULA'];
             }
             //******************************************************************************
             $coll_error = array_diff($coll_firmas, $firmas_list);
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'El destinatario con numero de identificacion '.implode(",",$coll_error).' no existen o presentan alguna novedad con la cuenta en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'El destinatario con numero de identificacion ' . implode(",", $coll_error) . ' no existen o presentan alguna novedad con la cuenta en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'El destinatario enviado son validos');           
+                return array('isError' => false, 'message' => 'El destinatario enviado son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getFirmasComBatchIsValid()
-    * funcion para validar si los firmantes existen en el SGDEA
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    * @comlote_id mixed id del lote de migracion
-    */
+     * funcion para validar si los firmantes existen en el SGDEA
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @comlote_id mixed id del lote de migracion
+     */
     public static function getFirmasComBatchIsValid($comlote_id)
     {
         try {
             $conexion = Propel::getConnection();
-            $query = "SELECT DISTINCT %s AS STR_FIRMAS FROM %s WHERE %s = '".$comlote_id."'";
+            $query = "SELECT DISTINCT %s AS STR_FIRMAS FROM %s WHERE %s = '" . $comlote_id . "'";
             $query = sprintf($query, ComMigmasivoPeer::NUIDS_FIRMAS, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID);
-            $coll_firmas = array();$coll_error = array();$firmas_list = array();
+            $coll_firmas = array();
+            $coll_error = array();
+            $firmas_list = array();
             //******************************************************************************
             $stmt = $conexion->prepare($query);
             $stmt->execute();
             //******************************************************************************
-            foreach($stmt->fetchAll(PDO::FETCH_BOTH) as $object){
-                $row_firmas = preg_split("/[;]+/",$object['STR_FIRMAS'], -1, PREG_SPLIT_NO_EMPTY);
-                foreach($row_firmas as $nuid_firma){
-                    if(!in_array($nuid_firma,$coll_firmas)){
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
+                $row_firmas = preg_split("/[;]+/", $object['STR_FIRMAS'], -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($row_firmas as $nuid_firma) {
+                    if (!in_array($nuid_firma, $coll_firmas)) {
                         $coll_firmas[] = $nuid_firma;
                     }
                 }
             }
             //******************************************************************************
             $c = new Criteria();
-            $c->add(UsuarioPeer::CEDULA,$coll_firmas,Criteria::IN);
-            $c->add(UsuarioPeer::ESTADOUSUARIO_ID,array(1,3),Criteria::IN);
+            $c->add(UsuarioPeer::CEDULA, $coll_firmas, Criteria::IN);
+            $c->add(UsuarioPeer::ESTADOUSUARIO_ID, array(1, 3), Criteria::IN);
             $c->clearSelectColumns();
             $c->addSelectColumn(UsuarioPeer::CEDULA);
             $lusers_nvalid = UsuarioPeer::doSelectStmt($c);
-            foreach($lusers_nvalid as $object){
+            foreach ($lusers_nvalid as $object) {
                 $firmas_list[] = $object['CEDULA'];
             }
             //******************************************************************************
             $coll_error = array_diff($coll_firmas, $firmas_list);
             //******************************************************************************
-            if(count($coll_error))
-                return array('isError' => true, 'message' => 'Los firmantes con numero de identificacion '.implode(",",$coll_error).' no existen o presentan alguna novedad con la cuenta en el SGDEA');
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Los firmantes con numero de identificacion ' . implode(",", $coll_error) . ' no existen o presentan alguna novedad con la cuenta en el SGDEA');
             else
-                return array('isError' => false, 'message' => 'Los firmantes enviados son validos');           
+                return array('isError' => false, 'message' => 'Los firmantes enviados son validos');
         } catch (\Throwable $th) {
             //throw $th;
-            return array('isError' => TRUE, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('isError' => TRUE, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::getListComByComLote()
-    * funcion para listar los registros de un lote de radicacion masiva
-    * @return mixed lista de registros filtrados por un lote especifico
-    * @comIdLote mixed identificador unico del lote de radicacion masiva
-    * @estado_lote mixed estado actual de lote de radicacionmasiva
-    */
+     * funcion para listar los registros de un lote de radicacion masiva
+     * @return mixed lista de registros filtrados por un lote especifico
+     * @comIdLote mixed identificador unico del lote de radicacion masiva
+     * @estado_lote mixed estado actual de lote de radicacionmasiva
+     */
     public static function getListComByComLote($comIdLote, $estado_lote = null)
     {
         $object_coll = array();
         //****************************************************************************************
         try {
             $c = new Criteria();
-            $c->add(ComMigmasivoPeer::COMLOTE_ID,$comIdLote);
-            if(!empty($estado_lote)){ $c->add(ComMigmasivoPeer::ESTADO_MIGRACION, $estado_lote); }
+            $c->add(ComMigmasivoPeer::COMLOTE_ID, $comIdLote);
+            if (!empty($estado_lote)) {
+                $c->add(ComMigmasivoPeer::ESTADO_MIGRACION, $estado_lote);
+            }
             $object_coll = ComMigmasivoPeer::doSelect($c);
             //************************************************************************************            
             return $object_coll;
@@ -942,110 +1072,108 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
 
     /**
      * ComMigmasivoPeer::addNewComByComLote()
-    * funcion para crear un registro nuevo para la radicacion masiva
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito', 'object' => 'objeto de la fila creada')
-    * @param mixed parameters array con los parametros para la radicacion de las comunicaciones
-    * @param int modulo_id identificacion del modulo al cual se radican las comunicaciones
-    */
-    public static function addNewComByComLote($parameters,$modulo_id)
+     * funcion para crear un registro nuevo para la radicacion masiva
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito', 'object' => 'objeto de la fila creada')
+     * @param mixed parameters array con los parametros para la radicacion de las comunicaciones
+     * @param int modulo_id identificacion del modulo al cual se radican las comunicaciones
+     */
+    public static function addNewComByComLote($parameters, $modulo_id)
     {
-        try 
-        {
-            if($modulo_id == ModulesEnable::ComRecibida){//recibidas
+        try {
+            if ($modulo_id == ModulesEnable::ComRecibida) { //recibidas
                 return ComMigmasivoPeer::addNewComRecibidaByComLote($parameters);
-            }else if($modulo_id == ModulesEnable::ComEnviada){//enviadas
+            } else if ($modulo_id == ModulesEnable::ComEnviada) { //enviadas
                 return ComMigmasivoPeer::addNewComEnviadaByComLote($parameters);
-            }else if($modulo_id == ModulesEnable::ActosAdministrativos){//acto_administrativo
+            } else if ($modulo_id == ModulesEnable::ActosAdministrativos) { //acto_administrativo
                 return ComMigmasivoPeer::addNewActoAdministrativoByComLote($parameters);
             }
         } catch (PropelException $ex) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());        
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
 
 
-    public static function addNewComByOneCom($parameters,$modulo_id)
+    public static function addNewComByOneCom($parameters, $modulo_id)
     {
-        try 
-        {
-            if($modulo_id == ModulesEnable::ComRecibida){//recibidas
+        try {
+            if ($modulo_id == ModulesEnable::ComRecibida) { //recibidas
                 return ComMigmasivoPeer::addNewComRecibidaByComLote($parameters);
-            }else if($modulo_id == ModulesEnable::ComEnviada)
-            {//enviadas
+            } else if ($modulo_id == ModulesEnable::ComEnviada) { //enviadas
                 //return ComMigmasivoPeer::addNewComEnviadaByComLote($parameters);
                 return ComMigmasivoPeer::addNewComEnviadaByComOne($parameters);
-            }
-            else if($modulo_id == ModulesEnable::ActosAdministrativos)
-            {//acto_administrativo
+            } else if ($modulo_id == ModulesEnable::ActosAdministrativos) { //acto_administrativo
                 return ComMigmasivoPeer::addNewActoAdministrativoByComLote($parameters);
             }
         } catch (PropelException $ex) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());        
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
 
-    public static function addNewComByOneComAsync($migmasiva_id, $modulo_id, $lote_id, $firma_digital,$docs_source)
+    public static function addNewComByOneComAsync($migmasiva_id, $modulo_id, $lote_id, $firma_digital, $docs_source)
     {
-        try 
-        {
-            if($modulo_id == ModulesEnable::ComEnviada){
+        try {
+            if ($modulo_id == ModulesEnable::ComEnviada) {
                 return ComMigmasivoPeer::commitNewComEnviadaByOneAsync($migmasiva_id, $lote_id, $firma_digital, $docs_source);
-            }else{
+            } else {
                 return array('status' => 400, 'message' => 'Error el modulo de destino de la radicación es obligatorio');
             }
         } catch (PropelException $ex) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());        
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
-    * ComMigmasivoPeer::addNewComEnviadaByComLote()
-    * funcion para crear un registro nuevo para la radicacion masiva
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito', 'object' => 'objeto de la fila creada')
-    * @param mixed parameters array con los parametros para la radicacion de las comunicaciones
-    */
+     * ComMigmasivoPeer::addNewComEnviadaByComLote()
+     * funcion para crear un registro nuevo para la radicacion masiva
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito', 'object' => 'objeto de la fila creada')
+     * @param mixed parameters array con los parametros para la radicacion de las comunicaciones
+     */
     public static function addNewActoAdministrativoByComLote($parameters)
     {
         try {
-            $upload_dir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp';
+            $upload_dir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
             $directorio = simad_util::createPath($upload_dir);
             $util_simad = new simad_util();
             //**********************************************************************************
-            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(75)->getValortexto().'uploads');
-			$filedir_target = simad_util::createPath($dir_raiz.DIRECTORY_SEPARATOR.date("Ymd"));
+            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(75)->getValortexto() . 'uploads');
+            $filedir_target = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
             //**********************************************************************************
-            $filedocsupload = $upload_dir.DIRECTORY_SEPARATOR.$parameters['filedocsupload'];
-            $outfile_zip = $upload_dir.DIRECTORY_SEPARATOR.md5(date("YmdGisu"));
-            $zipfile_extract = simad_util::extractFileCompress($filedocsupload,$outfile_zip);
-            if(!$zipfile_extract){
+            $filedocsupload = $upload_dir . DIRECTORY_SEPARATOR . $parameters['filedocsupload'];
+            $outfile_zip = $upload_dir . DIRECTORY_SEPARATOR . md5(date("YmdGisu"));
+            $zipfile_extract = simad_util::extractFileCompress($filedocsupload, $outfile_zip);
+            if (!$zipfile_extract) {
                 return array('status' => 400, 'message' => 'Ocurrio un error al descomprimir el archivo de documentos, no se radicaron las comunicaciones');
             }
             //**********************************************************************************
             $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
             $usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
-            $ucargo_origen = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuariologuiado,true);
+            $ucargo_origen = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuariologuiado, true);
             //**********************************************************************************
-            $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'],'PENDIENTE VALIDAR');
-            if(count($blotes) <= 0){
+            $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'], 'PENDIENTE VALIDAR');
+            if (count($blotes) <= 0) {
                 return array('status' => 400, 'message' => 'No se encontraron registros para radicar!');
             }
             //**********************************************************************************
-            $ciudad_codigo = array();$dependencia_cod = array();
-            $lexpedientes = array();$lcomtipo_servicio = array();$lexptransfer = array();$lcomservicios = array();
+            $ciudad_codigo = array();
+            $dependencia_cod = array();
+            $lexpedientes = array();
+            $lcomtipo_servicio = array();
+            $lexptransfer = array();
+            $lcomservicios = array();
             foreach ($blotes as $row) {
                 $params = array();
                 $estado_documento = 1;
@@ -1053,50 +1181,50 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 //Si la plantilla trae numero de resolucion, se conserva tal cual y el acto
                 //queda radicado de inmediato (estado 6), sin generar un consecutivo nuevo.
                 $numero_resolucion_externo = trim($row->getNumeroResolucion()) ?: null;
-                if(!empty($numero_resolucion_externo)){
+                if (!empty($numero_resolucion_externo)) {
                     $estado_documento = 6;
                 }
                 //******************************************************************************
-                $file_source = $outfile_zip.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-                $file_target = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-                if(!file_exists($file_source)){
+                $file_source = $outfile_zip . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+                $file_target = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+                if (!file_exists($file_source)) {
                     continue;
                 }
                 //******************************************************************************
-                $ciudad_id = in_array($row->getPuntoRadicacion(),$ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(),false);
-                if($ciudad_id != null){
+                $ciudad_id = in_array($row->getPuntoRadicacion(), $ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(), false);
+                if ($ciudad_id != null) {
                     $ciudad_codigo[$ciudad_id] = $row->getPuntoRadicacion();
                 }
                 //******************************************************************************
-                $dependencia = in_array($row->getCodDependencia(),$dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
+                $dependencia = in_array($row->getCodDependencia(), $dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
                 $dependencia_id = is_int($dependencia) ? $dependencia : $dependencia->getPrimaryKey();
-                if($dependencia_id != null){
+                if ($dependencia_id != null) {
                     $dependencia_cod[$dependencia_id] = $row->getCodDependencia();
                 }
                 //******************************************************************************
                 $unidaddocumental_id = null;
-                if(in_array($row->getNumeroExpediente(),$lexpedientes)){
+                if (in_array($row->getNumeroExpediente(), $lexpedientes)) {
                     $unidaddocumental_id = array_search($row->getNumeroExpediente(), $lexpedientes);
-                }else{
+                } else {
                     $unidad_documental = UnidadDocumentalPeer::getExpedienteByCodBarras($row->getNumeroExpediente());
                     $unidaddocumental_id = $unidad_documental != null ? $unidad_documental->getPrimaryKey() : null;
                     $lexpedientes[$unidaddocumental_id] = $row->getNumeroExpediente();
                 }
                 //******************************************************************************
                 $tipodocumental_id = null;
-                if(trim($row->getCodTipoDoc())){
+                if (trim($row->getCodTipoDoc())) {
                     $tipo_documental = TipoDocumentalPeer::getTipoDocByCodigo(trim($row->getCodTipoDoc()));
                     $tipodocumental_id = $tipo_documental != null ? $tipo_documental->getPrimaryKey() : null;
                 }
                 //******************************************************************************
                 $subserie_id = null;
-                if(trim($row->getSubserieCodigo())){
+                if (trim($row->getSubserieCodigo())) {
                     $subserie = SubseriePeer::getSubserieByCodigo(trim($row->getSubserieCodigo()));
                     $subserie_id = $subserie != null ? $subserie->getPrimaryKey() : null;
                 }
                 //******************************************************************************
                 //No permitir radicar dos veces el mismo numero de resolucion en la subserie
-                if(!empty($numero_resolucion_externo) && ActoAdministrativoPeer::isExistActoByNumResolucion($numero_resolucion_externo,$subserie_id)){
+                if (!empty($numero_resolucion_externo) && ActoAdministrativoPeer::isExistActoByNumResolucion($numero_resolucion_externo, $subserie_id)) {
                     $row->setEstadoMigracion('ERROR_RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
                     $row->setMensajeInfo("NUMERO RESOLUCION YA EXISTE EN LA SUBSERIE");
@@ -1105,28 +1233,30 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 }
                 //******************************************************************************
                 $plantillacom_id = null;
-                if(trim($row->getTipoDocumento())){
-                    $plantilla_com = PlantillasComPeer::getTplByDescripcionModulo(trim($row->getTipoDocumento()),ModulesEnable::ActosAdministrativos);
+                if (trim($row->getTipoDocumento())) {
+                    $plantilla_com = PlantillasComPeer::getTplByDescripcionModulo(trim($row->getTipoDocumento()), ModulesEnable::ActosAdministrativos);
                     $plantillacom_id = $plantilla_com != null ? $plantilla_com->getPrimaryKey() : null;
                 }
                 //******************************************************************************
                 $usuariodestino_id = null;
                 $ucargodestino_id = null;
-                if(trim($row->getNuidDestinatario())){
-                    $ucargo_destino = CargoUsuarioPeer::getCargoUsuarioByNuidUser(trim($row->getNuidDestinatario()),ModulesEnable::ActosAdministrativos);
+                if (trim($row->getNuidDestinatario())) {
+                    $ucargo_destino = CargoUsuarioPeer::getCargoUsuarioByNuidUser(trim($row->getNuidDestinatario()), ModulesEnable::ActosAdministrativos);
                     $ucargodestino_id = $ucargo_destino != null ? $ucargo_destino->getPrimaryKey() : null;
                     $usuariodestino_id = $ucargo_destino != null ? $ucargo_destino->getUsuarioId() : null;
                 }
                 //******************************************************************************
                 $prioridadcom_id = null;
-                if(trim($row->getPrioridadCom())){
-                    $prioridad_com = PrioridadComPeer::getPrioridadComByText(trim($row->getPrioridadCom()),true);
+                if (trim($row->getPrioridadCom())) {
+                    $prioridad_com = PrioridadComPeer::getPrioridadComByText(trim($row->getPrioridadCom()), true);
                     $prioridadcom_id = $prioridad_com != null ? $prioridad_com->getPrimaryKey() : null;
                 }
                 //******************************************************************************
-                $tipo_servicio = in_array($row->getTipoNotificacion(),$lcomtipo_servicio) ? array_search($row->getTipoNotificacion(), $lcomtipo_servicio) : TipoServicioPeer::getTipoServicioObjByName($row->getTipoNotificacion());
-                $tiposervicio_id = null;$tipo_envio = null;$needleIntegration = false;
-                if($tipo_servicio != null){
+                $tipo_servicio = in_array($row->getTipoNotificacion(), $lcomtipo_servicio) ? array_search($row->getTipoNotificacion(), $lcomtipo_servicio) : TipoServicioPeer::getTipoServicioObjByName($row->getTipoNotificacion());
+                $tiposervicio_id = null;
+                $tipo_envio = null;
+                $needleIntegration = false;
+                if ($tipo_servicio != null) {
                     $tipo_servicio = !is_numeric($tipo_servicio) ? $tipo_servicio : TipoServicioPeer::retrieveByPK($tipo_servicio);
                     $tiposervicio_id = $tipo_servicio->getPrimaryKey();
                     $lcomtipo_servicio[$tiposervicio_id] = $row->getTipoNotificacion();
@@ -1142,16 +1272,16 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 //******************************************************************************
                 $params['regional_id'] = $usuario_origen->getRegionalId();
                 $params['dependencia_id'] = $dependencia_id;
-                $params['estadoactoadministrativo_id'] = $estado_documento;			
+                $params['estadoactoadministrativo_id'] = $estado_documento;
                 $params['ciudad_id'] = $usuario_origen->getRegional()->getCiudadId();
                 $params['periodo_id'] = date("Y");
                 $params['asunto'] = trim($row->getAsuntoCom());
-                $params['folios'] = trim($row->getNumFolios()) ?: 0;                
+                $params['folios'] = trim($row->getNumFolios()) ?: 0;
                 $params['observaciones'] =  trim($row->getObservacionesCom()) ? trim($row->getObservacionesCom()) : "Radicación masiva con archivo plano de excel";
                 $params['firma_electronica'] = $parameters['firma_digital'];
                 //$params['firmado_digital'] = $parameters['firma_digital'];//validar porque si se firma digital debe quedar en 0 de lo contrario en 3
                 $params['firmado_digital'] = 0;
-                $params['archivo_digit'] = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
+                $params['archivo_digit'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
                 $params['use_membrete'] = 1;
                 $params['tipo_envio'] = $tipo_envio;
                 $params['tipo_masivo'] = 1;
@@ -1169,32 +1299,32 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $params['id_suborigen'] = trim($row->getIdSuborigen());
                 $params['numero_resolucion'] = $numero_resolucion_externo;
                 //******************************************************************************
-                if (trim($row->getFechaResolucion())){
-                    try{
+                if (trim($row->getFechaResolucion())) {
+                    try {
                         $date = new DateTime(trim($row->getFechaResolucion()));
                         $params['fecha_resolucion'] = $date->format('Y-m-d');
-                    }catch (Exception $ex){
+                    } catch (Exception $ex) {
                         $params['fecha_resolucion'] = date("Y-m-d");
                     }
                 }
                 //******************************************************************************
                 $params['tipo_documental_cod'] = trim($row->getCodTipoDoc()) ?: null;
-                $params['UrlFileWord'] = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
+                $params['UrlFileWord'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
                 $params['IsCreateWord'] = true;
                 $params['tipo_integracion'] = "MASIVOEXCEL";
                 //******************************************************************************
-                $firmas_nuids = preg_split("/[;]+/",trim($row->getNuidsFirmas()),-1, PREG_SPLIT_NO_EMPTY);
+                $firmas_nuids = preg_split("/[;]+/", trim($row->getNuidsFirmas()), -1, PREG_SPLIT_NO_EMPTY);
                 //******************************************************************************
                 //Validaciones condicionales del documento: NUID interesado obligatorio si se va a
                 //crear el interesado, NUIDS_FIRMAS obligatorio si se requiere firma digital certificada.
-                if($row->getCrearInteresado() && empty(trim($row->getNuidInteresado()))){
+                if ($row->getCrearInteresado() && empty(trim($row->getNuidInteresado()))) {
                     $row->setEstadoMigracion('ERROR_RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
                     $row->setMensajeInfo("NUID_INTERESADO ES OBLIGATORIO CUANDO CREAR INTERESADO = SI");
                     $row->save();
                     continue;
                 }
-                if($row->getFirmaDigital() && empty($firmas_nuids)){
+                if ($row->getFirmaDigital() && empty($firmas_nuids)) {
                     $row->setEstadoMigracion('ERROR_RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
                     $row->setMensajeInfo("NUIDS_FIRMAS ES OBLIGATORIO CUANDO SE REQUIERE FIRMA DIGITAL CERTIFICADA");
@@ -1213,9 +1343,10 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     trim($row->getPapellidoInteresado()),
                     trim($row->getSapellidoInteresado()),
                     trim($row->getCiudadInteresado()),
-                    trim($row->getEmailInteresado())
+                    trim($row->getEmailInteresado()),
+                    $usuario_origen->getPrimaryKey()
                 );
-                if($interesado == null){
+                if ($interesado == null) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
                     $row->setMensajeInfo("ERROR CON EL INTERESADO");
@@ -1224,26 +1355,27 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 }
                 $coll_interesados = array($interesado);
                 //******************************************************************************
-                try{
+                try {
                     $error_list = false;
                     $acto_administrativo = ActoAdministrativoPeer::addActoAdministrativo($params);
-                    if($acto_administrativo == null){
+                    if ($acto_administrativo == null) {
                         $row->setEstadoMigracion('ERROR RADICANDO');
                         $row->setUsuarioId($usuario_origen->getPrimaryKey());
                         $row->setMensajeInfo("ERROR RADICANDO ACTO ADMINISTRATIVO");
                         $row->save();
                         //**********************************************************************
                         $error_list = true;
-                        continue; 
+                        continue;
                     }
                     //**************************************************************************
-                    $coll_intersadosPk = array();$email_interesado = array();
+                    $coll_intersadosPk = array();
+                    $email_interesado = array();
                     foreach ($coll_interesados as $interesado) {
-                        $isAddInteresadoCom = ActoadministraInteresadoPeer::addNewInteresadoByComId($acto_administrativo->getPrimaryKey(),$interesado->getPrimaryKey());
-                        if($isAddInteresadoCom){
+                        $isAddInteresadoCom = ActoadministraInteresadoPeer::addNewInteresadoByComId($acto_administrativo->getPrimaryKey(), $interesado->getPrimaryKey());
+                        if ($isAddInteresadoCom) {
                             $coll_intersadosPk[] = $interesado->getPrimaryKey();
-                            if(!empty(trim($interesado->getEmail()))){
-                                if(!in_array(trim($interesado->getEmail()),$email_interesado))
+                            if (!empty(trim($interesado->getEmail()))) {
+                                if (!in_array(trim($interesado->getEmail()), $email_interesado))
                                     $email_interesado[] = trim($interesado->getEmail());
                             }
                         }
@@ -1277,8 +1409,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     //**************************************************************************
                     $cuser_firmas = CargoUsuarioPeer::getCaUsuariosByNuidsUsers($firmas_nuids);
                     $radicar_automativo = true;
-                    foreach ($cuser_firmas as $cuser) 
-                    {
+                    foreach ($cuser_firmas as $cuser) {
                         //firmantes
                         $info_ufirma['pkcom_id'] = $acto_administrativo->getPrimaryKey();
                         $info_ufirma['esta_asignada'] = 0;
@@ -1292,12 +1423,12 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                         $info_ufirma['esta_aprobado'] = 0;
                         ActoAdministrativoPeer::addUserByActo($info_ufirma);
                         //**************************************************************************
-                        if(empty($cuser->getUsuario()->getFirmaDesatendida())){
+                        if (empty($cuser->getUsuario()->getFirmaDesatendida())) {
                             $radicar_automativo = false;
                         }
                     }
                     //******************************************************************************
-                    if(trim($row->getNuidDestinatario())){
+                    if (trim($row->getNuidDestinatario())) {
                         //destinatario
                         $info_udestino['pkcom_id'] = $acto_administrativo->getPrimaryKey();
                         $info_udestino['esta_asignada'] = 1;
@@ -1312,18 +1443,20 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                         ActoAdministrativoPeer::addUserByActo($info_udestino);
                     }
                     //******************************************************************************
-                    if($radicar_automativo && empty($numero_resolucion_externo)){
+                    if ($radicar_automativo && empty($numero_resolucion_externo)) {
                         $estado_documento = 6;
                         $numero_resolucion = $acto_administrativo->getRadicadoFormat();
                         $acto_administrativo->setEstadoactoadministrativoId($estado_documento);
                         $acto_administrativo->save();
                     }
                     //**************************************************************************
-                    ActoAdministrativoPeer::updateEstadosObj($acto_administrativo->getPrimaryKey(),$estado_documento);
-                    ActoAdministrativoPeer::updateAproObjAllProcess($acto_administrativo->getPrimaryKey(),array(2,3,4));
+                    ActoAdministrativoPeer::updateEstadosObj($acto_administrativo->getPrimaryKey(), $estado_documento);
+                    ActoAdministrativoPeer::updateAproObjAllProcess($acto_administrativo->getPrimaryKey(), array(2, 3, 4));
                     //**************************************************************************
-                    if(file_exists($file_target)){ unlink($file_target); }
-                    $copyFile = @rename($file_source,$file_target);
+                    if (file_exists($file_target)) {
+                        unlink($file_target);
+                    }
+                    $copyFile = @rename($file_source, $file_target);
                     //**************************************************************************
                     $row->setEstadoMigracion('RADICADO');
                     $row->setRadicadoSalida($acto_administrativo->getRadicadoCompuesto());
@@ -1333,28 +1466,28 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     //**************************************************************************
                     //ARCHIVAR
                     $origentrans_id = 8;
-                    $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id,$tipodocumental_id,$acto_administrativo->getPrimaryKey(),$origentrans_id,$usuario_origen->getPrimaryKey());
+                    $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id, $tipodocumental_id, $acto_administrativo->getPrimaryKey(), $origentrans_id, $usuario_origen->getPrimaryKey());
                     //**************************************************************************
                     //La firma digital certificada solo se aplica si la fila lo solicita;
                     //si no, se conserva el PDF original tal como fue cargado.
-                    if($row->getFirmaDigital() && ($acto_administrativo->getEstadoactoadministrativoId() != 1 ) && ($acto_administrativo->getFirmadoDigital() == 0)){
+                    if ($row->getFirmaDigital() && ($acto_administrativo->getEstadoactoadministrativoId() != 1) && ($acto_administrativo->getFirmadoDigital() == 0)) {
                         $response_firma = $acto_administrativo->signDocumentProcess();
                         $msg_firma[] = isset($response_firma['message']) ? trim($response_firma['message']) : "Por favor verifique que el documento fue firmado correctamente";
                     }
                     //**************************************************************************
                     //SOLUCITUD SERVICIO
-                    if($tipo_servicio != null){
-                        $response_servicio = $acto_administrativo->addServicioByCom($usuario_origen->getPrimaryKey(),$tiposervicio_id,$coll_intersadosPk);
+                    if ($tipo_servicio != null) {
+                        $response_servicio = $acto_administrativo->addServicioByCom($usuario_origen->getPrimaryKey(), $tiposervicio_id, $coll_intersadosPk);
                         $servicio = $response_servicio['isError'] == false ? $response_servicio['object'] : null;
                         //**********************************************************************
-                        if($servicio != null){
+                        if ($servicio != null) {
                             $lcomservicios[] = $servicio;
                             //******************************************************************
-                            if($tipo_servicio->getInitIntegracion()){//integracion con actos administrativos
-                                if(!empty($acto_administrativo->getPrimaryKey())){
+                            if ($tipo_servicio->getInitIntegracion()) { //integracion con actos administrativos
+                                if (!empty($acto_administrativo->getPrimaryKey())) {
                                     try {
                                         $simadSoap = new WsSimadUariv();
-                                        $response_acto = $simadSoap->loadWsRadActoAdministrativo($acto_administrativo->getPrimaryKey(),"Acto Administrativo",ModulesEnable::ActosAdministrativos);
+                                        $response_acto = $simadSoap->loadWsRadActoAdministrativo($acto_administrativo->getPrimaryKey(), "Acto Administrativo", ModulesEnable::ActosAdministrativos);
                                         //$message_status = !empty($response_acto['status']) ? trim($response_acto['status']) : 400;
                                     } catch (\Exception $th) {
                                         $msgintegracion = $th->getMessage();
@@ -1364,27 +1497,27 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                                 }
                             }
                             //******************************************************************
-                            if($servicio != null){
-                                if(empty(trim($servicio->getEmailDestino()))){
-                                    $servicio->setEmailDestino(implode(";",$email_interesado));
+                            if ($servicio != null) {
+                                if (empty(trim($servicio->getEmailDestino()))) {
+                                    $servicio->setEmailDestino(implode(";", $email_interesado));
                                     $servicio->save();
                                 }
                             }
                             //******************************************************************
                             $dependencia_id = $acto_administrativo->getDependenciaId();
-                            if($tipo_servicio->getTipoEnvio() == 2 &&  !empty(trim($servicio->getEmailDestino()))){
-                                if($dependencia_id){
+                            if ($tipo_servicio->getTipoEnvio() == 2 &&  !empty(trim($servicio->getEmailDestino()))) {
+                                if ($dependencia_id) {
                                     $sendEmailNotify = $servicio->envioEmailNotificacion($dependencia_id);
                                     $msgnotify = ($sendEmailNotify != true) ? "&msgnotify=false" : "&msgnotify=true";
                                     //*******************************************************
                                     //bitacora de notificacion
-                                    if($sendEmailNotify != true){
-                                        $obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: ".trim($servicio->getEmailDestino());
-                                    }else{
-                                        $obs_bitacora = "Se notifico al interesado, email: ".trim($servicio->getEmailDestino());
+                                    if ($sendEmailNotify != true) {
+                                        $obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: " . trim($servicio->getEmailDestino());
+                                    } else {
+                                        $obs_bitacora = "Se notifico al interesado, email: " . trim($servicio->getEmailDestino());
                                     }
                                     //*******************************************************
-                                    ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(),$servicio->getServicioestadoId(),$usuario_origen->getPrimaryKey(),$usuario_origen->getPrimaryKey(),$obs_bitacora);
+                                    ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicio->getServicioestadoId(), $usuario_origen->getPrimaryKey(), $usuario_origen->getPrimaryKey(), $obs_bitacora);
                                 }
                             }
                         }
@@ -1392,12 +1525,12 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 } catch (PropelException $th) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS ".$th->getMessage());
+                    $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS " . $th->getMessage());
                     $row->save();
                 } catch (\Exception $th) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR INTERNO SERVIDOR ".$th->getMessage());
+                    $row->setMensajeInfo("ERROR INTERNO SERVIDOR " . $th->getMessage());
                     $row->save();
                 } catch (\Throwable $th) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
@@ -1407,102 +1540,107 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 }
             }
             //**********************************************************************************
-            if($error_list){
+            if ($error_list) {
                 return array('status' => 200, 'message' => 'Se radicaron todos los documentos, por favor verifique la informaci&oacute;n');
-            }else{
+            } else {
                 return array('status' => 300, 'message' => 'Algunos registros no se pudieron radicar, por favor verifique la informaci&oacute;n');
             }
         } catch (\PropelException $ex) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());        
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::addNewComEnviadaByComLote()
-    * funcion para crear un registro nuevo para la radicacion masiva
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito', 'object' => 'objeto de la fila creada')
-    * @param mixed parameters array con los parametros para la radicacion de las comunicaciones
-    */
+     * funcion para crear un registro nuevo para la radicacion masiva
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito', 'object' => 'objeto de la fila creada')
+     * @param mixed parameters array con los parametros para la radicacion de las comunicaciones
+     */
     public static function addNewComEnviadaByComLote($parameters)
     {
         try {
-            $upload_dir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp';
+            $upload_dir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
             $directorio = simad_util::createPath($upload_dir);
             $util_simad = new simad_util();
             //**********************************************************************************
-            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto().'uploads');
-			$filedir_target = simad_util::createPath($dir_raiz.DIRECTORY_SEPARATOR.date("Ymd"));
+            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto() . 'uploads');
+            $filedir_target = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
             //**********************************************************************************
-            $filedocsupload = $upload_dir.DIRECTORY_SEPARATOR.$parameters['filedocsupload'];
-            $outfile_zip = $upload_dir.DIRECTORY_SEPARATOR.md5(date("YmdGisu"));
-            $zipfile_extract = simad_util::extractFileCompress($filedocsupload,$outfile_zip);
-            if(!$zipfile_extract){
+            $filedocsupload = $upload_dir . DIRECTORY_SEPARATOR . $parameters['filedocsupload'];
+            $outfile_zip = $upload_dir . DIRECTORY_SEPARATOR . md5(date("YmdGisu"));
+            $zipfile_extract = simad_util::extractFileCompress($filedocsupload, $outfile_zip);
+            if (!$zipfile_extract) {
                 return array('status' => 400, 'message' => 'Ocurrio un error al descomprimir el archivo de documentos, no se radicaron las comunicaciones');
             }
             //**********************************************************************************
             $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
             $usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
-            $cargouser_origen = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario_origen->getPrimaryKey(),true);
+            $cargouser_origen = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario_origen->getPrimaryKey(), true);
             //**********************************************************************************
-            $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'],'PENDIENTE VALIDAR');
-            if(count($blotes) <= 0){
+            $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'], 'PENDIENTE VALIDAR');
+            if (count($blotes) <= 0) {
                 return array('status' => 400, 'message' => 'No se encontraron registros para radicar!');
             }
             //**********************************************************************************
-            $ciudad_codigo = array();$dependencia_cod = array();$lcom_recibida = array();
-            $lexpedientes = array();$lcomtipo_servicio = array();$lexptransfer = array();$lcomservicios = array();
-            foreach ($blotes as $row) 
-            {
+            $ciudad_codigo = array();
+            $dependencia_cod = array();
+            $lcom_recibida = array();
+            $lexpedientes = array();
+            $lcomtipo_servicio = array();
+            $lexptransfer = array();
+            $lcomservicios = array();
+            foreach ($blotes as $row) {
                 $params = array();
                 $estado_enviada = 1;
                 //******************************************************************************
-                $file_source = $outfile_zip.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-                $file_target = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-                if(!file_exists($file_source)){
+                $file_source = $outfile_zip . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+                $file_target = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+                if (!file_exists($file_source)) {
                     continue;
                 }
                 //******************************************************************************
-                $ciudad_id = in_array($row->getPuntoRadicacion(),$ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(),false);
-                if($ciudad_id != null){
+                $ciudad_id = in_array($row->getPuntoRadicacion(), $ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(), false);
+                if ($ciudad_id != null) {
                     $ciudad_codigo[$ciudad_id] = $row->getPuntoRadicacion();
                 }
                 //******************************************************************************
-                $dependencia = in_array($row->getCodDependencia(),$dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
+                $dependencia = in_array($row->getCodDependencia(), $dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
                 $dependencia_id = is_int($dependencia) ? $dependencia : $dependencia->getPrimaryKey();
-                if($dependencia_id != null){
+                if ($dependencia_id != null) {
                     $dependencia_cod[$dependencia_id] = $row->getCodDependencia();
                 }
                 //******************************************************************************
-                $com_recibida = in_array($row->getRadicadoEntrada(),$lcom_recibida) ? array_search($row->getRadicadoEntrada(), $lcom_recibida) : ComRecibidaPeer::getComObjectByRadicado($row->getRadicadoEntrada());
+                $com_recibida = in_array($row->getRadicadoEntrada(), $lcom_recibida) ? array_search($row->getRadicadoEntrada(), $lcom_recibida) : ComRecibidaPeer::getComObjectByRadicado($row->getRadicadoEntrada());
                 $comrecibida_id = null;
-                if($com_recibida != null){
+                if ($com_recibida != null) {
                     $com_recibida = !is_numeric($com_recibida) ? $com_recibida : ComRecibidaPeer::retrieveByPK($com_recibida);
                     $comrecibida_id = $com_recibida->getPrimaryKey();
                     $lcom_recibida[$comrecibida_id] = $row->getRadicadoEntrada();
                 }
                 //******************************************************************************
                 $unidaddocumental_id = null;
-                if(in_array($row->getNumeroExpediente(),$lexpedientes)){
+                if (in_array($row->getNumeroExpediente(), $lexpedientes)) {
                     $unidaddocumental_id = array_search($row->getNumeroExpediente(), $lexpedientes);
-                }else{
+                } else {
                     $unidad_documental = UnidadDocumentalPeer::getExpedienteByCodBarras($row->getNumeroExpediente());
                     $unidaddocumental_id = $unidad_documental != null ? $unidad_documental->getPrimaryKey() : null;
                     $lexpedientes[$unidaddocumental_id] = $row->getNumeroExpediente();
                 }
                 //******************************************************************************
                 $tipodocumental_id = null;
-                if(trim($row->getCodTipoDoc())){
+                if (trim($row->getCodTipoDoc())) {
                     $tipo_documental = TipoDocumentalPeer::getTipoDocByCodigo(trim($row->getCodTipoDoc()));
                     $tipodocumental_id = $tipo_documental != null ? $tipo_documental->getPrimaryKey() : null;
                 }
                 //******************************************************************************
-                $tipo_servicio = in_array($row->getTipoNotificacion(),$lcomtipo_servicio) ? array_search($row->getTipoNotificacion(), $lcomtipo_servicio) : TipoServicioPeer::getTipoServicioObjByName($row->getTipoNotificacion());
-                $tiposervicio_id = null;$tipo_envio = null;
-                if($tipo_servicio != null){
+                $tipo_servicio = in_array($row->getTipoNotificacion(), $lcomtipo_servicio) ? array_search($row->getTipoNotificacion(), $lcomtipo_servicio) : TipoServicioPeer::getTipoServicioObjByName($row->getTipoNotificacion());
+                $tiposervicio_id = null;
+                $tipo_envio = null;
+                if ($tipo_servicio != null) {
                     $tipo_servicio = !is_numeric($tipo_servicio) ? $tipo_servicio : TipoServicioPeer::retrieveByPK($tipo_servicio);
                     $tiposervicio_id = $tipo_servicio->getPrimaryKey();
                     $lcomtipo_servicio[$tiposervicio_id] = $row->getTipoNotificacion();
@@ -1511,7 +1649,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 //******************************************************************************
                 $params['regional_id'] = $usuario_origen->getRegionalId();
                 $params['dependencia_id'] = $dependencia_id;
-                $params['estadocomenviada_id'] = $estado_enviada;			
+                $params['estadocomenviada_id'] = $estado_enviada;
                 $params['ciudad_id'] = $usuario_origen->getRegional()->getCiudadId();
                 $params['periodo_id'] = date("Y");
                 $params['asunto'] = $row->getAsuntoCom();
@@ -1519,7 +1657,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $params['observaciones_envio'] = "Radicación masiva con archivo plano de excel";
                 $params['consecutivo_resp'] = $comrecibida_id;
                 $params['firma_electronica'] = $parameters['firma_digital'];
-                $params['archivo_digit'] = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
+                $params['archivo_digit'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
                 $params['use_membrete'] = 1;
                 $params['tipofirmadigital_id'] = null;
                 $params['tipo_envio'] = $tipo_envio;
@@ -1528,31 +1666,31 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $params['marco_normativo'] = null;
                 $params['numero_fud'] = trim($row->getNumeroFud()) ?: null;
                 //******************************************************************************
-                if (trim($row->getFechaResolucion())){
-                    try{
+                if (trim($row->getFechaResolucion())) {
+                    try {
                         $date = new DateTime(trim($row->getNumeroResolucion()));
                         $params['fecha_resolucion'] = $date->format('Y-m-d');
-                    }catch (Exception $ex){
+                    } catch (Exception $ex) {
                         $params['fecha_resolucion'] = null;
                     }
-                } 
+                }
                 //******************************************************************************
                 $params['numero_resolucion'] = trim($row->getNumeroResolucion()) ?: null;
                 $params['suborigen'] = trim($row->getIdSuborigen()) ?: null;
                 $params['radicado_sys_origen'] = null;
                 $params['tipo_documental_cod'] = trim($row->getCodTipoDoc()) ?: null;
-                $params['UrlFileWord'] = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
+                $params['UrlFileWord'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
                 $params['IsCreateWord'] = true;
                 $params['tipo_integracion'] = "MASIVOEXCEL";
                 //******************************************************************************
-                $interesados_nuids = preg_split("/[;]+/",trim($row->getNuidInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_pnombre = preg_split("/[;]+/",trim($row->getPnombreInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_papellido = preg_split("/[;]+/",trim($row->getPapellidoInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $firmas_nuids = preg_split("/[;]+/",trim($row->getNuidsFirmas()),-1, PREG_SPLIT_NO_EMPTY); 
+                $interesados_nuids = preg_split("/[;]+/", trim($row->getNuidInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $interesados_pnombre = preg_split("/[;]+/", trim($row->getPnombreInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $interesados_papellido = preg_split("/[;]+/", trim($row->getPapellidoInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $firmas_nuids = preg_split("/[;]+/", trim($row->getNuidsFirmas()), -1, PREG_SPLIT_NO_EMPTY);
                 //******************************************************************************
-                if(!empty($params['numero_resolucion'])){
-                    $existsComByResol = ComEnviadaPeer::isExistComByNumResolucion($params['numero_resolucion'],$interesados_nuids);
-                    if($existsComByResol){
+                if (!empty($params['numero_resolucion'])) {
+                    $existsComByResol = ComEnviadaPeer::isExistComByNumResolucion($params['numero_resolucion'], $interesados_nuids);
+                    if ($existsComByResol) {
                         $row->setEstadoMigracion('ERROR_RADICANDO');
                         $row->setUsuarioId($usuario_origen->getPrimaryKey());
                         $row->setMensajeInfo("NUMERO RESOLUCION YA EXISTE");
@@ -1561,61 +1699,65 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     }
                 }
                 //******************************************************************************
-                $coll_interesados = InteresadosPeer::getInteresadosByInfoBatch($interesados_pnombre,$interesados_papellido,$interesados_nuids);
-                if(empty($coll_interesados)){
+                $coll_interesados = InteresadosPeer::getInteresadosByInfoBatch($interesados_pnombre, $interesados_papellido, $interesados_nuids);
+                if (empty($coll_interesados)) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
                     $row->setMensajeInfo("ERROR CON LOS INTERESADOS");
                     $row->save();
-                    continue; 
+                    continue;
                 }
                 //******************************************************************************
-                try{
+                try {
                     $com_enviada = ComEnviadaPeer::addComEnviada($params);
-                    if($com_enviada == null){
+                    if ($com_enviada == null) {
                         $row->setEstadoMigracion('ERROR RADICANDO');
                         $row->setUsuarioId($usuario_origen->getPrimaryKey());
                         $row->setMensajeInfo("ERROR AL GUARADAR LA COMUNICACION");
                         $row->save();
-                        continue; 
+                        continue;
                     }
                     //**************************************************************************
-                    $coll_intersadosPk = array();$email_interesado = "";$coll_emailinteresados = array();
+                    $coll_intersadosPk = array();
+                    $email_interesado = "";
+                    $coll_emailinteresados = array();
                     foreach ($coll_interesados as $interesado) {
-                        $isAddInteresadoCom = EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(),$interesado->getPrimaryKey());
-                        if($isAddInteresadoCom){
+                        $isAddInteresadoCom = EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(), $interesado->getPrimaryKey());
+                        if ($isAddInteresadoCom) {
                             $coll_intersadosPk[] = $interesado->getPrimaryKey();
                             //$email_interesado = empty($email_interesado) ? trim($interesado->getEmail()) : trim($email_interesado);
-							if(!empty(trim($interesado->getEmail()))){
-								$coll_emailinteresados[] = trim($interesado->getEmail());
-							}
+                            if (!empty(trim($interesado->getEmail()))) {
+                                $coll_emailinteresados[] = trim($interesado->getEmail());
+                            }
                         }
                     }
                     //**************************************************************************
-					$email_interesado = implode(";",$coll_emailinteresados);
+                    $email_interesado = implode(";", $coll_emailinteresados);
                     //**************************************************************************
                     $estaAsignada = 1;
-                    ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(),$com_enviada->getPrimaryKey(),1,$cargouser_origen->getPrimaryKey(),$estado_enviada,1);
-                    ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(),$com_enviada->getPrimaryKey(),5,$cargouser_origen->getPrimaryKey(),$estado_enviada,3,0);
+                    ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(), $com_enviada->getPrimaryKey(), 1, $cargouser_origen->getPrimaryKey(), $estado_enviada, 1);
+                    ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(), $com_enviada->getPrimaryKey(), 5, $cargouser_origen->getPrimaryKey(), $estado_enviada, 3, 0);
                     //**************************************************************************
                     $cuser_firmas = CargoUsuarioPeer::getCaUsuariosByNuidsUsers($firmas_nuids);
                     foreach ($cuser_firmas as $cuser) {
-                        ComEnviadaPeer::insertaEnviadaUsuarios($cuser->getUsuarioId(),$com_enviada->getPrimaryKey(),2,$cuser->getPrimaryKey(),$estado_enviada,5,$estaAsignada);
+                        ComEnviadaPeer::insertaEnviadaUsuarios($cuser->getUsuarioId(), $com_enviada->getPrimaryKey(), 2, $cuser->getPrimaryKey(), $estado_enviada, 5, $estaAsignada);
                     }
                     //**************************************************************************
-                    if($com_enviada->getTipoMasivo()){
+                    if ($com_enviada->getTipoMasivo()) {
                         $estadocomenviada_id = 2;
-                        $radicado = $com_enviada->getRadicadoFormat(null,$com_enviada->getRegionalId());
+                        $radicado = $com_enviada->getRadicadoFormat(null, $com_enviada->getRegionalId());
                         $com_enviada->setRadicado($radicado);
                         $com_enviada->setEstadocomenviadaId($estadocomenviada_id);
                         $com_enviada->save();
                     }
                     //**************************************************************************
-                    EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey(),$estadocomenviada_id);
-                    EnviadaUsuarioPeer::updateAproFirmaAll($com_enviada->getPrimaryKey(),array(2,4,5));
+                    EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey(), $estadocomenviada_id);
+                    EnviadaUsuarioPeer::updateAproFirmaAll($com_enviada->getPrimaryKey(), array(2, 4, 5));
                     //**************************************************************************
-                    if(file_exists($file_target)){ unlink($file_target); }
-                    $copyFile = copy($file_source,$file_target);
+                    if (file_exists($file_target)) {
+                        unlink($file_target);
+                    }
+                    $copyFile = copy($file_source, $file_target);
                     //**************************************************************************
                     $row->setEstadoMigracion('RADICADO');
                     $row->setRadicadoSalida($com_enviada->getRadicado());
@@ -1624,33 +1766,33 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $row->save();
                     //**************************************************************************
                     //if($com_recibida != null && $com_recibida instanceof ComRecibida){
-                    if($com_recibida != null){
-                        if(empty($com_recibida->getComenviadaId())){
-                            $estado_respondida = 5;    	    
+                    if ($com_recibida != null) {
+                        if (empty($com_recibida->getComenviadaId())) {
+                            $estado_respondida = 5;
                             $com_recibida->setEstadocomrecibidaId($estado_respondida);
                             $com_recibida->setComenviadaId($com_enviada->getPrimaryKey());
                             $com_recibida->save();
-                            ComRecibidaPeer::updateEstadosComRecibida($com_recibida->getPrimaryKey(),$estado_respondida);
+                            ComRecibidaPeer::updateEstadosComRecibida($com_recibida->getPrimaryKey(), $estado_respondida);
                         }
                     }
                     //**************************************************************************
                     //ARCHIVAR
                     $origentrans_id = 3;
-                    $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id,$tipodocumental_id,$com_enviada->getPrimaryKey(),$origentrans_id,$usuario_origen->getPrimaryKey());
+                    $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id, $tipodocumental_id, $com_enviada->getPrimaryKey(), $origentrans_id, $usuario_origen->getPrimaryKey());
                     //**************************************************************************
                     //SOLUCITUD SERVICIO
-                    if($tipo_servicio != null){
-                        $response_servicio = $com_enviada->addServicioByCom($usuario_origen->getPrimaryKey(),$tiposervicio_id,$coll_intersadosPk);
+                    if ($tipo_servicio != null) {
+                        $response_servicio = $com_enviada->addServicioByCom($usuario_origen->getPrimaryKey(), $tiposervicio_id, $coll_intersadosPk);
                         $servicio = $response_servicio['isError'] == false ? $response_servicio['object'] : null;
                         //**********************************************************************
-                        if($servicio != null){
+                        if ($servicio != null) {
                             $lcomservicios[] = $servicio;
                             //******************************************************************
-                            if($tipo_servicio->getInitIntegracion()){//integracion con comunicaciones enviadas
-                                if(!empty($com_enviada->getPrimaryKey())){
+                            if ($tipo_servicio->getInitIntegracion()) { //integracion con comunicaciones enviadas
+                                if (!empty($com_enviada->getPrimaryKey())) {
                                     try {
                                         $simadSoap = new WsSimadUariv();
-                                        $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(),"Externa Enviada");
+                                        $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(), "Externa Enviada");
                                         //$message_status = !empty($response_acto['status']) ? trim($response_acto['status']) : 400;
                                     } catch (Exception $th) {
                                         $msgintegracion = $th->getMessage();
@@ -1659,23 +1801,23 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                             }
                             //******************************************************************
                             $dependencia_id = $com_enviada->getDependenciaId();
-                            if($tipo_servicio->getTipoEnvio() == 2 &&  !empty($email_interesado)){
-                                if($dependencia_id){
+                            if ($tipo_servicio->getTipoEnvio() == 2 &&  !empty($email_interesado)) {
+                                if ($dependencia_id) {
                                     $sendEmailNotify = $servicio->envioEmailNotificacion($dependencia_id);
                                     $msgnotify = ($sendEmailNotify != true) ? "&msgnotify=false" : "&msgnotify=true";
-                                    if(empty($servicio->getEmailDestino())){
+                                    if (empty($servicio->getEmailDestino())) {
                                         $servicio->setEmailDestino(trim($email_interesado));
                                         $servicio->save();
                                     }
                                     //***********************************************************
                                     //bitacora de notificacion
-                                    if($sendEmailNotify != true){
-                                        $obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: ".trim($email_interesado);
-                                    }else{
-                                        $obs_bitacora = "Se notifico al interesado, email: ".trim($email_interesado);
+                                    if ($sendEmailNotify != true) {
+                                        $obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: " . trim($email_interesado);
+                                    } else {
+                                        $obs_bitacora = "Se notifico al interesado, email: " . trim($email_interesado);
                                     }
                                     //***********************************************************
-                                    ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(),$servicio->getServicioestadoId(),$usuario_origen->getPrimaryKey(),$usuario_origen->getPrimaryKey(),$obs_bitacora);
+                                    ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicio->getServicioestadoId(), $usuario_origen->getPrimaryKey(), $usuario_origen->getPrimaryKey(), $obs_bitacora);
                                 }
                             }
                         }
@@ -1688,19 +1830,19 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $ws_info['EstadoProceso'] = "PENDIENTE";
                     WebserviceReplyPeer::addReplyWs($ws_info);
                     //**************************************************************************
-                    if(($com_enviada->getEstadocomenviadaId() != 1 ) && ($com_enviada->getFirmadoDigital() == 0)){
+                    if (($com_enviada->getEstadocomenviadaId() != 1) && ($com_enviada->getFirmadoDigital() == 0)) {
                         $response_firma = $com_enviada->singDocumentProcess();
                         $msg_firma[] = isset($response_firma['message']) ? trim($response_firma['message']) : "Por favor verifique que el documento fue firmado correctamente";
                     }
                 } catch (PropelException $th) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS ".$th->getMessage());
+                    $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS " . $th->getMessage());
                     $row->save();
                 } catch (Exception $th) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR INTERNO SERVIDOR ".$th->getMessage());
+                    $row->setMensajeInfo("ERROR INTERNO SERVIDOR " . $th->getMessage());
                     $row->save();
                 } catch (Throwable $th) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
@@ -1712,11 +1854,11 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             //**********************************************************************************
             return array('status' => 200, 'message' => 'Se radicaron todos los documentos, por favor verifique la informaci&oacute;n');
         } catch (\PropelException $ex) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());        
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
@@ -1724,411 +1866,422 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
     public static function addNewComEnviadaByComOne($parameters)
     {
         try {
-            $upload_dir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp';
+            $upload_dir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
             $directorio = simad_util::createPath($upload_dir);
             $util_simad = new simad_util();
             //**********************************************************************************
             //$dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto().'uploads');
-			//$filedir_target = simad_util::createPath($dir_raiz.DIRECTORY_SEPARATOR.date("Ymd"));
+            //$filedir_target = simad_util::createPath($dir_raiz.DIRECTORY_SEPARATOR.date("Ymd"));
             //**********************************************************************************
             $firma_digital = $parameters['firma_digital'];
             //**********************************************************************************
-            $filedocsupload = $upload_dir.DIRECTORY_SEPARATOR.$parameters['filedocsupload'];
-            $outfile_zip = $upload_dir.DIRECTORY_SEPARATOR.md5(date("YmdGisu"));
-            $zipfile_extract = simad_util::extractFileCompress($filedocsupload,$outfile_zip);
-            if(!$zipfile_extract){
+            $filedocsupload = $upload_dir . DIRECTORY_SEPARATOR . $parameters['filedocsupload'];
+            $outfile_zip = $upload_dir . DIRECTORY_SEPARATOR . md5(date("YmdGisu"));
+            $zipfile_extract = simad_util::extractFileCompress($filedocsupload, $outfile_zip);
+            if (!$zipfile_extract) {
                 return array('status' => 400, 'message' => 'Ocurrio un error al descomprimir el archivo de documentos, no se radicaron las comunicaciones');
             }
             //**********************************************************************************
             //$usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
             //$usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
             //**********************************************************************************
-            $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'],'PENDIENTE VALIDAR');
-            if(count($blotes) <= 0){
+            $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'], 'PENDIENTE VALIDAR');
+            if (count($blotes) <= 0) {
                 return array('status' => 400, 'message' => 'No se encontraron registros para radicar!');
             }
             //**********************************************************************************
             //$ciudad_codigo = array();$dependencia_cod = array();$lcom_recibida = array();
             //$lexpedientes = array();$lcomtipo_servicio = array();$lexptransfer = array();$lcomservicios = array();
             //ESTE ES EL DE ARRIBA
-            foreach ($blotes as $row) 
-            {
+            foreach ($blotes as $row) {
                 //******************************************************************************
                 self::commitNewComEnviadaByOne($row, $firma_digital);
                 //******************************************************************************
-                
+
             }
             //**********************************************************************************
             return array('status' => 200, 'message' => 'Se radicaron todos los documentos, por favor verifique la informaci&oacute;n');
         } catch (\PropelException $ex) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());        
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
-   
+
 
     //self::commitNewComEnviadaByOne($row);
     public static function commitNewComEnviadaByOne($row, $firma_digital)
     {
-        try 
-        {
-                //BLOQUES DE DATOS QUE HUBO QUE TRAER AQUI
-                //**********************************************************************************
-                $upload_dir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp';
-                $outfile_zip = $upload_dir.DIRECTORY_SEPARATOR.md5(date("YmdGisu"));
-                //**********************************************************************************
-                $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto().'uploads');
-                $filedir_target = simad_util::createPath($dir_raiz.DIRECTORY_SEPARATOR.date("Ymd"));
-                //**********************************************************************************
-                //**********************************************************************************
-                $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
-                $usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
-                //**********************************************************************************
-                //**********************************************************************************
-                $ciudad_codigo = array();$dependencia_cod = array();$lcom_recibida = array();
-                $lexpedientes = array();$lcomtipo_servicio = array();$lexptransfer = array();$lcomservicios = array();
-                //******************************************************************************
-                //foreach ($blotes as $row) 
-                //******************************************************************************
-                $params = array();
-                $estado_enviada = 1;
-                //******************************************************************************
-                $file_source = $outfile_zip.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-                $file_target = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-                if(!file_exists($file_source))
-                { 
+        try {
+            //BLOQUES DE DATOS QUE HUBO QUE TRAER AQUI
+            //**********************************************************************************
+            $upload_dir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
+            $outfile_zip = $upload_dir . DIRECTORY_SEPARATOR . md5(date("YmdGisu"));
+            //**********************************************************************************
+            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto() . 'uploads');
+            $filedir_target = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
+            //**********************************************************************************
+            //**********************************************************************************
+            $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
+            $usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
+            //**********************************************************************************
+            //**********************************************************************************
+            $ciudad_codigo = array();
+            $dependencia_cod = array();
+            $lcom_recibida = array();
+            $lexpedientes = array();
+            $lcomtipo_servicio = array();
+            $lexptransfer = array();
+            $lcomservicios = array();
+            //******************************************************************************
+            //foreach ($blotes as $row) 
+            //******************************************************************************
+            $params = array();
+            $estado_enviada = 1;
+            //******************************************************************************
+            $file_source = $outfile_zip . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+            $file_target = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+            if (!file_exists($file_source)) {
+                return;
+            }
+            //******************************************************************************
+            $ciudad_id = in_array($row->getPuntoRadicacion(), $ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(), false);
+            if ($ciudad_id != null) {
+                $ciudad_codigo[$ciudad_id] = $row->getPuntoRadicacion();
+            }
+            //******************************************************************************
+            $dependencia = in_array($row->getCodDependencia(), $dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
+            $dependencia_id = is_int($dependencia) ? $dependencia : $dependencia->getPrimaryKey();
+            if ($dependencia_id != null) {
+                $dependencia_cod[$dependencia_id] = $row->getCodDependencia();
+            }
+            //******************************************************************************
+            $com_recibida = in_array($row->getRadicadoEntrada(), $lcom_recibida) ? array_search($row->getRadicadoEntrada(), $lcom_recibida) : ComRecibidaPeer::getComObjectByRadicado($row->getRadicadoEntrada());
+            $comrecibida_id = null;
+            if ($com_recibida != null) {
+                $com_recibida = !is_numeric($com_recibida) ? $com_recibida : ComRecibidaPeer::retrieveByPK($com_recibida);
+                $comrecibida_id = $com_recibida->getPrimaryKey();
+                $lcom_recibida[$comrecibida_id] = $row->getRadicadoEntrada();
+            }
+            //******************************************************************************
+            $unidaddocumental_id = null;
+            if (in_array($row->getNumeroExpediente(), $lexpedientes)) {
+                $unidaddocumental_id = array_search($row->getNumeroExpediente(), $lexpedientes);
+            } else {
+                $unidad_documental = UnidadDocumentalPeer::getExpedienteByCodBarras($row->getNumeroExpediente());
+                $unidaddocumental_id = $unidad_documental != null ? $unidad_documental->getPrimaryKey() : null;
+                $lexpedientes[$unidaddocumental_id] = $row->getNumeroExpediente();
+            }
+            //******************************************************************************
+            $tipodocumental_id = null;
+            if (trim($row->getCodTipoDoc())) {
+                $tipo_documental = TipoDocumentalPeer::getTipoDocByCodigo(trim($row->getCodTipoDoc()));
+                $tipodocumental_id = $tipo_documental != null ? $tipo_documental->getPrimaryKey() : null;
+            }
+            //******************************************************************************
+            $tipo_servicio = in_array($row->getTipoNotificacion(), $lcomtipo_servicio) ? array_search($row->getTipoNotificacion(), $lcomtipo_servicio) : TipoServicioPeer::getTipoServicioObjByName($row->getTipoNotificacion());
+            $tiposervicio_id = null;
+            $tipo_envio = null;
+            if ($tipo_servicio != null) {
+                $tipo_servicio = !is_numeric($tipo_servicio) ? $tipo_servicio : TipoServicioPeer::retrieveByPK($tipo_servicio);
+                $tiposervicio_id = $tipo_servicio->getPrimaryKey();
+                $lcomtipo_servicio[$tiposervicio_id] = $row->getTipoNotificacion();
+                $tipo_envio = $tipo_servicio->getTipoEnvio();
+            }
+            //******************************************************************************
+            $params['regional_id'] = $usuario_origen->getRegionalId();
+            $params['dependencia_id'] = $dependencia_id;
+            $params['estadocomenviada_id'] = $estado_enviada;
+            $params['ciudad_id'] = $usuario_origen->getRegional()->getCiudadId();
+            $params['periodo_id'] = date("Y");
+            $params['asunto'] = $row->getAsuntoCom();
+            $params['folios'] = trim($row->getNumFolios()) ?: 0;
+            $params['observaciones_envio'] = "Radicación masiva con archivo plano de excel";
+            $params['consecutivo_resp'] = $comrecibida_id;
+            $params['firma_electronica'] = $firma_digital;
+            $params['archivo_digit'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+            $params['use_membrete'] = 1;
+            $params['tipofirmadigital_id'] = null;
+            $params['tipo_envio'] = $tipo_envio;
+            $params['tipo_masivo'] = 1;
+            $params['expediente_id'] = $unidaddocumental_id;
+            $params['marco_normativo'] = null;
+            $params['numero_fud'] = trim($row->getNumeroFud()) ?: null;
+            //******************************************************************************
+            if (trim($row->getFechaResolucion())) {
+                try {
+                    $date = new DateTime(trim($row->getNumeroResolucion()));
+                    $params['fecha_resolucion'] = $date->format('Y-m-d');
+                } catch (Exception $ex) {
+                    $params['fecha_resolucion'] = null;
+                }
+            }
+            //******************************************************************************
+            $params['numero_resolucion'] = trim($row->getNumeroResolucion()) ?: null;
+            $params['suborigen'] = trim($row->getIdSuborigen()) ?: null;
+            $params['radicado_sys_origen'] = null;
+            $params['tipo_documental_cod'] = trim($row->getCodTipoDoc()) ?: null;
+            $params['UrlFileWord'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+            $params['IsCreateWord'] = true;
+            $params['tipo_integracion'] = "MASIVOEXCEL";
+            //******************************************************************************
+            $interesados_nuids = preg_split("/[;]+/", trim($row->getNuidInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+            $interesados_pnombre = preg_split("/[;]+/", trim($row->getPnombreInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+            $interesados_papellido = preg_split("/[;]+/", trim($row->getPapellidoInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+            $firmas_nuids = preg_split("/[;]+/", trim($row->getNuidsFirmas()), -1, PREG_SPLIT_NO_EMPTY);
+            //******************************************************************************
+            if (!empty($params['numero_resolucion'])) {
+                $existsComByResol = ComEnviadaPeer::isExistComByNumResolucion($params['numero_resolucion'], $interesados_nuids);
+                if ($existsComByResol) {
+                    $row->setEstadoMigracion('ERROR_RADICANDO');
+                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                    $row->setMensajeInfo("NUMERO RESOLUCION YA EXISTE");
+                    $row->save();
                     return;
                 }
-                //******************************************************************************
-                $ciudad_id = in_array($row->getPuntoRadicacion(),$ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(),false);
-                if($ciudad_id != null){
-                    $ciudad_codigo[$ciudad_id] = $row->getPuntoRadicacion();
-                }
-                //******************************************************************************
-                $dependencia = in_array($row->getCodDependencia(),$dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
-                $dependencia_id = is_int($dependencia) ? $dependencia : $dependencia->getPrimaryKey();
-                if($dependencia_id != null){
-                    $dependencia_cod[$dependencia_id] = $row->getCodDependencia();
-                }
-                //******************************************************************************
-                $com_recibida = in_array($row->getRadicadoEntrada(),$lcom_recibida) ? array_search($row->getRadicadoEntrada(), $lcom_recibida) : ComRecibidaPeer::getComObjectByRadicado($row->getRadicadoEntrada());
-                $comrecibida_id = null;
-                if($com_recibida != null){
-                    $com_recibida = !is_numeric($com_recibida) ? $com_recibida : ComRecibidaPeer::retrieveByPK($com_recibida);
-                    $comrecibida_id = $com_recibida->getPrimaryKey();
-                    $lcom_recibida[$comrecibida_id] = $row->getRadicadoEntrada();
-                }
-                //******************************************************************************
-                $unidaddocumental_id = null;
-                if(in_array($row->getNumeroExpediente(),$lexpedientes)){
-                    $unidaddocumental_id = array_search($row->getNumeroExpediente(), $lexpedientes);
-                }else{
-                    $unidad_documental = UnidadDocumentalPeer::getExpedienteByCodBarras($row->getNumeroExpediente());
-                    $unidaddocumental_id = $unidad_documental != null ? $unidad_documental->getPrimaryKey() : null;
-                    $lexpedientes[$unidaddocumental_id] = $row->getNumeroExpediente();
-                }
-                //******************************************************************************
-                $tipodocumental_id = null;
-                if(trim($row->getCodTipoDoc())){
-                    $tipo_documental = TipoDocumentalPeer::getTipoDocByCodigo(trim($row->getCodTipoDoc()));
-                    $tipodocumental_id = $tipo_documental != null ? $tipo_documental->getPrimaryKey() : null;
-                }
-                //******************************************************************************
-                $tipo_servicio = in_array($row->getTipoNotificacion(),$lcomtipo_servicio) ? array_search($row->getTipoNotificacion(), $lcomtipo_servicio) : TipoServicioPeer::getTipoServicioObjByName($row->getTipoNotificacion());
-                $tiposervicio_id = null;$tipo_envio = null;
-                if($tipo_servicio != null){
-                    $tipo_servicio = !is_numeric($tipo_servicio) ? $tipo_servicio : TipoServicioPeer::retrieveByPK($tipo_servicio);
-                    $tiposervicio_id = $tipo_servicio->getPrimaryKey();
-                    $lcomtipo_servicio[$tiposervicio_id] = $row->getTipoNotificacion();
-                    $tipo_envio = $tipo_servicio->getTipoEnvio();
-                }
-                //******************************************************************************
-                $params['regional_id'] = $usuario_origen->getRegionalId();
-                $params['dependencia_id'] = $dependencia_id;
-                $params['estadocomenviada_id'] = $estado_enviada;			
-                $params['ciudad_id'] = $usuario_origen->getRegional()->getCiudadId();
-                $params['periodo_id'] = date("Y");
-                $params['asunto'] = $row->getAsuntoCom();
-                $params['folios'] = trim($row->getNumFolios()) ?: 0;
-                $params['observaciones_envio'] = "Radicación masiva con archivo plano de excel";
-                $params['consecutivo_resp'] = $comrecibida_id;
-                $params['firma_electronica'] = $firma_digital;
-                $params['archivo_digit'] = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-                $params['use_membrete'] = 1;
-                $params['tipofirmadigital_id'] = null;
-                $params['tipo_envio'] = $tipo_envio;
-                $params['tipo_masivo'] = 1;
-                $params['expediente_id'] = $unidaddocumental_id;
-                $params['marco_normativo'] = null;
-                $params['numero_fud'] = trim($row->getNumeroFud()) ?: null;
-                //******************************************************************************
-                if (trim($row->getFechaResolucion())){
-                    try{
-                        $date = new DateTime(trim($row->getNumeroResolucion()));
-                        $params['fecha_resolucion'] = $date->format('Y-m-d');
-                    }catch (Exception $ex){
-                        $params['fecha_resolucion'] = null;
-                    }
-                } 
-                //******************************************************************************
-                $params['numero_resolucion'] = trim($row->getNumeroResolucion()) ?: null;
-                $params['suborigen'] = trim($row->getIdSuborigen()) ?: null;
-                $params['radicado_sys_origen'] = null;
-                $params['tipo_documental_cod'] = trim($row->getCodTipoDoc()) ?: null;
-                $params['UrlFileWord'] = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-                $params['IsCreateWord'] = true;
-                $params['tipo_integracion'] = "MASIVOEXCEL";
-                //******************************************************************************
-                $interesados_nuids = preg_split("/[;]+/",trim($row->getNuidInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_pnombre = preg_split("/[;]+/",trim($row->getPnombreInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_papellido = preg_split("/[;]+/",trim($row->getPapellidoInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $firmas_nuids = preg_split("/[;]+/",trim($row->getNuidsFirmas()),-1, PREG_SPLIT_NO_EMPTY); 
-                //******************************************************************************
-                if(!empty($params['numero_resolucion'])){
-                    $existsComByResol = ComEnviadaPeer::isExistComByNumResolucion($params['numero_resolucion'],$interesados_nuids);
-                    if($existsComByResol){
-                        $row->setEstadoMigracion('ERROR_RADICANDO');
-                        $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                        $row->setMensajeInfo("NUMERO RESOLUCION YA EXISTE");
-                        $row->save();
-                        return;
-                    }
-                }
-                //******************************************************************************
-                $coll_interesados = InteresadosPeer::getInteresadosByInfoBatch($interesados_pnombre,$interesados_papellido,$interesados_nuids);
-                if(empty($coll_interesados)){
+            }
+            //******************************************************************************
+            $coll_interesados = InteresadosPeer::getInteresadosByInfoBatch($interesados_pnombre, $interesados_papellido, $interesados_nuids);
+            if (empty($coll_interesados)) {
+                $row->setEstadoMigracion('ERROR RADICANDO');
+                $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                $row->setMensajeInfo("ERROR CON LOS INTERESADOS");
+                $row->save();
+                return;
+            }
+            //******************************************************************************
+            try {
+                $com_enviada = ComEnviadaPeer::addComEnviada($params);
+                if ($com_enviada == null) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR CON LOS INTERESADOS");
+                    $row->setMensajeInfo("ERROR AL GUARADAR LA COMUNICACION");
                     $row->save();
-                    return; 
+                    return;
                 }
-                //******************************************************************************
-                try{
-                    $com_enviada = ComEnviadaPeer::addComEnviada($params);
-                    if($com_enviada == null){
-                        $row->setEstadoMigracion('ERROR RADICANDO');
-                        $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                        $row->setMensajeInfo("ERROR AL GUARADAR LA COMUNICACION");
-                        $row->save();
-                        return; 
+                //**************************************************************************
+                $coll_intersadosPk = array();
+                $email_interesado = "";
+                foreach ($coll_interesados as $interesado) {
+                    $isAddInteresadoCom = EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(), $interesado->getPrimaryKey());
+                    if ($isAddInteresadoCom) {
+                        $coll_intersadosPk[] = $interesado->getPrimaryKey();
+                        $email_interesado = empty($email_interesado) ? trim($interesado->getEmail()) : trim($email_interesado);
                     }
-                    //**************************************************************************
-                    $coll_intersadosPk = array();$email_interesado = "";
-                    foreach ($coll_interesados as $interesado) {
-                        $isAddInteresadoCom = EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(),$interesado->getPrimaryKey());
-                        if($isAddInteresadoCom){
-                            $coll_intersadosPk[] = $interesado->getPrimaryKey();
-                            $email_interesado = empty($email_interesado) ? trim($interesado->getEmail()) : trim($email_interesado);
-                        }
+                }
+                //**************************************************************************
+                $estaAsignada = 1;
+                ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(), $com_enviada->getPrimaryKey(), 1, $usuario_origen->getPrimaryKey(), $estado_enviada, 1);
+                ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(), $com_enviada->getPrimaryKey(), 5, $usuario_origen->getPrimaryKey(), $estado_enviada, 3, 0);
+                //**************************************************************************
+                $cuser_firmas = CargoUsuarioPeer::getCaUsuariosByNuidsUsers($firmas_nuids);
+                foreach ($cuser_firmas as $cuser) {
+                    ComEnviadaPeer::insertaEnviadaUsuarios($cuser->getUsuarioId(), $com_enviada->getPrimaryKey(), 2, $cuser->getPrimaryKey(), $estado_enviada, 5, $estaAsignada);
+                }
+                //**************************************************************************
+                if ($com_enviada->getTipoMasivo()) {
+                    $estadocomenviada_id = 2;
+                    $radicado = $com_enviada->getRadicadoFormat(null, $com_enviada->getRegionalId());
+                    $com_enviada->setRadicado($radicado);
+                    $com_enviada->setEstadocomenviadaId($estadocomenviada_id);
+                    $com_enviada->save();
+                }
+                //**************************************************************************
+                EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey(), $estadocomenviada_id);
+                EnviadaUsuarioPeer::updateAproFirmaAll($com_enviada->getPrimaryKey(), array(2, 4, 5));
+                //**************************************************************************
+                if (file_exists($file_target)) {
+                    unlink($file_target);
+                }
+                $copyFile = copy($file_source, $file_target);
+                //**************************************************************************
+                $row->setEstadoMigracion('RADICADO');
+                $row->setRadicadoSalida($com_enviada->getRadicado());
+                $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                $row->setFechaRadicado(date("Y-m-d G:i:s"));
+                $row->save();
+                //**************************************************************************
+                //if($com_recibida != null && $com_recibida instanceof ComRecibida){
+                if ($com_recibida != null) {
+                    if (empty($com_recibida->getComenviadaId())) {
+                        $estado_respondida = 5;
+                        $com_recibida->setEstadocomrecibidaId($estado_respondida);
+                        $com_recibida->setComenviadaId($com_enviada->getPrimaryKey());
+                        $com_recibida->save();
+                        ComRecibidaPeer::updateEstadosComRecibida($com_recibida->getPrimaryKey(), $estado_respondida);
                     }
-                    //**************************************************************************
-                    $estaAsignada = 1;
-                    ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(),$com_enviada->getPrimaryKey(),1,$usuario_origen->getPrimaryKey(),$estado_enviada,1);
-                    ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(),$com_enviada->getPrimaryKey(),5,$usuario_origen->getPrimaryKey(),$estado_enviada,3,0);
-                    //**************************************************************************
-                    $cuser_firmas = CargoUsuarioPeer::getCaUsuariosByNuidsUsers($firmas_nuids);
-                    foreach ($cuser_firmas as $cuser) {
-                        ComEnviadaPeer::insertaEnviadaUsuarios($cuser->getUsuarioId(),$com_enviada->getPrimaryKey(),2,$cuser->getPrimaryKey(),$estado_enviada,5,$estaAsignada);
-                    }
-                    //**************************************************************************
-                    if($com_enviada->getTipoMasivo()){
-                        $estadocomenviada_id = 2;
-                        $radicado = $com_enviada->getRadicadoFormat(null,$com_enviada->getRegionalId());
-                        $com_enviada->setRadicado($radicado);
-                        $com_enviada->setEstadocomenviadaId($estadocomenviada_id);
-                        $com_enviada->save();
-                    }
-                    //**************************************************************************
-                    EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey(),$estadocomenviada_id);
-                    EnviadaUsuarioPeer::updateAproFirmaAll($com_enviada->getPrimaryKey(),array(2,4,5));
-                    //**************************************************************************
-                    if(file_exists($file_target)){ unlink($file_target); }
-                    $copyFile = copy($file_source,$file_target);
-                    //**************************************************************************
-                    $row->setEstadoMigracion('RADICADO');
-                    $row->setRadicadoSalida($com_enviada->getRadicado());
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setFechaRadicado(date("Y-m-d G:i:s"));
-                    $row->save();
-                    //**************************************************************************
-                    //if($com_recibida != null && $com_recibida instanceof ComRecibida){
-                    if($com_recibida != null){
-                        if(empty($com_recibida->getComenviadaId())){
-                            $estado_respondida = 5;    	    
-                            $com_recibida->setEstadocomrecibidaId($estado_respondida);
-                            $com_recibida->setComenviadaId($com_enviada->getPrimaryKey());
-                            $com_recibida->save();
-                            ComRecibidaPeer::updateEstadosComRecibida($com_recibida->getPrimaryKey(),$estado_respondida);
-                        }
-                    }
-                    //**************************************************************************
-                    //ARCHIVAR
-                    $origentrans_id = 3;
-                    $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id,$tipodocumental_id,$com_enviada->getPrimaryKey(),$origentrans_id,$usuario_origen->getPrimaryKey());
-                    //**************************************************************************
-                    //SOLUCITUD SERVICIO
-                    if($tipo_servicio != null){
-                        $response_servicio = $com_enviada->addServicioByCom($usuario_origen->getPrimaryKey(),$tiposervicio_id,$coll_intersadosPk);
-                        $servicio = $response_servicio['isError'] == false ? $response_servicio['object'] : null;
-                        //**********************************************************************
-                        if($servicio != null){
-                            $lcomservicios[] = $servicio;
-                            //******************************************************************
-                            if($tipo_servicio->getInitIntegracion()){//integracion con comunicaciones enviadas
-                                if(!empty($com_enviada->getPrimaryKey())){
-                                    try {
-                                        $simadSoap = new WsSimadUariv();
-                                        $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(),"Externa Enviada");
-                                        //$message_status = !empty($response_acto['status']) ? trim($response_acto['status']) : 400;
-                                    } catch (Exception $th) {
-                                        $msgintegracion = $th->getMessage();
-                                    }
+                }
+                //**************************************************************************
+                //ARCHIVAR
+                $origentrans_id = 3;
+                $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id, $tipodocumental_id, $com_enviada->getPrimaryKey(), $origentrans_id, $usuario_origen->getPrimaryKey());
+                //**************************************************************************
+                //SOLUCITUD SERVICIO
+                if ($tipo_servicio != null) {
+                    $response_servicio = $com_enviada->addServicioByCom($usuario_origen->getPrimaryKey(), $tiposervicio_id, $coll_intersadosPk);
+                    $servicio = $response_servicio['isError'] == false ? $response_servicio['object'] : null;
+                    //**********************************************************************
+                    if ($servicio != null) {
+                        $lcomservicios[] = $servicio;
+                        //******************************************************************
+                        if ($tipo_servicio->getInitIntegracion()) { //integracion con comunicaciones enviadas
+                            if (!empty($com_enviada->getPrimaryKey())) {
+                                try {
+                                    $simadSoap = new WsSimadUariv();
+                                    $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(), "Externa Enviada");
+                                    //$message_status = !empty($response_acto['status']) ? trim($response_acto['status']) : 400;
+                                } catch (Exception $th) {
+                                    $msgintegracion = $th->getMessage();
                                 }
                             }
-                            //******************************************************************
-                            $dependencia_id = $com_enviada->getDependenciaId();
-							$servicioestado_id = 3;
-                            if($tipo_servicio->getTipoEnvio() == 2 &&  !empty($email_interesado)){
-                                if($dependencia_id){
-                                    $sendEmailNotify = $servicio->envioEmailNotificacion($dependencia_id);
-                                    $msgnotify = ($sendEmailNotify != true) ? "&msgnotify=false" : "&msgnotify=true";
-                                    //***********************************************************
-									if($sendEmailNotify){
-										$servicio->setServicioestadoId($servicioestado_id);
-										$servicio->save();
-									}
-									//***********************************************************
-                                    /*if(empty($servicio->getEmailDestino())){
+                        }
+                        //******************************************************************
+                        $dependencia_id = $com_enviada->getDependenciaId();
+                        $servicioestado_id = 3;
+                        if ($tipo_servicio->getTipoEnvio() == 2 &&  !empty($email_interesado)) {
+                            if ($dependencia_id) {
+                                $sendEmailNotify = $servicio->envioEmailNotificacion($dependencia_id);
+                                $msgnotify = ($sendEmailNotify != true) ? "&msgnotify=false" : "&msgnotify=true";
+                                //***********************************************************
+                                if ($sendEmailNotify) {
+                                    $servicio->setServicioestadoId($servicioestado_id);
+                                    $servicio->save();
+                                }
+                                //***********************************************************
+                                /*if(empty($servicio->getEmailDestino())){
                                         $servicio->setEmailDestino(trim($email_interesado));
                                         $servicio->save();
                                     }*/
-                                    //***********************************************************
-                                    //bitacora de notificacion
-                                    if($sendEmailNotify != true){
-                                        $obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: ".trim($email_interesado);
-                                    }else{
-                                        $obs_bitacora = "Se notifico al interesado, email: ".trim($email_interesado);
-                                    }
-                                    //***********************************************************
-                                    ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(),$servicioestado_id,$usuario_origen->getPrimaryKey(),$usuario_origen->getPrimaryKey(),$obs_bitacora);
+                                //***********************************************************
+                                //bitacora de notificacion
+                                if ($sendEmailNotify != true) {
+                                    $obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: " . trim($email_interesado);
+                                } else {
+                                    $obs_bitacora = "Se notifico al interesado, email: " . trim($email_interesado);
                                 }
+                                //***********************************************************
+                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicioestado_id, $usuario_origen->getPrimaryKey(), $usuario_origen->getPrimaryKey(), $obs_bitacora);
                             }
                         }
                     }
-                    //**************************************************************************
-                    $ws_info['PkconsecutivoId'] = $com_enviada->getPrimaryKey();
-                    $ws_info['ModuloId'] = 4;
-                    $ws_info['UsuarioId'] = $usuario_origen->getPrimaryKey();
-                    $ws_info['NombreMetodo'] = "InformacionRadicadoSalida";
-                    $ws_info['EstadoProceso'] = "PENDIENTE";
-                    WebserviceReplyPeer::addReplyWs($ws_info);
-                    //**************************************************************************
-                    if(($com_enviada->getEstadocomenviadaId() != 1 ) && ($com_enviada->getFirmadoDigital() == 0)){
-                        $response_firma = $com_enviada->singDocumentProcess();
-                        $msg_firma[] = isset($response_firma['message']) ? trim($response_firma['message']) : "Por favor verifique que el documento fue firmado correctamente";
-                    }
-                } catch (PropelException $th) {
-                    $row->setEstadoMigracion('ERROR RADICANDO');
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS ".$th->getMessage());
-                    $row->save();
-                } catch (Exception $th) {
-                    $row->setEstadoMigracion('ERROR RADICANDO');
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR INTERNO SERVIDOR ".$th->getMessage());
-                    $row->save();
-                } catch (Throwable $th) {
-                    $row->setEstadoMigracion('ERROR RADICANDO');
-                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR INTERNO SERVIDOR");
-                    $row->save();
                 }
+                //**************************************************************************
+                $ws_info['PkconsecutivoId'] = $com_enviada->getPrimaryKey();
+                $ws_info['ModuloId'] = 4;
+                $ws_info['UsuarioId'] = $usuario_origen->getPrimaryKey();
+                $ws_info['NombreMetodo'] = "InformacionRadicadoSalida";
+                $ws_info['EstadoProceso'] = "PENDIENTE";
+                WebserviceReplyPeer::addReplyWs($ws_info);
+                //**************************************************************************
+                if (($com_enviada->getEstadocomenviadaId() != 1) && ($com_enviada->getFirmadoDigital() == 0)) {
+                    $response_firma = $com_enviada->singDocumentProcess();
+                    $msg_firma[] = isset($response_firma['message']) ? trim($response_firma['message']) : "Por favor verifique que el documento fue firmado correctamente";
+                }
+            } catch (PropelException $th) {
+                $row->setEstadoMigracion('ERROR RADICANDO');
+                $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS " . $th->getMessage());
+                $row->save();
+            } catch (Exception $th) {
+                $row->setEstadoMigracion('ERROR RADICANDO');
+                $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                $row->setMensajeInfo("ERROR INTERNO SERVIDOR " . $th->getMessage());
+                $row->save();
+            } catch (Throwable $th) {
+                $row->setEstadoMigracion('ERROR RADICANDO');
+                $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                $row->setMensajeInfo("ERROR INTERNO SERVIDOR");
+                $row->save();
+            }
             //**********************************************************************************
             //**********************************************************************************
             return array('status' => 200, 'message' => 'Se radicaron todos los documentos, por favor verifique la informaci&oacute;n');
         } catch (\PropelException $ex) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());        
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
-    * ComMigmasivoPeer::commitNewComEnviadaByOneAsync()
-    * funcion para radicar una registro en las comunicacion enviadas usando un archvio de excel
-    * @return mixed resultado proceso array('status' => codigo, 'message' => 'mensaje de error o exito')
-    * @param mixed parameters array con los parametros para la radicacion de las comunicaciones
-    */
-    public static function commitNewComEnviadaByOneAsync($migmasiva_id, $lote_id, $firma_digital,$outfile_zip)
+     * ComMigmasivoPeer::commitNewComEnviadaByOneAsync()
+     * funcion para radicar una registro en las comunicacion enviadas usando un archvio de excel
+     * @return mixed resultado proceso array('status' => codigo, 'message' => 'mensaje de error o exito')
+     * @param mixed parameters array con los parametros para la radicacion de las comunicaciones
+     */
+    public static function commitNewComEnviadaByOneAsync($migmasiva_id, $lote_id, $firma_digital, $outfile_zip)
     {
-        try 
-        {
+        try {
             $row = ComMigmasivoPeer::retrieveByPK($migmasiva_id, $lote_id);
             //**********************************************************************************
-            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto().'uploads');
-            $filedir_target = simad_util::createPath($dir_raiz.DIRECTORY_SEPARATOR.date("Ymd"));
+            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto() . 'uploads');
+            $filedir_target = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
             //**********************************************************************************
             $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
             $usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
-            $cargouser_origen = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario_origen->getPrimaryKey(),true);
+            $cargouser_origen = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario_origen->getPrimaryKey(), true);
             //**********************************************************************************
-            $ciudad_codigo = array();$dependencia_cod = array();$lcom_recibida = array();
-            $lexpedientes = array();$lcomtipo_servicio = array();$lexptransfer = array();$lcomservicios = array();
+            $ciudad_codigo = array();
+            $dependencia_cod = array();
+            $lcom_recibida = array();
+            $lexpedientes = array();
+            $lcomtipo_servicio = array();
+            $lexptransfer = array();
+            $lcomservicios = array();
             //**********************************************************************************
             $params = array();
             $estado_enviada = 1;
             //**********************************************************************************
-            $file_source = $outfile_zip.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-            $file_target = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
+            $file_source = $outfile_zip . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+            $file_target = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
             //**********************************************************************************
-            if(!file_exists($file_source)){
+            if (!file_exists($file_source)) {
                 return array('status' => 400, 'message' => 'Error, el archivo de documentos no existe');
             }
             //**********************************************************************************
-            $ciudad_id = in_array($row->getPuntoRadicacion(),$ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(),false);
-            if($ciudad_id != null){
+            $ciudad_id = in_array($row->getPuntoRadicacion(), $ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(), false);
+            if ($ciudad_id != null) {
                 $ciudad_codigo[$ciudad_id] = $row->getPuntoRadicacion();
             }
             //**********************************************************************************
-            $dependencia = in_array($row->getCodDependencia(),$dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
+            $dependencia = in_array($row->getCodDependencia(), $dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
             $dependencia_id = is_int($dependencia) ? $dependencia : $dependencia->getPrimaryKey();
-            if($dependencia_id != null){
+            if ($dependencia_id != null) {
                 $dependencia_cod[$dependencia_id] = $row->getCodDependencia();
             }
             //**********************************************************************************
-            $com_recibida = in_array($row->getRadicadoEntrada(),$lcom_recibida) ? array_search($row->getRadicadoEntrada(), $lcom_recibida) : ComRecibidaPeer::getComObjectByRadicado($row->getRadicadoEntrada());
+            $com_recibida = in_array($row->getRadicadoEntrada(), $lcom_recibida) ? array_search($row->getRadicadoEntrada(), $lcom_recibida) : ComRecibidaPeer::getComObjectByRadicado($row->getRadicadoEntrada());
             $comrecibida_id = null;
-            if($com_recibida != null){
+            if ($com_recibida != null) {
                 $com_recibida = !is_numeric($com_recibida) ? $com_recibida : ComRecibidaPeer::retrieveByPK($com_recibida);
                 $comrecibida_id = $com_recibida->getPrimaryKey();
                 $lcom_recibida[$comrecibida_id] = $row->getRadicadoEntrada();
             }
             //**********************************************************************************
             $unidaddocumental_id = null;
-            if(in_array($row->getNumeroExpediente(),$lexpedientes)){
+            if (in_array($row->getNumeroExpediente(), $lexpedientes)) {
                 $unidaddocumental_id = array_search($row->getNumeroExpediente(), $lexpedientes);
-            }else{
+            } else {
                 $unidad_documental = UnidadDocumentalPeer::getExpedienteByCodBarras($row->getNumeroExpediente());
                 $unidaddocumental_id = $unidad_documental != null ? $unidad_documental->getPrimaryKey() : null;
                 $lexpedientes[$unidaddocumental_id] = $row->getNumeroExpediente();
             }
             //**********************************************************************************
             $tipodocumental_id = null;
-            if(trim($row->getCodTipoDoc())){
+            if (trim($row->getCodTipoDoc())) {
                 $tipo_documental = TipoDocumentalPeer::getTipoDocByCodigo(trim($row->getCodTipoDoc()));
                 $tipodocumental_id = $tipo_documental != null ? $tipo_documental->getPrimaryKey() : null;
             }
             //**********************************************************************************
-            $tipo_servicio = in_array($row->getTipoNotificacion(),$lcomtipo_servicio) ? array_search($row->getTipoNotificacion(), $lcomtipo_servicio) : TipoServicioPeer::getTipoServicioObjByName($row->getTipoNotificacion());
-            $tiposervicio_id = null;$tipo_envio = null;
-            if($tipo_servicio != null){
+            $tipo_servicio = in_array($row->getTipoNotificacion(), $lcomtipo_servicio) ? array_search($row->getTipoNotificacion(), $lcomtipo_servicio) : TipoServicioPeer::getTipoServicioObjByName($row->getTipoNotificacion());
+            $tiposervicio_id = null;
+            $tipo_envio = null;
+            if ($tipo_servicio != null) {
                 $tipo_servicio = !is_numeric($tipo_servicio) ? $tipo_servicio : TipoServicioPeer::retrieveByPK($tipo_servicio);
                 $tiposervicio_id = $tipo_servicio->getPrimaryKey();
                 $lcomtipo_servicio[$tiposervicio_id] = $row->getTipoNotificacion();
@@ -2137,7 +2290,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             //**********************************************************************************
             $params['regional_id'] = $usuario_origen->getRegionalId();
             $params['dependencia_id'] = $dependencia_id;
-            $params['estadocomenviada_id'] = $estado_enviada;			
+            $params['estadocomenviada_id'] = $estado_enviada;
             $params['ciudad_id'] = $usuario_origen->getRegional()->getCiudadId();
             $params['periodo_id'] = date("Y");
             $params['asunto'] = $row->getAsuntoCom();
@@ -2145,7 +2298,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $params['observaciones_envio'] = "Radicación masiva con archivo plano de excel";
             $params['consecutivo_resp'] = $comrecibida_id;
             $params['firma_electronica'] = $firma_digital;
-            $params['archivo_digit'] = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
+            $params['archivo_digit'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
             $params['use_membrete'] = 1;
             $params['tipofirmadigital_id'] = null;
             $params['tipo_envio'] = $tipo_envio;
@@ -2154,31 +2307,31 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $params['marco_normativo'] = null;
             $params['numero_fud'] = trim($row->getNumeroFud()) ?: null;
             //**********************************************************************************
-            if (trim($row->getFechaResolucion())){
-                try{
+            if (trim($row->getFechaResolucion())) {
+                try {
                     $date = new DateTime(trim($row->getNumeroResolucion()));
                     $params['fecha_resolucion'] = $date->format('Y-m-d');
-                }catch (Exception $ex){
+                } catch (Exception $ex) {
                     $params['fecha_resolucion'] = null;
                 }
-            } 
+            }
             //**********************************************************************************
             $params['numero_resolucion'] = trim($row->getNumeroResolucion()) ?: null;
             $params['suborigen'] = trim($row->getIdSuborigen()) ?: null;
             $params['radicado_sys_origen'] = null;
             $params['tipo_documental_cod'] = trim($row->getCodTipoDoc()) ?: null;
-            $params['UrlFileWord'] = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
+            $params['UrlFileWord'] = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
             $params['IsCreateWord'] = true;
             $params['tipo_integracion'] = "MASIVOEXCEL";
             //**********************************************************************************
-            $interesados_nuids = preg_split("/[;]+/",trim($row->getNuidInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-            $interesados_pnombre = preg_split("/[;]+/",trim($row->getPnombreInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-            $interesados_papellido = preg_split("/[;]+/",trim($row->getPapellidoInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-            $firmas_nuids = preg_split("/[;]+/",trim($row->getNuidsFirmas()),-1, PREG_SPLIT_NO_EMPTY); 
+            $interesados_nuids = preg_split("/[;]+/", trim($row->getNuidInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+            $interesados_pnombre = preg_split("/[;]+/", trim($row->getPnombreInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+            $interesados_papellido = preg_split("/[;]+/", trim($row->getPapellidoInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+            $firmas_nuids = preg_split("/[;]+/", trim($row->getNuidsFirmas()), -1, PREG_SPLIT_NO_EMPTY);
             //**********************************************************************************
-            if(!empty($params['numero_resolucion'])){
-                $existsComByResol = ComEnviadaPeer::isExistComByNumResolucion($params['numero_resolucion'],$interesados_nuids);
-                if($existsComByResol){
+            if (!empty($params['numero_resolucion'])) {
+                $existsComByResol = ComEnviadaPeer::isExistComByNumResolucion($params['numero_resolucion'], $interesados_nuids);
+                if ($existsComByResol) {
                     $row->setEstadoMigracion('ERROR_RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
                     $row->setMensajeInfo("NUMERO RESOLUCION YA EXISTE");
@@ -2187,56 +2340,59 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 }
             }
             //**********************************************************************************
-            $coll_interesados = InteresadosPeer::getInteresadosByInfoBatch($interesados_pnombre,$interesados_papellido,$interesados_nuids);
-            if(empty($coll_interesados)){
+            $coll_interesados = InteresadosPeer::getInteresadosByInfoBatch($interesados_pnombre, $interesados_papellido, $interesados_nuids);
+            if (empty($coll_interesados)) {
                 $row->setEstadoMigracion('ERROR RADICANDO');
                 $row->setUsuarioId($usuario_origen->getPrimaryKey());
                 $row->setMensajeInfo("ERROR CON LOS INTERESADOS");
                 $row->save();
-                return; 
+                return;
             }
             //**********************************************************************************
-            try{
+            try {
                 $com_enviada = ComEnviadaPeer::addComEnviada($params);
-                if($com_enviada == null){
+                if ($com_enviada == null) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
                     $row->setMensajeInfo("ERROR AL GUARADAR LA COMUNICACION");
                     $row->save();
-                    return; 
+                    return;
                 }
                 //******************************************************************************
-                $coll_intersadosPk = array();$email_interesado = "";
+                $coll_intersadosPk = array();
+                $email_interesado = "";
                 foreach ($coll_interesados as $interesado) {
-                    $isAddInteresadoCom = EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(),$interesado->getPrimaryKey());
-                    if($isAddInteresadoCom){
+                    $isAddInteresadoCom = EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(), $interesado->getPrimaryKey());
+                    if ($isAddInteresadoCom) {
                         $coll_intersadosPk[] = $interesado->getPrimaryKey();
                         $email_interesado = empty($email_interesado) ? trim($interesado->getEmail()) : trim($email_interesado);
                     }
                 }
                 //******************************************************************************
                 $estaAsignada = 1;
-                ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(),$com_enviada->getPrimaryKey(),1,$cargouser_origen->getPrimaryKey(),$estado_enviada,1);
-                ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(),$com_enviada->getPrimaryKey(),5,$cargouser_origen->getPrimaryKey(),$estado_enviada,3,0);
+                ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(), $com_enviada->getPrimaryKey(), 1, $cargouser_origen->getPrimaryKey(), $estado_enviada, 1);
+                ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(), $com_enviada->getPrimaryKey(), 5, $cargouser_origen->getPrimaryKey(), $estado_enviada, 3, 0);
                 //******************************************************************************
                 $cuser_firmas = CargoUsuarioPeer::getCaUsuariosByNuidsUsers($firmas_nuids);
                 foreach ($cuser_firmas as $cuser) {
-                    ComEnviadaPeer::insertaEnviadaUsuarios($cuser->getUsuarioId(),$com_enviada->getPrimaryKey(),2,$cuser->getPrimaryKey(),$estado_enviada,5,$estaAsignada);
+                    ComEnviadaPeer::insertaEnviadaUsuarios($cuser->getUsuarioId(), $com_enviada->getPrimaryKey(), 2, $cuser->getPrimaryKey(), $estado_enviada, 5, $estaAsignada);
                 }
                 //******************************************************************************
-                if($com_enviada->getTipoMasivo()){
+                if ($com_enviada->getTipoMasivo()) {
                     $estadocomenviada_id = 2;
-                    $radicado = $com_enviada->getRadicadoFormat(null,$com_enviada->getRegionalId());
+                    $radicado = $com_enviada->getRadicadoFormat(null, $com_enviada->getRegionalId());
                     $com_enviada->setRadicado($radicado);
                     $com_enviada->setEstadocomenviadaId($estadocomenviada_id);
                     $com_enviada->save();
                 }
                 //******************************************************************************
-                EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey(),$estadocomenviada_id);
-                EnviadaUsuarioPeer::updateAproFirmaAll($com_enviada->getPrimaryKey(),array(2,4,5));
+                EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey(), $estadocomenviada_id);
+                EnviadaUsuarioPeer::updateAproFirmaAll($com_enviada->getPrimaryKey(), array(2, 4, 5));
                 //******************************************************************************
-                if(file_exists($file_target)){ unlink($file_target); }
-                $copyFile = copy($file_source,$file_target);
+                if (file_exists($file_target)) {
+                    unlink($file_target);
+                }
+                $copyFile = copy($file_source, $file_target);
                 //******************************************************************************
                 $row->setEstadoMigracion('RADICADO');
                 $row->setRadicadoSalida($com_enviada->getRadicado());
@@ -2244,33 +2400,33 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $row->setFechaRadicado(date("Y-m-d G:i:s"));
                 $row->save();
                 //******************************************************************************
-                if($com_recibida != null){
-                    if(empty($com_recibida->getComenviadaId())){
-                        $estado_respondida = 5;    	    
+                if ($com_recibida != null) {
+                    if (empty($com_recibida->getComenviadaId())) {
+                        $estado_respondida = 5;
                         $com_recibida->setEstadocomrecibidaId($estado_respondida);
                         $com_recibida->setComenviadaId($com_enviada->getPrimaryKey());
                         $com_recibida->save();
-                        ComRecibidaPeer::updateEstadosComRecibida($com_recibida->getPrimaryKey(),$estado_respondida);
+                        ComRecibidaPeer::updateEstadosComRecibida($com_recibida->getPrimaryKey(), $estado_respondida);
                     }
                 }
                 //******************************************************************************
                 //ARCHIVAR
                 $origentrans_id = 3;
-                $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id,$tipodocumental_id,$com_enviada->getPrimaryKey(),$origentrans_id,$usuario_origen->getPrimaryKey());
+                $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id, $tipodocumental_id, $com_enviada->getPrimaryKey(), $origentrans_id, $usuario_origen->getPrimaryKey());
                 //******************************************************************************
                 //SOLUCITUD SERVICIO
-                if($tipo_servicio != null){
-                    $response_servicio = $com_enviada->addServicioByCom($usuario_origen->getPrimaryKey(),$tiposervicio_id,$coll_intersadosPk);
+                if ($tipo_servicio != null) {
+                    $response_servicio = $com_enviada->addServicioByCom($usuario_origen->getPrimaryKey(), $tiposervicio_id, $coll_intersadosPk);
                     $servicio = $response_servicio['isError'] == false ? $response_servicio['object'] : null;
                     //**************************************************************************
-                    if($servicio != null){
+                    if ($servicio != null) {
                         $lcomservicios[] = $servicio;
                         //**********************************************************************
-                        if($tipo_servicio->getInitIntegracion()){//integracion con comunicaciones enviadas
-                            if(!empty($com_enviada->getPrimaryKey())){
+                        if ($tipo_servicio->getInitIntegracion()) { //integracion con comunicaciones enviadas
+                            if (!empty($com_enviada->getPrimaryKey())) {
                                 try {
                                     $simadSoap = new WsSimadUariv();
-                                    $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(),"Externa Enviada");
+                                    $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(), "Externa Enviada");
                                     //$message_status = !empty($response_acto['status']) ? trim($response_acto['status']) : 400;
                                 } catch (Exception $th) {
                                     $msgintegracion = $th->getMessage();
@@ -2279,23 +2435,23 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                         }
                         //**********************************************************************
                         $dependencia_id = $com_enviada->getDependenciaId();
-                        if($tipo_servicio->getTipoEnvio() == 2 &&  !empty($email_interesado)){
-                            if($dependencia_id){
+                        if ($tipo_servicio->getTipoEnvio() == 2 &&  !empty($email_interesado)) {
+                            if ($dependencia_id) {
                                 $sendEmailNotify = $servicio->envioEmailNotificacion($dependencia_id);
                                 $msgnotify = ($sendEmailNotify != true) ? "&msgnotify=false" : "&msgnotify=true";
-                                if(empty($servicio->getEmailDestino())){
+                                if (empty($servicio->getEmailDestino())) {
                                     $servicio->setEmailDestino(trim($email_interesado));
                                     $servicio->save();
                                 }
                                 //**************************************************************
                                 //bitacora de notificacion
-                                if($sendEmailNotify != true){
-                                    $obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: ".trim($email_interesado);
-                                }else{
-                                    $obs_bitacora = "Se notifico al interesado, email: ".trim($email_interesado);
+                                if ($sendEmailNotify != true) {
+                                    $obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: " . trim($email_interesado);
+                                } else {
+                                    $obs_bitacora = "Se notifico al interesado, email: " . trim($email_interesado);
                                 }
                                 //**************************************************************
-                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(),$servicio->getServicioestadoId(),$usuario_origen->getPrimaryKey(),$usuario_origen->getPrimaryKey(),$obs_bitacora);
+                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicio->getServicioestadoId(), $usuario_origen->getPrimaryKey(), $usuario_origen->getPrimaryKey(), $obs_bitacora);
                             }
                         }
                     }
@@ -2308,22 +2464,21 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $ws_info['EstadoProceso'] = "PENDIENTE";
                 WebserviceReplyPeer::addReplyWs($ws_info);
                 //******************************************************************************
-                if(($com_enviada->getEstadocomenviadaId() != 1 ) && ($com_enviada->getFirmadoDigital() == 0)){
+                if (($com_enviada->getEstadocomenviadaId() != 1) && ($com_enviada->getFirmadoDigital() == 0)) {
                     $response_firma = $com_enviada->singDocumentProcess();
                     $msg_firma[] = isset($response_firma['message']) ? trim($response_firma['message']) : "Por favor verifique que el documento fue firmado correctamente";
                 }
             } catch (PropelException $th) {
                 $row->setEstadoMigracion('ERROR RADICANDO');
                 $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS ".$th->getMessage());
+                $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS " . $th->getMessage());
                 $row->save();
             } catch (Exception $th) {
                 $row->setEstadoMigracion('ERROR RADICANDO');
                 $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                $row->setMensajeInfo("ERROR INTERNO SERVIDOR ".$th->getMessage());
+                $row->setMensajeInfo("ERROR INTERNO SERVIDOR " . $th->getMessage());
                 $row->save();
-            } catch (Throwable $th) 
-            {
+            } catch (Throwable $th) {
                 $row->setEstadoMigracion('ERROR RADICANDO');
                 $row->setUsuarioId($usuario_origen->getPrimaryKey());
                 $row->setMensajeInfo("ERROR INTERNO SERVIDOR");
@@ -2332,84 +2487,89 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             //***********************************************************************************
             return array('status' => 200, 'message' => 'Se radico la comunicación, por favor verifique la información');
         } catch (PropelException $ex) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());        
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
      * ComMigmasivoPeer::addNewComRecibidaByComLote()
-    * funcion para radicar comunicaciones usando un archvio de excel
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito', 'object' => 'objeto de la fila creada')
-    * @param mixed parameters array con los parametros para la radicacion de las comunicaciones
-    */
+     * funcion para radicar comunicaciones usando un archvio de excel
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito', 'object' => 'objeto de la fila creada')
+     * @param mixed parameters array con los parametros para la radicacion de las comunicaciones
+     */
     public static function addNewComRecibidaByComLote($parameters)
     {
         try {
             $dirRaiz    = ParametroPeer::retrieveByPk(27)->getValortexto();
             $dirTmp     = ParametroPeer::retrieveByPk(65)->getValortexto();
-            $upload_dir = $dirRaiz.DIRECTORY_SEPARATOR.$dirTmp;
+            $upload_dir = $dirRaiz . DIRECTORY_SEPARATOR . $dirTmp;
             //**********************************************************************************
-            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(27)->getValortexto().'uploads');
-			$filedir_target = simad_util::createPath($dir_raiz.DIRECTORY_SEPARATOR.date("Ymd"));
+            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(27)->getValortexto() . 'uploads');
+            $filedir_target = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
             //**********************************************************************************
-            $filedocsupload = $upload_dir.DIRECTORY_SEPARATOR.$parameters['filedocsupload'];
-            $outfile_zip = $upload_dir.DIRECTORY_SEPARATOR.md5(date("YmdGisu"));
-            $zipfile_extract = simad_util::extractFileCompress($filedocsupload,$outfile_zip);
-            if(!$zipfile_extract){
+            $filedocsupload = $upload_dir . DIRECTORY_SEPARATOR . $parameters['filedocsupload'];
+            $outfile_zip = $upload_dir . DIRECTORY_SEPARATOR . md5(date("YmdGisu"));
+            $zipfile_extract = simad_util::extractFileCompress($filedocsupload, $outfile_zip);
+            if (!$zipfile_extract) {
                 return array('status' => 400, 'message' => 'Ocurrio un error al descomprimir el archivo de documentos, no se radicaron las comunicaciones');
             }
             //**********************************************************************************
             $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
             $usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
             //**********************************************************************************
-            $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'],'PENDIENTE VALIDAR');
-            if(count($blotes) <= 0){
+            $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'], 'PENDIENTE VALIDAR');
+            if (count($blotes) <= 0) {
                 return array('status' => 400, 'message' => 'No se encontraron registros para radicar!');
             }
             //**********************************************************************************
             $tipoprocesocom_id = 1;
-            $ciudad_codigo = array();$dependencia_cod = array();$ltipocom_recibida = array();
-            $lprioridad_com = array();$lforma_recepcion = array();$ilist_error = array();$mailErrorMsg = array();
+            $ciudad_codigo = array();
+            $dependencia_cod = array();
+            $ltipocom_recibida = array();
+            $lprioridad_com = array();
+            $lforma_recepcion = array();
+            $ilist_error = array();
+            $mailErrorMsg = array();
             foreach ($blotes as $row) {
                 $params = array();
                 $estado_comobject = 11;
                 //******************************************************************************
-                $file_source = $outfile_zip.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-                $file_target = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
-                if(!file_exists($file_source)){
+                $file_source = $outfile_zip . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+                $file_target = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
+                if (!file_exists($file_source)) {
                     continue;
                 }
                 //******************************************************************************
-                $ciudad_id = in_array($row->getPuntoRadicacion(),$ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(),false);
-                if($ciudad_id != null){
+                $ciudad_id = in_array($row->getPuntoRadicacion(), $ciudad_codigo) ? array_search($row->getPuntoRadicacion(), $ciudad_codigo) : RegionalPeer::getCiudadIdByRegionalName($row->getPuntoRadicacion(), false);
+                if ($ciudad_id != null) {
                     $ciudad_codigo[$ciudad_id] = $row->getPuntoRadicacion();
                 }
                 //******************************************************************************
-                $dependencia = in_array($row->getCodDependencia(),$dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
+                $dependencia = in_array($row->getCodDependencia(), $dependencia_cod) ? array_search($row->getCodDependencia(), $dependencia_cod) : DependenciaPeer::getDependenciaByCodigo($row->getCodDependencia());
                 $dependencia_id = is_int($dependencia) ? $dependencia : $dependencia->getPrimaryKey();
-                if($dependencia_id != null){
+                if ($dependencia_id != null) {
                     $dependencia_cod[$dependencia_id] = $row->getCodDependencia();
                 }
                 //******************************************************************************
-                $tipo_com_recibida = in_array($row->getTipoDocumento(),$ltipocom_recibida) ? array_search($row->getTipoDocumento(), $ltipocom_recibida) : TipoComRecibidaPeer::getTipoComRecibidaByText($row->getTipoDocumento());
+                $tipo_com_recibida = in_array($row->getTipoDocumento(), $ltipocom_recibida) ? array_search($row->getTipoDocumento(), $ltipocom_recibida) : TipoComRecibidaPeer::getTipoComRecibidaByText($row->getTipoDocumento());
                 $tipocomrecibida_id = is_int($tipo_com_recibida) ? $tipo_com_recibida : $tipo_com_recibida->getPrimaryKey();
-                if($tipocomrecibida_id != null){
+                if ($tipocomrecibida_id != null) {
                     $ltipocom_recibida[$tipocomrecibida_id] = $row->getTipoDocumento();
                 }
                 //******************************************************************************
-                $forma_recepcion = in_array($row->getFormaRecepcion(),$lforma_recepcion) ? array_search($row->getFormaRecepcion(), $lforma_recepcion) : FormaRecepcionPeer::getFormaRecepcionByText($row->getFormaRecepcion());
+                $forma_recepcion = in_array($row->getFormaRecepcion(), $lforma_recepcion) ? array_search($row->getFormaRecepcion(), $lforma_recepcion) : FormaRecepcionPeer::getFormaRecepcionByText($row->getFormaRecepcion());
                 $formarecepcion_id = is_int($forma_recepcion) ? $forma_recepcion : $forma_recepcion->getPrimaryKey();
-                if($formarecepcion_id != null){
+                if ($formarecepcion_id != null) {
                     $lforma_recepcion[$formarecepcion_id] = $row->getFormaRecepcion();
                 }
                 //******************************************************************************
-                $prioridad_com = in_array($row->getPrioridadCom(),$lprioridad_com) ? array_search($row->getPrioridadCom(), $lprioridad_com) : PrioridadComPeer::getPrioridadComByText($row->getPrioridadCom());
+                $prioridad_com = in_array($row->getPrioridadCom(), $lprioridad_com) ? array_search($row->getPrioridadCom(), $lprioridad_com) : PrioridadComPeer::getPrioridadComByText($row->getPrioridadCom());
                 $prioridadcom_id = is_int($prioridad_com) ? $prioridad_com : $prioridad_com->getPrimaryKey();
-                if($prioridadcom_id != null){
+                if ($prioridadcom_id != null) {
                     $lprioridad_com[$prioridadcom_id] = $row->getPrioridadCom();
                 }
                 //******************************************************************************
@@ -2420,7 +2580,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $fields_terceros['USUARIO_RADICADOR'] = $usuariologuiado;
                 //******************************************************************************
                 $ciudad_tercero = CiudadPeer::getCiudadByCod($row->getCiudadRemitente());
-                if($ciudad_tercero == null){
+                if ($ciudad_tercero == null) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
                     $row->setMensajeInfo("ERROR CON LOS INTERESADOS");
@@ -2441,7 +2601,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $params['estadocomrecibida_id'] = $estado_comobject;
                 $params['formarecepcion_id'] = $formarecepcion_id;
                 $params['ciudad_id'] = $usuario_origen->getRegional()->getCiudadId();
-                $params['directorioexterno_id'] = DirectorioExternoPeer::addNewDirectorioExterno($fields_terceros,true);
+                $params['directorioexterno_id'] = DirectorioExternoPeer::addNewDirectorioExterno($fields_terceros, true);
                 $params['radicado_origen'] = trim($row->getRadicadoOrigen());
                 $params['asunto'] = trim($row->getAsuntoCom());
                 $params['prioridadcom_id'] = $prioridadcom_id;
@@ -2456,17 +2616,18 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $params['digitOverWrite'] = true;
                 //$params['archivo_digit'] = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
                 //******************************************************************************
-                $interesados_nuids = preg_split("/[;]+/",trim($row->getNuidInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_pnombre = preg_split("/[;]+/",trim($row->getPnombreInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_papellido = preg_split("/[;]+/",trim($row->getPapellidoInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_tipodoc = preg_split("/[;]+/",trim($row->getTipodocInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_snombre = preg_split("/[;]+/",trim($row->getSnombreInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_sapellido = preg_split("/[;]+/",trim($row->getSapellidoInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_ciudad = preg_split("/[;]+/",trim($row->getCiudadInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_email = preg_split("/[;]+/",trim($row->getEmailInteresado()),-1, PREG_SPLIT_NO_EMPTY);
+                $interesados_nuids = preg_split("/[;]+/", trim($row->getNuidInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $interesados_pnombre = preg_split("/[;]+/", trim($row->getPnombreInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $interesados_papellido = preg_split("/[;]+/", trim($row->getPapellidoInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $interesados_tipodoc = preg_split("/[;]+/", trim($row->getTipodocInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $interesados_snombre = preg_split("/[;]+/", trim($row->getSnombreInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $interesados_sapellido = preg_split("/[;]+/", trim($row->getSapellidoInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $interesados_ciudad = preg_split("/[;]+/", trim($row->getCiudadInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $interesados_email = preg_split("/[;]+/", trim($row->getEmailInteresado()), -1, PREG_SPLIT_NO_EMPTY);
                 //******************************************************************************
-                $interesado_data = array();$coll_interesados = array();
-                for ($x=0; $x < count($interesados_nuids); $x++) { 
+                $interesado_data = array();
+                $coll_interesados = array();
+                for ($x = 0; $x < count($interesados_nuids); $x++) {
                     $interesado_data['PRIMER_NOMBRE'] = trim($interesados_pnombre[$x]);
                     $interesado_data['PRIMER_APELLIDO'] = trim($interesados_papellido[$x]);
                     $interesado_data['SEGUNDO_NOMBRE'] = trim($interesados_snombre[$x]);
@@ -2482,8 +2643,8 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $interesado_data['EMAIL'] = trim($interesados_email[$x]);
                     $interesado_data['USUARIO_ID'] = $usuariologuiado;
                     //**************************************************************************
-                    $interesado_obj = InteresadosPeer::getExistsOrCreateInteresado($interesado_data,true);
-                    if($interesado_obj == null){
+                    $interesado_obj = InteresadosPeer::getExistsOrCreateInteresado($interesado_data, true);
+                    if ($interesado_obj == null) {
                         $row->setEstadoMigracion('ERROR RADICANDO');
                         $row->setUsuarioId($usuario_origen->getPrimaryKey());
                         $row->setMensajeInfo("ERROR CON LOS INTERESADOS");
@@ -2496,22 +2657,23 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $coll_interesados[] = $interesado_obj;
                 }
                 //******************************************************************************
-                try{
+                try {
                     $com_recibida = ComRecibidaPeer::addComRecibida($params);
-                    if($com_recibida == null){
+                    if ($com_recibida == null) {
                         $row->setEstadoMigracion('ERROR RADICANDO');
                         $row->setUsuarioId($usuario_origen->getPrimaryKey());
                         $row->setMensajeInfo("ERROR AL GUARADAR LA COMUNICACION");
                         $row->save();
                         //**********************************************************************
                         $ilist_error[] = 'Error radicando comunicacion recibida, error generando radicado';
-                        continue; 
+                        continue;
                     }
                     //**************************************************************************
-                    $collobj_intersados = array();$email_interesado = "";
+                    $collobj_intersados = array();
+                    $email_interesado = "";
                     foreach ($coll_interesados as $interesado_obj) {
-                        $isAddInteresadoCom = ComrecibidaInteresadosPeer::addNewInteresadoByComId($com_recibida->getPrimaryKey(),$interesado_obj->getPrimaryKey());
-                        if($isAddInteresadoCom){
+                        $isAddInteresadoCom = ComrecibidaInteresadosPeer::addNewInteresadoByComId($com_recibida->getPrimaryKey(), $interesado_obj->getPrimaryKey());
+                        if ($isAddInteresadoCom) {
                             $collobj_intersados[] = $interesado_obj;
                             $email_interesado = empty($email_interesado) ? trim($interesado_obj->getEmail()) : trim($email_interesado);
                         }
@@ -2523,21 +2685,21 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $row->setFechaRadicado(date("Y-m-d G:i:s"));
                     $row->save();
                     //**************************************************************************
-                    foreach ($collobj_intersados as $interesado_obj) {//envio de notificacion al interesado
+                    foreach ($collobj_intersados as $interesado_obj) { //envio de notificacion al interesado
                         $response_mail = $interesado_obj->envioEmailNotificacion($com_recibida->getRadicado());
-                        if($response_mail['IsSend'] == false){
+                        if ($response_mail['IsSend'] == false) {
                             $mailErrorMsg[] = $response_mail['message'];
                         }
                     }
                 } catch (PropelException $th) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS ".$th->getMessage());
+                    $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS " . $th->getMessage());
                     $row->save();
                 } catch (Exception $th) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR INTERNO SERVIDOR ".$th->getMessage());
+                    $row->setMensajeInfo("ERROR INTERNO SERVIDOR " . $th->getMessage());
                     $row->save();
                 } catch (Throwable $th) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
@@ -2547,17 +2709,17 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 }
             }
             //**********************************************************************************
-            if(count($ilist_error)){
+            if (count($ilist_error)) {
                 return array('status' => 300, 'message' => 'Algunas comunicaciones no se pudieron radicar');
-            }else{
+            } else {
                 return array('status' => 200, 'message' => 'Se radicaron todos los documentos, por favor verifique la informaci&oacute;n');
             }
         } catch (\PropelException $ex) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
         } catch (\Exception $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());        
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
-            return array('status' => 400, 'message' => 'Error interno del servidor, '.$th->getMessage());
+            return array('status' => 400, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 }

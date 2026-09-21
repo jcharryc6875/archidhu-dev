@@ -19,16 +19,16 @@
  */
 class InteresadosPeer extends BaseInteresadosPeer
 {
-    public static function getExistsOrCreateInteresado($fields,$isObj = false)
+    public static function getExistsOrCreateInteresado($fields, $isObj = false)
     {
-        try{
+        try {
             $nuid_interesado = trim($fields['NUMERO_IDENTIFICACION']);
             $primer_nombre = trim($fields['PRIMER_NOMBRE']);
             $primer_apellido = trim($fields['PRIMER_NOMBRE']);
             //****************************************************************************************************
-            $interesado_pk = InteresadosPeer::existsIntByNameAndNuid($primer_nombre,$primer_apellido,$nuid_interesado,$isObj);
-            if(empty($interesado_pk)){
-                $interesado_pk = InteresadosPeer::addNewInteresado($fields,$isObj);
+            $interesado_pk = InteresadosPeer::existsIntByNameAndNuid($primer_nombre, $primer_apellido, $nuid_interesado, $isObj);
+            if (empty($interesado_pk)) {
+                $interesado_pk = InteresadosPeer::addNewInteresado($fields, $isObj);
             }
             //****************************************************************************************************
             return $interesado_pk;
@@ -40,21 +40,21 @@ class InteresadosPeer extends BaseInteresadosPeer
             return null;
         }
     }
-	
-    public static function validarRegistro($pnombre,$papellido,$nuid)
-    { 
-        try{
-            if((!empty($pnombre) || !empty($papellido)) || !empty($nuid)){
+
+    public static function validarRegistro($pnombre, $papellido, $nuid)
+    {
+        try {
+            if ((!empty($pnombre) || !empty($papellido)) || !empty($nuid)) {
                 $c = new Criteria();
-                $c->add(InteresadosPeer::PRIMER_NOMBRE,utf8_encode($pnombre));
-                $c->add(InteresadosPeer::PRIMER_APELLIDO,utf8_encode($papellido));
-                $c->add(InteresadosPeer::NUMERO_IDENTIFICACION,$nuid);	
+                $c->add(InteresadosPeer::PRIMER_NOMBRE, utf8_encode($pnombre));
+                $c->add(InteresadosPeer::PRIMER_APELLIDO, utf8_encode($papellido));
+                $c->add(InteresadosPeer::NUMERO_IDENTIFICACION, $nuid);
                 $valDir  = InteresadosPeer::doSelectOne($c);
-            }else{
+            } else {
                 $valDir = null;
             }
             //*******************************************************************************
-            if($valDir == null)
+            if ($valDir == null)
                 return null;
             else
                 return $valDir != null ? $valDir->getPrimaryKey() : null;
@@ -63,20 +63,20 @@ class InteresadosPeer extends BaseInteresadosPeer
         }
     }
 
-    public static function existsIntByNameAndNuid($pnombre,$papellido,$nuid,$isObj=false)
-    {  
-        try{
-            if((!empty($pnombre) || !empty($papellido)) || !empty($nuid)){
+    public static function existsIntByNameAndNuid($pnombre, $papellido, $nuid, $isObj = false)
+    {
+        try {
+            if ((!empty($pnombre) || !empty($papellido)) || !empty($nuid)) {
                 $c = new Criteria();
-                $c->add(InteresadosPeer::PRIMER_NOMBRE,utf8_encode($pnombre));
-                $c->add(InteresadosPeer::PRIMER_APELLIDO,utf8_encode($papellido));
-                $c->add(InteresadosPeer::NUMERO_IDENTIFICACION,$nuid);	
+                $c->add(InteresadosPeer::PRIMER_NOMBRE, utf8_encode($pnombre));
+                $c->add(InteresadosPeer::PRIMER_APELLIDO, utf8_encode($papellido));
+                $c->add(InteresadosPeer::NUMERO_IDENTIFICACION, $nuid);
                 $valDir  = InteresadosPeer::doSelectOne($c);
-            }else{
+            } else {
                 $valDir = null;
             }
             //*******************************************************************************
-            if($valDir == null)
+            if ($valDir == null)
                 return null;
             else
                 return $isObj ? $valDir : $valDir->getPrimaryKey();
@@ -86,13 +86,13 @@ class InteresadosPeer extends BaseInteresadosPeer
     }
 
     public static function getInteresadoByNuid($nuid)
-    {  
-        try{
-            if((!empty($pnombre) || !empty($papellido)) || !empty($nuid)){
+    {
+        try {
+            if ((!empty($pnombre) || !empty($papellido)) || !empty($nuid)) {
                 $c = new Criteria();
-                $c->add(InteresadosPeer::NUMERO_IDENTIFICACION,$nuid);	
+                $c->add(InteresadosPeer::NUMERO_IDENTIFICACION, $nuid);
                 $interesado  = InteresadosPeer::doSelectOne($c);
-            }else{
+            } else {
                 $interesado = null;
             }
             //*********************************************************************************
@@ -102,15 +102,15 @@ class InteresadosPeer extends BaseInteresadosPeer
         }
     }
 
-    public static function getInteresadoByEmail($email,$esta_activo = 1) 
-    {  
-        try{
-            if(!empty($email)){
+    public static function getInteresadoByEmail($email, $esta_activo = 1)
+    {
+        try {
+            if (!empty($email)) {
                 $c = new Criteria();
-                $c->add(InteresadosPeer::EMAIL,$email);
-                $c->add(InteresadosPeer::ES_ACTIVO,$esta_activo);
+                $c->add(InteresadosPeer::EMAIL, $email);
+                $c->add(InteresadosPeer::ES_ACTIVO, $esta_activo);
                 $interesado  = InteresadosPeer::doSelectOne($c);
-            }else{
+            } else {
                 $interesado = null;
             }
             //*******************************************************************************
@@ -121,21 +121,21 @@ class InteresadosPeer extends BaseInteresadosPeer
             return null;
         }
     }
-    
-    public static function getInteresadosByInfoBatch($list_pnombres,$list_papellidos,$list_nuids)
+
+    public static function getInteresadosByInfoBatch($list_pnombres, $list_papellidos, $list_nuids)
     {
         $coll_interesados = array();
         //***********************************************************************************
-        try{
-            if(empty($list_pnombres) || empty($list_papellidos) || empty($list_nuids)){
+        try {
+            if (empty($list_pnombres) || empty($list_papellidos) || empty($list_nuids)) {
                 return null;
             }
             //*******************************************************************************
-            for ($i=0; $i < count($list_nuids) ; $i++) {
-                $interesados = InteresadosPeer::existsIntByNameAndNuid($list_pnombres[$i],$list_papellidos[$i],$list_nuids[$i],true);
-                if($interesados == null){
+            for ($i = 0; $i < count($list_nuids); $i++) {
+                $interesados = InteresadosPeer::existsIntByNameAndNuid($list_pnombres[$i], $list_papellidos[$i], $list_nuids[$i], true);
+                if ($interesados == null) {
                     return null;
-                }else{
+                } else {
                     $coll_interesados[] = $interesados;
                 }
             }
@@ -153,8 +153,18 @@ class InteresadosPeer extends BaseInteresadosPeer
      * el interesado con los datos suministrados.
      * @return Interesados|null
      */
-    public static function findOrCreateInteresado($crearInteresado, $tipoDocInteresado, $nuid, $pnombre, $snombre, $papellido, $sapellido, $ciudadCodigo, $email)
-    {
+    public static function findOrCreateInteresado(
+        $crearInteresado,
+        $tipoDocInteresado,
+        $nuid,
+        $pnombre,
+        $snombre,
+        $papellido,
+        $sapellido,
+        $ciudadCodigo,
+        $email,
+        $usuario_id
+    ) {
         try {
             $nuid = trim($nuid);
             $pnombre = trim($pnombre);
@@ -169,8 +179,12 @@ class InteresadosPeer extends BaseInteresadosPeer
                 $c = new Criteria();
                 $c->add(InteresadosPeer::PRIMER_NOMBRE, utf8_encode($pnombre));
                 $c->add(InteresadosPeer::PRIMER_APELLIDO, utf8_encode($papellido));
-                if (!empty($snombre)) { $c->add(InteresadosPeer::SEGUNDO_NOMBRE, utf8_encode($snombre)); }
-                if (!empty($sapellido)) { $c->add(InteresadosPeer::SEGUNDO_APELLIDO, utf8_encode($sapellido)); }
+                if (!empty($snombre)) {
+                    $c->add(InteresadosPeer::SEGUNDO_NOMBRE, utf8_encode($snombre));
+                }
+                if (!empty($sapellido)) {
+                    $c->add(InteresadosPeer::SEGUNDO_APELLIDO, utf8_encode($sapellido));
+                }
                 $interesado = InteresadosPeer::doSelectOne($c);
             }
             //*******************************************************************************
@@ -191,6 +205,7 @@ class InteresadosPeer extends BaseInteresadosPeer
                 'TIPO_IDENTIFICACION' => $tipoidentificacion_id,
                 'CIUDAD_ID' => $ciudad != null ? $ciudad->getPrimaryKey() : null,
                 'EMAIL' => trim($email),
+                'USUARIO_ID' => $usuario_id
             );
             //*******************************************************************************
             return InteresadosPeer::addNewInteresado($info_data, true);
@@ -201,47 +216,38 @@ class InteresadosPeer extends BaseInteresadosPeer
         }
     }
 
-	public static function getHistoricoInteresados($parentInteresado_id)
-    {  
-        try
-        {
-            if(!empty($parentInteresado_id))
-            {
+    public static function getHistoricoInteresados($parentInteresado_id)
+    {
+        try {
+            if (!empty($parentInteresado_id)) {
                 $c = new Criteria();
                 $c->add(InteresadosPeer::PARENTINTERESADO_ID, $parentInteresado_id);
                 $c->addDescendingOrderByColumn(InteresadosPeer::ES_ACTIVO);
                 $c->addDescendingOrderByColumn(InteresadosPeer::INTERESADO_ID);
                 $interesados = InteresadosPeer::doSelect($c);
-            }
-            else
-            {
+            } else {
                 $interesados = null;
             }
             //*******************************************************************************
             return $interesados;
-        } 
-        catch(PropelException $ex)
-		{
-			return "Error de acceso a la base de datos";
-		}
-		catch(\Exception $ex)
-		{
-			return "Error interno de la aplicación";
-		}
-        catch(\Throwable $ex)
-		{
-			return "Error interno del servidor";
-		}
+        } catch (PropelException $ex) {
+            return "Error de acceso a la base de datos";
+        } catch (\Exception $ex) {
+            return "Error interno de la aplicación";
+        } catch (\Throwable $ex) {
+            return "Error interno del servidor";
+        }
     }
-	
-    public static function addNewInteresado($info_data,$isObj=false)
-    {  
-        try{
-            $tgenero_default = 5;$tnuid_default = 5;
+
+    public static function addNewInteresado($info_data, $isObj = false)
+    {
+        try {
+            $tgenero_default = 5;
+            $tnuid_default = 5;
             //****************************************************************************
             $object = new Interesados();
-			$anterior_object = clone $object;
-			//****************************************************************************
+            $anterior_object = clone $object;
+            //****************************************************************************
             $object->setPrimerNombre(utf8_encode(trim($info_data['PRIMER_NOMBRE'])));
             $object->setPrimerApellido(utf8_encode(trim($info_data['PRIMER_APELLIDO'])));
             $object->setSegundoNombre(isset($info_data['SEGUNDO_NOMBRE']) ? utf8_encode(trim($info_data['SEGUNDO_NOMBRE'])) : null);
@@ -257,7 +263,7 @@ class InteresadosPeer extends BaseInteresadosPeer
             $object->setCelular(isset($info_data['CELULAR']) ? trim($info_data['CELULAR']) : null);
             $object->setEmail(isset($info_data['EMAIL']) ? trim($info_data['EMAIL']) : null);
             $object->setUsuarioId(isset($info_data['USUARIO_ID']) ? trim($info_data['USUARIO_ID']) : null);
-			$object->setPrefijo(isset($info_data['PREFIJO']) ? trim($info_data['PREFIJO']) : "Señor(a)");
+            $object->setPrefijo(isset($info_data['PREFIJO']) ? trim($info_data['PREFIJO']) : "Señor(a)");
             $object->setFechaCreacion(date("Y-m-d G:i:s"));
             $object->setFechaModificacion(date("Y-m-d G:i:s"));
             $object->save();
@@ -267,11 +273,11 @@ class InteresadosPeer extends BaseInteresadosPeer
             $object->setParentinteresadoId($object->getPrimaryKey());
             $object->setFechaVersion(date("Y-m-d"));
             $object->save();
-			//****************************************************************************
-			$usuario_id = isset($info_data['USUARIO_ID']) ? trim($info_data['USUARIO_ID']) : $object->getUsuarioId();
             //****************************************************************************
-			AuditLogPeer::guardarAuditoriaLite("Interesados", $anterior_object, $object, ModulesEnable::Interesados, $object->getNumeroIdentificacion(), $usuario_id);
-			//****************************************************************************
+            $usuario_id = isset($info_data['USUARIO_ID']) ? trim($info_data['USUARIO_ID']) : $object->getUsuarioId();
+            //****************************************************************************
+            AuditLogPeer::guardarAuditoriaLite("Interesados", $anterior_object, $object, ModulesEnable::Interesados, $object->getNumeroIdentificacion(), $usuario_id);
+            //****************************************************************************
             return $isObj ? $object : $object->getPrimaryKey();
         } catch (PropelException $ex) {
             $msg_ex = $ex->getMessage();
@@ -280,30 +286,28 @@ class InteresadosPeer extends BaseInteresadosPeer
             $msg_ex = $ex->getMessage();
             return null;
         }
-    }    
+    }
 
 
     public static function smartUpdateInteresado($params, $interesado)
-	{
-		try 
-        {
+    {
+        try {
             $smart_interesado = new Interesados();
-            if(!empty($interesado->getPrimaryKey()))
-            {
+            if (!empty($interesado->getPrimaryKey())) {
                 $smart_interesado = $interesado->copy();
             }
-			//*************************************************************************************
-			$smart_interesado->setUsuarioId($params['usuario_id']);
+            //*************************************************************************************
+            $smart_interesado->setUsuarioId($params['usuario_id']);
             $smart_interesado->setCiudadId(isset($params['ciudad_id']) ? trim($params['ciudad_id']) : null);
             $smart_interesado->setTipoidentificacionId(isset($params['tipoidentificacion_id']) ? trim($params['tipoidentificacion_id']) : null);
             $smart_interesado->setTipogeneroId(isset($params['tipogenero_id']) ? trim($params['tipogenero_id']) : null);
-            
+
 
             $smart_interesado->setPrimerNombre(isset($params['primer_nombre']) ? utf8_encode(trim($params['primer_nombre'])) : null);
             $smart_interesado->setSegundoNombre(isset($params['segundo_nombre']) ? utf8_encode(trim($params['segundo_nombre'])) : null);
             $smart_interesado->setPrimerApellido(isset($params['primer_apellido']) ? utf8_encode(trim($params['primer_apellido'])) : null);
             $smart_interesado->setSegundoApellido(isset($params['segundo_apellido']) ? utf8_encode(trim($params['segundo_apellido'])) : null);
-            
+
             $smart_interesado->setNumeroIdentificacion(isset($params['numero_identificacion']) ? trim($params['numero_identificacion']) : null);
             $smart_interesado->setDireccion(isset($params['direccion']) ? utf8_encode(trim($params['direccion'])) : null);
             $smart_interesado->setCodigoPostal(isset($params['codigo_postal']) ? trim($params['codigo_postal']) : null);
@@ -321,110 +325,114 @@ class InteresadosPeer extends BaseInteresadosPeer
             $smart_interesado->setEsActivo(1);
             $smart_interesado->setVersionLast(isset($params['version_last']) ? trim($params['version_last']) : 1);
             $smart_interesado->setParentinteresadoId(isset($params['parentinteresado_id']) ? trim($params['parentinteresado_id']) : null);
-			$smart_interesado->save();
+            $smart_interesado->save();
             //******************************************************************
 
-            if(!empty($interesado->getPrimaryKey()))
-            {
+            if (!empty($interesado->getPrimaryKey())) {
                 $interesado->setEsActivo(0);
                 $interesado->setVersionLast(0);
                 $interesado->setParentinteresadoId($params['parentinteresado_id']);
                 $interesado->setFechaModificacion(date("Y-m-d G:i:s"));
                 $interesado->save();
                 $interesado_anterior = $interesado;
-            }
-            else
-            {
+            } else {
                 $interesado_anterior = new Interesados();
                 $smart_interesado->setParentinteresadoId($smart_interesado->getPrimaryKey());
-			    $smart_interesado->save();
-
+                $smart_interesado->save();
             }
             //******************************************************************
-			AuditLogPeer::guardarAuditoriaLite(InteresadosPeer::OM_CLASS, $interesado_anterior, $smart_interesado, ModulesEnable::Interesados, $smart_interesado->getNumeroIdentificacion(),$params['usuario_id']);
+            AuditLogPeer::guardarAuditoriaLite(InteresadosPeer::OM_CLASS, $interesado_anterior, $smart_interesado, ModulesEnable::Interesados, $smart_interesado->getNumeroIdentificacion(), $params['usuario_id']);
             //******************************************************************
             return $smart_interesado;
-		} 
-        catch(PropelException $ex)
-		{
-			//$ex->getMessage();
-			return "Error al acceder a los datos del registro";
-		}
-		catch(\Exception $ex)
-		{
-			//$ex->getMessage();
-			return "Error interno interno de la aplicación";
-		}
-        catch(\Throwable $ex)
-		{
+        } catch (PropelException $ex) {
             //$ex->getMessage();
-			return "Error interno del servidor";
-		}
-	}
+            return "Error al acceder a los datos del registro";
+        } catch (\Exception $ex) {
+            //$ex->getMessage();
+            return "Error interno interno de la aplicación";
+        } catch (\Throwable $ex) {
+            //$ex->getMessage();
+            return "Error interno del servidor";
+        }
+    }
 
-    public static function validateInfoNewInteresado(&$info_data,$optfileds = array())
-    {  
-        try{	
-            $msgerror = array();                    
+    public static function validateInfoNewInteresado(&$info_data, $optfileds = array())
+    {
+        try {
+            $msgerror = array();
             //************************************************************************************
-            if(!simad_util::array_check($optfileds,'PRIMER_NOMBRE')){
-                if(!simad_util::array_check($info_data,'PRIMER_NOMBRE')){ $msgerror[] = "El parametro primer nombre del interesado es un campo obligatorio"; }
+            if (!simad_util::array_check($optfileds, 'PRIMER_NOMBRE')) {
+                if (!simad_util::array_check($info_data, 'PRIMER_NOMBRE')) {
+                    $msgerror[] = "El parametro primer nombre del interesado es un campo obligatorio";
+                }
             }
 
-            if(!simad_util::array_check($optfileds,'PRIMER_APELLIDO')){
-                if(!simad_util::array_check($info_data,'PRIMER_APELLIDO')){ $msgerror[] =  "El parametro primer apellido del interesado es un campo obligatorio"; }
+            if (!simad_util::array_check($optfileds, 'PRIMER_APELLIDO')) {
+                if (!simad_util::array_check($info_data, 'PRIMER_APELLIDO')) {
+                    $msgerror[] =  "El parametro primer apellido del interesado es un campo obligatorio";
+                }
             }
 
-            if(!simad_util::array_check($optfileds,'TIPO_IDENTIFICACION')){
+            if (!simad_util::array_check($optfileds, 'TIPO_IDENTIFICACION')) {
                 //if(!simad_util::array_check($info_data,'TIPO_IDENTIFICACION')){ $msgerror[] =  "El parametro tipo de identificación del interesado es un campo obligatorio"; }
             }
 
-            if(!simad_util::array_check($optfileds,'TIPO_GENERO')){
+            if (!simad_util::array_check($optfileds, 'TIPO_GENERO')) {
                 //if(!simad_util::array_check($info_data,'TIPO_GENERO')){ $msgerror[] =  "El parametro tipo genero del interesado es un campo obligatorio"; }
             }
 
-            if(!simad_util::array_check($optfileds,'NUMERO_IDENTIFICACION')){
+            if (!simad_util::array_check($optfileds, 'NUMERO_IDENTIFICACION')) {
                 //if(!simad_util::array_check($info_data,'NUMERO_IDENTIFICACION')){ $msgerror[] =  "El parametro numero de identifiación del interesado es un campo obligatorio"; }
             }
 
-            if(!simad_util::array_check($optfileds,'CIUDAD')){
+            if (!simad_util::array_check($optfileds, 'CIUDAD')) {
                 //if(!simad_util::array_check($info_data,'CIUDAD')){ $msgerror[] =  'La parametro ciudad o municipio del interesado es obligatorio'; }
             }
 
-            if(!simad_util::array_check($optfileds,'CIUDAD_CODIGO')){
-		        if(!simad_util::array_check($info_data,'CIUDAD_CODIGO')){ $msgerror[] = 'El parametro código de ciudad o municipio del interesado es obligatorio'; }
+            if (!simad_util::array_check($optfileds, 'CIUDAD_CODIGO')) {
+                if (!simad_util::array_check($info_data, 'CIUDAD_CODIGO')) {
+                    $msgerror[] = 'El parametro código de ciudad o municipio del interesado es obligatorio';
+                }
             }
             //if(!isset($fields['INTR_INFO_REPRESENTANTE'])){ $msgerror[] =  "El parametro envio informacion del representante legal del interesado es un campo obligatorio"; }
             //************************************************************************************
-            if(!simad_util::array_check($optfileds,'PRIMER_NOMBRE')){
-                if(empty($info_data['PRIMER_NOMBRE'])){ $msgerror[] =  "El primer nombre del interesado es un campo obligatorio"; }
+            if (!simad_util::array_check($optfileds, 'PRIMER_NOMBRE')) {
+                if (empty($info_data['PRIMER_NOMBRE'])) {
+                    $msgerror[] =  "El primer nombre del interesado es un campo obligatorio";
+                }
             }
 
-            if(!simad_util::array_check($optfileds,'PRIMER_APELLIDO')){
-                if(empty($info_data['PRIMER_APELLIDO'])){ $msgerror[] =  "El primer apellido del interesado es un campo obligatorio"; }
+            if (!simad_util::array_check($optfileds, 'PRIMER_APELLIDO')) {
+                if (empty($info_data['PRIMER_APELLIDO'])) {
+                    $msgerror[] =  "El primer apellido del interesado es un campo obligatorio";
+                }
             }
 
-            if(!simad_util::array_check($optfileds,'TIPO_IDENTIFICACION')){
+            if (!simad_util::array_check($optfileds, 'TIPO_IDENTIFICACION')) {
                 //if(empty($info_data['TIPO_IDENTIFICACION'])){ $msgerror[] =  "El tipo de identificacion del interesado es un campo obligatorio"; }
             }
 
-            if(!simad_util::array_check($optfileds,'TIPO_GENERO')){
+            if (!simad_util::array_check($optfileds, 'TIPO_GENERO')) {
                 //if(empty($info_data['TIPO_GENERO'])){ $msgerror[] =  "El tipo genero del interesado es un campo obligatorio"; }
             }
 
-            if(!simad_util::array_check($optfileds,'NUMERO_IDENTIFICACION')){
-                if(empty($info_data['NUMERO_IDENTIFICACION'])){ $msgerror[] =  "El numero de identifiación del interesado es un campo obligatorio"; }
+            if (!simad_util::array_check($optfileds, 'NUMERO_IDENTIFICACION')) {
+                if (empty($info_data['NUMERO_IDENTIFICACION'])) {
+                    $msgerror[] =  "El numero de identifiación del interesado es un campo obligatorio";
+                }
             }
 
-            if(!simad_util::array_check($optfileds,'CIUDAD')){
+            if (!simad_util::array_check($optfileds, 'CIUDAD')) {
                 //if(empty($info_data['CIUDAD'])){ $msgerror[] =  'La ciudad o municipio del interesado es obligatorio'; }
             }
 
-            if(!simad_util::array_check($optfileds,'CIUDAD_CODIGO')){
-		        if(empty($info_data['CIUDAD_CODIGO'])){ $msgerror[] = 'El código de ciudad o municipio del interesado es obligatorio'; }
+            if (!simad_util::array_check($optfileds, 'CIUDAD_CODIGO')) {
+                if (empty($info_data['CIUDAD_CODIGO'])) {
+                    $msgerror[] = 'El código de ciudad o municipio del interesado es obligatorio';
+                }
             }
 
-            if(!simad_util::array_check($optfileds,'EMAIL')){
+            if (!simad_util::array_check($optfileds, 'EMAIL')) {
                 //if(!filter_var($info_data['EMAIL'],FILTER_VALIDATE_EMAIL)){ $msgerror[] = 'El email no es un valor valido'; }
             }
             //if(!empty($fields['INTR_INFO_REPRESENTANTE'])){ $msgerror[] =  "El parametro envio informacion del representante legal del interesado es un campo obligatorio"; }
@@ -432,10 +440,12 @@ class InteresadosPeer extends BaseInteresadosPeer
             $ciudad_codigo = isset($info_data['CIUDAD_CODIGO']) ? trim($info_data['CIUDAD_CODIGO']) : null;
             $ciudad_nombre = isset($info_data['CIUDAD']) ? trim($info_data['CIUDAD']) : null;
             //$ciudad_id = CiudadPeer::getCiudadByNombAndCod($ciudad_nombre,$ciudad_codigo,false);
-			$ciudad_id = CiudadPeer::getCiudadByCod($ciudad_codigo,false);
+            $ciudad_id = CiudadPeer::getCiudadByCod($ciudad_codigo, false);
             $info_data['CIUDAD_ID'] = $ciudad_id;
             //************************************************************************************
-            if(is_null($ciudad_id)){ $msgerror[] = "La ciudad de origen del interesado no fue encontrada en el SGDEA"; }
+            if (is_null($ciudad_id)) {
+                $msgerror[] = "La ciudad de origen del interesado no fue encontrada en el SGDEA";
+            }
             //************************************************************************************
             $allmsg = implode(";", $msgerror);
             //************************************************************************************
