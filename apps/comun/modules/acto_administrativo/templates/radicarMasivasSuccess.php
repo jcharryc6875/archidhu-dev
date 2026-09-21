@@ -225,8 +225,8 @@
 </div>
 
 <!-- Modal 2 (Custom Width)-->
-<div class="modal fade custom-width" id="modal-2" data-backdrop="static" style="margin-top: 120px!important;">
-    <div class="modal-dialog" style="width: 60%;">
+<div class="modal fade custom-width modal-lista-errores" id="modal-2" data-backdrop="static">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
