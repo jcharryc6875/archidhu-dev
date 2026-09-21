@@ -67,7 +67,9 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $listall_valid[] = ComMigmasivoPeer::getDependenciaComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getExpedienteCodComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getTipoDocCodComBatchIsValid($idLote);
-                $listall_valid[] = ComMigmasivoPeer::getInteresadosComBatchIsValid($idLote);
+                //Si el interesado no existe aun, no bloquear el lote cuando los datos
+                //minimos de la plantilla permiten crearlo (se crea en el momento de radicar).
+                $listall_valid[] = ComMigmasivoPeer::getInteresadosComBatchIsValid($idLote,true);
                 $listall_valid[] = ComMigmasivoPeer::getFirmasComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getDestinoInternoComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getTipoServicioComBatchIsValid($idLote);
@@ -1048,7 +1050,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $params = array();
                 $estado_documento = 1;
                 //******************************************************************************
-                //RN-03: si la plantilla trae numero de resolucion, se conserva tal cual y el acto
+                //Si la plantilla trae numero de resolucion, se conserva tal cual y el acto
                 //queda radicado de inmediato (estado 6), sin generar un consecutivo nuevo.
                 $numero_resolucion_externo = trim($row->getNumeroResolucion()) ?: null;
                 if(!empty($numero_resolucion_externo)){
@@ -1093,7 +1095,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $subserie_id = $subserie != null ? $subserie->getPrimaryKey() : null;
                 }
                 //******************************************************************************
-                //RN-03: no permitir radicar dos veces el mismo numero de resolucion en la subserie
+                //No permitir radicar dos veces el mismo numero de resolucion en la subserie
                 if(!empty($numero_resolucion_externo) && ActoAdministrativoPeer::isExistActoByNumResolucion($numero_resolucion_externo,$subserie_id)){
                     $row->setEstadoMigracion('ERROR_RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
@@ -1200,9 +1202,9 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     continue;
                 }
                 //******************************************************************************
-                //RN-01: un interesado por fila; CREAR_INTERESADO define si se busca solo por NUID
+                //Un interesado por fila; CREAR_INTERESADO define si se busca solo por NUID
                 //(y se crea de no existir) o por nombre/apellidos (y se crea de no existir)
-                $interesado_rn01 = InteresadosPeer::findOrCreateInteresadoRN01(
+                $interesado = InteresadosPeer::findOrCreateInteresado(
                     (bool) $row->getCrearInteresado(),
                     trim($row->getTipodocInteresado()),
                     trim($row->getNuidInteresado()),
@@ -1213,14 +1215,14 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     trim($row->getCiudadInteresado()),
                     trim($row->getEmailInteresado())
                 );
-                if($interesado_rn01 == null){
+                if($interesado == null){
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
                     $row->setMensajeInfo("ERROR CON EL INTERESADO");
                     $row->save();
                     continue;
                 }
-                $coll_interesados = array($interesado_rn01);
+                $coll_interesados = array($interesado);
                 //******************************************************************************
                 try{
                     $error_list = false;
@@ -1333,7 +1335,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $origentrans_id = 8;
                     $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id,$tipodocumental_id,$acto_administrativo->getPrimaryKey(),$origentrans_id,$usuario_origen->getPrimaryKey());
                     //**************************************************************************
-                    //RN-02: la firma digital certificada solo se aplica si la fila lo solicita;
+                    //La firma digital certificada solo se aplica si la fila lo solicita;
                     //si no, se conserva el PDF original tal como fue cargado.
                     if($row->getFirmaDigital() && ($acto_administrativo->getEstadoactoadministrativoId() != 1 ) && ($acto_administrativo->getFirmadoDigital() == 0)){
                         $response_firma = $acto_administrativo->signDocumentProcess();

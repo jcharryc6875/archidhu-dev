@@ -906,7 +906,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
 
     /**
      * ActoAdministrativoPeer::isExistActoByNumResolucion()
-     * RN-03: valida que el numero de resolucion informado en la plantilla de radicacion masiva
+     * Valida que el numero de resolucion informado en la plantilla de radicacion masiva
      * no exista ya para la misma subserie (evita radicar dos veces el mismo acto externo).
      * @return bool
      */

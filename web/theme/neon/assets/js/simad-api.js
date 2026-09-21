@@ -814,7 +814,7 @@ jQuery(document).ready(function ($) {
 				$('#' + modal_name + ' .modal-body').html('');
 				var items = '';
 				$.each(response.message, function (i, item) {
-					items += '<li style="word-wrap: break-word;">' + item + '</li>';
+					items += '<li style="word-wrap: break-word;"><strong>' + item + '</strong></li>';
 				});
 				$('#' + modal_name + ' .modal-body').append("<ul>" + items + "</ul>");
 				$.fancybox.open({

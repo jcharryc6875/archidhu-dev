@@ -147,13 +147,13 @@ class InteresadosPeer extends BaseInteresadosPeer
     }
 
     /**
-     * InteresadosPeer::findOrCreateInteresadoRN01()
-     * RN-01 de la radicacion masiva de Actos Administrativos: si $crearInteresado es verdadero
-     * busca EXCLUSIVAMENTE por numero de identificacion; si es falso busca por los 4 campos de
-     * nombre. En ambos casos, si no encuentra coincidencia, crea el interesado con los datos de la fila.
+     * InteresadosPeer::findOrCreateInteresado()
+     * Si $crearInteresado es verdadero busca EXCLUSIVAMENTE por numero de identificacion; si es
+     * falso busca por los 4 campos de nombre. En ambos casos, si no encuentra coincidencia, crea
+     * el interesado con los datos suministrados.
      * @return Interesados|null
      */
-    public static function findOrCreateInteresadoRN01($crearInteresado, $tipoDocInteresado, $nuid, $pnombre, $snombre, $papellido, $sapellido, $ciudadNombre, $email)
+    public static function findOrCreateInteresado($crearInteresado, $tipoDocInteresado, $nuid, $pnombre, $snombre, $papellido, $sapellido, $ciudadCodigo, $email)
     {
         try {
             $nuid = trim($nuid);
@@ -178,7 +178,8 @@ class InteresadosPeer extends BaseInteresadosPeer
                 return $interesado;
             }
             //*******************************************************************************
-            $ciudad = CiudadPeer::getCiudadByNombAndCod(trim($ciudadNombre), null, true);
+            //CIUDAD_INTERESADO en la plantilla trae el codigo DANE, no el nombre.
+            $ciudad = CiudadPeer::getCiudadByNombAndCod(null, trim($ciudadCodigo), true);
             $tipoidentificacion_id = TipoIdentificacionPeer::getTipoIdentificacionPkByName(trim($tipoDocInteresado));
             //*******************************************************************************
             $info_data = array(
