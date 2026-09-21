@@ -820,8 +820,11 @@ jQuery(document).ready(function ($) {
 				$.fancybox.open({
 					href: '#' + modal_name,
 					type: 'inline',
-					autoSize: true,
-					closeClick: false,
+					fitToView: false,
+					width: '50%',
+					height: '50%',
+					autoSize: false,
+
 					helpers: {
 						overlay: { closeClick: false }
 					}
