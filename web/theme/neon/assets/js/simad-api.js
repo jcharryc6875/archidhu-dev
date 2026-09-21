@@ -738,8 +738,8 @@ jQuery(document).ready(function ($) {
 	// Parametros URL, Ancho, Alto
 	$.OpenModalSIMAD = function (url, ancho, alto) {
 		$lastOpener = $(document.activeElement);
-		if (typeof ancho === 'undefined') ancho = 800;
-		if (typeof alto === 'undefined') alto = 600;
+		if (typeof (ancho) === undefined) ancho = 800;
+		if (typeof (alto) === undefined) alto = 600;
 
 		$.fancybox.open({
 			href: url,
