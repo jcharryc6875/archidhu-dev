@@ -1,5 +1,4 @@
 <?php
-// UARIV-202605 (ampliación): modal (fancybox iframe) para configurar el flujo de un acto administrativo.
 $path_theme = sfConfig::get('theme_simad');
 use_helper('Object', 'jQuery');
 ?>

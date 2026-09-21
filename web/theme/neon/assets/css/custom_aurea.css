@@ -1337,6 +1337,12 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
     background: #fff3cd;
     color: #8a6d1d;
 }
+.flujo-order-badge-default {
+    background: #fff;
+    border: 1px dashed #cbd5e0;
+    color: #a0aec0;
+    cursor: help;
+}
 .flujo-avatar {
     width: 30px;
     height: 30px;
@@ -1370,6 +1376,13 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
 }
 .flujo-order-input {
     width: 56px;
+    flex-shrink: 0;
+}
+.flujo-editar-col {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 90px;
     flex-shrink: 0;
 }
 .flujo-no-aplica {

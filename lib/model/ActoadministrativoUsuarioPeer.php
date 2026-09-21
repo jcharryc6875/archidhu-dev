@@ -31,13 +31,65 @@ class ActoadministrativoUsuarioPeer extends BaseActoadministrativoUsuarioPeer
             $c = new Criteria();
             $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$actoadministrativo_id);
             $c->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID,array(1,5,6,7),Criteria::NOT_IN);
-            $c->addAscendingOrderByColumn(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID);
-            return ActoadministrativoUsuarioPeer::doSelect($c);
+            $lista = ActoadministrativoUsuarioPeer::doSelect($c);
+            //*************************************************************************************************
+            // UARIV-202605 (ampliación): si ningún participante tiene todavía un orden manual asignado, se
+            // muestran en el orden en que realmente se ejecutarían por defecto (etapas configuradas, o si no
+            // hay ninguna, el flujo histórico fijo Gestor->Revisor->Firma), en vez del orden crudo por
+            // ROLUSUARIOACTOADMINISTVO_ID (que quedaba al revés: Firma, Revisor, Gestor) — para no sugerirle
+            // al usuario una secuencia que no es la que realmente va a ejecutar el sistema.
+            $hayOrdenManual = false;
+            foreach ($lista as $participante) {
+                if ($participante->getOrdenEjecucion() !== null) { $hayOrdenManual = true; break; }
+            }
+            //*************************************************************************************************
+            if ($hayOrdenManual) {
+                usort($lista, function ($a, $b) {
+                    $ordenA = $a->getOrdenEjecucion();
+                    $ordenB = $b->getOrdenEjecucion();
+                    if ($ordenA === null && $ordenB === null) { return 0; }
+                    if ($ordenA === null) { return 1; }
+                    if ($ordenB === null) { return -1; }
+                    return $ordenA - $ordenB;
+                });
+            } else {
+                $rangoPorRol = ActoadministrativoUsuarioPeer::getRangoDefaultPorRol();
+                usort($lista, function ($a, $b) use ($rangoPorRol) {
+                    $rangoA = isset($rangoPorRol[$a->getRolusuarioactoadministvoId()]) ? $rangoPorRol[$a->getRolusuarioactoadministvoId()] : 999;
+                    $rangoB = isset($rangoPorRol[$b->getRolusuarioactoadministvoId()]) ? $rangoPorRol[$b->getRolusuarioactoadministvoId()] : 999;
+                    return $rangoA - $rangoB;
+                });
+            }
+            //*************************************************************************************************
+            return $lista;
         } catch (PropelException $th) {
             return array();
         } catch (\Exception $th) {
             return array();
         }
+    }
+
+    /**
+     * Rango por defecto (rol -> posición) del flujo cuando ningún participante tiene todavía un orden
+     * manual asignado: usa las etapas activas configuradas si existen; si no hay ninguna, el flujo
+     * histórico fijo Gestor(4) -> Revisor(3) -> Firma(2). UARIV-202605 (ampliación).
+     */
+    private static function getRangoDefaultPorRol()
+    {
+        $etapas = ActoadminEtapaPeer::getEtapasActivasOrdenadas();
+        if (count($etapas)) {
+            $rango = array();
+            $pos = 1;
+            foreach ($etapas as $etapa) {
+                $rolId = $etapa->getRolusuarioactoadministvoId();
+                if (!isset($rango[$rolId])) {
+                    $rango[$rolId] = $pos;
+                    $pos++;
+                }
+            }
+            return $rango;
+        }
+        return array(4 => 1, 3 => 2, 2 => 3);
     }
 
     public static function getFirstUsurioFirma($objectpk_id,$rol_id = 2,$IsIdPk = true)
