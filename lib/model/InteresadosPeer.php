@@ -146,7 +146,61 @@ class InteresadosPeer extends BaseInteresadosPeer
         }
     }
 
-	public static function getHistoricoInteresados($parentInteresado_id) 
+    /**
+     * InteresadosPeer::findOrCreateInteresadoRN01()
+     * RN-01 de la radicacion masiva de Actos Administrativos: si $crearInteresado es verdadero
+     * busca EXCLUSIVAMENTE por numero de identificacion; si es falso busca por los 4 campos de
+     * nombre. En ambos casos, si no encuentra coincidencia, crea el interesado con los datos de la fila.
+     * @return Interesados|null
+     */
+    public static function findOrCreateInteresadoRN01($crearInteresado, $tipoDocInteresado, $nuid, $pnombre, $snombre, $papellido, $sapellido, $ciudadNombre, $email)
+    {
+        try {
+            $nuid = trim($nuid);
+            $pnombre = trim($pnombre);
+            $snombre = trim($snombre);
+            $papellido = trim($papellido);
+            $sapellido = trim($sapellido);
+            //*******************************************************************************
+            $interesado = null;
+            if ($crearInteresado) {
+                $interesado = !empty($nuid) ? InteresadosPeer::getInteresadoByNuid($nuid) : null;
+            } elseif (!empty($pnombre) || !empty($papellido)) {
+                $c = new Criteria();
+                $c->add(InteresadosPeer::PRIMER_NOMBRE, utf8_encode($pnombre));
+                $c->add(InteresadosPeer::PRIMER_APELLIDO, utf8_encode($papellido));
+                if (!empty($snombre)) { $c->add(InteresadosPeer::SEGUNDO_NOMBRE, utf8_encode($snombre)); }
+                if (!empty($sapellido)) { $c->add(InteresadosPeer::SEGUNDO_APELLIDO, utf8_encode($sapellido)); }
+                $interesado = InteresadosPeer::doSelectOne($c);
+            }
+            //*******************************************************************************
+            if ($interesado != null) {
+                return $interesado;
+            }
+            //*******************************************************************************
+            $ciudad = CiudadPeer::getCiudadByNombAndCod(trim($ciudadNombre), null, true);
+            $tipoidentificacion_id = TipoIdentificacionPeer::getTipoIdentificacionPkByName(trim($tipoDocInteresado));
+            //*******************************************************************************
+            $info_data = array(
+                'PRIMER_NOMBRE' => $pnombre,
+                'SEGUNDO_NOMBRE' => $snombre,
+                'PRIMER_APELLIDO' => $papellido,
+                'SEGUNDO_APELLIDO' => $sapellido,
+                'NUMERO_IDENTIFICACION' => $nuid,
+                'TIPO_IDENTIFICACION' => $tipoidentificacion_id,
+                'CIUDAD_ID' => $ciudad != null ? $ciudad->getPrimaryKey() : null,
+                'EMAIL' => trim($email),
+            );
+            //*******************************************************************************
+            return InteresadosPeer::addNewInteresado($info_data, true);
+        } catch (PropelException $ex) {
+            return null;
+        } catch (\Throwable $ex) {
+            return null;
+        }
+    }
+
+	public static function getHistoricoInteresados($parentInteresado_id)
     {  
         try
         {

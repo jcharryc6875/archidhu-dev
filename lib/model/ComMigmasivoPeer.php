@@ -187,6 +187,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $com_migracion->setFechaLlegada($dataRow['FECHA_LLEGADA']);
             $com_migracion->setNuidDestinatario($dataRow['NUID_DESTINARIO']);
             $com_migracion->setSubserieCodigo($dataRow['SUBSERIE_CODIGO']);
+            $com_migracion->setCrearInteresado(isset($dataRow['CREAR_INTERESADO']) ? $dataRow['CREAR_INTERESADO'] : 0);
             $com_migracion->save();
             //******************************************************************************
             return array('isError'=>false,'message'=>'Registro creado','object'=>$com_migracion);
@@ -1047,6 +1048,13 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $params = array();
                 $estado_documento = 1;
                 //******************************************************************************
+                //RN-03: si la plantilla trae numero de resolucion, se conserva tal cual y el acto
+                //queda radicado de inmediato (estado 6), sin generar un consecutivo nuevo.
+                $numero_resolucion_externo = trim($row->getNumeroResolucion()) ?: null;
+                if(!empty($numero_resolucion_externo)){
+                    $estado_documento = 6;
+                }
+                //******************************************************************************
                 $file_source = $outfile_zip.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
                 $file_target = $filedir_target.DIRECTORY_SEPARATOR.$row->getNombreArchivo();
                 if(!file_exists($file_source)){
@@ -1083,6 +1091,15 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 if(trim($row->getSubserieCodigo())){
                     $subserie = SubseriePeer::getSubserieByCodigo(trim($row->getSubserieCodigo()));
                     $subserie_id = $subserie != null ? $subserie->getPrimaryKey() : null;
+                }
+                //******************************************************************************
+                //RN-03: no permitir radicar dos veces el mismo numero de resolucion en la subserie
+                if(!empty($numero_resolucion_externo) && ActoAdministrativoPeer::isExistActoByNumResolucion($numero_resolucion_externo,$subserie_id)){
+                    $row->setEstadoMigracion('ERROR_RADICANDO');
+                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                    $row->setMensajeInfo("NUMERO RESOLUCION YA EXISTE EN LA SUBSERIE");
+                    $row->save();
+                    continue;
                 }
                 //******************************************************************************
                 $plantillacom_id = null;
@@ -1148,6 +1165,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $params['tipoprocesocom_id'] = 1;
                 $params['marco_normativo'] = trim($row->getMarcoNormativo());;
                 $params['id_suborigen'] = trim($row->getIdSuborigen());
+                $params['numero_resolucion'] = $numero_resolucion_externo;
                 //******************************************************************************
                 if (trim($row->getFechaResolucion())){
                     try{
@@ -1163,19 +1181,46 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $params['IsCreateWord'] = true;
                 $params['tipo_integracion'] = "MASIVOEXCEL";
                 //******************************************************************************
-                $interesados_nuids = preg_split("/[;]+/",trim($row->getNuidInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_pnombre = preg_split("/[;]+/",trim($row->getPnombreInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $interesados_papellido = preg_split("/[;]+/",trim($row->getPapellidoInteresado()),-1, PREG_SPLIT_NO_EMPTY);
-                $firmas_nuids = preg_split("/[;]+/",trim($row->getNuidsFirmas()),-1, PREG_SPLIT_NO_EMPTY); 
+                $firmas_nuids = preg_split("/[;]+/",trim($row->getNuidsFirmas()),-1, PREG_SPLIT_NO_EMPTY);
                 //******************************************************************************
-                $coll_interesados = InteresadosPeer::getInteresadosByInfoBatch($interesados_pnombre,$interesados_papellido,$interesados_nuids);
-                if(empty($coll_interesados)){
+                //Validaciones condicionales del documento: NUID interesado obligatorio si se va a
+                //crear el interesado, NUIDS_FIRMAS obligatorio si se requiere firma digital certificada.
+                if($row->getCrearInteresado() && empty(trim($row->getNuidInteresado()))){
+                    $row->setEstadoMigracion('ERROR_RADICANDO');
+                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                    $row->setMensajeInfo("NUID_INTERESADO ES OBLIGATORIO CUANDO CREAR INTERESADO = SI");
+                    $row->save();
+                    continue;
+                }
+                if($row->getFirmaDigital() && empty($firmas_nuids)){
+                    $row->setEstadoMigracion('ERROR_RADICANDO');
+                    $row->setUsuarioId($usuario_origen->getPrimaryKey());
+                    $row->setMensajeInfo("NUIDS_FIRMAS ES OBLIGATORIO CUANDO SE REQUIERE FIRMA DIGITAL CERTIFICADA");
+                    $row->save();
+                    continue;
+                }
+                //******************************************************************************
+                //RN-01: un interesado por fila; CREAR_INTERESADO define si se busca solo por NUID
+                //(y se crea de no existir) o por nombre/apellidos (y se crea de no existir)
+                $interesado_rn01 = InteresadosPeer::findOrCreateInteresadoRN01(
+                    (bool) $row->getCrearInteresado(),
+                    trim($row->getTipodocInteresado()),
+                    trim($row->getNuidInteresado()),
+                    trim($row->getPnombreInteresado()),
+                    trim($row->getSnombreInteresado()),
+                    trim($row->getPapellidoInteresado()),
+                    trim($row->getSapellidoInteresado()),
+                    trim($row->getCiudadInteresado()),
+                    trim($row->getEmailInteresado())
+                );
+                if($interesado_rn01 == null){
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR CON LOS INTERESADOS");
+                    $row->setMensajeInfo("ERROR CON EL INTERESADO");
                     $row->save();
-                    continue; 
+                    continue;
                 }
+                $coll_interesados = array($interesado_rn01);
                 //******************************************************************************
                 try{
                     $error_list = false;
@@ -1265,7 +1310,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                         ActoAdministrativoPeer::addUserByActo($info_udestino);
                     }
                     //******************************************************************************
-                    if($radicar_automativo){
+                    if($radicar_automativo && empty($numero_resolucion_externo)){
                         $estado_documento = 6;
                         $numero_resolucion = $acto_administrativo->getRadicadoFormat();
                         $acto_administrativo->setEstadoactoadministrativoId($estado_documento);
@@ -1288,7 +1333,9 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $origentrans_id = 8;
                     $lexptransfer[] = TransferenciaPeer::addAutoTransfAndContenido($unidaddocumental_id,$tipodocumental_id,$acto_administrativo->getPrimaryKey(),$origentrans_id,$usuario_origen->getPrimaryKey());
                     //**************************************************************************
-                    if(($acto_administrativo->getEstadoactoadministrativoId() != 1 ) && ($acto_administrativo->getFirmadoDigital() == 0)){
+                    //RN-02: la firma digital certificada solo se aplica si la fila lo solicita;
+                    //si no, se conserva el PDF original tal como fue cargado.
+                    if($row->getFirmaDigital() && ($acto_administrativo->getEstadoactoadministrativoId() != 1 ) && ($acto_administrativo->getFirmadoDigital() == 0)){
                         $response_firma = $acto_administrativo->signDocumentProcess();
                         $msg_firma[] = isset($response_firma['message']) ? trim($response_firma['message']) : "Por favor verifique que el documento fue firmado correctamente";
                     }

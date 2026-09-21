@@ -887,6 +887,9 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             $tobject->setEstaentregado(isset($params['esta_entregado']) ? $params['esta_entregado'] : 0);
             $tobject->setSuborigen(isset($params['id_suborigen']) ? trim($params['id_suborigen']) : null);
             $tobject->setMarcoNormativo(isset($params['marco_normativo']) ? trim($params['marco_normativo']) : null);
+            if (!empty($params['numero_resolucion'])) {
+                $tobject->setNumeroResolucion(trim($params['numero_resolucion']));
+            }
             //$tobject->setTipoEnvio(isset($params['tipo_envio']) ? $params['tipo_envio'] : null);
             //$tobject->setTipoMasivo(isset($params['tipo_masivo']) ? (!empty($params['tipo_masivo']) ? 1 : 0) : 0);
             $tobject->save();
@@ -898,6 +901,29 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
 			return null;
         }catch(\Throwable $ex){
 			return null;
+        }
+    }
+
+    /**
+     * ActoAdministrativoPeer::isExistActoByNumResolucion()
+     * RN-03: valida que el numero de resolucion informado en la plantilla de radicacion masiva
+     * no exista ya para la misma subserie (evita radicar dos veces el mismo acto externo).
+     * @return bool
+     */
+    public static function isExistActoByNumResolucion($numero_resolucion, $subserie_id)
+    {
+        try {
+            if (empty($numero_resolucion) || empty($subserie_id)) {
+                return false;
+            }
+            $c = new Criteria();
+            $c->add(ActoAdministrativoPeer::NUMERO_RESOLUCION, trim($numero_resolucion));
+            $c->add(ActoAdministrativoPeer::SUBSERIE_ID, $subserie_id);
+            return ActoAdministrativoPeer::doCount($c) > 0;
+        } catch (PropelException $ex) {
+            return false;
+        } catch (\Throwable $ex) {
+            return false;
         }
     }
 

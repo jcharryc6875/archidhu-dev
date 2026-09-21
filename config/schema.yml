@@ -1664,6 +1664,7 @@ propel:
     FECHA_LLEGADA: { phpName: FechaLlegada, type: VARCHAR, size: '50', required: false }
     SUBSERIE_CODIGO: { phpName: SubserieCodigo, type: VARCHAR, size: '80', required: false }
     NUID_DESTINATARIO: { phpName: NuidDestinatario, type: VARCHAR, size: '50', required: false }
+    CREAR_INTERESADO: { phpName: CrearInteresado, type: TINYINT, size: '1', scale: '0', required: false, defaultValue: '0' }
     _indexes: { PK_COM_MIGMASIVO: [COMMIGMASIVO_ID, COMLOTE_ID] }
   PROV_ADUANA_ENTRADA:
     _attributes: { phpName: ProvAduanaEntrada, idMethod: native }
