@@ -72,7 +72,7 @@ use_helper('jQuery', 'Object');
                         <?php if (count($lista_interesados)) { ?>
                             <li><a data-toggle="tab" href="#listinteresados"><span class="glyphicon glyphicon-list"></span>&nbsp;Lista Interesados</a></li>
                         <?php } ?>
-                        <li><a data-toggle="tab" href="#listbitacora"><span class="glyphicon glyphicon-list"></span>&nbsp;Bitacora Proceso</a></li>
+                        <li><a data-toggle="tab" href="#listbitacora"><span class="glyphicon glyphicon-list"></span>&nbsp;Bitacora Usuarios</a></li>
                         <?php if (count($list_bitacora_flujo)) { ?>
                             <li><a data-toggle="tab" href="#listbitacoraflujo"><span class="glyphicon glyphicon-time"></span>&nbsp;Bitacora del Flujo</a></li>
                         <?php } ?>

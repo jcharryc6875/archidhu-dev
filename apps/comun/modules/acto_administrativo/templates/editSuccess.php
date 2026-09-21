@@ -190,7 +190,9 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
                 </div>
               </div>
               <?php if (!$puedeEditarContenido) { ?>
-                <span class="help-block">No tiene permiso para editar el archivo en esta etapa. Solo puede consultarlo/descargarlo.</span>
+                <div class="alert alert-warning">
+                  <span class="help-block">No tiene permiso para editar el archivo en esta etapa. Solo puede consultarlo/descargarlo.</span>
+                </div>
               <?php } ?>
             </div>
             <?php if (pathinfo($acto_administrativo->getUrlFileWord(), PATHINFO_EXTENSION) == "docx") { ?>

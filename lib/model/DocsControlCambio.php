@@ -109,7 +109,7 @@ class DocsControlCambio extends BaseDocsControlCambio
                 // this should bring better readability but set this to empty array if you do not want it
                 'wordGlues' => [' ', '-'],
                 // change this value to a string as the returned diff if the two input strings are identical
-                'resultForIdenticals' => null,
+                'resultForIdenticals' => '<p style="padding:12px;color:#718096;">No hay diferencias de contenido entre estas dos versiones.</p>',
                 // extra HTML classes added to the DOM of the diff container
                 'wrapperClasses' => ['diff-wrapper'],
                 'diff.render.html.inline' => true,
