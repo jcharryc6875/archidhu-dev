@@ -630,7 +630,7 @@ class acto_administrativoActions extends sfActions
         //*********************************************************************************
         if (strtolower($extension) == 'pdf') {
           $url_viewer = $base_path . '/viewerEx.php?fileview=' . basename($filegenerate);
-          if ($acto_administrativo->getEstadoactoadministrativoId() == 4) {
+          if ($acto_administrativo->getEstadoactoadministrativoId() == 5) {
             $tanulado = "DOCUMENTO ANULADO";
             $fanulado = $acto_administrativo->getFechaAnulacion();
             $pdfTools = new PdfTools();
@@ -1136,8 +1136,16 @@ class acto_administrativoActions extends sfActions
     //*******************************************************************************************
     $elist_msg = ComMigmasivoPeer::getIsValidByIdBatch($idLote, ModulesEnable::ActosAdministrativos);
     //*******************************************************************************************
+    //Advertencia informativa (no bloquea el proceso): firmantes sin firma desatendida en filas
+    //sin numero de resolucion externo quedaran en borrador/enviadas al firmante.
+    $warnings = array();
+    $respFirmaDesatendida = ComMigmasivoPeer::getFirmaDesatendidaBatchIsValid($idLote);
+    if ($respFirmaDesatendida['isError']) {
+      $warnings[] = $respFirmaDesatendida['message'];
+    }
+    //*******************************************************************************************
     $this->getResponse()->setContentType('application/json');
-    $response_info = array('status' => (count($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'comIdLote' => $idLote);
+    $response_info = array('status' => (count($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'warnings' => $warnings, 'comIdLote' => $idLote);
     return $this->renderText(json_encode($response_info));
   }
 
@@ -2685,7 +2693,7 @@ class acto_administrativoActions extends sfActions
       }
       //***********************************************************************************************
       if (!$perm_list_anuladas) {
-        $estado_anulado = 4;
+        $estado_anulado = 5;
         $c->addAnd(ActoadministrativoUsuarioPeer::ESTADOACTOADMINISTRATIVO_ID, $estado_anulado, Criteria::NOT_EQUAL);
       }
     }

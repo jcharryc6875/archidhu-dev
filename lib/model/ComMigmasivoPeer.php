@@ -1042,6 +1042,57 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
     }
 
     /**
+     * ComMigmasivoPeer::getFirmaDesatendidaBatchIsValid()
+     * Advierte (sin bloquear) si algun firmante de las filas sin numero de resolucion externo
+     * no tiene habilitada la firma desatendida: esas filas quedaran en borrador/enviadas al
+     * firmante para radicar manualmente en vez de radicarse automaticamente.
+     * @return mixed array('isError' => true|false, 'message' => 'mensaje informativo')
+     * @param comlote_id mixed id del lote de migracion
+     */
+    public static function getFirmaDesatendidaBatchIsValid($comlote_id)
+    {
+        try {
+            $conexion = Propel::getConnection();
+            $query = "SELECT DISTINCT %s AS STR_FIRMAS FROM %s WHERE %s = '" . $comlote_id . "' AND (%s IS NULL OR %s = '')";
+            $query = sprintf($query, ComMigmasivoPeer::NUIDS_FIRMAS, ComMigmasivoPeer::TABLE_NAME, ComMigmasivoPeer::COMLOTE_ID, ComMigmasivoPeer::NUMERO_RESOLUCION, ComMigmasivoPeer::NUMERO_RESOLUCION);
+            $coll_firmas = array();
+            //******************************************************************************
+            $stmt = $conexion->prepare($query);
+            $stmt->execute();
+            //******************************************************************************
+            foreach ($stmt->fetchAll(PDO::FETCH_BOTH) as $object) {
+                $row_firmas = preg_split("/[;]+/", $object['STR_FIRMAS'], -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($row_firmas as $nuid_firma) {
+                    if (!in_array($nuid_firma, $coll_firmas)) {
+                        $coll_firmas[] = $nuid_firma;
+                    }
+                }
+            }
+            //******************************************************************************
+            if (empty($coll_firmas)) {
+                return array('isError' => false, 'message' => 'No hay firmantes que validar');
+            }
+            //******************************************************************************
+            $c = new Criteria();
+            $c->add(UsuarioPeer::CEDULA, $coll_firmas, Criteria::IN);
+            $usuarios = UsuarioPeer::doSelect($c);
+            $coll_warning = array();
+            foreach ($usuarios as $usuario) {
+                if (empty($usuario->getFirmaDesatendida()) && !in_array(trim($usuario->getCedula()), $coll_warning)) {
+                    $coll_warning[] = trim($usuario->getCedula());
+                }
+            }
+            //******************************************************************************
+            if (count($coll_warning))
+                return array('isError' => true, 'message' => 'El usuario firmante con identificaci&oacute;n ' . implode(", ", $coll_warning) . ' no tiene habilitada la firma desatendida, puede continuar con el proceso pero el registro quedar&aacute; en borrador y se enviar&aacute; al usuario firmante para que se radiquen los registros manualmente');
+            else
+                return array('isError' => false, 'message' => 'Los firmantes tienen la firma desatendida habilitada');
+        } catch (\Throwable $th) {
+            return array('isError' => TRUE, 'message' => 'Error interno del servidor, ' . $th->getMessage());
+        }
+    }
+
+    /**
      * ComMigmasivoPeer::getListComByComLote()
      * funcion para listar los registros de un lote de radicacion masiva
      * @return mixed lista de registros filtrados por un lote especifico
@@ -1238,6 +1289,22 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
         }
         //******************************************************************************
+        //Si no viene numero de resolucion externo, se determina de una vez si todos los
+        //firmantes tienen habilitada la firma desatendida (radicacion automatica); si no,
+        //el acto queda en estado "Enviado Firmas" en lugar de quedar en Borrador.
+        $firmas_nuids = preg_split("/[;]+/", trim($row->getNuidsFirmas()), -1, PREG_SPLIT_NO_EMPTY);
+        $cuser_firmas = CargoUsuarioPeer::getCaUsuariosByNuidsUsers($firmas_nuids);
+        $radicar_automativo = true;
+        foreach ($cuser_firmas as $cuser) {
+            if (empty($cuser->getUsuario()->getFirmaDesatendida())) {
+                $radicar_automativo = false;
+                break;
+            }
+        }
+        if (empty($numero_resolucion_externo) && !$radicar_automativo) {
+            $estado_documento = 4;
+        }
+        //******************************************************************************
         $file_source = $outfile_zip . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
         $file_target = $filedir_target . DIRECTORY_SEPARATOR . $row->getNombreArchivo();
         if (!file_exists($file_source)) {
@@ -1358,8 +1425,6 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
         $params['IsCreateWord'] = true;
         $params['tipo_integracion'] = "MASIVOEXCEL";
         //******************************************************************************
-        $firmas_nuids = preg_split("/[;]+/", trim($row->getNuidsFirmas()), -1, PREG_SPLIT_NO_EMPTY);
-        //******************************************************************************
         //Validaciones condicionales del documento: NUID interesado obligatorio si se va a
         //crear el interesado, NUIDS_FIRMAS obligatorio si se requiere firma digital certificada.
         if ($row->getCrearInteresado() && empty(trim($row->getNuidInteresado()))) {
@@ -1449,12 +1514,14 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $info_uradica['esta_aprobado'] = 1;
             ActoAdministrativoPeer::addUserByActo($info_uradica);
             //**************************************************************************
-            $cuser_firmas = CargoUsuarioPeer::getCaUsuariosByNuidsUsers($firmas_nuids);
-            $radicar_automativo = true;
+            //$cuser_firmas y $radicar_automativo ya se calcularon al inicio de la fila.
             foreach ($cuser_firmas as $cuser) {
                 //firmantes
+                $tiene_firma_desatendida = !empty($cuser->getUsuario()->getFirmaDesatendida());
                 $info_ufirma['pkcom_id'] = $acto_administrativo->getPrimaryKey();
-                $info_ufirma['esta_asignada'] = 0;
+                //Si el firmante no tiene firma desatendida, el proceso le queda asignado a el
+                //(debe radicar manualmente); si la tiene, ya quedo resuelto automaticamente.
+                $info_ufirma['esta_asignada'] = $tiene_firma_desatendida ? 0 : 1;
                 $info_ufirma['estadocom_id'] = $estado_documento;
                 $info_ufirma['usuario_id'] = $cuser->getUsuarioId();
                 $info_ufirma['rol_id'] = 2;
@@ -1462,12 +1529,12 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $info_ufirma['tipoprocesocom_id'] = 5;
                 $info_ufirma['fecha_aprobacion'] = date("Y-m-d G:i:s");
                 $info_ufirma['fecha_lectura'] = date("Y-m-d G:i:s");
-                $info_ufirma['esta_aprobado'] = 0;
+                //Aprobado de una vez si el acto ya trae numero de resolucion externo (la
+                //aprobacion ya se acordo de antemano) o si este firmante tiene la firma
+                //desatendida habilitada (queda radicado automaticamente); de lo contrario
+                //sigue pendiente de su aprobacion manual.
+                $info_ufirma['esta_aprobado'] = (!empty($numero_resolucion_externo) || $tiene_firma_desatendida) ? 1 : 0;
                 ActoAdministrativoPeer::addUserByActo($info_ufirma);
-                //**************************************************************************
-                if (empty($cuser->getUsuario()->getFirmaDesatendida())) {
-                    $radicar_automativo = false;
-                }
             }
             //******************************************************************************
             if (trim($row->getNuidDestinatario())) {

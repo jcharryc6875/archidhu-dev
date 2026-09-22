@@ -98,7 +98,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
                     $url_viewer = $base_web . '/tmp/' . $filename_tmp;
                     if (strtolower($extension) == 'pdf') {
                         $url_viewer = $base_web . '/viewerEx.php?fileview=' . $filename_tmp;
-                        if ($this->getEstadoactoadministrativoId() == 4) {
+                        if ($this->getEstadoactoadministrativoId() == 5) {
                             $tanulado = "DOCUMENTO ANULADO";
                             $fanulado = $this->getFechaDeAnulacion();
                             $pdfTools = new PdfTools();

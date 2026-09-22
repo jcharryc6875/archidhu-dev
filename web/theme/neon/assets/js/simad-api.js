@@ -808,6 +808,11 @@ jQuery(document).ready(function ($) {
 			if (response.status == 200) {
 				$(".next").removeClass("disabled");
 				toastr.success('Todos los datos son validos, haga clic en el boton siguiente para continuar');
+				if (response.warnings && response.warnings.length) {
+					$.each(response.warnings, function (i, item) {
+						toastr.warning(item);
+					});
+				}
 				$("#comIdLote").val(response.comIdLote);
 				aelement.remove();
 			} else {
