@@ -1520,7 +1520,16 @@
 				'ISERROR' => true,
 				'MSGERROR' => $ex->getMessage()
 			);
-		}catch(Exception $ex){
+		}catch(\Exception $ex){
+			$response_data = array ( 'CONSECUTIVO_ID' => 0,
+				'RADICADO' => 0,
+				'FECHA_RADICACION' => null,
+				'FECHA_VENCIMIENTO' => null,
+				'FECHA_TRANSACCION' => date("Y-m-d G:i:s"),
+				'ISERROR' => true,
+				'MSGERROR' => $ex->getMessage()
+			);
+		}catch(\Throwable $ex){
 			$response_data = array ( 'CONSECUTIVO_ID' => 0,
 				'RADICADO' => 0,
 				'FECHA_RADICACION' => null,
@@ -1617,24 +1626,17 @@
 			//***************************************************************************************************************
 			$object_list = $EntComEnviada['FIRMAS'];
 			$cuser_firma = array();
-			foreach($object_list as $ufirma_list)
-			{
-				if(is_array($ufirma_list))
-				{
-					if(is_array($ufirma_list['NUID_FIRMA']))
-					{
-						foreach($ufirma_list['NUID_FIRMA'] as $xufirma)
-						{
+			foreach($object_list as $ufirma_list){
+				if(is_array($ufirma_list)){
+					if(is_array($ufirma_list['NUID_FIRMA'])){
+						foreach($ufirma_list['NUID_FIRMA'] as $xufirma){
 							$var_ccfirma = !empty($xufirma) ? trim($xufirma) : -1;
 							if(empty($var_ccfirma)) { continue; }
 							$usuario_firma = CargoUsuarioPeer::getCargoUsuarioByNuidUser($var_ccfirma,true);
 							//***************************************************************************************************
-							if($usuario_firma == null)
-							{
+							if($usuario_firma == null){
 								return responseErrorData('El usuario con cedula '.$var_ccfirma.', que firma el oficio no se encontro en el SGDEA');
-							}
-							else
-							{
+							}else{
 								$cuser_firma[] = $usuario_firma;
 								$nuid_firma = $var_ccfirma;
 							}
@@ -1644,46 +1646,33 @@
 						if(empty($var_ccfirma)) { continue; }
 						$usuario_firma = CargoUsuarioPeer::getCargoUsuarioByNuidUser($var_ccfirma,true);
 						//***************************************************************************************************
-						if($usuario_firma == null)
-						{
+						if($usuario_firma == null){
 							return responseErrorData('El usuario con cedula '.$var_ccfirma.', que firma el oficio no se encontro en el SGDEA');
-						}
-						else
-						{
+						}else{
 							$cuser_firma[] = $usuario_firma;
 							$nuid_firma = $var_ccfirma;
 						}
 					}
-				}
-				elseif(trim($ufirma_list))
-				{
+				}elseif(trim($ufirma_list)){
 					$usuario_firma = CargoUsuarioPeer::getCargoUsuarioByNuidUser(trim($ufirma_list),true);
 					$nuid_firma = trim($ufirma_list);
-				}
-				else
-				{
+				}else{
 					$usuario_firma = null;
 					$nuid_firma = "(unidefined)";
 				}
 				//***********************************************************************************************************
-				if($usuario_firma == null)
-				{
+				if($usuario_firma == null){
 					return responseErrorData('El usuario con cedula '.$nuid_firma.', que firma el oficio no se encontro en el SGDEA');
-				}
-				else
-				{
+				}else{
 					$cuser_firma[] = $usuario_firma;
 				}
 			}
 			$cuser_firma = array_unique($cuser_firma);
 			//***************************************************************************************************************
 			$comlist_interesados = array();$laddnew_interesados = array();$interesados_nuids = array();
-			foreach ($EntInteresadoOfList as $info_list) 
-			{
-				if(simad_util::array_check($info_list,'PRIMER_NOMBRE') && simad_util::array_check($info_list,'PRIMER_APELLIDO') && simad_util::array_check($info_list,'NUMERO_IDENTIFICACION'))
-				{
-					if(!trim($info_list['NUMERO_IDENTIFICACION']))
-					{
+			foreach ($EntInteresadoOfList as $info_list) {
+				if(simad_util::array_check($info_list,'PRIMER_NOMBRE') && simad_util::array_check($info_list,'PRIMER_APELLIDO') && simad_util::array_check($info_list,'NUMERO_IDENTIFICACION')){
+					if(!trim($info_list['NUMERO_IDENTIFICACION'])){
 						return responseErrorData('El numero de identificación del interesado no es valido');
 						exit;
 					}
@@ -1691,64 +1680,48 @@
 					$interesados_nuids[] = trim($info_list['NUMERO_IDENTIFICACION']);
 					//********************************************************************************************************
 					$interesado_id = InteresadosPeer::existsIntByNameAndNuid($info_list['PRIMER_NOMBRE'],$info_list['PRIMER_APELLIDO'],$info_list['NUMERO_IDENTIFICACION']);
-					if($interesado_id != null)
-					{
+					if($interesado_id != null){
 						$comlist_interesados[] = $interesado_id;
-					}
-					elseif(simad_util::array_check($info_list,'TIPO_IDENTIFICACION'))
-					{
+					}elseif(simad_util::array_check($info_list,'TIPO_IDENTIFICACION')){
 						$tipouid_id = TipoIdentificacionPeer::getTipoIdentificacionPkBySigla(trim($info_list['TIPO_IDENTIFICACION']));
-						if($tipouid_id == null)
-						{
+						if($tipouid_id == null){
 							return responseErrorData('El tipo de identificación del interesado no es un valor valido');
 						}
 						//****************************************************************************************************
 						$info_list['TIPO_IDENTIFICACION'] = $tipouid_id;
 						$isValidIntInfo = InteresadosPeer::validateInfoNewInteresado($info_list);
-						if($isValidIntInfo['IsValid'] == true)
-						{
+						if($isValidIntInfo['IsValid'] == true){
 							$laddnew_interesados[] = $info_list;
-						}
-						else
-						{
+						}else{
 							return responseErrorData($isValidIntInfo['MsgError']);
 							exit;
 						}
-					}
-					else
-					{
+					}else{
 						$info_list['TIPO_IDENTIFICACION'] = 5;
 						$isValidIntInfo = InteresadosPeer::validateInfoNewInteresado($info_list);
-						if($isValidIntInfo['IsValid'] == true)
-						{
+						if($isValidIntInfo['IsValid'] == true){
 							$laddnew_interesados[] = $info_list;
-						}
-						else
-						{
+						}else{
 							return responseErrorData($isValidIntInfo['MsgError']);
 							exit;
 						}
 						//return responseErrorData('El tipo de identificación del interesado es obligatorio');
 						//exit;
 					}
-				}
-				else
-				{
+				}else{
 					return responseErrorData('El nombre o numero de identificación del interesado no es valido');
 					exit;
 				}
 			}
 			//***************************************************************************************************************
-			if(count($comlist_interesados) <= 0 && count($laddnew_interesados) <= 0)
-			{ return responseErrorData('Debe enviar como minimo un interesado'); }
+			if(count($comlist_interesados) <= 0 && count($laddnew_interesados) <= 0){ return responseErrorData('Debe enviar como minimo un interesado'); }
 			//***************************************************************************************************************
 			$cuser_gestor = CargoUsuarioPeer::getCargoUsuarioByNuidUser(trim($EntComEnviada['NUID_GESTOR']),true);
 			//***************************************************************************************************************			
 			$cuser_origen = $usuario_creador != null ? $usuario_creador : CargoUsuarioPeer::getCargoUsuarioByNuidUser($uiduser_origen,true);
 			$regional_origen = isset($EntComEnviada['PUNTO_RADICACION']) ? RegionalPeer::getRegionalByName(trim($EntComEnviada['PUNTO_RADICACION'])) : null;
 			//***************************************************************************************************************
-			if(empty($cuser_gestor) || is_null($cuser_gestor))
-			{
+			if(empty($cuser_gestor) || is_null($cuser_gestor)){
 				$cuser_gestor = $cuser_firma[0];
 			}
 			//***************************************************************************************************************
@@ -1759,24 +1732,25 @@
 			$entrada_externa = isset($EntComEnviada['ENTRADA_EXTERNA']) ? trim($EntComEnviada['ENTRADA_EXTERNA']) : null;
 			$observaciones = isset($EntComEnviada['OBSERVACIONES_ENVIO']) ? (trim($EntComEnviada['OBSERVACIONES_ENVIO'])) : null;
 			//***************************************************************************************************************
-			if(count($cuser_firma) <= 0)
-			{ return responseErrorData('El usuario que firma el oficio es obligatorio o no se encontro en el SGDEA'); }
-			//if($cuser_origen == null){ responseErrorData('El usuario que radica el oficio es obligatorio o no se encontro en el SGDEA'); }
+			if(count($cuser_firma) <= 0){ return responseErrorData('El usuario que firma el oficio es obligatorio o no se encontro en el SGDEA'); }
 			//***************************************************************************************************************
-			if(empty($cuser_gestor) || is_null($cuser_gestor))
-			{
+			$dependencia_codigo = isset($EntComEnviada['CODIGO_DEPENDENCIA']) ? trim($EntComEnviada['CODIGO_DEPENDENCIA']) : null;
+			$dependencia_destinopk = $cuser_firma[0]->getUsuario()->getDependenciaId();
+			if(!empty($dependencia_codigo)){
+				$dependencia_com = !empty(trim($dependencia_codigo)) ? DependenciaPeer::getDependenciaByCodigo($dependencia_codigo) : null;
+				if($dependencia_com != null){
+					$dependencia_destinopk = $dependencia_com->getPrimaryKey();
+				}
+			}
+			//***************************************************************************************************************
+			if(empty($cuser_gestor) || is_null($cuser_gestor)){
 				$msg_text = 'El usuario gestor del oficio esta inactivo o no se encuentra registrado en el SGDEA';
 				$user_info = CargoUsuarioPeer::getCargoUsuarioByNuidUserEx(trim($EntComEnviada['NUID_GESTOR']),true);
-				if($user_info['error'] == 200)
-				{
+				if($user_info['error'] == 200){
 					$msg_text = 'Ocurrio un error con el usuario gestor del oficio en el SGDEA';
-				}
-				elseif($user_info['error'] == 400)
-				{
+				}elseif($user_info['error'] == 400){
 					$msg_text = sprintf('Ocurrio un error interno en el SGDEA(%s => %s)',$user_info['message'],$user_info['info']);
-				}
-				elseif($user_info['error'] == 401)
-				{
+				}elseif($user_info['error'] == 401){
 					$cusuario_gestor = $user_info['object'];
 					$msg_text = sprintf('El usuario gestor(%s) del oficio esta (%s) en el SGDEA',$cusuario_gestor->getUsuario()->getFullNombre(),$user_info['info']);
 				}
@@ -1792,19 +1766,14 @@
 			if($tipo_envio == null){ return responseErrorData('El tipo de envio es un campo obligatorio'); }
 			if($filename_source == null ){ return responseErrorData('El nombre del archivo es un campo obligatorio'); }
 			//***************************************************************************************************************
-			$IsEntadaExterna = false;
-			if(!empty($radicado_entrada))
-			{
+			$IsEntradaExterna = false;
+			if(!empty($radicado_entrada)){
 				$com_recibida = ComRecibidaPeer::getComObjectByRadicado($radicado_entrada);
 				if($com_recibida == null ){ return responseErrorData('El radicado de entrada no existe en el SGDEA'); }
-			}
-			elseif(!empty($entrada_externa))
-			{
-				$IsEntadaExterna = true;
+			}elseif(!empty($entrada_externa)){
+				$IsEntradaExterna = true;
 				$observaciones = $observaciones ? sprintf("%s, Radicado Origen => %s",$observaciones,$entrada_externa) :  sprintf("Radicado Origen => %s",$entrada_externa);
-			}
-			else
-			{
+			}else{
 				return responseErrorData('El radicado de entrada no existe en el SGDEA');
 			}
 			//***************************************************************************************************************
@@ -1823,20 +1792,17 @@
 			//$mimetypes = array("pdf","doc", "docx");
 			$mimetypes = array("pdf");
 			$extension  = strtolower($info_file->getExtension());
-			if(!in_array($extension,$mimetypes))
-			{
+			if(!in_array($extension,$mimetypes)){
 				unlink($fullpath);
 				return responseErrorData('El formato '.$extension.' del archivo no es valido'); 
 			}
 			//***************************************************************************************************************
-			if($regional_origen == null)
-			{
+			if($regional_origen == null){
 				$regional_origen = RegionalPeer::retrieveByPk($cuser_firma[0]->getUsuario()->getRegionalId());
 			}
 			//***************************************************************************************************************
 			$addRemitente = false;$directorio_exteno = null;
-			if(count($EntRemitente))
-			{
+			if(count($EntRemitente)){
 				$nuid_remitente = isset($EntComEnviada['NUID']) ? trim($EntComEnviada['NUID']) : null;
 				if($nuid_remitente != null){
 					$directorio_exteno = DirectorioExternoPeer::existsDirectorioExterno($EntRemitente);
@@ -1849,9 +1815,9 @@
 			$folios = isset($EntComEnviada['FOLIOS']) ? trim($EntComEnviada['FOLIOS']) : 1;
 			//***************************************************************************************************************
 			$params['regional_id'] = $regional_origen->getPrimaryKey();
-			$params['dependencia_id'] = $cuser_firma[0]->getUsuario()->getDependenciaId();
+			$params['dependencia_id'] = $dependencia_destinopk;
 			$params['estadocomenviada_id'] = $estado_enviada;			
-			$params['ciudad_id'] = $cuser_firma[0]->getUsuario()->getRegional()->getCiudadId();//$ciudad->getPrimaryKey();
+			$params['ciudad_id'] = $cuser_firma[0]->getUsuario()->getRegional()->getCiudadId();
 			$params['periodo_id'] = date("Y");
 			$params['asunto'] = isset($EntComEnviada['ASUNTO']) ? (trim($EntComEnviada['ASUNTO'])) : null;
 			$params['folios'] = is_int($folios) ? $folios : 1;
@@ -1869,8 +1835,7 @@
 			$params['IsCreateWord'] = true;
 			$params['numero_resolucion'] = isset($EntComEnviada['NUMERO_RESOLUCION']) ? trim($EntComEnviada['NUMERO_RESOLUCION']) : null;
 			//***************************************************************************************************************
-			if (isset($EntComEnviada['FECHA_RESOLUCION']))
-			{
+			if (isset($EntComEnviada['FECHA_RESOLUCION'])){
 				try{
 					$date = new DateTime($EntComEnviada['FECHA_RESOLUCION']);
 					$params['fecha_resolucion'] = $date->format('Y-m-d');
@@ -1890,8 +1855,7 @@
 				}
 			}
 			//***************************************************************************************************************
-			if(!empty($params['numero_resolucion']))
-			{
+			if(!empty($params['numero_resolucion'])){
 				$existsComByResol = ComEnviadaPeer::isExistComByNumResolucion($params['numero_resolucion'],$interesados_nuids,null,false);
 				if($existsComByResol || !empty($existsComByResol)){
 					return responseErrorData('No fue posible radicar la comunicación, existen radicados asociados al numero de resolución y el interesado en el SGDEA, numeros de radicado ('.$existsComByResol.')');
@@ -1904,13 +1868,11 @@
 			if($com_enviada == null){ return responseErrorData('Error interno del servidor SGDEA'); }
 			//***************************************************************************************************************
 			$comlist_interesados = array_unique($comlist_interesados);
-			foreach ($comlist_interesados as $interesado_item) 
-			{
+			foreach ($comlist_interesados as $interesado_item) {
 				EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(),$interesado_item);
 			}
 			//***************************************************************************************************************
-			if(!$IsEntadaExterna && $com_recibida != null)
-			{
+			if(!$IsEntradaExterna && $com_recibida != null){
 				foreach ($com_recibida->getComrecibidaInteresadoss() as $interesado_origen) {
 					$isAdded = EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(),$interesado_origen->getInteresadoId());
 					if($isAdded){ $comlist_interesados[] = $interesado_origen->getInteresadoId(); }
@@ -1949,8 +1911,8 @@
 				$com_enviada->save();
 				//***********************************************************************************************************
 				if($wslog != null){
-					$wslog->setTipoOperacion("Consumen Servicio web SGDEA => ".$radicado);
-					$wslog->setMensaje("Ejecuta Exitoso Genera Radicado");
+					$wslog->setTipoOperacion("Consumen servicio web SGDEA => ".$radicado);
+					$wslog->setMensaje("Ejecuta exitoso genera radicado");
 					$wslog->save();
 				}
 				//***********************************************************************************************************
@@ -1973,13 +1935,11 @@
 				$msg_info[] = "No se genero radicado automatico, alguno de los usuarios firmantes no tienen la firma desatendida habilitada, se debe radicar de forma manual ingresando al SGDEA";
 			}
 			//***************************************************************************************************************
-			if($com_enviada->getTipoEnvio() == 4 && ($com_enviada->getEstadocomenviadaId() != 1 ))
-			{
+			if($com_enviada->getTipoEnvio() == 4 && ($com_enviada->getEstadocomenviadaId() != 1)){
 				$tiposervicio_id = TipoServicioPeer::getTipoServicioByTipoEnvioIntegra($com_enviada->getTipoEnvio());
 				$response_servicio = $com_enviada->addServicioByCom($cuser_gestor->getUsuarioId(),$tiposervicio_id,$comlist_interesados,$directorioexteno_id);
 				//***********************************************************************************************************
-				if(!$response_servicio['isError'])
-				{
+				if(!$response_servicio['isError']){
 					$servicio = $response_servicio['object'];
 					$com_enviada->setServicioId($servicio->getPrimaryKey());
 					$com_enviada->setEstadocomenviadaId(6);
@@ -1987,13 +1947,23 @@
 					//*******************************************************************************************************
 					EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey());
 					//*******************************************************************************************************
+					if(count($msg_info)){
+						ServicioPeer::insertBitacoraServicio(
+							$servicio->getPrimaryKey(),
+							$servicio->getServicioestadoId(),
+							$servicio->getUsuarioId(),
+							$servicio->getUsuarioId(), 
+							$msg_info[0]
+						);
+					}
+					//*******************************************************************************************************
 					$msg_info[] = sprintf('Solicitud de servicio creada con radicado %s', $servicio->getRadicado());
-				}
-				else
-				{
+				}else{
 					$msg_info[] = isset($response_servicio['message']) ? trim($response_servicio['message']) : "Error al crear la solicitud de servicio";
 				}
 			}
+			//****************************************************************************************************
+			AuditLogPeer::guardarAuditoriaLite("ComEnviada",$com_enviada_anterior,$com_enviada,ModulesEnable::ComEnviada,$com_enviada->getRadicado(),$cuser_origen->getPrimaryKey());
 			//***************************************************************************************************************
 			$response_data = array ( 'CONSECUTIVO_ID' => $com_enviada->getPrimaryKey(),
 					'RADICADO' => $com_enviada->getRadicado(),
@@ -2002,9 +1972,7 @@
 					'ISERROR' =>  false,
 					'MSGERROR' => implode(", ",$msg_info)
 			);
-		}
-		catch(SoapFault $ex)
-		{
+		}catch(SoapFault $ex){
 			$response_data = array ( 'CONSECUTIVO_ID' => null,
 					'RADICADO' => null,
 					'FECHA_CREACION' => null,
@@ -2021,8 +1989,6 @@
 					'MSGERROR' => $ex->getMessage()
 			);
 	  	}
-		//*******************************************************************************************************************
-		//return array('ComRecibidaInfoEnt' =>$response_data);
 		return $response_data;
 	}
 
@@ -2031,7 +1997,6 @@
 		$response_data = array ();
 		$fecha_transaccion = date('Y-m-d G:i:s');
 		//*******************************************************************************************************************
-		//file_put_contents(sfConfig::get("sf_log_dir").DIRECTORY_SEPARATOR."AddRadicadoSalidaOferta.log", file_get_contents("php://input"));
 		$infoxml = file_get_contents("php://input");
 		$util_simad = new simad_util();
 		//*******************************************************************************************************************
@@ -2039,7 +2004,6 @@
 			//$filedir_target = sfConfig::get("sf_web_dir").DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR;
 			$dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto().'uploads');
 			$filedir_target = simad_util::createPath($dir_raiz.DIRECTORY_SEPARATOR.date("Ymd")).DIRECTORY_SEPARATOR;
-			//$logname = sfConfig::get("sf_log_dir").DIRECTORY_SEPARATOR.'request_timed.log';
 			//***************************************************************************************************************
 			$usuario_ws = UsuarioPeer::autenticateUserWs($EntSecurity);
 			if($usuario_ws['isError']){
@@ -2182,8 +2146,16 @@
 			if(count($cuser_firma) <= 0){ return responseErrorData('El usuario que firma el oficio es obligatorio o no se encontro en el SGDEA'); }
 			//if($cuser_origen == null){ responseErrorData('El usuario que radica el oficio es obligatorio o no se encontro en el SGDEA'); }
 			//***************************************************************************************************************
-			if(empty($cuser_gestor) || is_null($cuser_gestor))
-			{
+			$dependencia_codigo = isset($EntComEnviada['CODIGO_DEPENDENCIA']) ? trim($EntComEnviada['CODIGO_DEPENDENCIA']) : null;
+			$dependencia_destinopk = $cuser_firma[0]->getUsuario()->getDependenciaId();
+			if(!empty($dependencia_codigo)){
+				$dependencia_com = !empty(trim($dependencia_codigo)) ? DependenciaPeer::getDependenciaByCodigo($dependencia_codigo) : null;
+				if($dependencia_com != null){
+					$dependencia_destinopk = $dependencia_com->getPrimaryKey();
+				}
+			}
+			//***************************************************************************************************************
+			if(empty($cuser_gestor) || is_null($cuser_gestor)){
 				$msg_text = 'El usuario gestor del oficio esta inactivo o no se encuentra registrado en el SGDEA';
 				$user_info = CargoUsuarioPeer::getCargoUsuarioByNuidUserEx(trim($EntComEnviada['NUID_GESTOR']),true);
 				if($user_info['error'] == 200){
@@ -2219,7 +2191,6 @@
 			if(!$file_valid){ return responseErrorData('El formato del archivo no esta permitido'); }
 			//***************************************************************************************************************
 			$info_file = new SplFileInfo($fullpath);
-			//$mimetypes = array("pdf","doc", "docx");
 			$mimetypes = array("pdf");
 			$extension  = strtolower($info_file->getExtension());
 			if(!in_array($extension,$mimetypes)){
@@ -2244,9 +2215,9 @@
 			$directorioexteno_id = !empty($directorio_exteno) ? $directorio_exteno->getPrimaryKey() : null;
 			//***************************************************************************************************************
 			$params['regional_id'] = $regional_origen->getPrimaryKey();
-			$params['dependencia_id'] = $cuser_firma[0]->getUsuario()->getDependenciaId();
+			$params['dependencia_id'] = $dependencia_destinopk;
 			$params['estadocomenviada_id'] = $estado_enviada;			
-			$params['ciudad_id'] = $cuser_firma[0]->getUsuario()->getRegional()->getCiudadId();//$ciudad->getPrimaryKey();
+			$params['ciudad_id'] = $cuser_firma[0]->getUsuario()->getRegional()->getCiudadId();
 			$params['periodo_id'] = $periodo_id;
 			$params['asunto'] = $asunto;
 			$params['folios'] = isset($EntComEnviada['FOLIOS']) ? trim($EntComEnviada['FOLIOS']) : 0;
@@ -2281,8 +2252,7 @@
 			$params['UrlFileWord'] = $fullpath;
 			$params['IsCreateWord'] = true;
 			//***************************************************************************************************************
-			foreach ($laddnew_interesados as $newitem) 
-			{
+			foreach ($laddnew_interesados as $newitem) {
 				$newitem['USUARIO_ID'] = $cuser_origen->getUsuarioId();
 				$interesado_id = InteresadosPeer::addNewInteresado($newitem);
 				if($interesado_id == null){ 
@@ -2350,7 +2320,7 @@
 				$wslog->save();
 			}
 			//***************************************************************************************************************
-			if($com_enviada->getTipoEnvio() == 4){
+			if($com_enviada->getTipoEnvio() == 4 && ($com_enviada->getEstadocomenviadaId() != 1)){
 				$tiposervicio_id = TipoServicioPeer::getTipoServicioByTipoEnvioIntegra($com_enviada->getTipoEnvio());
 				$response_servicio = $com_enviada->addServicioByCom($cuser_gestor->getUsuarioId(),$tiposervicio_id,$comlist_interesados,$directorioexteno_id);
 				//***********************************************************************************************************
@@ -2361,6 +2331,16 @@
 					$com_enviada->save();
 					//*******************************************************************************************************
 					EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey());
+					//*******************************************************************************************************
+					if(count($msg_info)){
+						ServicioPeer::insertBitacoraServicio(
+							$servicio->getPrimaryKey(),
+							$servicio->getServicioestadoId(),
+							$servicio->getUsuarioId(),
+							$servicio->getUsuarioId(), 
+							$msg_info[0]
+						);
+					}
 					//*******************************************************************************************************
 					$msg_info[] = sprintf('Solicitud de servicio creada con radicado %s', $servicio->getRadicado());
 				}else{
@@ -3271,11 +3251,9 @@
 			$usuario_creador = $usuario_ws['object'];
 			$wslog = WebserviceLogPeer::addLogWs("AddAttachDocumento",$infoxml,null,1,"Consumen Servicio web SGDEA","Ejecuta Exitoso",$usuario_creador->getPrimaryKey());
 			//***************************************************************************************************************
-			$params = array();			
-			
+			$params = array();
 			$adju_b64 = isset($EntAttachDocument['ARCHIVO_DATA']) ? trim($EntAttachDocument['ARCHIVO_DATA']) : null;
 			$filename = isset($EntAttachDocument['ARCHIVO_NOMBRE']) ? utf8_encode(trim($EntAttachDocument['ARCHIVO_NOMBRE'])) : null;
-
 			$radicado_com = isset($EntAttachDocument['RADICADO_COMUNICACION']) ? trim($EntAttachDocument['RADICADO_COMUNICACION']) : null;
 			$consecutivo_com = isset($EntAttachDocument['CONSECUTIVO_COMUNICACION']) ? trim($EntAttachDocument['CONSECUTIVO_COMUNICACION']) : null;
 			$tipo_consecutivo = isset($EntAttachDocument['TIPO_CONSECUTIVO']) ? trim($EntAttachDocument['TIPO_CONSECUTIVO']) : null;
@@ -3462,8 +3440,7 @@
 			if(empty($tipo_consecutivo)){ return responseErrorAttachment('El tipo de consecutivo es obligatorio'); }
 			//***************************************************************************************************************
 			$isErrorCom = false;$consecutivo_id = 0;$radicado="";
-			switch ($tipo_consecutivo) 
-			{
+			switch ($tipo_consecutivo) {
 				case 1://enviadas
 					$com_enviada =  ComEnviadaPeer::getObjectComByRadicadoOrId($radicado_com);
 					if($com_enviada == null){ $isErrorCom = true; break; }
@@ -3555,7 +3532,7 @@
 		try{
 			$usuario_ws = UsuarioPeer::autenticateUserWs($EntSecurity);
 			if($usuario_ws['isError']){
-				return array ('FECHA_TRANSACCION' => $fecha_transaccion,'ISERROR' =>  false,'MSG_INFO' => $usuario_ws['message']);
+				return array ('FECHA_TRANSACCION' => $fecha_transaccion,'ISERROR' =>  true,'MSG_INFO' => $usuario_ws['message']);
 			}
 			//***************************************************************************************************************
 			$com_infodata =  array();

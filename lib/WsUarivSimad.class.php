@@ -17,7 +17,6 @@ sfContext::createInstance($configuration);
 $databaseManager = new sfDatabaseManager($configuration);
 $databaseManager->loadConfiguration();
 //**********************************************************************************************
-
 class WsSimadUariv
 {
 	const MAX_FILE_SIZE_MESSAGE = 18999999;//19MB
@@ -28,7 +27,6 @@ class WsSimadUariv
     const SERVICE_USER = "usrGestorUARIV";
     const SERVICE_PASSW = "csgduplaialv16";
     const SERVICE_APPUID = 0;
-	
 	const CONTEXT_SOAP = array('http' => array('user_agent' => 'PHPSoapClient'));
 	const CONTEXT_SOAP2 = array('http' => array( 'user_agent' => 'PHPSoapClient'),'ssl' => array('verify_peer' => false,'verify_peer_name' => false, 'allow_self_signed' => true));
     
@@ -148,11 +146,12 @@ class WsSimadUariv
 	public static function getCriteriaBasic($dependencia_id = 0, $isNullOrZero = false, $fecha_inicial = null, $ndias = 1, $max_rows = 800)
     {
 		try{
-			$fecha_actual = date("Y-m-d");
+			$fecha_last = date("Y-m-d");
 			//***************************************************************************************************************
 			$fecha_actual = new DateTime(); 
 			$fecha_actual->modify("-$ndias days");
 			$new_fecha = $fecha_actual->format('Y-m-d');
+			$fecha_init = null;
 			//***************************************************************************************************************
 			if(!empty($fecha_inicial)){
 				$dt = new DateTime($fecha_inicial); 
@@ -172,32 +171,162 @@ class WsSimadUariv
 				$c1->add(ComRecibidaPeer::RESPTA_INTEGRACION,null,Criteria::ISNULL);
 			}
 			//***************************************************************************************************************
+			$c1->add(ComRecibidaPeer::RADICADO, null, Criteria::ISNOTNULL);
 			$c1->add(ComRecibidaPeer::DEPENDENCIA_ID,$dependencia_id);
-			$c1->addDescendingOrderByColumn(ComRecibidaPeer::FECHA_CREACION);
+			$c1->add(ComRecibidaPeer::IS_LOCKED, 0);
+			$c1->add(ComRecibidaPeer::ESTADODIGITALIZACION_ID, 2);
+			$c1->add(ComRecibidaPeer::ESTADOCOMRECIBIDA_ID, array(13, 14), Criteria::NOT_IN);
+			$c1->addAscendingOrderByColumn(ComRecibidaPeer::FECHA_CREACION);
 			//***************************************************************************************************************
 			if(empty($fecha_init)){
 				$c1->add(ComRecibidaPeer::FECHA_CREACION,$new_fecha.' 00:00:00',Criteria::GREATER_EQUAL);
-				$c1->addAnd(ComRecibidaPeer::FECHA_CREACION,$new_fecha.' 23:59:59',Criteria::LESS_EQUAL);
+				$c1->addAnd(ComRecibidaPeer::FECHA_CREACION, $fecha_last . ' 23:59:59', Criteria::LESS_EQUAL);
 			}else{
 				$c1->add(ComRecibidaPeer::FECHA_CREACION,$fecha_init.' 00:00:00',Criteria::GREATER_EQUAL);
-				$c1->addAnd(ComRecibidaPeer::FECHA_CREACION,$new_fecha.' 23:59:59',Criteria::LESS_EQUAL);
+				$c1->addAnd(ComRecibidaPeer::FECHA_CREACION, $fecha_last . ' 23:59:59', Criteria::LESS_EQUAL);
 			}
+			print('fecha_creacion init => ' . $new_fecha . ' | fecha_creacion end => ' . $fecha_last . PHP_EOL);
 			//***************************************************************************************************************
 			$c1->clearSelectColumns();
 			$c1->addSelectColumn(ComRecibidaPeer::COMRECIBIDA_ID);
 			$c1->addSelectColumn(ComRecibidaPeer::RADICADO);
 			$c1->addSelectColumn(ComRecibidaPeer::RESPTA_INTEGRACION);
 			$c1->addSelectColumn(ComRecibidaPeer::MARCA_VINCULACION);
+			$c1->addSelectColumn(ComRecibidaPeer::PERIODO_ID);
 			//***************************************************************************************************************
 			$result_stmt  = ComRecibidaPeer::doSelectStmt($c1);
 			return $objects_com = $result_stmt->fetchAll();
-		} catch (\Throwable $th) {
+		} catch (PropelException $th) {
             return array();
+		} catch (Exception $th) {
+			return array();
         }
 	}
 	
-	public function initPrcessMasivo($marcausuario_id = 0, $fecha_inicial = null, $isNullOrZero = false)
+	public static function getComEnviadaByServicio($fecha_inicial, $fecha_final, $tiposervicio_id = 6, $marca_svc = null, $max_rows = 300)
     {
+		try {
+			if (empty($fecha_inicial) || empty($fecha_final) || empty($tiposervicio_id)) {
+				return null;
+			}
+			//***************************************************************************************************************
+			$c1 = new Criteria();
+			if (!empty($max_rows)) {
+				$c1->setLimit($max_rows);
+			}
+			//***************************************************************************************************************
+			$c1->addJoin(ServicioPeer::CONSECUTIVOCOM_ID, ComEnviadaPeer::COMENVIADA_ID);
+			//***************************************************************************************************************
+			$c1->add(ServicioPeer::TIPOSERVICIO_ID, $tiposervicio_id);
+			$c1->add(ServicioPeer::MODULO_ID, ModulesEnable::ComEnviada);
+			$c1->add(ServicioPeer::FECHA_CREACION, $fecha_inicial, Criteria::GREATER_THAN);
+			$c1->addAnd(ServicioPeer::FECHA_CREACION, $fecha_final, Criteria::LESS_THAN);
+			if (!empty($marca_svc)) {
+				$c1->add(ServicioPeer::MARCA, $marca_svc);
+			}
+			//***************************************************************************************************************
+			$c1->clearSelectColumns();
+			$c1->addSelectColumn(ComEnviadaPeer::COMENVIADA_ID);
+			$c1->addAsColumn("RADICADO_COMENVIADA", ComEnviadaPeer::RADICADO);
+			$c1->addSelectColumn(ServicioPeer::SERVICIO_ID);
+			$c1->addAsColumn("RADICADO_SERVICIO", ServicioPeer::RADICADO);
+			//***************************************************************************************************************
+			$result_stmt  = ServicioPeer::doSelectStmt($c1);
+			return $result_stmt->fetchAll();
+		} catch (PropelException $th) {
+			return array();
+		} catch (Exception $th) {
+			return array();
+		}
+	}
+
+	public static function getComEnviadaByMarca($marcausuario_id = 0, $max_rows = 300)
+	{
+		try {
+			$c1 = new Criteria();
+			$c1->setLimit($max_rows);
+			$c1->add(ComEnviadaPeer::MARCA, $marcausuario_id);
+			//***************************************************************************************************************
+			$c1->addAscendingOrderByColumn(ComEnviadaPeer::FECHA_CREACION);
+			//***************************************************************************************************************
+			$c1->clearSelectColumns();
+			$c1->addSelectColumn(ComEnviadaPeer::COMENVIADA_ID);
+			$c1->addSelectColumn(ComEnviadaPeer::RADICADO);
+			$c1->addSelectColumn(ComEnviadaPeer::PERIODO_ID);
+			//***************************************************************************************************************
+			$result_stmt  = ComEnviadaPeer::doSelectStmt($c1);
+			return $objects_com = $result_stmt->fetchAll();
+		} catch (PropelException $th) {
+			return array();
+		} catch (Exception $th) {
+			return array();
+		}
+	}
+
+	public static function getComRecibidaByMarca($marcausuario_id = 0, $max_rows = 300)
+	{
+		try {
+			$c1 = new Criteria();
+			$c1->setLimit($max_rows);
+			$c1->add(ComRecibidaPeer::MARCA, $marcausuario_id);
+			//***************************************************************************************************************
+			$c1->addAscendingOrderByColumn(ComRecibidaPeer::COMRECIBIDA_ID);
+			//***************************************************************************************************************
+			$c1->clearSelectColumns();
+			$c1->addSelectColumn(ComRecibidaPeer::COMRECIBIDA_ID);
+			$c1->addSelectColumn(ComRecibidaPeer::RADICADO);
+			$c1->addSelectColumn(ComRecibidaPeer::PERIODO_ID);
+			$c1->addSelectColumn(ComRecibidaPeer::MARCA_VINCULACION);
+			$c1->addSelectColumn(ComRecibidaPeer::RESPTA_INTEGRACION);
+			//***************************************************************************************************************
+			$result_stmt  = ComRecibidaPeer::doSelectStmt($c1);
+			return $objects_com = $result_stmt->fetchAll();
+		} catch (PropelException $th) {
+			return array();
+		} catch (Exception $th) {
+			return array();
+		}
+	}
+
+	public static function batchResetConsComSeq($sequence_name = null)
+	{
+		$log_dir = sfConfig::get('sf_log_dir') . DIRECTORY_SEPARATOR . 'configSequenceReset.log';
+		//***************************************************************************************************************
+		try {
+			if (empty($sequence_name)) {
+				return false;
+			}
+			//***********************************************************************************************************
+			$conexion = Propel::getConnection();
+			//***********************************************************************************************************
+			$query_seq0 = sprintf("ALTER SEQUENCE [dbo].[%s] RESTART WITH 1", $sequence_name);
+			//***********************************************************************************************************
+			$message_cli = date("Y-m-d G:i:s") . ' => INIT ALTER SEQUENCE EXECUTE ' . $query_seq0;
+			print($message_cli . PHP_EOL);
+			simad_util::writetolog($log_dir, $message_cli);
+			//***********************************************************************************************************
+			$stmt = $conexion->prepare($query_seq0);
+			$response = $stmt->execute(); //ejecuta la sentencia SQL
+			//***********************************************************************************************************
+			$message_cli = date("Y-m-d G:i:s") . ' => RESPONSE {' . $response . '}, END ALTER SEQUENCE EXECUTE';
+			print($message_cli . PHP_EOL);
+			simad_util::writetolog($log_dir, $message_cli);
+			//***********************************************************************************************************
+			return true;
+		} catch (PropelException $th) {
+			simad_util::writetolog($log_dir, "ERROR => " . $th->getMessage());
+			return false;
+		} catch (\Exception $th) {
+			simad_util::writetolog($log_dir, "ERROR => " . $th->getMessage());
+			return false;
+		} catch (\Throwable $th) {
+			simad_util::writetolog($log_dir, "ERROR => " . $th->getMessage());
+			return false;
+		}
+	}
+
+	public function initPrcessMasivo($marcausuario_id = 0, $fecha_inicial = null, $isNullOrZero = false, $ndias = 1)
+	{
         // add your code here
         $log_dir = sfConfig::get('sf_log_dir').DIRECTORY_SEPARATOR.date("Ymd").'_enviadoslexcli'.(!empty($fecha_inicial) ? '_reply' : '').'.log';
         
@@ -214,7 +343,7 @@ class WsSimadUariv
 		$dependencia_id = 30;
 		$fecha_actual = date("Y-m-d");
 		//***************************************************************************************************************
-		$objects_com = WsSimadUariv::getCriteriaBasic($dependencia_id,$isNullOrZero,$fecha_inicial);
+		$objects_com = WsSimadUariv::getCriteriaBasic($dependencia_id, $isNullOrZero, $fecha_inicial, $ndias);
 		//***************************************************************************************************************
         simad_util::writetolog($log_dir,'Total registros => '.count($objects_com));
 		print('Total registros => '.count($objects_com). PHP_EOL);
@@ -222,44 +351,78 @@ class WsSimadUariv
 		$conexion = Propel::getConnection();
 		//***************************************************************************************************************
         foreach ($objects_com as $com_recibida){
-			$c2 = new Criteria();
-			$c2->add(WebserviceLogPeer::TIPO_OPERACION,'%'.$com_recibida['RADICADO'],Criteria::LIKE);
-			$c2->add(WebserviceLogPeer::NOMBRE_METODO,'InformacionRadicadoEntrada');
-			$c2->add(WebserviceLogPeer::MENSAJE,'Enviado Exitoso%',Criteria::LIKE);
-			$c2->addAscendingOrderByColumn(WebserviceLogPeer::WEBSERVICELOG_ID);
+			if (empty($com_recibida['RADICADO'])) {
+				try {
+					$query0 = "UPDATE %s SET %s = '0' WHERE %s = " . $com_recibida['COMRECIBIDA_ID'] . " AND %s = " . $com_recibida['PERIODO_ID'];
+					$runsql0 = sprintf($query0, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::RESPTA_INTEGRACION, ComRecibidaPeer::COMRECIBIDA_ID, ComRecibidaPeer::PERIODO_ID);
+					$sentencia = $conexion->prepare($runsql0);
+					//$sentencia->execute();//se debe comentariar por temas de select con WITH (NOLOCK)
+				} catch (PropelException $ex) {
+					$msg_error = $ex->getMessage();
+				} catch (Exception $ex) {
+					$msg_error = $ex->getMessage();
+				}
+				//*******************************************************************************************************
+				continue;
+			}
 			//***********************************************************************************************************
-			$c2->setLimit(1);
-			$c2->clearSelectColumns();
-			$c2->addSelectColumn(WebserviceLogPeer::WEBSERVICELOG_ID);
-			$c2->addSelectColumn(WebserviceLogPeer::MENSAJE);
+			if ($isNullOrZero) {
+				try {
+					$c2 = new Criteria();
+					$c2->add(WebserviceLogPeer::TIPO_OPERACION,'%'.$com_recibida['RADICADO'],Criteria::LIKE);
+					$c2->add(WebserviceLogPeer::NOMBRE_METODO,'InformacionRadicadoEntrada');
+					$c2->add(WebserviceLogPeer::MENSAJE,'Enviado Exitoso%',Criteria::LIKE);
+					$c2->addAscendingOrderByColumn(WebserviceLogPeer::WEBSERVICELOG_ID);
+					//****************************************************************************************************
+					$c2->setLimit(1);
+					$c2->clearSelectColumns();
+					$c2->addSelectColumn(WebserviceLogPeer::WEBSERVICELOG_ID);
+					$c2->addSelectColumn(WebserviceLogPeer::MENSAJE);
+					//****************************************************************************************************
+					$ws_log = WebserviceLogPeer::doSelectStmt($c2);
+					$list_objects = $ws_log->fetchAll();
+				} catch (PropelException $ex) {
+					$msg_error = $ex->getMessage();
+				} catch (Exception $ex) {
+					$msg_error = $ex->getMessage();
+				}
+			} else {
+				$list_objects = array();
+			}
 			//***********************************************************************************************************
-			$ws_log = WebserviceLogPeer::doSelectStmt($c2);
-			$list_objects = $ws_log->fetchAll();
-			//***********************************************************************************************************
-            $str_log = null;$enviarRespExt = true;
-			if(count($list_objects)){
+			$str_log = null;
+			$enviarRespExt = true;
+			if (count($list_objects) > 0) {
 				foreach ($list_objects as $item) {
-					$isNotError = strpos($item['MENSAJE'], 'Enviado Exitoso');
-					if ($isNotError !== false){
-						$codigo_envio = str_replace("Enviado Exitoso => ","",$item['MENSAJE']);
-						$str_log = 'Radicado '.trim($com_recibida['RADICADO']).' ya fue enviado ha LEX Codigo => '.$codigo_envio;
+					try {
+						$isNotError = strpos($item['MENSAJE'], 'Enviado Exitoso');
+						if ($isNotError !== false){
+							$codigo_envio = str_replace("Enviado Exitoso => ","",$item['MENSAJE']);
+							$str_log = 'Radicado '.trim($com_recibida['RADICADO']).' ya fue enviado ha LEX Codigo => '.$codigo_envio;
 						
-						if(empty($com_recibida['RESPTA_INTEGRACION'])){
-							$query = "UPDATE %s SET %s = 0, %s = '".$codigo_envio."' WHERE %s = ".$com_recibida['COMRECIBIDA_ID'];
-							$runsql = sprintf($query, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::MARCA,ComRecibidaPeer::RESPTA_INTEGRACION,ComRecibidaPeer::COMRECIBIDA_ID);
-							$sentencia = $conexion->prepare($runsql);
+							if(empty($com_recibida['RESPTA_INTEGRACION'])){
+									$query = "UPDATE %s SET %s = 0, %s = '" . $codigo_envio . "' WHERE %s = " . $com_recibida['COMRECIBIDA_ID'] . " AND %s = " . $com_recibida['PERIODO_ID'];
+									$runsql = sprintf($query, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::MARCA, ComRecibidaPeer::RESPTA_INTEGRACION, ComRecibidaPeer::COMRECIBIDA_ID, ComRecibidaPeer::PERIODO_ID);
+								$sentencia = $conexion->prepare($runsql);
+								$sentencia->execute();
+							}
+								//********************************************************************************************
+							$enviarRespExt = false;
+						}else{
+							$str_log = 'Radicado '.trim($com_recibida['RADICADO']).' fue enviado a Lex pero ocurrio un error interno en Fachada/Lex';
+								$query1 = "UPDATE %s SET %s = '0' WHERE %s = " . $com_recibida['COMRECIBIDA_ID'] . " AND %s = " . $com_recibida['PERIODO_ID'];;
+								$runsql1 = sprintf($query1, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::RESPTA_INTEGRACION, ComRecibidaPeer::COMRECIBIDA_ID, ComRecibidaPeer::PERIODO_ID);
+							$sentencia = $conexion->prepare($runsql1);
 							$sentencia->execute();
+								//********************************************************************************************
+							$enviarRespExt = false;
 						}
-						
+					} catch (PropelException $ex) {
 						$enviarRespExt = false;
-					}else{
-						$str_log = 'Radicado '.trim($com_recibida['RADICADO']).' fue enviado a Lex pero ocurrio un error interno en Fachada/Lex';
-						$query1 = "UPDATE %s SET %s = '0' WHERE %s = ".$com_recibida['COMRECIBIDA_ID'];
-						$runsql1 = sprintf($query1, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::RESPTA_INTEGRACION, ComRecibidaPeer::COMRECIBIDA_ID);
-						$sentencia = $conexion->prepare($runsql1);
-						$sentencia->execute();
-						
+						$msg_error = $ex->getMessage();
+					} catch (Exception $ex) {
 						$enviarRespExt = false;
+						$msg_error = $ex->getMessage();
 					}
 				}
             }else{
@@ -269,7 +432,10 @@ class WsSimadUariv
 			simad_util::writetolog($log_dir,$str_log);
 			print($index++.'. '.$str_log . PHP_EOL);
             //continue;
-			$ws_log = null;$c2 = null;$str_log = null;$list_objects = null;
+			$ws_log = null;
+			$c2 = null;
+			$str_log = null;
+			$list_objects = null;
             //**********************************************************************************************************
             if($enviarRespExt){
                 $marca_vinculacion = (int)$com_recibida['MARCA_VINCULACION'];
@@ -290,20 +456,20 @@ class WsSimadUariv
 							UnidaddocumentalInteresadosPeer::addNewInteresadoByComId($unidaddocumental_id,$com_interesado->getInteresadoId());
 						}
 						
-						$response_data = $this->loadWsInfoRadicadoEntrada($pkcomid);
+						$response_data = $this->loadWsInfoRadicadoEntrada($pkcomid, false);
 						if($response_data['status'] == 200){
 							simad_util::writetolog($log_dir,'Radicado '.trim($com_recibida['RADICADO']).' enviado respuesta externa');
 							//**********************************************************************************************
-							$query2 = "UPDATE %s SET %s = 0, %s = 3 WHERE %s = ".$com_recibida['COMRECIBIDA_ID'];
-							$runsql2 = sprintf($query2, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::MARCA, ComRecibidaPeer::TIPOPROCESOCOM_ID, ComRecibidaPeer::COMRECIBIDA_ID);
+							$query2 = "UPDATE %s SET %s = 0, %s = 3 WHERE %s = " . $com_recibida['COMRECIBIDA_ID'] . " AND %s = " . $com_recibida['PERIODO_ID'];
+							$runsql2 = sprintf($query2, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::MARCA, ComRecibidaPeer::TIPOPROCESOCOM_ID, ComRecibidaPeer::COMRECIBIDA_ID, ComRecibidaPeer::PERIODO_ID);
 							$sentencia = $conexion->prepare($runsql2);
 							$sentencia->execute();
 							//**********************************************************************************************
 							ComRecibidaPeer::updateAsignadoCom($pkcomid,2,0);
 							ComRecibidaPeer::addUserRolByCom($pkcomid,$usuarioorigen_id,$ucargoorigen_id,$estadocomrecibida_id,2,1,$tipoprocesocom_id);
 						}else{
-							$query5 = "UPDATE %s SET %s = '0' WHERE %s = ".$com_recibida['COMRECIBIDA_ID'];
-							$runsql5 = sprintf($query5, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::RESPTA_INTEGRACION, ComRecibidaPeer::COMRECIBIDA_ID);
+							$query5 = "UPDATE %s SET %s = '0' WHERE %s = " . $com_recibida['COMRECIBIDA_ID'] . " AND %s = " . $com_recibida['PERIODO_ID'];
+							$runsql5 = sprintf($query5, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::RESPTA_INTEGRACION, ComRecibidaPeer::COMRECIBIDA_ID, ComRecibidaPeer::PERIODO_ID);
 							$sentencia = $conexion->prepare($runsql5);
 							$sentencia->execute();
 							//**********************************************************************************************
@@ -312,7 +478,7 @@ class WsSimadUariv
 						//**************************************************************************************************
 						$response_data = null;
 					}elseif($marca_vinculacion == 1){
-						$response_data = $this->loadWsInfoRadicadoEntrada($pkcomid);
+						$response_data = $this->loadWsInfoRadicadoEntrada($pkcomid, false);
 						if($response_data['status'] == 200){
 							simad_util::writetolog($log_dir,'Radicado '.trim($com_recibida['RADICADO']).' enviado respuesta externa');
 							//**********************************************************************************************
@@ -324,8 +490,8 @@ class WsSimadUariv
 							ComRecibidaPeer::updateAsignadoCom($pkcomid,2,0);
 							ComRecibidaPeer::addUserRolByCom($pkcomid,$usuarioorigen_id,$ucargoorigen_id,$estadocomrecibida_id,2,1,$tipoprocesocom_id);
 						}else{
-							$query4 = "UPDATE %s SET %s = '0' WHERE %s = ".$com_recibida['COMRECIBIDA_ID'];
-							$runsql4 = sprintf($query4, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::RESPTA_INTEGRACION, ComRecibidaPeer::COMRECIBIDA_ID);
+							$query4 = "UPDATE %s SET %s = '0' WHERE %s = " . $com_recibida['COMRECIBIDA_ID'] . " AND %s = " . $com_recibida['PERIODO_ID'];
+							$runsql4 = sprintf($query4, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::RESPTA_INTEGRACION, ComRecibidaPeer::COMRECIBIDA_ID, ComRecibidaPeer::PERIODO_ID);
 							$sentencia = $conexion->prepare($runsql4);
 							$sentencia->execute();
 							//**********************************************************************************************
@@ -355,9 +521,8 @@ class WsSimadUariv
         $com_recibida = ComRecibidaPeer::retrieveByPK($pkComId);
 		$radicado_com = $com_recibida != null ? trim($com_recibida->getRadicado()) : "";
         $folder_digit = ComRecibidaPeer::initFolderDigit($com_recibida->getRegionalId(),$com_recibida->getPeriodoId());
-        $filepath_digit = ComRecibidaPeer::getDigitFormatFileExist($folder_digit['full_path'],$radicado_com);
-        //**********************************************************************
-        $com_recibida_old = clone $com_recibida;
+		//$filepath_digit = ComRecibidaPeer::getDigitFormatFileExist($folder_digit['full_path'],$radicado_com);
+		$filepath_digit = $com_recibida->getPathImageDigitByCom();
         //**********************************************************************
         $infoCredencial = array(
             "ContrasenaWsFachada" => WsSimadUariv::SERVICE_PASSW,
@@ -365,18 +530,44 @@ class WsSimadUariv
             "UsuarioWsFachada" => WsSimadUariv::SERVICE_USER
         );
         //**********************************************************************
+		$tracker = new SgdeaTrackerMetrics([
+			'documento_id' => basename($radicado_com),
+			'consecutivocom_id' => $pkComId,
+			'metodo_svc' => 'InformacionRadicadoEntrada',
+			'transaccion_id' => uniqid('fachada_svc_', true),
+			'log_name' => 'fachada_servicios_timers.log'
+		]);
+		//**********************************************************************
+		if ($tracker != null) {
+			$tracker->mark('inicio');
+		}
+		//**********************************************************************
         $unidad_documental = TransferenciaPeer::getExpedienteByComRecibidaId($com_recibida->getPrimaryKey());
+		if (empty($unidad_documental)) {
+			$mensaje = 'Debe archivar la comunicacion o el expediente asociado no existe';
+			if (empty($com_recibida->getContenidodocId())) {
+				WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada", null, $mensaje, true, "Consumen Fachada => " . $com_recibida->getRadicado(), "Error Expediente => " . $mensaje, 1);
+				return array('status' => 400, 'message' => $mensaje);
+			} else {
+				$contenido_doc = ContenidoUnidadDocumentalPeer::retrieveByPk($com_recibida->getContenidodocId());
+				if (empty($contenido_doc)) {
+					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada", null, $mensaje, true, "Consumen Fachada => " . $com_recibida->getRadicado(), "Error Expediente => " . $mensaje, 1);
+					return array('status' => 400, 'message' => $mensaje);
+				} else {
+					$unidad_documental = UnidadDocumentalPeer::retrieveByPk($contenido_doc->getUnidaddocumentalId());
+					if (empty($unidad_documental)) {
+						WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada", null, $mensaje, true, "Consumen Fachada => " . $com_recibida->getRadicado(), "Error Expediente => " . $mensaje, 1);
+						return array('status' => 400, 'message' => $mensaje);
+					}
+				}
+			}
+		}
         //**********************************************************************
         $list_users = $com_recibida->getUsuariosListCom();
         //**********************************************************************
-		if($sendFile){
+		if ($sendFile === true) {
 			$infoRadEntrada['ARCHIVO'] = ComRecibidaPeer::getDigitFileB64($filepath_digit);
-			//$log_dir = sfConfig::get('sf_log_dir').DIRECTORY_SEPARATOR.date("Ymd").'_sizefile.log';
-			//$infoRadEntrada['ARCHIVO'] = simad_util::getConvert2FileToB64($filepath_digit);
-			//simad_util::writetolog($log_dir,simad_util::getConvert2FileToB64($filepath_digit));
-		}else{
-			$test_file = sfConfig::get("sf_web_dir").DIRECTORY_SEPARATOR.'test.pdf';
-			$infoRadEntrada['ARCHIVO'] = ComRecibidaPeer::getDigitFileB64($test_file);
+			$infoRadEntrada['NOMBRE_ARCHIVO'] = basename($filepath_digit);
 		}
         //***********************************************************************************
         $options = array(
@@ -398,24 +589,58 @@ class WsSimadUariv
         $csizemsg = strlen($infoRadEntrada['ARCHIVO']);
         $client = new SoapClientExtended(WsSimadUariv::SERVICE_URL,$options);
         //************************************************************************************
-        if($csizemsg >= self::MAX_FILE_SIZE_MESSAGE)
-        {
-            $client->setComOrExpVars($com_recibida->getPrimaryKey(),$com_recibida->getRadicado(),true);
+		if ($csizemsg >= self::MAX_FILE_SIZE_MESSAGE && $sendFile === true) {
+			if ($tracker != null) {
+				$tracker->mark('antes_fachada_cli');
+			}
+			//********************************************************************************
+			$client->setComOrExpVars($com_recibida->getPrimaryKey(), $com_recibida->getRadicado(), false);
             $response = $client->doRequestClientCli();
-
-            $message_response = json_decode($response);
+			//********************************************************************************
+			$response_clean = $response;
+			$response_clean = preg_replace('/^\xEF\xBB\xBF/', '', $response_clean);
+			if (!mb_check_encoding($response_clean, 'UTF-8')) {
+				$response_clean = mb_convert_encoding($response_clean, 'UTF-8', 'ISO-8859-1');
+			}
+			//********************************************************************************
+			$message_response = json_decode($response_clean);
+			//********************************************************************************
             if($message_response != null){
                 $mensaje = $message_response->MENSAJE;
                 if(trim($message_response->CODIGO) != "200"){
+					if ($tracker != null) {
+						$tracker->mark('despues_fachada', [
+							'status_code' => 400,
+							'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+							'response_message' => $response
+						]);
+					}
+					//*************************************************************************
+					if ($tracker != null) {
+						$tracker->mark('error');
+						$tracker->finish();
+					}
+					//*************************************************************************
                     WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada",null,$mensaje,true,"Consumen Fachada => ".$com_recibida->getRadicado(),"Error Fachada => ".$mensaje,1);
                     $com_recibida->setResptaIntegracion("0");
                     $com_recibida->save();
-                    //*************************************************************************
-                    //AuditLogPeer::guardarAuditoriaLite(ComRecibidaPeer::getOMClass(),$com_recibida_old,$com_recibida,ModulesEnable::ComRecibida,$com_recibida->getRadicado(),)
-                    //*************************************************************************
                     return array('status' => 400,'message' => $mensaje);
                 }else{
                     $cod_respuesta = $message_response->RESPONSE;
+					//*************************************************************************
+					if ($tracker != null) {
+						$tracker->mark('despues_fachada', [
+							'status_code' => 200,
+							'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+							'response_message' => $response
+						]);
+					}
+					//*************************************************************************
+					if ($tracker != null) {
+						$tracker->mark('exito');
+						$tracker->finish();
+					}
+					//*************************************************************************
                     WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada",null,$mensaje,true,"Consumen Fachada => ".$com_recibida->getRadicado(),"Enviado Exitoso => ".$cod_respuesta,1);
                     $com_recibida->setResptaIntegracion($cod_respuesta);
                     $com_recibida->save();
@@ -423,6 +648,20 @@ class WsSimadUariv
                 }
             }else{
                 $message = 'Ocurrio un error al enviar los datos, error de integraci&oacute;n con la herramienta de gesti&oacute;n';
+				//*************************************************************************
+				if ($tracker != null) {
+					$tracker->mark('despues_fachada', [
+						'status_code' => 400,
+						'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+						'response_message' => $message
+					]);
+				}
+				//*************************************************************************
+				if ($tracker != null) {
+					$tracker->mark('error');
+					$tracker->finish();
+				}
+				//*************************************************************************
                 WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada",null,null,true,"Consumen Fachada => ".$com_recibida->getRadicado(),"Enviado Error => ".$message,1);
                 $com_recibida->setResptaIntegracion("0");
                 $com_recibida->save();
@@ -444,7 +683,6 @@ class WsSimadUariv
 			$infoRadEntrada['ID_JUZGADO'] = 0;
 			$infoRadEntrada['MEDIO_RECEPCION'] = (mb_strtoupper($com_recibida->getFormaRecepcion()->getDescripcion()));
 			$infoRadEntrada['MarcoNormativo'] = 0;
-			$infoRadEntrada['NOMBRE_ARCHIVO'] = basename($filepath_digit);
 			$infoRadEntrada['NOMBRE_EXPEDIENTE'] = (mb_strtoupper($unidad_documental->getTitulo()));
 			$infoRadEntrada['NUMERO_DECLARACION'] = trim($com_recibida->getNumeroFud()) ? mb_strtoupper($com_recibida->getNumeroFud()) : "";
 			$infoRadEntrada['NUMERO_FOLIOS'] = $com_recibida->getFolios();
@@ -462,6 +700,10 @@ class WsSimadUariv
 			//***********************************************************************************
 			$listIntesados = array();
 			$intesados_objects = ComRecibidaPeer::getListIntersadosByComId($com_recibida->getPrimaryKey()) ;
+			if ($intesados_objects == null && empty($com_recibida->getDirectorioexternoId())) {
+				return array('status' => 400, 'message' => 'El radicado no tiene remitente ni interesados asociados');
+			}
+
 			foreach ($intesados_objects as $interesado) {
 				$inumero_identificacion = $interesado->getInteresados()->getNumeroIdentificacion();
 				$infoInteresado['CELULAR']= $interesado->getInteresados()->getCelular() ? $interesado->getInteresados()->getCelular() : "";
@@ -544,27 +786,58 @@ class WsSimadUariv
 			}
 			//************************************************************************************
 			try {
+				if ($tracker != null) {
+					$tracker->mark('antes_fachada_soap');
+				}
+				//********************************************************************************
 				$infoComplex = array('Credencial' =>$infoCredencial,'infoRadEntrada' => $infoRadEntrada,'infoInteresado' => array('EntInformacionInteresadoRequest' => $listIntesados),'infoRemitente' => $infoRemitente,'datosExpediente' => $infoExpediente);
 				$response = $client->InformacionRadicadoEntrada($infoComplex);
 				//********************************************************************************
 				$a = new stdClass();
 				$a = (object)$response->InformacionRadicadoEntradaResult;
 				//********************************************************************************
-				//if($this->nulog){
-                    //$this->writetolog(htmlspecialchars($client->__getLastRequest()),'xml');
-				//}
-				//********************************************************************************
 				if(trim($a->DESC_ERROR)){
-					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,"Error Fachada => ".trim($a->DESC_ERROR),1);
+					if ($tracker != null) {
+						$tracker->mark('despues_fachada', [
+							'status_code' => 400,
+							'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+							'response_message' => trim($a->DESC_ERROR)
+						]);
+					}
+					//****************************************************************************
+					if ($tracker != null) {
+						$tracker->mark('error');
+						$tracker->finish();
+					}
+					//****************************************************************************
 					$com_recibida->setResptaIntegracion("0");
 					$com_recibida->save();
-					$infoComplex = null;$response = null;
+					//****************************************************************************
+					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada", htmlspecialchars($client->__getLastRequest()), htmlspecialchars($client->__getLastResponse()), true, "Consumen Fachada => " . $radicado_com, "Error Fachada => " . trim($a->DESC_ERROR), 1);
+					//****************************************************************************
+					$infoComplex = null;
+					$response = null;
 					return array('status' => 400,'message' => trim($a->DESC_ERROR));
 				}else{
-					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,"Enviado Exitoso => ".trim($a->RESULT),1);
+					if ($tracker != null) {
+						$tracker->mark('despues_fachada', [
+							'status_code' => 200,
+							'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+							'response_message' => 'El radicado se envio a la herramienta de gestión'
+						]);
+					}
+					//****************************************************************************
+					if ($tracker != null) {
+						$tracker->mark('exito');
+						$tracker->finish();
+					}
+					//****************************************************************************
 					$com_recibida->setResptaIntegracion(trim($a->RESULT));
 					$com_recibida->save();
-					$infoComplex = null;$response = null;
+					//****************************************************************************
+					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada", htmlspecialchars($client->__getLastRequest()), htmlspecialchars($client->__getLastResponse()), true, "Consumen Fachada => " . $radicado_com, "Enviado Exitoso => " . trim($a->RESULT), 1);
+					$infoComplex = null;
+					$response = null;
 					return array('status'=>200,'message'=>'Los datos fueron enviados satisfactoriamente');
 				}
 			}catch (SoapFault $e){
@@ -573,17 +846,45 @@ class WsSimadUariv
                     $faultMessage = $client->extractFaultFromSoapResponse($rawFault);
                     if ($faultMessage !== null) {
                         $msgerror =  "SoapFault Error:<br />" . nl2br($faultMessage). '<br />';
+					} else {
+						$msgerror =  "SoapFault Error: " . nl2br($e->faultcode) . '<br />Error Details: ' . nl2br($e->faultstring . ' => ' . $rawFault) . '<br />';
                     }
                 }else{
                     $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
                 }
                 //********************************************************************************
 				try{
+					if ($tracker != null) {
+						$tracker->mark('despues_fachada', [
+							'status_code' => 400,
+							'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+							'response_message' => $msgerror
+						]);
+					}
+					//****************************************************************************
+					if ($tracker != null) {
+						$tracker->mark('error');
+						$tracker->finish();
+					}
+					//****************************************************************************
 					$com_recibida->setResptaIntegracion("0");
 					$com_recibida->save();
-					
+					//****************************************************************************
 					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($msgerror),true,"Consumen Fachada SoapFault => ".$radicado_com,"SoapFault Error => ".$msgerror,1);
 				} catch (Exception $e) {
+					if ($tracker != null) {
+						$tracker->mark('despues_fachada', [
+							'status_code' => 400,
+							'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+							'response_message' => $e->getMessage()
+						]);
+					}
+					//****************************************************************************
+					if ($tracker != null) {
+						$tracker->mark('error');
+						$tracker->finish();
+					}
+					//****************************************************************************
 					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada",null,htmlspecialchars($msgerror),true,"Consumen Fachada SoapFault => ".$radicado_com,"SoapFault Error => ".$msgerror,1);
 				}
 								
@@ -591,15 +892,41 @@ class WsSimadUariv
 			} catch (Exception $e) {
 				$msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
 				try{
+					if ($tracker != null) {
+						$tracker->mark('despues_fachada', [
+							'status_code' => 400,
+							'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+							'response_message' => $msgerror
+						]);
+					}
+					//****************************************************************************
+					if ($tracker != null) {
+						$tracker->mark('error');
+						$tracker->finish();
+					}
+					//****************************************************************************
 					$com_recibida->setResptaIntegracion("0");
 					$com_recibida->save();
-				
-					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada Exception => ".$radicado_com,"Exception Error => ".$msgerror,1);
+					//****************************************************************************
+					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada", htmlspecialchars($client->__getLastRequest()), htmlspecialchars($msgerror), true, "Consumen Fachada Exception => " . $radicado_com, "Exception Error => " . $msgerror, 1);
 				} catch (Exception $e) {
-					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada",null,htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada Exception => ".$radicado_com,"Exception Error => ".$msgerror,1);
+					if ($tracker != null) {
+						$tracker->mark('despues_fachada', [
+							'status_code' => 400,
+							'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+							'response_message' => $e->getMessage()
+						]);
+				}
+					//****************************************************************************
+					if ($tracker != null) {
+						$tracker->mark('error');
+						$tracker->finish();
+					}
+					//****************************************************************************
+					WebserviceLogPeer::addLogWs("InformacionRadicadoEntrada", null, htmlspecialchars($e->getMessage()), true, "Consumen Fachada Exception => " . $radicado_com, "Exception Error => " . $msgerror, 1);
 				}
 				
-				return array('status'=>400,'message'=>'Ocurrio un error al enviar la datos, error de servidor => ' . $msgerror);
+				return array('status' => 400, 'message' => 'Ocurrio un error al enviar los datos, error de servidor => ' . $msgerror);
 			}
 		}
     }
@@ -619,12 +946,28 @@ class WsSimadUariv
         $folder_digit = ComEnviadaPeer::initFolderDigit($com_enviada->getRegionalId(),$com_enviada->getPeriodoId());
         $filepath_digit = ComEnviadaPeer::getDigitFormatFileExist($folder_digit['full_path'],$radicado_com);
         //***********************************************************************************
+		$tracker = new SgdeaTrackerMetrics([
+			'documento_id' => basename($radicado_com),
+			'consecutivocom_id' => $comenviada_id,
+			'metodo_svc' => 'InformacionRadicadoSalida',
+			'transaccion_id' => uniqid('fachada_svc_', true),
+			'log_name' => 'fachada_servicios_timers.log'
+		]);
+		//***********************************************************************************
+		if ($tracker != null) {
+			$tracker->mark('inicio');
+		}
+		//***********************************************************************************
         $infoCredencial = array(
             "ContrasenaWsFachada" => WsSimadUariv::SERVICE_PASSW,
             "IdAplicacion" => WsSimadUariv::SERVICE_APPUID,
             "UsuarioWsFachada" => WsSimadUariv::SERVICE_USER
         );
         //***********************************************************************************
+		if ($tracker != null) {
+			$tracker->mark('antes_fachada');
+		}
+		//***********************************************************************************
         $infoRadSalida = array();
         $infoRadSalida['IMAGEN_DOC_FIRMADO'] = simad_util::getConvertFileToB64($filepath_digit);
         $infoRadSalida['ID_EXPEDIENTE'] = $com_recibida->getTipocomrecibidaId();
@@ -642,8 +985,8 @@ class WsSimadUariv
             "use"=> SOAP_LITERAL,
             "soap_version"=> SOAP_1_1,
             "cache_wsdl"=> WSDL_CACHE_NONE,
-            "timeout" => 600,
-			"connection_timeout" => 600,
+			"timeout" => 300,
+			"connection_timeout" => 300,
             "trace" => true,
             "encoding" => "UTF-8",
             /*'encoding'=>'ISO-8859-1',*/
@@ -651,31 +994,68 @@ class WsSimadUariv
 			'stream_context' => stream_context_create(WsSimadUariv::CONTEXT_SOAP2),
         );
         //************************************************************************************
-		try {
-            $client = new SoapClientExtended(WsSimadUariv::SERVICE_URL,$options);
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
+        $client = new SoapClientExtended(WsSimadUariv::SERVICE_URL,$options);
 		//************************************************************************************
         try {
-            //var_dump($listIntesados);exit;
             $infoComplex = array('Credencial' =>$infoCredencial,'infoRadSalida' => $infoRadSalida);
             $response = $client->InformacionRadicadoSalida($infoComplex);
             //********************************************************************************
             $a = new stdClass();
             $a = (object)$response->InformacionRadicadoSalidaResponse;
             //********************************************************************************
-            if($this->nulog){ $this->writetolog(htmlspecialchars($client->__getLastRequest()),'xml'); }
+			if ($this->nulog) {
+				$this->writetolog(htmlspecialchars($client->__getLastRequest()), 'xml');
+			}
             //********************************************************************************
             if(trim($a->DESC_ERROR)){
+				if ($tracker != null) {
+					$tracker->mark('despues_fachada', [
+						'status_code' => 400,
+						'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+						'response_message' => trim($a->DESC_ERROR)
+					]);
+				}
+				//****************************************************************************
+				if ($tracker != null) {
+					$tracker->mark('error');
+					$tracker->finish();
+				}
+				//****************************************************************************
                 WebserviceLogPeer::addLogWs("InformacionRadicadoSalida",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,"Error Fachada => ".trim($a->DESC_ERROR),1);
                 return array('status'=>400,'message'=>sprintf("%s %s",$msgsing,trim($a->DESC_ERROR)));
             }else{
+				if ($tracker != null) {
+					$tracker->mark('despues_fachada', [
+						'status_code' => 200,
+						'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+						'response_message' => 'El radicado se envio a la herramienta de gestión'
+					]);
+				}
+				//****************************************************************************
+				if ($tracker != null) {
+					$tracker->mark('exito');
+					$tracker->finish();
+				}
+				//****************************************************************************
                 WebserviceLogPeer::addLogWs("InformacionRadicadoSalida",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,"Enviado Exitoso => ".trim($a->RESULT),1);
                 return array('status'=>200,'message'=>sprintf("%s, %s",$msgsing,'El radicado se envio a la herramienta de gesti&oacute;n'));
             }
 		}catch (PropelException $e){
             $msgerror = $e->getMessage();
+			//*********************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_fachada', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+			}
+			//*********************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//*********************************************************************************
             WebserviceLogPeer::addLogWs("InformacionRadicadoSalida",null,null,true,"Consumen Fachada PropelException => ".$radicado_com, "Error => ".$msgerror, 1);
             $this->writetolog($msgerror);
             return array('status'=> 400,'message'=>sprintf("%s %s",$msgsing,'Ocurrio un error al enviar los datos, error de de integracion'));
@@ -689,12 +1069,43 @@ class WsSimadUariv
             }else{
                 $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
             }
-            //********************************************************************************
+			//*********************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_fachada', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+			}
+			//*********************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//*********************************************************************************
+			if ($client != null) {
             WebserviceLogPeer::addLogWs("InformacionRadicadoSalida",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($msgerror),true,"Consumen Fachada SoapFault => ".$radicado_com,"Error => ".$msgerror,1);
-            //$this->writetolog(htmlspecialchars($client->__getLastRequest()),"xml" );
-            return array('status'=>400,'message'=>sprintf("%s %s",$msgsing.' => '.$msgerror,'Ocurrio un error al enviar los datos, error con la integraci&oacute;n de la herramienta de gesti&oacute;n'));
+			} else {
+				WebserviceLogPeer::addLogWs("InformacionRadicadoSalida", "NO SE PUDO OBTENER EL WDSL DEL CLIENTE", "NO SE REALIZO INTEGRACION", true, "Consumen Fachada SoapFault => " . $radicado_com, "Error => " . $msgerror, 1);
+			}
+			//********************************************************************************
+			return array('status' => 400, 'message' => sprintf("%s %s", $msgsing, 'Ocurrio un error al enviar los datos, error con la integraci&oacute;n de la herramienta de gesti&oacute;n'));
         } catch (Exception $e) {
             $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
+			//*********************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_fachada', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+			}
+			//*********************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//*********************************************************************************
             WebserviceLogPeer::addLogWs("InformacionRadicadoSalida",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada Exception => ".$radicado_com,"Error => ".$msgerror,1);
             //$this->writetolog(htmlspecialchars($client->__getLastRequest()),"xml" );
             return array('status'=>400,'message'=>sprintf("%s %s",$msgsing,'Ocurrio un error al enviar la datos, error de servidor => ' . $msgerror));            
@@ -715,6 +1126,18 @@ class WsSimadUariv
         $filepath_digit = ComEnviadaPeer::getDigitFormatFileExist($folder_digit['full_path'],$radicado_com);
         $extension_digit = pathinfo($filepath_digit,PATHINFO_EXTENSION);
         //***********************************************************************************
+		$tracker = new SgdeaTrackerMetrics([
+			'documento_id' => basename($radicado_com),
+			'consecutivocom_id' => $comenviada_id,
+			'metodo_svc' => 'CrearExpedienteOferta',
+			'transaccion_id' => uniqid('fachada_svc_', true),
+			'log_name' => 'fachada_servicios_timers.log'
+		]);
+		//***********************************************************************************
+		if ($tracker != null) {
+			$tracker->mark('inicio');
+		}
+		//***********************************************************************************
         $infoCredencial = array(
             "ContrasenaWsFachada" => WsSimadUariv::SERVICE_PASSW,
             "IdAplicacion" => 25,
@@ -782,7 +1205,11 @@ class WsSimadUariv
         //$infoRadSalida['InteresadoOferta'] = array('InteresadoOferta' => $listIntesados);
         $infoRadSalida['InteresadoOferta'] = $infoInteresado;
         //***********************************************************************************
-        $options = Array(
+		if ($tracker != null) {
+			$tracker->mark('antes_fachada');
+		}
+		//***********************************************************************************
+		$options = array(
             "uri"=> WsSimadUariv::SERVICE_URI,
             "style"=> SOAP_DOCUMENT,
             "use"=> SOAP_LITERAL,
@@ -800,7 +1227,6 @@ class WsSimadUariv
         $client = new SoapClientExtended(WsSimadUariv::SERVICE_URL,$options);
         //************************************************************************************
         try {
-            //var_dump($infoRadSalida);exit;
             $infoComplex = array('credencial' =>$infoCredencial,'request' => $infoRadSalida);
             $response = $client->CrearExpedienteOferta($infoComplex);
             //********************************************************************************
@@ -812,26 +1238,82 @@ class WsSimadUariv
             }
             //********************************************************************************
             if(trim($a->DESC_ERROR)){
+				if ($tracker != null) {
+					$tracker->mark('despues_fachada', [
+						'status_code' => 400,
+						'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+						'response_message' => trim($a->DESC_ERROR)
+					]);
+				}
+				//****************************************************************************
+				if ($tracker != null) {
+					$tracker->mark('error');
+					$tracker->finish();
+				}
+				//****************************************************************************
                 WebserviceLogPeer::addLogWs("CrearExpedienteOferta",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,"Error Fachada => ".trim($a->DESC_ERROR),1);
                 return array('status'=>401,'message'=>sprintf("%s %s",$msgsing,trim($a->DESC_ERROR)));
             }else{
+				if ($tracker != null) {
+					$tracker->mark('despues_fachada', [
+						'status_code' => 200,
+						'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+						'response_message' => 'El radicado se envio a la herramienta de gestión'
+					]);
+				}
+				//****************************************************************************
+				if ($tracker != null) {
+					$tracker->mark('exito');
+					$tracker->finish();
+				}
+				//****************************************************************************
                 WebserviceLogPeer::addLogWs("CrearExpedienteOferta",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,"Enviado Exitoso => ".trim($a->RESULT),1);
-                return array('status'=>200,'message'=>sprintf("%s, %s",$msgsing,'Los datos fueron enviados satisfactoriamente'));
+				return array('status' => 200, 'message' => sprintf("%s, %s", $msgsing, 'El radicado se envio a la herramienta de gestión'));
             }
         }catch (SoapFault $e){
-            $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
-            WebserviceLogPeer::addLogWs("CrearExpedienteOferta",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada SoapFault => ".$radicado_com,"Error => ".$msgerror,1);
-            //$this->writetolog($msgerror);
-            //$this->writetolog(htmlspecialchars($client->__getLastRequest()),"xml" );
-            //return array('status'=>400,'message'=>sprintf("%s %s",$msgsing,'Ocurrio un error al enviar los datos, error de protocolo'));
-            file_put_contents(sfConfig::get("sf_log_dir")."\CrearExpedienteOferta.log",htmlspecialchars($client->__getLastRequest(), ENT_QUOTES));
-            return array('status'=>400,'message'=>sprintf("%s %s",$msgsing,$msgerror));
+			$rawFault = $client->getLastRawFaultResponse();
+			if (!empty($rawFault)) {
+				$faultMessage = $client->extractFaultFromSoapResponse($rawFault);
+				if ($faultMessage !== null) {
+					$msgerror =  "SoapFault Error:<br />" . nl2br($faultMessage) . '<br />';
+				}
+			} else {
+            	$msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
+			}
+			//*********************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_fachada', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+			}
+			//*********************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//*********************************************************************************
+			WebserviceLogPeer::addLogWs("CrearExpedienteOferta", htmlspecialchars($client->__getLastRequest()), htmlspecialchars($msgerror), true, "Consumen Fachada SoapFault => " . $radicado_com, "Error => " . $msgerror, 1);
+			//*********************************************************************************
+			return array('status' => 400, 'message' => sprintf("%s => %s", $msgsing, $msgerror));
         } catch (Exception $e) {
             $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
+			//*********************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_fachada', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+			}
+			//*********************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//*********************************************************************************
             WebserviceLogPeer::addLogWs("CrearExpedienteOferta",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada Exception => ".$radicado_com,"Error => ".$msgerror,1);
-			file_put_contents(sfConfig::get("sf_log_dir")."\CrearExpedienteOferta.log",htmlspecialchars($client->__getLastRequest(), ENT_QUOTES));
-            //$this->writetolog($msgerror);
-            //$this->writetolog(htmlspecialchars($client->__getLastRequest()),"xml" );
             return array('status'=>400,'message'=>sprintf("%s %s",$msgsing,'Ocurrio un error al enviar la datos, error de servidor => ' . $msgerror));            
         }
     }
@@ -843,8 +1325,7 @@ class WsSimadUariv
     */
     public function loadWsRadActoAdministrativo($pkconsecutivo_id, $msgsing = null,$modulo_id = ModulesEnable::ComEnviada)
     {
-        try
-        {
+		try {
             if($modulo_id == ModulesEnable::ComEnviada){
                 return $this->loadWsRadActoAdminByComEnviada($pkconsecutivo_id, $msgsing);
             }elseif($modulo_id == ModulesEnable::ActosAdministrativos){
@@ -877,7 +1358,9 @@ class WsSimadUariv
 			$unidad_documental = UnidadDocumentalPeer::retrieveByPK($com_enviada->getExpedienteId());
 		}elseif(!empty($com_enviada->getContenidodocId())){
 			$contunidad_doc = ContenidoUnidadDocumentalPeer::retrieveByPK($com_enviada->getContenidodocId());			
-			if($contunidad_doc != null){ $unidad_documental = UnidadDocumentalPeer::retrieveByPK($contunidad_doc->getUnidaddocumentalId()); }
+			if ($contunidad_doc != null) {
+				$unidad_documental = UnidadDocumentalPeer::retrieveByPK($contunidad_doc->getUnidaddocumentalId());
+		}
 		}
 		//***************************************************************************************
 		$radicado_com = $com_enviada != null ? trim($com_enviada->getRadicado()) : "";
@@ -885,6 +1368,22 @@ class WsSimadUariv
 		$filepath_digit = ComEnviadaPeer::getDigitFormatFileExist($folder_digit['full_path'],$radicado_com);
         $error_image = null;
         //***************************************************************************************
+		$tracker = new SgdeaTrackerMetrics([
+			'documento_id' => basename($radicado_com),
+			'consecutivocom_id' => $comenviada_id,
+			'metodo_svc' => 'RadicarActoAdministrativo',
+			'transaccion_id' => uniqid('fachada_svc_', true),
+			'log_name' => 'fachada_servicios_timers.log'
+		]);
+		//***************************************************************************************
+		if ($tracker != null) {
+			$tracker->mark('inicio');
+		}
+		//***************************************************************************************
+		if (empty($filepath_digit)) {
+			$filepath_digit = $com_enviada->getPathImageDigitByCom();
+		}
+		//***************************************************************************************
         try{
             if(empty($filepath_digit)){
                 if($com_enviada != null){
@@ -917,12 +1416,14 @@ class WsSimadUariv
             $error_image = "Ocurrio un error con la generacion del archivo asociado a la comunicación";
         }
 		//***************************************************************************************
-		try 
-		{
+		try {
 			$list_interesados = array();
 			foreach(ComEnviadaPeer::getListIntersadosByComId($com_enviada->getPrimaryKey()) as $item_com){
-				$list_interesados[] = array('NOMBRE' => (strtoupper($item_com->getInteresados()->getNombreCompuesto())),'NUMERO_IDENTIFICACION' => trim($item_com->getInteresados()->getNumeroIdentificacion()),
-											'TIPO_DOCUMENTO' => trim($item_com->getInteresados()->getTipoidentificacionId()));
+				$list_interesados[] = array(
+					'NOMBRE' => (strtoupper($item_com->getInteresados()->getNombreCompuesto())),
+					'NUMERO_IDENTIFICACION' => trim($item_com->getInteresados()->getNumeroIdentificacion()),
+					'TIPO_DOCUMENTO' => trim($item_com->getInteresados()->getTipoidentificacionId())
+				);
 			}
             //***********************************************************************************
             $suborigenid = !empty($com_enviada->getSuborigen()) ? $com_enviada->getSuborigen() : null;
@@ -951,7 +1452,9 @@ class WsSimadUariv
             $infoRadActoAdm['NumeroResolucion'] = $com_enviada != null ? $com_enviada->getNumeroResolucion() : "";
             $infoRadActoAdm['SubOrigen'] = $suborigenid;
 			//***********************************************************************************
-			$options = Array(
+			$tracker->mark('antes_consumir_svc');
+			//***********************************************************************************
+			$options = array(
 				"uri"=> WsSimadUariv::SERVICE_URI,
 				"style"=> SOAP_DOCUMENT,
 				"use"=> SOAP_LITERAL,
@@ -981,29 +1484,122 @@ class WsSimadUariv
             }
             //************************************************************************************
             if(trim($estado_response) != "OK"){
-                //$response_operation = sprintf("FirmaDigital => %s; Estado => %s; Codigo => %s; Mensaje => %s",trim($msgsing),trim($estado_response),trim($codigo_response),trim($message_response));
                 $msg_error = !empty($message_response) ? ", ".trim($message_response) : "";
+				//********************************************************************************
+				if ($tracker != null) {
+					$tracker->mark('despues_consumir_svc', [
+						'status_code' => 400,
+						'duration_ms' => ($tracker->steps['despues_consumir_svc']['elapsed'] - $tracker->steps['antes_consumir_svc']['elapsed']) * -1000,
+						'response_message' => trim($msg_error)
+					]);
+				}
+				//********************************************************************************
+				if ($tracker != null) {
+					$tracker->mark('error');
+					$tracker->finish();
+				}
+				//********************************************************************************
                 WebserviceLogPeer::addLogWs("RadicarActoAdministrativo",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,"Error Fachada => ".$message_response,1);       
-                return array('status' => 400,'message' => 'Error de integraci&oacute;n, NO se envio informaci&oacute;n al area de notificaciones'.$msg_error);
+				return array('status' => 400, 'code_response' => $codigo_response, 'message' => 'Error de integraci&oacute;n, NO se envio informaci&oacute;n al area de notificaciones' . $msg_error);
             }else{
                 $response_operation = sprintf("FirmaDigital => %s; Codigo => %s; Mensaje => Los datos fueron enviados satisfactoriamente",trim($msgsing),trim($codigo_response));
+				$svc_usdata = sprintf("Codigo integracion => %s; Mensaje => Se envio la informaci&oacute;n al area de notificaciones", trim($codigo_response));
+				//********************************************************************************
+				if ($tracker != null) {
+					$tracker->mark('despues_consumir_svc', [
+						'status_code' => 200,
+						'duration_ms' => ($tracker->steps['despues_consumir_svc']['elapsed'] - $tracker->steps['antes_consumir_svc']['elapsed']) * -1000,
+						'response_message' => trim($response_operation)
+					]);
+				}
+				//********************************************************************************
+				if ($tracker != null) {
+					$tracker->mark('exito');
+					$tracker->finish();
+				}
+				//********************************************************************************
 				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,"Enviado Exitoso => ".$response_operation,1);
-                return array('status' => 200,'message' => 'Se envio la informaci&oacute;n al area de notificaciones');
+				return array('status' => 200, 'message' => $svc_usdata, 'code_response' => $codigo_response);
             }
         }catch (SoapFault $e){
+			$rawFault = $client->getLastRawFaultResponse();
+			if (!empty($rawFault)) {
+				$faultMessage = $client->extractFaultFromSoapResponse($rawFault);
+				if ($faultMessage !== null) {
+					$msgerror =  "SoapFault Error:<br />" . nl2br($faultMessage) . '<br />';
+				}
+			} else {
             $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
+			}
+			//************************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_consumir_svc', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_consumir_svc']['elapsed'] - $tracker->steps['antes_consumir_svc']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+			}
+			//************************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//************************************************************************************
 			if(isset($client)){
-				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),false,"Consumen Fachada => ".$radicado_com,sprintf("Error SoapFault; FirmaDigital => %s; Error => %s",trim($msgsing),trim($msgerror)),1);
-				if($this->nulog){ file_put_contents(sfConfig::get("sf_log_dir")."\RadicarActoAdministrativo.log",htmlspecialchars($client->__getLastRequest(), ENT_QUOTES)); }
+				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo", htmlspecialchars($client->__getLastRequest()), htmlspecialchars($msgerror), false, "Consumen Fachada => " . $radicado_com, sprintf("Error SoapFault; FirmaDigital => %s; Error => %s", trim($msgsing), trim($msgerror)), 1);
+				if ($this->nulog) {
+					file_put_contents(sfConfig::get("sf_log_dir") . "\RadicarActoAdministrativo.log", htmlspecialchars($msgerror, ENT_QUOTES));
+				}
 			}else{
 				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo","ERROR CLIENTE SOAP",trim($msgerror),false,"Consumen Fachada => ".$radicado_com,sprintf("Error SoapFault; FirmaDigital => %s; Error => %s",trim($msgsing),trim($msgerror)),1);
 			}
 			return array('status' => 400,'message' => 'Ocurrio un error al enviar los datos, error de protocolo SOAP');   
+		} catch (PropelException $e) {
+			$msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />' . nl2br($e->getMessage()) . '<br />';
+			//************************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_consumir_svc', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_consumir_svc']['elapsed'] - $tracker->steps['antes_consumir_svc']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+			}
+			//************************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//************************************************************************************
+			if (isset($client)) {
+				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo", htmlspecialchars($client->__getLastRequest()), htmlspecialchars($client->__getLastResponse()), true, "Consumen Fachada => " . $radicado_com, sprintf("Error Exception; FirmaDigital => %s; Error => %s", trim($msgsing), trim($msgerror)), 1);
+				if ($this->nulog) {
+					file_put_contents(sfConfig::get("sf_log_dir") . "\RadicarActoAdministrativo.log", htmlspecialchars($client->__getLastRequest(), ENT_QUOTES));
+				}
+			} else {
+				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo", "ERROR EXCEPTION SERVICIO SGDEA", $msgerror, false, "Consumen Fachada => " . $radicado_com, sprintf("Error Exception; FirmaDigital => %s; Error => %s", trim($msgsing), trim($msgerror)), 1);
+			}
+			return array('status' => 400, 'message' => 'Ocurrio un error al enviar la datos, error de servidor SGDEA');
         } catch (Exception $e) {
             $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
+			//************************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_consumir_svc', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_consumir_svc']['elapsed'] - $tracker->steps['antes_consumir_svc']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+			}
+			//************************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//************************************************************************************
 			if(isset($client)){
 				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,sprintf("Error Exception; FirmaDigital => %s; Error => %s",trim($msgsing),trim($msgerror)),1);
-				if($this->nulog){ file_put_contents(sfConfig::get("sf_log_dir")."\RadicarActoAdministrativo.log",htmlspecialchars($client->__getLastRequest(), ENT_QUOTES)); }
+				if ($this->nulog) {
+					file_put_contents(sfConfig::get("sf_log_dir") . "\RadicarActoAdministrativo.log", htmlspecialchars($client->__getLastRequest(), ENT_QUOTES));
+				}
 			}else{
 				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo","ERROR EXCEPTION SERVICIO SGDEA",$msgerror,false,"Consumen Fachada => ".$radicado_com,sprintf("Error Exception; FirmaDigital => %s; Error => %s",trim($msgsing),trim($msgerror)),1);
 			}
@@ -1019,24 +1615,41 @@ class WsSimadUariv
     private function loadWsRadActoAdminByActoAdministrativo($actoadministrativo_id, $msgsing=null)
     {
 		$acto_administrativo = ActoAdministrativoPeer::retrieveByPK($actoadministrativo_id);
-		$unidad_documental = !empty($acto_administrativo->getExpedienteId()) ? UnidadDocumentalPeer::retrieveByPK($acto_administrativo->getExpedienteId()) : null;
         $radicado_com = $acto_administrativo != null ? trim($acto_administrativo->getRadicadoCompuesto()) : "";
 		$radicado_fname = $acto_administrativo != null ? trim($acto_administrativo->getRadicadoCustom()) : "";
+		$unidad_documental = null;
+		$client = null;
+		//***************************************************************************************
+		if (!empty($acto_administrativo->getExpedienteId())) {
+			$unidad_documental = UnidadDocumentalPeer::retrieveByPK($acto_administrativo->getExpedienteId());
+		} elseif (!empty($acto_administrativo->getContenidodocId())) {
+			$contunidad_doc = ContenidoUnidadDocumentalPeer::retrieveByPK($acto_administrativo->getContenidodocId());
+			if ($contunidad_doc != null) {
+				$unidad_documental = UnidadDocumentalPeer::retrieveByPK($contunidad_doc->getUnidaddocumentalId());
+			}
+		}
+		//***************************************************************************************
+		$folder_digit = ActoAdministrativoPeer::initFolderDigit($acto_administrativo->getRegionalId(), $acto_administrativo->getPeriodoId());
+		$filepath_digit = ActoAdministrativoPeer::getDigitFormatFileExist($folder_digit['full_path'], $radicado_fname);
+		$error_image = null;
 		//***************************************************************************************
         $tracker = new SgdeaTrackerMetrics([
             'documento_id' => basename($radicado_com),
-            'usuario_id' => $acto_administrativo->getPrimaryKey(),
-            'transaccion_id' => uniqid('firma_', true),
+			'consecutivocom_id' => $actoadministrativo_id,
+			'metodo_svc' => 'RadicarActoAdministrativo',
+			'transaccion_id' => uniqid('fachada_svc_', true),
             'log_name' => 'fachada_servicios_timers.log'
         ]);
 		//***************************************************************************************
-		$folder_digit = ActoAdministrativoPeer::initFolderDigit($acto_administrativo->getRegionalId(),$acto_administrativo->getPeriodoId());
-		$filepath_digit = ActoAdministrativoPeer::getDigitFormatFileExist($folder_digit['full_path'],$radicado_fname);
-        $error_image = null;
+		if ($tracker != null) {
+			$tracker->mark('inicio');
+		}
         //***************************************************************************************
+		if (empty($filepath_digit)) {
+			$filepath_digit = $acto_administrativo->getPathImageDigitByCom();
+		}
+		//***************************************************************************************
         try{
-            $tracker->mark('inicio');
-            //***********************************************************************************
             if(!file_exists($filepath_digit)){
                 if($acto_administrativo != null){
                     if(!empty($acto_administrativo->getUrlFileWord())){
@@ -1068,12 +1681,14 @@ class WsSimadUariv
             $error_image = "Ocurrio un error con la generacion del archivo asociado a la comunicación";
         }
 		//***************************************************************************************
-		try 
-		{
+		try {
 			$list_interesados = array();
 			foreach(ActoAdministrativoPeer::getListIntersadosByActoId($acto_administrativo->getPrimaryKey()) as $item_com){
-				$list_interesados[] = array('NOMBRE' => (strtoupper($item_com->getInteresados()->getNombreCompuesto())),'NUMERO_IDENTIFICACION' => trim($item_com->getInteresados()->getNumeroIdentificacion()),
-											'TIPO_DOCUMENTO' => trim($item_com->getInteresados()->getTipoidentificacionId()));
+				$list_interesados[] = array(
+					'NOMBRE' => (strtoupper($item_com->getInteresados()->getNombreCompuesto())),
+					'NUMERO_IDENTIFICACION' => trim($item_com->getInteresados()->getNumeroIdentificacion()),
+					'TIPO_DOCUMENTO' => trim($item_com->getInteresados()->getTipoidentificacionId())
+				);
 			}
             //***********************************************************************************
             $suborigenid = !empty(trim($acto_administrativo->getSuborigen())) ? trim($acto_administrativo->getSuborigen()) : null;
@@ -1103,9 +1718,11 @@ class WsSimadUariv
             $infoRadActoAdm['NumeroResolucion'] = $acto_administrativo != null ? $acto_administrativo->getNumeroResolucion() : "";
             $infoRadActoAdm['SubOrigen'] = $suborigenid;
 			//***********************************************************************************
-            $tracker->mark('antes_firma');
+			if ($tracker != null) {
+				$tracker->mark('antes_consumir_svc');
+			}
 			//***********************************************************************************
-			$options = Array(
+			$options = array(
 				"uri"=> WsSimadUariv::SERVICE_URI,
 				"style"=> SOAP_DOCUMENT,
 				"use"=> SOAP_LITERAL,
@@ -1130,47 +1747,116 @@ class WsSimadUariv
             $message_response = $response_acto->Mensaje;
             $codigo_response = $response_acto->Codigo;
             //************************************************************************************
-            $tracker->mark('despues_firma', [
-                'status_code' => trim($estado_response) != "OK" ?? "ERROR",
-                'duration_ms' => ($tracker->steps['despues_firma']['elapsed'] - $tracker->steps['antes_firma']['elapsed']) * -1000
-            ]);
-            //************************************************************************************
             if($this->nulog){
 				file_put_contents(sfConfig::get("sf_log_dir")."\RadicarActoAdministrativo.log",htmlspecialchars($client->__getLastRequest(), ENT_QUOTES));
             }
             //************************************************************************************
             if(trim($estado_response) != "OK"){
-                //$response_operation = sprintf("FirmaDigital => %s; Estado => %s; Codigo => %s; Mensaje => %s",trim($msgsing),trim($estado_response),trim($codigo_response),trim($message_response));
                 $msg_error = !empty($message_response) ? ", ".trim($message_response) : "";
-                WebserviceLogPeer::addLogWs("RadicarActoAdministrativo",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,"Error Fachada => ".$message_response,1);
                 //********************************************************************************
-                $tracker->mark('error');
-                $tracker->finish();
+				if ($tracker != null) {
+					$tracker->mark('despues_consumir_svc', [
+						'status_code' => 400,
+						'duration_ms' => ($tracker->steps['despues_consumir_svc']['elapsed'] - $tracker->steps['antes_consumir_svc']['elapsed']) * -1000,
+						'response_message' => trim($msg_error)
+					]);
+
+	                $tracker->mark('error');
+	                $tracker->finish();
+				}
                 //********************************************************************************
+				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo", htmlspecialchars($client->__getLastRequest()), htmlspecialchars($client->__getLastResponse()), true, "Consumen Fachada => " . $radicado_com, "Error Fachada => " . $message_response, 1);
                 return array('status' => 400,'message' => 'Error de integraci&oacute;n, NO se envio informaci&oacute;n al area de notificaciones'.$msg_error);
             }else{
                 $response_operation = sprintf("FirmaDigital => %s; Codigo => %s; Mensaje => Los datos fueron enviados satisfactoriamente",trim($msgsing),trim($codigo_response));
-				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,"Enviado Exitoso => ".$response_operation,1);
                 //********************************************************************************
-                $tracker->mark('exito');
-                $tracker->finish();
+				if ($tracker != null) {
+					$tracker->mark('despues_consumir_svc', [
+						'status_code' => 200,
+						'duration_ms' => ($tracker->steps['despues_consumir_svc']['elapsed'] - $tracker->steps['antes_consumir_svc']['elapsed']) * -1000,
+						'response_message' => trim($response_operation)
+					]);
+
+	                $tracker->mark('exito');
+	                $tracker->finish();
+				}
                 //********************************************************************************
+				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo", htmlspecialchars($client->__getLastRequest()), htmlspecialchars($client->__getLastResponse()), true, "Consumen Fachada => " . $radicado_com, "Enviado Exitoso => " . $response_operation, 1);
                 return array('status' => 200,'message' => 'Se envio la informaci&oacute;n al area de notificaciones');
             }
         }catch (SoapFault $e){
-            $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
+			$rawFault = $client->getLastRawFaultResponse();
+			if (!empty($rawFault)) {
+				$faultMessage = $client->extractFaultFromSoapResponse($rawFault);
+				if ($faultMessage !== null) {
+					$msgerror =  "SoapFault Error:<br />" . nl2br($faultMessage) . '<br />';
+				}
+			} else {
+            	$msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
+			}
+			//************************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_fachada', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//************************************************************************************
 			if(isset($client)){
-				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),false,"Consumen Fachada => ".$radicado_com,sprintf("Error SoapFault; FirmaDigital => %s; Error => %s",trim($msgsing),trim($msgerror)),1);
-				if($this->nulog){ file_put_contents(sfConfig::get("sf_log_dir")."\RadicarActoAdministrativo.log",htmlspecialchars($client->__getLastRequest(), ENT_QUOTES)); }
+				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo", htmlspecialchars($client->__getLastRequest()), htmlspecialchars($msgerror), false, "Consumen Fachada => " . $radicado_com, sprintf("Error SoapFault; FirmaDigital => %s; Error => %s", trim($msgsing), trim($msgerror)), 1);
+				if ($this->nulog) {
+					file_put_contents(sfConfig::get("sf_log_dir") . "\RadicarActoAdministrativo.log", htmlspecialchars($msgerror, ENT_QUOTES));
+				}
 			}else{
 				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo","ERROR CLIENTE SOAP",trim($msgerror),false,"Consumen Fachada => ".$radicado_com,sprintf("Error SoapFault; FirmaDigital => %s; Error => %s",trim($msgsing),trim($msgerror)),1);
 			}
-			return array('status' => 400,'message' => 'Ocurrio un error al enviar los datos, error de protocolo SOAP');   
+			return array('status' => 400, 'message' => 'Ocurrio un error al enviar los datos, error de protocolo SOAP => ' . $msgerror);
+		} catch (PropelException $e) {
+			$msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />' . nl2br($e->getMessage()) . '<br />';
+			//************************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_fachada', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//************************************************************************************
+			if (isset($client)) {
+				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo", htmlspecialchars($client->__getLastRequest()), htmlspecialchars($client->__getLastResponse()), true, "Consumen Fachada => " . $radicado_com, sprintf("Error Exception; FirmaDigital => %s; Error => %s", trim($msgsing), trim($msgerror)), 1);
+				if ($this->nulog) {
+					file_put_contents(sfConfig::get("sf_log_dir") . "\RadicarActoAdministrativo.log", htmlspecialchars($client->__getLastRequest(), ENT_QUOTES));
+				}
+			} else {
+				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo", "ERROR EXCEPTION SERVICIO SGDEA", $msgerror, false, "Consumen Fachada => " . $radicado_com, sprintf("Error Exception; FirmaDigital => %s; Error => %s", trim($msgsing), trim($msgerror)), 1);
+			}
+			return array('status' => 400, 'message' => 'Ocurrio un error al enviar la datos, error de servidor SGDEA');
         } catch (\Exception $e) {
             $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
+			//************************************************************************************
+			if ($tracker != null) {
+				$tracker->mark('despues_fachada', [
+					'status_code' => 400,
+					'duration_ms' => ($tracker->steps['despues_fachada']['elapsed'] - $tracker->steps['antes_fachada']['elapsed']) * -1000,
+					'response_message' => $msgerror
+				]);
+
+				$tracker->mark('error');
+				$tracker->finish();
+			}
+			//************************************************************************************
 			if(isset($client)){
 				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo",htmlspecialchars($client->__getLastRequest()),htmlspecialchars($client->__getLastResponse()),true,"Consumen Fachada => ".$radicado_com,sprintf("Error Exception; FirmaDigital => %s; Error => %s",trim($msgsing),trim($msgerror)),1);
-				if($this->nulog){ file_put_contents(sfConfig::get("sf_log_dir")."\RadicarActoAdministrativo.log",htmlspecialchars($client->__getLastRequest(), ENT_QUOTES)); }
+				if ($this->nulog) {
+					file_put_contents(sfConfig::get("sf_log_dir") . "\RadicarActoAdministrativo.log", htmlspecialchars($client->__getLastRequest(), ENT_QUOTES));
+				}
 			}else{
 				WebserviceLogPeer::addLogWs("RadicarActoAdministrativo","ERROR EXCEPTION SERVICIO SGDEA",$msgerror,false,"Consumen Fachada => ".$radicado_com,sprintf("Error Exception; FirmaDigital => %s; Error => %s",trim($msgsing),trim($msgerror)),1);
 			}
@@ -1186,12 +1872,6 @@ class WsSimadUariv
     */
     public function initLinkResponseCom($rows = 2000)
 	{
-        /*SELECT COM_ENVIADA.COMENVIADA_ID, COM_RECIBIDA.COMRECIBIDA_ID,COM_ENVIADA.CONSECUTIVO_RESP, COM_RECIBIDA.COMENVIADA_ID,COM_ENVIADA.CONTENIDODOC_ID
-        FROM COM_ENVIADA 
-        JOIN COM_RECIBIDA ON COM_ENVIADA.CONSECUTIVO_RESP = COM_RECIBIDA.COMRECIBIDA_ID
-        where COM_ENVIADA.CONSECUTIVO_RESP > 0 AND COM_ENVIADA.CONTENIDODOC_ID IS NULL AND COM_ENVIADA.TIPO_INTEGRACION = 'DEMANDA'
-        AND COM_RECIBIDA.COMENVIADA_ID IS NULL*/
-		//***************************************************************************************
         $c = new Criteria();
 		$c->setLimit($rows);
         $c->addJoin(ComEnviadaPeer::CONSECUTIVO_RESP,ComRecibidaPeer::COMRECIBIDA_ID);
@@ -1199,7 +1879,8 @@ class WsSimadUariv
         $c->add(ComEnviadaPeer::CONTENIDODOC_ID,null,Criteria::ISNULL);
         $c->add(ComEnviadaPeer::TIPO_INTEGRACION,'DEMANDA');
         $c->add(ComRecibidaPeer::COMENVIADA_ID,null,Criteria::ISNULL);
-		$c->add(ComEnviadaPeer::PERIODO_ID,2023);
+		$c->add(ComRecibidaPeer::ESTADOCOMRECIBIDA_ID, array(14), Criteria::NOT_IN);
+		//$c->add(ComEnviadaPeer::PERIODO_ID,2022);
         //***************************************************************************************
         $c->clearSelectColumns();
         $c->addSelectColumn(ComEnviadaPeer::COMENVIADA_ID);//0
@@ -1212,23 +1893,26 @@ class WsSimadUariv
         $objects_com = $stmt->fetchAll();
         print('TOTAL REGISTROS => '.count($objects_com). PHP_EOL);
         //***************************************************************************************
-        $estado_respondida = 5;$origentransfer_id = 3;$item = 1;
-        foreach ($objects_com as $object_info)
-        {
+		$estado_respondida = 5;
+		$origentransfer_id = 3;
+		$item = 1;
+		foreach ($objects_com as $object_info) {
 			$com_recibida_resp = null;
 			$firmante_id = null;
 			$com_enviada = null;
 			$contenidodoc_id = null;
+
             try {
                 if(!empty($object_info[2])){
                     $com_recibida_resp = ComRecibidaPeer::retrieveByPk($object_info[2]);
-					if($com_recibida_resp->getEstadocomrecibidaId() == 14){ continue; }
+					print('ESTADOCOMRECIBIDA_ID => ' . $com_recibida_resp->getEstadoComRecibida() . PHP_EOL);
+					if ($com_recibida_resp->getEstadocomrecibidaId() == 14) {
+						continue;
+					}
                     $com_recibida_resp->setEstadocomrecibidaId($estado_respondida);
                     $com_recibida_resp->setComenviadaId($object_info[0]);
                     $com_recibida_resp->save();
 					//***********************************************************************************************************
-					print(($item++).'. RADICADO ENTRADA => '.$com_recibida_resp->getRadicado(). PHP_EOL);
-                    //***********************************************************************************************************
                     ComRecibidaPeer::updateEstadosComRecibida($com_recibida_resp->getPrimaryKey(),$estado_respondida);
                     //***********************************************************************************************************
                     if(!empty($com_recibida_resp->getContenidodocId())){
@@ -1334,6 +2018,189 @@ class WsSimadUariv
             return array('status' => 400,'message' => 'Ocurrio un error al enviar la datos, error de servidor SGDEA. '.$e->getMessage());            
         }
     }
+	
+	/**
+	 * WsSimadUariv::batchSignComEnviada()
+	 * Inicia proceso de firma en lote, en segundo plano con tarea programada 
+	 * @return
+	 */
+	public function batchSignComEnviada($usmarca = -1, $rows = 200, $estado_firma = array(3))
+	{
+		ini_set('max_execution_time', 0);
+		$ilist_coms = ComEnviadaPeer::getListComMarcadosByUser($usmarca, $rows, $estado_firma);
+		$response_data = array();
+		$count_error = 0;
+		$radicado_list = array();
+		$radicado_error = array();
+		$logfile = sfConfig::get("sf_log_dir") . DIRECTORY_SEPARATOR . "comenviada_sign.log";
+		//*********************************************************************************************
+		print('TOTAL REGISTROS => ' . count($ilist_coms) . PHP_EOL);
+		simad_util::writetolog($logfile, 'TOTAL REGISTROS => ' . count($ilist_coms));
+		//*********************************************************************************************
+		$index = 1;
+		foreach ($ilist_coms as $com_object) {
+			if (in_array($com_object['FIRMADO_DIGITAL'], array(3, 0))) {
+				$com_enviada = ComEnviadaPeer::retrieveByPK($com_object['COMENVIADA_ID']);
+				//*************************************************************************************
+				try {
+					$com_enviada_anterior = clone $com_enviada;
+					$response_sign = $com_enviada->singDocumentProcess(true);
+					if ($response_sign['httpStatus'] == 200) {
+						$str_log = "Comunicación con radicado " . $com_object['RADICADO'] . " Firmada";
+					} else {
+						$str_log = "ERROR al firmar comunicación con radicado " . $com_object['RADICADO'] . ',' . $response_sign['message'];
+}
+					//**********************************************************************************
+					$com_enviada->setMarca(0);
+					$com_enviada->save();
+					//**********************************************************************************
+					$radicado_list[] = $com_enviada->getRadicado();
+				} catch (PropelException $th) {
+					//$com_data['isError'] = true;
+					$count_error += 1;
+					$radicado_error[] = $com_object['RADICADO'];
+					$str_log = "Error al firmar comunicación con Radicado " . $com_object['RADICADO'];
+				} catch (Exception $th) {
+					//$com_data['isError'] = true;
+					$count_error += 1;
+					$radicado_error[] = $com_object['RADICADO'];
+					$str_log = "Error al firmar comunicación con Radicado " . $com_object['RADICADO'];
+				}
+				//*************************************************************************************
+				$response_data[$com_object['COMENVIADA_ID']] = $com_enviada->getRadicado();
+				AuditLogPeer::guardarAuditoriaLite('ComEnviada', $com_enviada_anterior, $com_enviada, 4, $com_object['RADICADO'], $usmarca);
+			} else {
+				$count_error += 1;
+				$radicado_error[] = $com_object['RADICADO'];
+			}
+			//*****************************************************************************************
+			print($index++ . '. ' . $str_log . PHP_EOL);
+			simad_util::writetolog($logfile, $str_log);
+		}
+		//*********************************************************************************************
+		$response_data['httpStatus'] = $count_error > 0 ? 400 : 200;
+		$str_firmados = implode(",", $radicado_list);
+		$str_no_firmados = implode(",", $radicado_error);
+		$response_data['message'] = $count_error > 0 ? "Algunas comunicaciones no se pudieron firmar, $str_no_firmados, por favor validar los radicados" : "Todas las comunicaciones se firmaron, $str_firmados";
+		//************************************************************************************************************************
+		return true;
+	}
+
+	/**
+	 * WsSimadUariv::batchComEnviadaNotify()
+	 * Inicia proceso de notificacion de comunicaciones enviadas por tipo servicio "EMAIL"
+	 * @return
+	 */
+	public function batchComEnviadaNotify($usmarca = -1, $rows = 200)
+	{
+		ini_set('max_execution_time', 0);
+		$ilist_coms = $this->getComEnviadaByMarca($usmarca, $rows);
+		$response_data = array();
+		$count_error = 0;
+		$radicado_list = array();
+		$radicado_error = array();
+		$logfile = sfConfig::get("sf_log_dir") . DIRECTORY_SEPARATOR . "comenviada_emailnotify.log";
+		//*********************************************************************************************
+		print('TOTAL REGISTROS => ' . count($ilist_coms) . PHP_EOL);
+		//print('MAX ROWS => '.$rows. PHP_EOL);
+		simad_util::writetolog($logfile, 'TOTAL REGISTROS => ' . count($ilist_coms));
+		//*********************************************************************************************
+		$index = 1;
+		foreach ($ilist_coms as $com_object) {
+			$com_enviada = ComEnviadaPeer::retrieveByPK($com_object['COMENVIADA_ID']);
+			//*************************************************************************************
+			try {
+				$coll_intersados = ComEnviadaPeer::getListIntersadosByComId($com_enviada->getPrimaryKey());
+				$intersados_pks = array();
+
+				$tipo_servicio = TipoServicioPeer::getTipoServicioObjByName("EMAIL");
+				$tiposervicio_id = !empty($tipo_servicio) ? $tipo_servicio->getPrimaryKey() : null;
+				$email_interesado = "";
+				$coll_emailinteresados = array();
+
+				foreach ($coll_intersados as $interesado) {
+					$email_interesado = trim($interesado->getInteresados()->getEmail()) ? trim($interesado->getInteresados()->getEmail()) : null;
+					$intersados_pks[] = $interesado->getInteresados()->getPrimaryKey();
+
+					if (!empty($email_interesado)) {
+						$coll_emailinteresados[] = $email_interesado;
+					}
+				}
+				//***********************************************************************
+				$email_interesado = implode(";", $coll_emailinteresados);
+				$dependencia_id = $com_enviada->getDependenciaId();
+				$usuario_firma = EnviadaUsuarioPeer::getUserComByRol($com_enviada->getPrimaryKey(), 2);
+				//$userorigen_id = $usuario_firma->getUsuario()->getUsuarioId();
+				$userorigen_id = 1;
+				$str_log = sprintf("Radicado: %s ", $com_enviada->getRadicado());
+				//***********************************************************************
+				if ($tipo_servicio->getTipoEnvio() == 2 &&  !empty($email_interesado)) {
+					$response_servicio = $com_enviada->addServicioByCom($userorigen_id, $tiposervicio_id, $intersados_pks);
+					$servicio = $response_servicio['isError'] == false ? $response_servicio['object'] : null;
+					//******************************************************************
+					if ($servicio != null) {
+						if (empty($servicio->getEmailDestino())) {
+							$servicio->setEmailDestino(trim($email_interesado));
+							$servicio->save();
+						}
+						//**************************************************************
+						$str_log .= "Servicio creado exitosamente [" . $servicio->getRadicado() . "]";
+						//**************************************************************
+						if ($dependencia_id) {
+							$sendEmailNotify = $servicio->envioEmailNotificacion($dependencia_id);
+							$str_log .= ($sendEmailNotify != true) ? sprintf(" Error enviar email (%s)", trim($email_interesado)) : sprintf(" Email enviado con exito (%s)", trim($email_interesado));
+							//***********************************************************
+							if ($sendEmailNotify) {
+								$servicioestado_id = 3;
+								$estadocomenviada_id = 6;
+								$servicio->setServicioestadoId($servicioestado_id);
+								$servicio->save();
+								//*******************************************************
+								$com_enviada->setServicioId($servicio->getPrimaryKey());
+								$com_enviada->setMarca(0);
+								$com_enviada->save();
+								//*******************************************************
+								EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey(), $estadocomenviada_id);
+							}
+							//***********************************************************
+							//bitacora de notificacion
+							if ($sendEmailNotify != true) {
+								$obs_bitacora = "Error al enviar el email de notificación, no se notifico al interesado email: " . trim($email_interesado);
+							} else {
+								$obs_bitacora = "Se notifico al interesado, email: " . trim($email_interesado);
+							}
+							//***********************************************************
+							ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicio->getServicioestadoId(), $userorigen_id, $userorigen_id, $obs_bitacora);
+						}
+					} else {
+						$str_log .= $response_servicio['message'];
+					}
+				} else {
+					$str_log .= "La comunicacion no se notifica por email";
+				}
+			} catch (PropelException $th) {
+				//$com_data['isError'] = true;
+				$count_error += 1;
+				$radicado_error[] = $com_object['RADICADO'];
+				$str_log = "Error al firmar comunicación con Radicado " . $com_object['RADICADO'];
+			} catch (Exception $th) {
+				//$com_data['isError'] = true;
+				$count_error += 1;
+				$radicado_error[] = $com_object['RADICADO'];
+				$str_log = "Error al firmar comunicación con Radicado " . $com_object['RADICADO'];
+			}
+			//*****************************************************************************************
+			print($index++ . '. ' . $str_log . PHP_EOL);
+			simad_util::writetolog($logfile, $str_log);
+		}
+		//*********************************************************************************************
+		$response_data['httpStatus'] = $count_error > 0 ? 400 : 200;
+		$str_firmados = implode(",", $radicado_list);
+		$str_no_firmados = implode(",", $radicado_error);
+		$response_data['message'] = $count_error > 0 ? "Algunas comunicaciones no se pudieron firmar, $str_no_firmados, por favor validar los radicados" : "Todas las comunicaciones se firmaron, $str_firmados";
+		//************************************************************************************************************************
+		return true;
+	}
 }
 
 class SoapClientExtended extends SoapClient
@@ -1402,8 +2269,7 @@ class SoapClientExtended extends SoapClient
     }
 
     /**
-     * Realiza la petición SOAP vía cURL capturando SIEMPRE el body de respuesta,
-     * incluso ante HTTP 500
+	 * Realiza la petición SOAP vía cURL capturando SIEMPRE el body de respuesta
      */
     private function doRequestCurl(string $request, string $location, string $action): array
     {
@@ -1429,7 +2295,6 @@ class SoapClientExtended extends SoapClient
             curl_setopt($ch, CURLOPT_POST,           true);
             curl_setopt($ch, CURLOPT_POSTFIELDS,     $request);
             curl_setopt($ch, CURLOPT_HTTPHEADER,     $headers);
-            // MUY IMPORTANTE: capturar el body aunque sea HTTP 4xx/5xx
             curl_setopt($ch, CURLOPT_FAILONERROR,    false);
 
             $response = curl_exec($ch);
@@ -1445,7 +2310,6 @@ class SoapClientExtended extends SoapClient
                 'httpCode' => $httpCode,
                 'body'     => $response ?: '',
             ];
-
         } catch (Exception $e) {
             return [
                 'httpCode' => 500,
@@ -1458,8 +2322,7 @@ class SoapClientExtended extends SoapClient
     {
         require_once(sfConfig::get('sf_lib_dir').'/ShellWrapper/autoload.php');
         //*********************************************************************************************
-        try
-        {
+		try {
             $response = null;
             $cli = sfConfig::get('sf_lib_dir').self::SOAPCLI;
             
@@ -1470,20 +2333,21 @@ class SoapClientExtended extends SoapClient
             $command->addArgument('istest', ($this->istest ? "true" : "false"));
 
             $shell->run($command);
-            //$ccm = print_r($command);
 
             $response = $shell->getOutput();
             //echo $outvalue = $shell->getReturnValue();
 
             if(!empty($response)){
-                if(is_array($response)){ $response = $response[0]; }
+				if (is_array($response)) {
+					$response = $response[0];
+				}
             }else{
                 $response = '<codigo>400</codigo><mensaje>Ocurrio un error interno en el servidor, error de integracion</mensaje>';
             }
 
             return $response;
         }catch (Exception $e) {
-            $msgerror = "Error Exception:<br /><br />Error Details:<br />". $e->getMessage() . "<br />";            
+			$msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />' . nl2br($e->getMessage()) . '<br />';
             return $msgerror;
         }
     }
@@ -1502,7 +2366,7 @@ class SoapClientExtended extends SoapClient
                     "SOAPAction: ".$action
                 );
                 
-                $curl = WsSimadUariv::SERVICE_URL;  // WSDL web service url for request method/function
+			$curl = WsSimadUariv::SERVICE_URL;
 				$ch = curl_init($curl);
                 curl_setopt($ch, CURLOPT_URL, $curl);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -1585,7 +2449,6 @@ class SoapClientExtended extends SoapClient
             }
 
             return null;
-
         } catch (\Exception $e) {
             return null;
         } finally {
