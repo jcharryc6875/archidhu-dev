@@ -7,56 +7,51 @@ $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 ?>
 
 <div class="col-md-12" style="padding: 0px;">
-    <?php if(count($ldocument_version) == 0): ?>
-        <div class="panel panel-primary">		      
+    <?php if (count($ldocument_version) == 0): ?>
+        <div class="panel panel-primary">
             <div class="panel-body">
                 <div class="alert alert-default"><strong>No hay versiones disponibles</strong>.</div>
             </div>
         </div>
     <?php else: ?>
-        <?php foreach($ldocument_version as $doc_row){ ?>
-            <div class="version-item<?php echo $doc_row->getCurrentVersion() ? " active" : ""; ?>" data-version-id="<?php echo $doc_row->getPrimaryKey(); ?>">
-                <div class="version-number">
-                    Versi&oacute;n <?php echo $doc_row->getVersionNumber(); ?>
-                    <?php
-                        if($doc_row->getStatusVersion() == StatusDocsVersion::Actual){
-                            $status_class = " status-current";
-                        }elseif($doc_row->getStatusVersion() == StatusDocsVersion::Borrador){
-                            $status_class = " status-draft";
-                        }elseif($doc_row->getStatusVersion() == StatusDocsVersion::Archivada){
-                            $status_class = " status-archived";
-                        }else{
-                            $status_class = "";
-                        }
-                    ?>
-                    <span class="status-badge<?php echo $status_class; ?>">
-                        <?php echo $doc_row->getStatusVersion(); ?>
-                    </span>
+        <div class="doc-version-grid">
+            <?php foreach ($ldocument_version as $doc_row) { ?>
+                <?php
+                    if ($doc_row->getStatusVersion() == StatusDocsVersion::Actual) {
+                        $status_class = " status-current";
+                    } elseif ($doc_row->getStatusVersion() == StatusDocsVersion::Borrador) {
+                        $status_class = " status-draft";
+                    } elseif ($doc_row->getStatusVersion() == StatusDocsVersion::Archivada) {
+                        $status_class = " status-archived";
+                    } else {
+                        $status_class = "";
+                    }
+                ?>
+                <div class="doc-version-card<?php echo $doc_row->getCurrentVersion() ? " current" : ""; ?>" data-version-id="<?php echo $doc_row->getPrimaryKey(); ?>">
+                    <?php if ($doc_row->getCurrentVersion()) { ?>
+                        <span class="doc-version-star" data-toggle="tooltip" data-original-title="Versión actual"><span class="glyphicon glyphicon-star"></span></span>
+                    <?php } ?>
+                    <div class="doc-version-page">
+                        <span class="glyphicon glyphicon-file"></span>
+                    </div>
+                    <div class="doc-version-num">Versión <?php echo $doc_row->getVersionNumber(); ?></div>
+                    <span class="status-badge<?php echo $status_class; ?>"><?php echo $doc_row->getStatusVersion(); ?></span>
+                    <div class="doc-version-meta">
+                        <?php echo $doc_row->getFechaCreacion(); ?><br>
+                        <?php echo $doc_row->getUsuario()->getNombreApellido(); ?>
+                    </div>
+                    <?php if ($doc_row->getCurrentVersion() !== 1) { ?>
+                        <div class="doc-version-actions">
+                            <a class="doc-version-btn tooltip-primary" onclick="javascript:jQuery.OpenModalSIMAD('<?php echo url_for('acto_administrativo/compareVersion?docscontrolcambio_id=' . SED::encryption($doc_row->getPrimaryKey())); ?>');" data-toggle="tooltip" data-original-title="Comparar con versión actual">
+                                <span class="glyphicon glyphicon-transfer"></span>
+                            </a>
+                            <a class="doc-version-btn tooltip-primary btntransfer" data-comptext="<?php echo SED::encryption($doc_row->getPrimaryKey()) ?>" data-endpoint="<?php echo url_for('acto_administrativo/transferVersion') ?>" data-toggle="tooltip" data-original-title="Restaurar esta versión">
+                                <span class="glyphicon glyphicon-repeat"></span>
+                            </a>
+                        </div>
+                    <?php } ?>
                 </div>
-                <div class="version-date">
-                    <i class="glyphicon glyphicon-time"></i> <?php echo $doc_row->getFechaCreacion(); ?>
-                </div>
-                <div class="version-author">
-                    <i class="glyphicon glyphicon-user"></i> <?php echo $doc_row->getUsuario()->getNombreApellido(); ?>
-                </div>
-                <div class="version-actions">
-                    <?php if (1 !== 1): ?>
-                        <button type="button" class="btn btn-xs btn-danger tooltip-primary " onclick="" data-toggle = "tooltip" data-original-title = "Ver la versi&oacute;n actual">
-                            <i class="glyphicon glyphicon-eye-open"></i>
-                        </button>
-                    <?php endif; ?>
-                    
-                    <?php if ($doc_row->getCurrentVersion() !== 1): ?>
-                        <a class="btn btn-xs btn-info tooltip-primary" onclick="javascript:jQuery.OpenModalSIMAD('<?php echo url_for('acto_administrativo/compareVersion?docscontrolcambio_id='.SED::encryption($doc_row->getPrimaryKey())); ?>');" data-toggle="tooltip" data-original-title="Comparar con versi&oacute;n actual">
-                            <i class="glyphicon glyphicon-transfer"></i>
-                        </a>
-                        
-                        <a class="btn btn-xs btn-success tooltip-primary btntransfer" data-comptext="<?php echo SED::encryption($doc_row->getPrimaryKey())?>" data-endpoint="<?php echo url_for('acto_administrativo/transferVersion') ?>" data-toggle="tooltip" data-original-title="Restaurar esta versi&oacute;n">
-                            <i class="glyphicon glyphicon-repeat"></i>
-                        </a>
-                    <?php endif; ?>
-                </div>
-            </div>
-        <?php } ?>
+            <?php } ?>
+        </div>
     <?php endif; ?>
 </div>

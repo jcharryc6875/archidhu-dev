@@ -86,7 +86,7 @@ use_helper('jQuery', 'Object');
                             <li><a data-toggle="tab" href="#configurarflujoacto"><span class="glyphicon glyphicon-cog"></span>&nbsp;Flujo Aprobaci&oacute;n</a></li>
                         <?php } ?>
                         <?php if (count($ldocument_version) || count($wordVersions)) { ?>
-                            <li><a data-toggle="tab" href="#versionesacto"><span class="glyphicon glyphicon-duplicate"></span>&nbsp;Versiones</a></li>
+                            <li><a data-toggle="tab" href="#versionesacto"><span class="glyphicon glyphicon-book"></span>&nbsp;Versiones</a></li>
                         <?php } ?>
                     </ul>
                     <div class="tab-content">

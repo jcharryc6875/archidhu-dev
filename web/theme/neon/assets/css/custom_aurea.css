@@ -733,6 +733,86 @@ div.datepicker th.datepicker-switch {
   color: #000000;
   border: solid 1px black;
 }
+/* Historial de versiones del acto administrativo - tarjetas tipo documento */
+.doc-version-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+}
+.doc-version-card {
+  position: relative;
+  border: 1px solid #e6e9ee;
+  border-radius: 8px;
+  padding: 16px 12px;
+  text-align: center;
+  background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+}
+.doc-version-card:hover {
+  border-color: #a3c1e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+}
+.doc-version-card.current {
+  border-color: #68d391;
+  background: #f7fffa;
+}
+.doc-version-star {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: #38a169;
+  font-size: 13px;
+}
+.doc-version-page {
+  width: 44px;
+  height: 56px;
+  margin: 0 auto 10px;
+  background: #f7f9fb;
+  border: 1px solid #d7dde5;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a0aec0;
+}
+.doc-version-card.current .doc-version-page {
+  border-color: #9ae6b4;
+  color: #38a169;
+}
+.doc-version-num {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d3748;
+}
+.doc-version-meta {
+  font-size: 11px;
+  color: #a0aec0;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+.doc-version-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.doc-version-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #718096;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.doc-version-btn:hover {
+  background: #f7fafc;
+  color: #2b6cb0;
+  border-color: #cbd5e0;
+}
 .diff.html ins {
   background-color: #e6ffed;
   text-decoration: none;
