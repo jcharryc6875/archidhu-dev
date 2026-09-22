@@ -450,6 +450,18 @@ class acto_administrativoActions extends sfActions
       $this->etapasConfigActo = array();
     }
     //**********************************************************************************************************
+    // CA-3.4.1/CA-3.5: historial de versiones (contenido y Word), también disponible como pestaña en
+    // el detalle -antes solo estaba en la pantalla de edición-, con la misma restricción: una vez
+    // radicado el acto, solo quien tenga ACTO_ADMINISTRATIVO_VER_VERSIONES_PRELIMINARES las consulta.
+    $this->puedeVerVersiones = !trim($acto_administrativo->getNumeroResolucion())
+      || $this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_VER_VERSIONES_PRELIMINARES", $usuariologuiado);
+    $this->ldocument_version = $this->puedeVerVersiones
+      ? DocsControlCambioPeer::getAllVersionDocs($acto_administrativo->getPrimaryKey(), ModulesEnable::ActosAdministrativos)
+      : array();
+    $this->wordVersions = $this->puedeVerVersiones
+      ? ActoadminWordVersionPeer::getListByActoId($acto_administrativo->getPrimaryKey())
+      : array();
+    //**********************************************************************************************************
     $this->forward404Unless($this->acto_administrativo);
   }
 

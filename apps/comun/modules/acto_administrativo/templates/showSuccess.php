@@ -85,6 +85,9 @@ use_helper('jQuery', 'Object');
                         <?php if ($puedeConfigurarFlujo && count($participantesFlujo)) { ?>
                             <li><a data-toggle="tab" href="#configurarflujoacto"><span class="glyphicon glyphicon-cog"></span>&nbsp;Flujo Aprobaci&oacute;n</a></li>
                         <?php } ?>
+                        <?php if (count($ldocument_version) || count($wordVersions)) { ?>
+                            <li><a data-toggle="tab" href="#versionesacto"><span class="glyphicon glyphicon-duplicate"></span>&nbsp;Versiones</a></li>
+                        <?php } ?>
                     </ul>
                     <div class="tab-content">
                         <div id="data" class="tab-pane active">
@@ -401,6 +404,35 @@ use_helper('jQuery', 'Object');
                                     'participantesFlujo' => $participantesFlujo,
                                     'etapasConfigActo' => $etapasConfigActo,
                                 )); ?>
+                            </div>
+                        <?php } ?>
+                        <?php if (count($ldocument_version) || count($wordVersions)) { ?>
+                            <div id="versionesacto" class="tab-pane">
+                                <?php if (count($ldocument_version)) { ?>
+                                    <h5>Versiones del contenido</h5>
+                                    <?php include_partial('listVersion', array('ldocument_version' => $ldocument_version, 'acto_administrativo' => $acto_administrativo)); ?>
+                                <?php } ?>
+                                <?php if (count($wordVersions) >= 2) { ?>
+                                    <h5<?php echo count($ldocument_version) ? ' style="margin-top:20px;"' : ''; ?>>Comparar versiones (Word)</h5>
+                                    <?php echo form_tag('acto_administrativo/compareWordVersion', array('name' => 'formCompararWordShow', 'method' => 'GET', 'target' => '_blank', 'class' => 'form-inline')); ?>
+                                    <select name="version_a_id" class="form-control input-sm">
+                                        <?php foreach ($wordVersions as $version): ?>
+                                            <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $version->getCurrentVersion() ? 'selected' : ''; ?>>
+                                                Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    vs.
+                                    <select name="version_b_id" class="form-control input-sm">
+                                        <?php foreach ($wordVersions as $index => $version): ?>
+                                            <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $index == 1 ? 'selected' : ''; ?>>
+                                                Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <button type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-random"></span> Comparar</button>
+                                    </form>
+                                <?php } ?>
                             </div>
                         <?php } ?>
                     </div>
