@@ -93,22 +93,88 @@ class DocsControlCambio extends BaseDocsControlCambio
             return $bloques;
         }
         //*********************************************************************************************
-        foreach ($raiz->childNodes as $nodo) {
+        $this->recolectarBloques($dom, $raiz, $bloques);
+        //*********************************************************************************************
+        return $bloques;
+    }
+
+    /**
+     * Recorre los hijos de $contenedor buscando los bloques "de verdad" (párrafos, encabezados,
+     * ítems de lista, tablas) del documento. Si un <div>/<p> no tiene texto propio y solo envuelve
+     * otros bloques -algo muy común en el HTML que genera CKEditor-, se sigue bajando por dentro de
+     * él en vez de tratarlo como un único bloque gigante que mezclaría todo el documento en una
+     * sola línea de comparación. Las tablas (ej. el bloque de firmas) se tratan como un bloque
+     * único e íntegro: se muestran completas con su HTML original, nunca aplanadas a texto plano
+     * (perderían filas/columnas).
+     */
+    private function recolectarBloques(\DOMDocument $dom, \DOMNode $contenedor, array &$bloques)
+    {
+        static $tagsDeBloque = array('p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ul', 'ol', 'blockquote');
+        //*********************************************************************************************
+        foreach ($contenedor->childNodes as $nodo) {
             if ($nodo->nodeType !== XML_ELEMENT_NODE) {
                 continue;
             }
+            $tag = strtolower($nodo->nodeName);
+            //*****************************************************************************************
+            if ($tag === 'table') {
+                $bloques[] = array(
+                    'isTabla' => true,
+                    'html' => (string) $dom->saveHTML($nodo),
+                    'text' => 'TABLA:' . md5($dom->saveHTML($nodo)),
+                );
+                continue;
+            }
+            //*****************************************************************************************
+            if (!in_array($tag, $tagsDeBloque, true)) {
+                // Elemento inesperado a nivel de bloque: se sigue bajando por si envuelve algo útil.
+                $this->recolectarBloques($dom, $nodo, $bloques);
+                continue;
+            }
+            //*****************************************************************************************
+            if ($this->esEnvoltorioPuroDeBloques($nodo)) {
+                $this->recolectarBloques($dom, $nodo, $bloques);
+                continue;
+            }
+            //*****************************************************************************************
             $texto = trim(preg_replace('/\s+/', ' ', $nodo->textContent));
             if ($texto === '') {
                 continue;
             }
             $bloques[] = array(
+                'isTabla' => false,
                 'style' => $nodo->hasAttribute('style') ? $nodo->getAttribute('style') : '',
                 'bold' => $this->bloqueEsNegrita($nodo),
                 'text' => $texto,
             );
         }
+    }
+
+    /**
+     * Un elemento de bloque (p/div/h1-6/li/ul/ol/blockquote) es un "envoltorio puro" -y por lo
+     * tanto no cuenta como un bloque en sí mismo, hay que seguir bajando por dentro de él- cuando
+     * no tiene ningún texto propio directo y todos sus hijos son a su vez otros elementos de
+     * bloque (o tablas). Si tiene texto propio o contenido en línea (strong, span, etc.), es un
+     * párrafo real y se trata como un único bloque.
+     */
+    private function esEnvoltorioPuroDeBloques(\DOMElement $nodo)
+    {
+        static $tagsPermitidos = array('p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ul', 'ol', 'blockquote', 'table');
         //*********************************************************************************************
-        return $bloques;
+        $tieneHijos = false;
+        foreach ($nodo->childNodes as $hijo) {
+            if ($hijo->nodeType === XML_TEXT_NODE && trim($hijo->textContent) !== '') {
+                return false;
+            }
+            if ($hijo->nodeType === XML_ELEMENT_NODE) {
+                $tieneHijos = true;
+                if (!in_array(strtolower($hijo->nodeName), $tagsPermitidos, true)) {
+                    return false;
+                }
+            }
+        }
+        //*********************************************************************************************
+        return $tieneHijos;
     }
 
     /**
@@ -187,10 +253,15 @@ class DocsControlCambio extends BaseDocsControlCambio
                 for ($k = 0; $k < $max; $k++) {
                     $oldBlock = $k < $oldCount ? $oldBlocks[$i1 + $k] : null;
                     $newBlock = $k < $newCount ? $newBlocks[$j1 + $k] : null;
-                    if ($oldBlock !== null && $newBlock !== null) {
+                    if ($oldBlock !== null && $newBlock !== null && !$oldBlock['isTabla'] && !$newBlock['isTabla']) {
                         list($oldMarcado, $newMarcado) = $this->marcarDiferenciaPorPalabra($oldBlock['text'], $newBlock['text']);
                         $html .= $this->renderBloqueComparado($oldBlock, $oldMarcado, 'rep', 'old');
                         $html .= $this->renderBloqueComparado($newBlock, $newMarcado, 'rep', 'new');
+                    } elseif ($oldBlock !== null && $newBlock !== null) {
+                        // Una tabla cambió (ej. el bloque de firmas): se muestran ambas versiones
+                        // completas -vieja y nueva-, sin intentar resaltar palabra por palabra dentro.
+                        $html .= $this->renderBloqueComparado($oldBlock, null, 'rep', 'old');
+                        $html .= $this->renderBloqueComparado($newBlock, null, 'rep', 'new');
                     } elseif ($oldBlock !== null) {
                         $html .= $this->renderBloqueComparado($oldBlock, null, 'del', 'old');
                     } elseif ($newBlock !== null) {
@@ -210,6 +281,14 @@ class DocsControlCambio extends BaseDocsControlCambio
      */
     private function renderBloqueComparado(array $bloque, $contenidoMarcado, $tipoCambio, $claseCelda)
     {
+        if ($bloque['isTabla']) {
+            // Las tablas se muestran íntegras, con su HTML original (filas/columnas intactas),
+            // nunca aplanadas a texto ni resaltadas por palabra.
+            return '<tbody class="change change-' . $tipoCambio . '">' .
+                '<tr><td class="' . $claseCelda . '">' . $bloque['html'] . '</td></tr>' .
+            '</tbody>';
+        }
+        //*********************************************************************************************
         $estilo = trim($bloque['style']);
         if ($bloque['bold']) {
             $estilo = ($estilo === '' ? '' : rtrim($estilo, '; ') . '; ') . 'font-weight: bold;';
