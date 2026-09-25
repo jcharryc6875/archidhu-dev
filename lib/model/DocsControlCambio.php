@@ -230,13 +230,23 @@ class DocsControlCambio extends BaseDocsControlCambio
     }
 
     /**
-     * Limpiar HTML para mejor comparación manteniendo estructura
+     * Convierte HTML a texto plano legible para comparar: conserva los saltos de línea de los
+     * elementos de bloque, pero elimina el resto de las etiquetas. Diferenciar el HTML crudo
+     * palabra por palabra (como se hacía antes) deja que la librería de diff corte justo en medio
+     * de una etiqueta, dejando fragmentos de markup roto visibles en el resultado
+     * (ej. "</span>strong>", "<br />" literal) en vez de un texto limpio.
     */
     private function cleanHtmlForComparison($html) {
-        // Remover espacios extra pero mantener saltos de línea importantes
-        $html = preg_replace('/\s+/', ' ', $html);
-        $html = str_replace(['<p>', '</p>', '<br>', '<br/>'], ["\n<p>", "</p>\n", "\n", "\n"], $html);
-        
-        return trim($html);
+        $html = preg_replace('/<(p|div|li|h[1-6])[^>]*>/i', "\n", $html);
+        $html = preg_replace('/<\/(p|div|li|h[1-6])>/i', "\n", $html);
+        $html = preg_replace('/<br\s*\/?>/i', "\n", $html);
+        //*********************************************************************************************
+        $text = strip_tags($html);
+        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+        $text = preg_replace('/[ \t]+/', ' ', $text);
+        $text = preg_replace('/\n[ \t]+/', "\n", $text);
+        $text = preg_replace('/\n{3,}/', "\n\n", $text);
+        //*********************************************************************************************
+        return trim($text);
     }
 }
