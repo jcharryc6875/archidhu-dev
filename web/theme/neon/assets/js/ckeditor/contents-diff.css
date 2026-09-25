@@ -1,9 +1,10 @@
-ins { background:#e6ffed; text-decoration:none; }
-del { background:#ffecec; text-decoration:line-through; }
+ins { background:#94f094; text-decoration:none; font-weight:600; }
+del { background:#f09494; text-decoration:line-through; font-weight:600; }
 
-/* Estilos de la tabla generada por el renderizador Combined de jfcherng/php-diff
-   (lib/PHPDiffText), copiados de su propio diff-table.css que nunca se cargaba en
-   este visor (por eso la tabla salía sin ningún color/estructura visible). */
+/* Estilos de la tabla de diferencias generada por el renderizador Combined de
+   jfcherng/php-diff (lib/PHPDiffText) -el único que usa este visor (DocsControlCambio::
+   compareVersions() lo fija de forma fija)-: nunca genera numeración de línea ni columna
+   de signo, solo un <td> por fila cuya clase indica el tipo de cambio ("eq"/"del"/"ins"/"rep"). */
 .diff-wrapper.diff {
   border-collapse: collapse;
   border-spacing: 0;
@@ -20,7 +21,7 @@ del { background:#ffecec; text-decoration:line-through; }
 .diff-wrapper.diff td,
 .diff-wrapper.diff th {
   border: none;
-  padding: 3px 8px;
+  padding: 5px 10px;
   background: #fff;
   vertical-align: top;
 }
@@ -32,21 +33,11 @@ del { background:#ffecec; text-decoration:line-through; }
 .diff-wrapper.diff tbody.skipped td {
   display: none;
 }
-.diff-wrapper.diff tbody th {
-  background: #f4f4f4;
-  border-right: 1px solid #ddd;
-  text-align: right;
-  width: 3em;
-}
-.diff-wrapper.diff tbody th.sign {
-  text-align: center;
-  width: 1.5em;
-}
-.diff-wrapper.diff tbody th.sign.del { background: #fbe1e1; }
-.diff-wrapper.diff tbody th.sign.ins { background: #e1fbe1; }
-.diff-wrapper.diff tbody th.sign.rep { background: #fdf3d0; }
-.diff-wrapper.diff tbody.change-eq td { background: #fff; }
+/* Líneas que no cambiaron: fondo blanco (por defecto). Líneas que solo existían en la
+   versión vieja (borradas por completo) o solo en la nueva (agregadas por completo). */
 .diff-wrapper.diff tbody.change-del td.old { background: #fdeaea; }
 .diff-wrapper.diff tbody.change-ins td.new { background: #eafdea; }
-.diff-wrapper.diff tbody.change-rep td.old { background: #fdeaea; }
-.diff-wrapper.diff tbody.change-rep td.new { background: #eafdea; }
+/* Líneas "reemplazadas" (la más común: alguien edita una frase existente): llegan
+   fusionadas en una sola fila, con el texto viejo tachado en rojo y el nuevo resaltado
+   en verde justo en el punto donde cambió, vía las reglas de ins/del de arriba. */
+.diff-wrapper.diff tbody.change-rep td.rep { background: #fdf6e3; }
