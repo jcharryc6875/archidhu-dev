@@ -28,9 +28,8 @@ $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
                     <span class="doc-version-compact-num">V<?php echo $doc_row->getVersionNumber(); ?></span>
                     <span class="status-badge<?php echo $status_class; ?>"><?php echo $doc_row->getStatusVersion(); ?></span>
                 </div>
-                <div class="doc-version-compact-meta">
-                    <?php echo $doc_row->getFechaCreacion(); ?> — <?php echo $doc_row->getUsuario()->getNombreApellido(); ?>
-                </div>
+                <div class="doc-version-compact-meta"><?php echo $doc_row->getFechaCreacion(); ?></div>
+                <div class="doc-version-compact-meta doc-version-compact-user"><?php echo $doc_row->getUsuario()->getNombreApellido(); ?></div>
                 <?php if ($doc_row->getCurrentVersion() !== 1) { ?>
                     <div class="doc-version-compact-actions">
                         <a class="doc-version-btn tooltip-primary" onclick="javascript:jQuery.OpenModalSIMAD('<?php echo url_for('acto_administrativo/compareVersion?docscontrolcambio_id=' . SED::encryption($doc_row->getPrimaryKey())); ?>');" data-toggle="tooltip" data-original-title="Comparar con versión actual">

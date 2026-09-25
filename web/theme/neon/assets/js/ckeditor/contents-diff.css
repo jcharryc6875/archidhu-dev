@@ -1,8 +1,7 @@
-/* Copiado literal de lib/PHPDiffText/example/diff-table.css (el propio CSS de la librería
-   jfcherng/php-diff, expuesto también vía DiffHelper::getStyleSheet()), que nunca se cargaba
-   en este visor. Solo se agregan bordes/encabezado (abajo) para que la tabla se vea prolija;
-   los selectores de color de aquí son los mismos que usa la librería, sin reinterpretarlos. */
-.diff-wrapper.diff.diff-html .change.change-eq .old,
+/* Estilos para la tabla de comparación de versiones (DocsControlCambio::compareVersions()):
+   cada fila es un párrafo del documento, con su propio estilo (centrado/justificado/negrita)
+   conservado en línea. Los colores de fondo/ins/del son los mismos que usa la librería
+   jfcherng/php-diff (lib/PHPDiffText/example/diff-table.css). */
 .diff-wrapper.diff.diff-html .change.change-eq .new {
   background: #fff;
 }
@@ -11,9 +10,6 @@
 }
 .diff-wrapper.diff.diff-html .change .new {
   background: #e1fbe1;
-}
-.diff-wrapper.diff.diff-html .change .rep {
-  background: #fef6d9;
 }
 .diff-wrapper.diff.diff-html .change ins,
 .diff-wrapper.diff.diff-html .change del {
@@ -27,8 +23,7 @@
   background: #f09494;
 }
 
-/* Estructura de la tabla (bordes/encabezado): el renderizador usado (Combined) no genera
-   numeración de línea ni columna de signo, solo un <td> por fila. */
+/* Estructura de la tabla (bordes/encabezado): un único <td> por fila, sin numeración de línea. */
 .diff-wrapper.diff {
   border-collapse: collapse;
   border-spacing: 0;
@@ -52,7 +47,4 @@
   background: #dfe6ee;
   border-bottom: 1px solid #ccc;
   text-align: left;
-}
-.diff-wrapper.diff tbody.skipped td {
-  display: none;
 }

@@ -658,10 +658,12 @@ div.datepicker th.datepicker-switch {
 }
 .doc-version-compact-row {
   border-bottom: 1px solid #eee;
-  padding: 6px 4px;
+  padding: 10px 6px;
+  margin-bottom: 4px;
 }
 .doc-version-compact-row:last-child {
   border-bottom: none;
+  margin-bottom: 0;
 }
 .doc-version-compact-row.current {
   background: #f0fff4;
@@ -679,10 +681,13 @@ div.datepicker th.datepicker-switch {
 .doc-version-compact-meta {
   font-size: 10px;
   color: #a0aec0;
-  margin-top: 2px;
+  margin-top: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.doc-version-compact-user {
+  margin-top: 1px;
 }
 .doc-version-compact-actions {
   margin-top: 4px;
