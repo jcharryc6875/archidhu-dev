@@ -72,8 +72,12 @@ class DocsControlCambio extends BaseDocsControlCambio
     }
 
     /**
-     * Extrae los párrafos/bloques de un HTML (párrafos, divs, encabezados, ítems de lista) para
-     * comparar de a uno, conservando el estilo propio de cada uno y si está en negrita completa.
+     * Extrae los párrafos/bloques de un HTML para comparar de a uno, conservando el HTML interno
+     * real de cada línea (con sus <strong>/<em> intactos, para mostrarla fiel al original si no
+     * cambió) y el estilo del bloque que la contiene (centrado, justificado). <br> y los límites
+     * de bloque (p/div/h1-6/li/table) actúan como separadores de línea, sin importar si el texto
+     * viene envuelto en su propio párrafo o "suelto" directamente dentro del documento -como pasa
+     * en partes de estos documentos, donde no todo el contenido queda dentro de un <div>-.
      */
     private function extraerBloquesParaComparar($html)
     {
@@ -93,113 +97,95 @@ class DocsControlCambio extends BaseDocsControlCambio
             return $bloques;
         }
         //*********************************************************************************************
-        $this->recolectarBloques($dom, $raiz, $bloques);
+        $linea = array('html' => '', 'texto' => '', 'estilo' => '');
+        $this->recorrerNodo($raiz, $bloques, $linea, false);
+        $this->cerrarLinea($bloques, $linea);
         //*********************************************************************************************
         return $bloques;
     }
 
     /**
-     * Recorre los hijos de $contenedor buscando los bloques "de verdad" (párrafos, encabezados,
-     * ítems de lista, tablas) del documento. Si un <div>/<p> no tiene texto propio y solo envuelve
-     * otros bloques -algo muy común en el HTML que genera CKEditor-, se sigue bajando por dentro de
-     * él en vez de tratarlo como un único bloque gigante que mezclaría todo el documento en una
-     * sola línea de comparación. Las tablas (ej. el bloque de firmas) se tratan como un bloque
-     * único e íntegro: se muestran completas con su HTML original, nunca aplanadas a texto plano
-     * (perderían filas/columnas).
+     * Recorre recursivamente los nodos acumulando contenido en $linea (la línea/párrafo "en
+     * construcción" que se está armando), cerrándola -guardándola como un bloque- cada vez que
+     * aparece un <br>, un elemento de bloque (p/div/h1-6/li/ul/ol/blockquote) o una tabla.
      */
-    private function recolectarBloques(\DOMDocument $dom, \DOMNode $contenedor, array &$bloques)
+    private function recorrerNodo(\DOMNode $nodo, array &$bloques, array &$linea, $dentroDeNegrita)
     {
         static $tagsDeBloque = array('p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ul', 'ol', 'blockquote');
+        static $tagsDeNegrita = array('strong', 'b', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6');
         //*********************************************************************************************
-        foreach ($contenedor->childNodes as $nodo) {
-            if ($nodo->nodeType !== XML_ELEMENT_NODE) {
+        foreach ($nodo->childNodes as $hijo) {
+            if ($hijo->nodeType === XML_TEXT_NODE) {
+                if (trim($hijo->textContent) !== '') {
+                    $linea['html'] .= htmlspecialchars($hijo->textContent, ENT_QUOTES, 'UTF-8');
+                    $linea['texto'] .= $hijo->textContent;
+                }
                 continue;
             }
-            $tag = strtolower($nodo->nodeName);
+            if ($hijo->nodeType !== XML_ELEMENT_NODE) {
+                continue;
+            }
+            $tag = strtolower($hijo->nodeName);
             //*****************************************************************************************
+            if ($tag === 'br') {
+                $this->cerrarLinea($bloques, $linea);
+                continue;
+            }
             if ($tag === 'table') {
-                $bloques[] = array(
-                    'isTabla' => true,
-                    'html' => (string) $dom->saveHTML($nodo),
-                    'text' => 'TABLA:' . md5($dom->saveHTML($nodo)),
-                );
+                $this->cerrarLinea($bloques, $linea);
+                $htmlTabla = (string) $hijo->ownerDocument->saveHTML($hijo);
+                $bloques[] = array('isTabla' => true, 'html' => $htmlTabla, 'text' => 'TABLA:' . md5($htmlTabla));
                 continue;
             }
             //*****************************************************************************************
-            if (!in_array($tag, $tagsDeBloque, true)) {
-                // Elemento inesperado a nivel de bloque: se sigue bajando por si envuelve algo útil.
-                $this->recolectarBloques($dom, $nodo, $bloques);
+            $esNegritaAqui = $dentroDeNegrita || in_array($tag, $tagsDeNegrita, true);
+            //*****************************************************************************************
+            if (in_array($tag, $tagsDeBloque, true)) {
+                // Un elemento de bloque siempre empieza una línea nueva, tenga o no texto propio
+                // directo (si solo envuelve otros bloques, esto simplemente cierra una línea vacía,
+                // que no se guarda) y hereda el estilo del bloque mientras se procesa su contenido.
+                $this->cerrarLinea($bloques, $linea);
+                $linea['estilo'] = $hijo->hasAttribute('style') ? $hijo->getAttribute('style') : '';
+                $this->recorrerNodo($hijo, $bloques, $linea, $esNegritaAqui);
+                $this->cerrarLinea($bloques, $linea);
+                $linea['estilo'] = '';
                 continue;
             }
             //*****************************************************************************************
-            if ($this->esEnvoltorioPuroDeBloques($nodo)) {
-                $this->recolectarBloques($dom, $nodo, $bloques);
-                continue;
+            // Elemento en línea (strong, em, span, etc.): se conserva tal cual en el HTML de la línea
+            // -salvo atributos como colores de resaltado, que no son el foco aquí-, para que un bloque
+            // sin cambios se muestre fiel al original en vez de perder su negrita/cursiva puntual.
+            if (in_array($tag, array('strong', 'b', 'em', 'i'), true)) {
+                $linea['html'] .= '<' . $tag . '>';
+                $this->recorrerNodo($hijo, $bloques, $linea, $esNegritaAqui);
+                $linea['html'] .= '</' . $tag . '>';
+            } else {
+                $this->recorrerNodo($hijo, $bloques, $linea, $esNegritaAqui);
             }
-            //*****************************************************************************************
-            $texto = trim(preg_replace('/\s+/', ' ', $nodo->textContent));
-            if ($texto === '') {
-                continue;
-            }
+        }
+    }
+
+    /**
+     * Guarda $linea como un bloque (si tiene texto) y la reinicia para la siguiente. El estilo se
+     * conserva tal cual estaba (lo fija/limpia recorrerNodo() al entrar/salir de un bloque real),
+     * para que varias líneas separadas por <br> dentro de un mismo párrafo compartan su estilo.
+     */
+    private function cerrarLinea(array &$bloques, array &$linea)
+    {
+        $texto = html_entity_decode($linea['texto'], ENT_QUOTES, 'UTF-8');
+        $texto = str_replace("\xc2\xa0", ' ', $texto); // &nbsp; decodificado, no lo reconoce trim()
+        $texto = trim(preg_replace('/\s+/', ' ', $texto));
+        if ($texto !== '') {
             $bloques[] = array(
                 'isTabla' => false,
-                'style' => $nodo->hasAttribute('style') ? $nodo->getAttribute('style') : '',
-                'bold' => $this->bloqueEsNegrita($nodo),
+                'style' => $linea['estilo'],
+                'html' => trim(preg_replace('/\s+/', ' ', $linea['html'])),
+                'bold' => (bool) preg_match('#^<(strong|b)>.*</\1>$#s', trim($linea['html'])),
                 'text' => $texto,
             );
         }
-    }
-
-    /**
-     * Un elemento de bloque (p/div/h1-6/li/ul/ol/blockquote) es un "envoltorio puro" -y por lo
-     * tanto no cuenta como un bloque en sí mismo, hay que seguir bajando por dentro de él- cuando
-     * no tiene ningún texto propio directo y todos sus hijos son a su vez otros elementos de
-     * bloque (o tablas). Si tiene texto propio o contenido en línea (strong, span, etc.), es un
-     * párrafo real y se trata como un único bloque.
-     */
-    private function esEnvoltorioPuroDeBloques(\DOMElement $nodo)
-    {
-        static $tagsPermitidos = array('p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ul', 'ol', 'blockquote', 'table');
-        //*********************************************************************************************
-        $tieneHijos = false;
-        foreach ($nodo->childNodes as $hijo) {
-            if ($hijo->nodeType === XML_TEXT_NODE && trim($hijo->textContent) !== '') {
-                return false;
-            }
-            if ($hijo->nodeType === XML_ELEMENT_NODE) {
-                $tieneHijos = true;
-                if (!in_array(strtolower($hijo->nodeName), $tagsPermitidos, true)) {
-                    return false;
-                }
-            }
-        }
-        //*********************************************************************************************
-        return $tieneHijos;
-    }
-
-    /**
-     * Un bloque se considera "en negrita completa" si es un encabezado (h1-h6) o si todo su
-     * contenido está envuelto en <strong>/<b> - suficiente para los encabezados típicos de las
-     * resoluciones (ej. "EL SECRETARIO GENERAL...") sin necesitar comparar carácter por carácter
-     * qué partes puntuales están en negrita.
-     */
-    private function bloqueEsNegrita(\DOMElement $nodo)
-    {
-        if (preg_match('/^h[1-6]$/i', $nodo->nodeName)) {
-            return true;
-        }
-        $texto = trim($nodo->textContent);
-        if ($texto === '') {
-            return false;
-        }
-        foreach (array('strong', 'b') as $tagNegrita) {
-            foreach ($nodo->getElementsByTagName($tagNegrita) as $elemento) {
-                if (trim($elemento->textContent) === $texto) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        $linea['html'] = '';
+        $linea['texto'] = '';
     }
 
     /**
@@ -294,7 +280,7 @@ class DocsControlCambio extends BaseDocsControlCambio
             $estilo = ($estilo === '' ? '' : rtrim($estilo, '; ') . '; ') . 'font-weight: bold;';
         }
         //*********************************************************************************************
-        $contenido = $contenidoMarcado !== null ? $contenidoMarcado : htmlspecialchars($bloque['text'], ENT_QUOTES, 'UTF-8');
+        $contenido = $contenidoMarcado !== null ? $contenidoMarcado : $bloque['html'];
         //*********************************************************************************************
         return '<tbody class="change change-' . $tipoCambio . '">' .
             '<tr><td class="' . $claseCelda . '" style="' . htmlspecialchars($estilo, ENT_QUOTES, 'UTF-8') . '">' . $contenido . '</td></tr>' .
