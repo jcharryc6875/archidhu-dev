@@ -37,7 +37,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
       </div>
 
       <?php if (!$puedeEditarContenido) { ?>
-        <div class="alert alert-warning alert-permiso-edicion">
+        <div class="alert alert-warning alert-permiso-edicion" style="margin-bottom: 0px !important;">
           <strong><span>No tiene permiso para editar el archivo en esta etapa. Solo puede consultarlo/descargarlo.</span></strong>
         </div>
       <?php } ?>

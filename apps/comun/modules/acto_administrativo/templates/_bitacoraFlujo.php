@@ -9,6 +9,7 @@ $accion_labels = array(
     ActoadminEtapaBitacoraPeer::ACCION_FIRMA          => 'Firma',
     ActoadminEtapaBitacoraPeer::ACCION_RADICACION     => 'Radicación',
     ActoadminEtapaBitacoraPeer::ACCION_FINALIZACION   => 'Finalización',
+    ActoadminEtapaBitacoraPeer::ACCION_PURGA_VERSIONES => 'Depuración de versiones',
 );
 ?>
 <div class="row">

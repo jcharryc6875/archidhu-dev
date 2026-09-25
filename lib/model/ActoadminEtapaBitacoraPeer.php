@@ -17,6 +17,7 @@ class ActoadminEtapaBitacoraPeer extends BaseActoadminEtapaBitacoraPeer
     const ACCION_FIRMA = 'FIRMA';
     const ACCION_RADICACION = 'RADICACION';
     const ACCION_FINALIZACION = 'FINALIZACION';
+    const ACCION_PURGA_VERSIONES = 'PURGA_VERSIONES';
 
     public static function addBitacora($actoadministrativo_id, $actoadminetapa_id, $usuario_id, $rol_id, $estado_id, $accion, $observacion = null)
     {

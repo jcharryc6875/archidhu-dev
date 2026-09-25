@@ -49,6 +49,39 @@ class ActoadminWordVersionPeer extends BaseActoadminWordVersionPeer
         }
     }
 
+    /**
+     * Depura las versiones preliminares (no actuales) del Word de un acto anteriores a $fecha_limite:
+     * borra la fila y, si el archivo existe en disco, tambien el archivo fisico. $ruta_actual (la
+     * ActoAdministrativo.UrlFileWord vigente) nunca se borra, ni siquiera si una version antigua
+     * quedo apuntando a la misma ruta (filas creadas antes del fix de rutas compartidas por re-carga).
+     */
+    public static function purgarPreliminares($actoadministrativo_id, $fecha_limite, $ruta_actual = null)
+    {
+        try {
+            $c = new Criteria();
+            $c->add(ActoadminWordVersionPeer::ACTOADMINISTRATIVO_ID, $actoadministrativo_id);
+            $c->add(ActoadminWordVersionPeer::CURRENT_VERSION, 0);
+            $c->add(ActoadminWordVersionPeer::FECHA_CREACION, $fecha_limite, Criteria::LESS_THAN);
+            $versiones = ActoadminWordVersionPeer::doSelect($c);
+            //**************************************************************************************************
+            $borrados = 0;
+            foreach ($versiones as $version) {
+                $ruta = $version->getRutaArchivo();
+                $version->delete();
+                if (!empty($ruta) && $ruta !== $ruta_actual && file_exists($ruta)) {
+                    @unlink($ruta);
+                }
+                $borrados++;
+            }
+            //**************************************************************************************************
+            return $borrados;
+        } catch (PropelException $th) {
+            return 0;
+        } catch (\Exception $th) {
+            return 0;
+        }
+    }
+
     public static function getListByActoId($actoadministrativo_id)
     {
         try {
