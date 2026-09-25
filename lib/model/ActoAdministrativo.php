@@ -2402,11 +2402,24 @@ class ActoAdministrativo extends BaseActoAdministrativo
             $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
             //*****************************CREANDO LISTA DE ARCHIVOS*******************************
             for ($j = 0; $j < count($files_adjuntos); $j++) {
+                $size_file = 0;
                 if (trim($files_adjuntos[$j])) {
                     $filename = basename($files_adjuntos[$j]);
                     $xguid = simad_util::create_guid($filename);
+                    //*****************************************************************************
+                    $fpath_resolve = simad_paths_app::resolveRelativePath($files_adjuntos[$j]);
+                    if (file_exists($fpath_resolve)) {
+                        $size_file = filesize($fpath_resolve);
+                    }
+                    //*****************************************************************************
                     $url_secure = $this->getUrlTokenViewImageByObject($xguid);
-                    $list_attach[] = array('GUID' => $xguid, 'NOMBRE_ARCHIVO' => $filename, 'TIPO_ATTACHMENT' => 'ANEXO', 'URL' => $url_secure);
+                    $list_attach[] = array(
+                        'GUID' => $xguid,
+                        'NOMBRE_ARCHIVO' => $filename,
+                        'TIPO_ATTACHMENT' => 'ANEXO',
+                        'URL' => $url_secure,
+                        'SIZE_FILE' => $size_file
+                    );
                 }
             }
         }
@@ -2415,6 +2428,9 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //******************************************************************************************
         $dir_raiz = ParametroPeer::retrieveByPk(75)->getValortexto();
         $digit_dir  = ParametroPeer::retrieveByPk(76)->getValortexto();
+        //******************************************************************************************
+        $dir_raiz = !empty($this->getDirDigit()) ? trim($this->getDirDigit()) : $dir_raiz;
+        //******************************************************************************************
         $storage_com = $this->getBasicUrlDigitCom($dir_raiz, $digit_dir);
         //******************************************************************************************
         $filedigit = false;
@@ -2423,9 +2439,17 @@ class ActoAdministrativo extends BaseActoAdministrativo
             $targetpath = $storage_com['storage_path'] . DIRECTORY_SEPARATOR . $filename;
             if (file_exists($targetpath)) {
                 $xguid = simad_util::create_guid($filename);
+                $size_file = filesize($targetpath);
                 $url_secure = $this->getUrlTokenViewImageByObject($xguid);
                 $url_download = $this->getUrlTokenDownloadImageByObject($xguid);
-                $list_attach[] = array('GUID' => $xguid, 'NOMBRE_ARCHIVO' => $filename, 'TIPO_ATTACHMENT' => 'DIGIT_COM', 'URL' => $url_secure, 'URL_DOWNLOAD' => $url_download);
+                $list_attach[] = array(
+                    'GUID' => $xguid,
+                    'NOMBRE_ARCHIVO' => $filename,
+                    'TIPO_ATTACHMENT' => 'DIGIT_COM',
+                    'URL' => $url_secure,
+                    'URL_DOWNLOAD' => $url_download,
+                    'SIZE_FILE' => $size_file
+                );
                 $filedigit = true;
                 break;
             }
