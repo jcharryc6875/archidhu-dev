@@ -1545,12 +1545,14 @@ class acto_administrativoActions extends sfActions
         $this->verificaPrilegioCerrar($currentForm);
         $acto_administrativo = ActoAdministrativoPeer::retrieveByPk($actoadministrativo_id);
         //************************************************************************************
-        if (empty($acto_administrativo->getUrlFileWord()) && !file_exists($acto_administrativo->getUrlFileWord())) {
-          $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(75)->getValortexto() . 'uploads');
-          $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd")) . DIRECTORY_SEPARATOR . $replyfile;
-        } else {
-          $filedir_upload = $acto_administrativo->getUrlFileWord();
-        }
+        // Siempre se genera una ruta de destino nueva y unica (via $replyfile, con uniqid), incluso
+        // si el acto ya tenia un Word cargado antes: reutilizar getUrlFileWord() como destino aqui
+        // hacia que rename() sobreescribiera el MISMO archivo fisico en cada re-carga, dejando el
+        // historial de versiones (ACTOADMIN_WORD_VERSION) con varias filas apuntando a una unica
+        // ruta -y por tanto un unico contenido real en disco-, rompiendo la comparacion visual entre
+        // versiones (todas terminaban mostrando el contenido de la carga mas reciente).
+        $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(75)->getValortexto() . 'uploads');
+        $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd")) . DIRECTORY_SEPARATOR . $replyfile;
         //*************************************************************************************
         if (file_exists($fullpath)) {
           if ($acto_administrativo->getIsCreateWord() == ResponseDocTypeCom::Word) {

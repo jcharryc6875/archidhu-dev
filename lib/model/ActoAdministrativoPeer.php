@@ -136,10 +136,21 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             $ucargos_destino = preg_split("/[,]+/",$user_params['str_ucargosdestino'], -1, PREG_SPLIT_NO_EMPTY);
             //*****************************************************************************************************
             $cargo_creador = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario_creador,true);
+            if ($cargo_creador === null) {
+                // El usuario no tiene un cargo principal/actual (CARGO_USUARIO.ES_PRINCIPAL=1 y ES_ACTUAL=1).
+                // Sin esto no se puede armar la fila de ActoadministrativoUsuario del creador (rol 1); se
+                // registra para poder diagnosticarlo (antes fallaba en silencio: getUsuarioId() sobre null
+                // es un Error de PHP, no un Exception, y no lo capturaba ningun catch de este metodo).
+                sfContext::getInstance()->getLogger()->err(sprintf(
+                    '[ActoAdministrativoPeer::initUserByCom] No se pudo asignar el creador (rol 1) del acto %s: el usuario %s no tiene un cargo principal/actual configurado en CARGO_USUARIO.',
+                    $object_id,
+                    $usuario_creador
+                ));
+            }
             //*****************************************************************************************************
             $list_users = array();
             $list_users['usuario_gestor'] = array('lusuarios' => $usuarios_gestor, 'ucargos' => $ucargos_gestor, 'rol_id' => 4, 'tipoprocesocom_id' => 3);
-            $list_users['usuarios_creador'] = array('usuario_id' => $cargo_creador->getUsuarioId(), 'cargousuarioId' => $cargo_creador->getPrimaryKey(), 'rol_id' => 1, 'tipoprocesocom_id' => 1);
+            $list_users['usuarios_creador'] = array('usuario_id' => $cargo_creador ? $cargo_creador->getUsuarioId() : null, 'cargousuarioId' => $cargo_creador ? $cargo_creador->getPrimaryKey() : null, 'rol_id' => 1, 'tipoprocesocom_id' => 1);
             $list_users['usuarios_firma'] = array('lusuarios' => $usuarios_firma, 'ucargos' =>$ucargos_firma, 'rol_id' => 2, 'tipoprocesocom_id' => 5);
             $list_users['usuarios_revisor'] = array('lusuarios' => $usuarios_revisor, 'ucargos' =>$ucargos_revisor, 'rol_id' => 3, 'tipoprocesocom_id' => 4);
             $list_users['usuarios_copia'] = array('lusuarios' => $usuarios_copia, 'ucargos' =>$ucargos_copia, 'rol_id' => 7, 'tipoprocesocom_id' => null);
@@ -148,6 +159,11 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             $info_com['pkcom_id'] = $object_id;
             foreach ($list_users as $key => $value) {
                 if($key == 'usuarios_creador'){
+                    if (empty($value['usuario_id'])) {
+                        // Ya se registro en el log el motivo (no hay cargo_creador); se omite esta fila
+                        // sin abortar el resto de participantes (gestor/firma/revisor si aplica).
+                        continue;
+                    }
                     $info_com['usuario_id'] = $value['usuario_id'];
                     $info_com['cusuario_id'] =  $value['cargousuarioId'];
                     $info_com['estadocom_id'] = $estadoobject_id;
@@ -156,6 +172,14 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
                     $etapa_rol = ActoadminEtapaPeer::getEtapaByRol($value['rol_id']);
                     $info_com['actoadminetapa_id'] = $etapa_rol ? $etapa_rol->getPrimaryKey() : null;
                     $ucom_object = ActoAdministrativoPeer::addOrUpdateUserByCom($info_com);
+                    if ($ucom_object === null) {
+                        sfContext::getInstance()->getLogger()->err(sprintf(
+                            '[ActoAdministrativoPeer::initUserByCom] Fallo al guardar el participante creador (rol 1) del acto %s, usuario %s.',
+                            $object_id,
+                            $value['usuario_id']
+                        ));
+                        continue;
+                    }
                     $ucargo_list[] = $ucom_object;
                     $uidcargo_list[] = $ucom_object->getPrimaryKey();
                 }else{

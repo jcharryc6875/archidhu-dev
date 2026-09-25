@@ -203,9 +203,6 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
             <div class="form-group">
               <label class="col-sm-1 control-label">Comparar versiones (Word):</label>
               <div class="col-sm-8">
-                <!-- No usar form_tag aqui: un <form> anidado dentro del form principal (form1) es HTML
-                     invalido y hace que el navegador cierre form1 antes de tiempo con el </form> de este
-                     bloque, dejando fuera del formulario todo lo que viene despues (anexos, firmas, botones). -->
                 <div class="form-inline js-comparar-word-version" data-url="<?php echo url_for('acto_administrativo/compareWordVersion'); ?>">
                   <select name="version_a_id" class="form-control input-sm">
                     <?php foreach ($wordVersions as $version): ?>
@@ -244,7 +241,9 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
                   <div class="col-sm-11" style="padding-right: 0;">
                     <textarea id="contenido" name="contenido" class="form-control input-sm ckeditor1" <?php echo !$puedeEditarContenido ? ' data-ckeditor-readonly="1"' : ''; ?>><?php echo $acto_administrativo->getContenido(); ?></textarea>
                     <?php if (!$puedeEditarContenido) { ?>
-                      <span class="help-block">No tiene permiso para editar el contenido del acto en esta etapa. Solo puede consultarlo.</span>
+                      <div class="alert alert-warning">
+                        <span class="help-block">No tiene permiso para editar el archivo en esta etapa. Solo puede consultarlo/descargarlo.</span>
+                      </div>
                     <?php } ?>
                   </div>
                 </div>

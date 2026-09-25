@@ -414,24 +414,28 @@ use_helper('jQuery', 'Object');
                                 <?php } ?>
                                 <?php if (count($wordVersions) >= 2) { ?>
                                     <h5<?php echo count($ldocument_version) ? ' style="margin-top:20px;"' : ''; ?>>Comparar versiones (Word)</h5>
-                                    <?php echo form_tag('acto_administrativo/compareWordVersion', array('name' => 'formCompararWordShow', 'method' => 'GET', 'target' => '_blank', 'class' => 'form-inline')); ?>
-                                    <select name="version_a_id" class="form-control input-sm">
-                                        <?php foreach ($wordVersions as $version): ?>
-                                            <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $version->getCurrentVersion() ? 'selected' : ''; ?>>
-                                                Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    vs.
-                                    <select name="version_b_id" class="form-control input-sm">
-                                        <?php foreach ($wordVersions as $index => $version): ?>
-                                            <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $index == 1 ? 'selected' : ''; ?>>
-                                                Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <button type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-random"></span> Comparar</button>
-                                    </form>
+                                    <!-- No usar form_tag aqui: cualquier <form> real dispara el overlay global
+                                         "Cargando informacion..." ($("form").submit(...) en simad-api.js), y como
+                                         este abre en pestana nueva (target="_blank"), la pestana actual nunca navega
+                                         y el overlay se queda visible para siempre. -->
+                                    <div class="form-inline js-comparar-word-version" data-url="<?php echo url_for('acto_administrativo/compareWordVersion'); ?>">
+                                        <select name="version_a_id" class="form-control input-sm">
+                                            <?php foreach ($wordVersions as $version): ?>
+                                                <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $version->getCurrentVersion() ? 'selected' : ''; ?>>
+                                                    Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        vs.
+                                        <select name="version_b_id" class="form-control input-sm">
+                                            <?php foreach ($wordVersions as $index => $version): ?>
+                                                <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $index == 1 ? 'selected' : ''; ?>>
+                                                    Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <button type="button" class="btn btn-default btn-sm js-comparar-word-version-btn"><span class="glyphicon glyphicon-random"></span> Comparar</button>
+                                    </div>
                                 <?php } ?>
                             </div>
                         <?php } ?>
