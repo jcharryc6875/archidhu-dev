@@ -36,6 +36,12 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
         <div class="panel-title">Crear Acto Administrativo</div>
       </div>
 
+      <?php if (!$puedeEditarContenido) { ?>
+        <div class="alert alert-warning alert-permiso-edicion">
+          <strong><span>No tiene permiso para editar el archivo en esta etapa. Solo puede consultarlo/descargarlo.</span></strong>
+        </div>
+      <?php } ?>
+
       <!-- Contenedor Contenido Formulario-->
       <div class="panel-body">
         <?php
@@ -189,11 +195,6 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
                   <?php } ?>
                 </div>
               </div>
-              <?php if (!$puedeEditarContenido) { ?>
-                <div class="alert alert-warning">
-                  <span class="help-block">No tiene permiso para editar el archivo en esta etapa. Solo puede consultarlo/descargarlo.</span>
-                </div>
-              <?php } ?>
             </div>
             <?php if (pathinfo($acto_administrativo->getUrlFileWord(), PATHINFO_EXTENSION) == "docx") { ?>
               <a class="btn btn-default btn-icon" data-toggle="tooltip" data-original-title="Descargar Plantilla" target="_blank" href="<?php echo url_for('acto_administrativo/downloadTplByWord?actoadministrativo_id=' . $acto_administrativo->getPrimaryKey());; ?>"><i class="entypo-down"></i>Descargar Plantilla</a>
@@ -240,11 +241,6 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
                   <!-- Contenido Editor -->
                   <div class="col-sm-11" style="padding-right: 0;">
                     <textarea id="contenido" name="contenido" class="form-control input-sm ckeditor1" <?php echo !$puedeEditarContenido ? ' data-ckeditor-readonly="1"' : ''; ?>><?php echo $acto_administrativo->getContenido(); ?></textarea>
-                    <?php if (!$puedeEditarContenido) { ?>
-                      <div class="alert alert-warning">
-                        <span class="help-block">No tiene permiso para editar el archivo en esta etapa. Solo puede consultarlo/descargarlo.</span>
-                      </div>
-                    <?php } ?>
                   </div>
                 </div>
               </div>
