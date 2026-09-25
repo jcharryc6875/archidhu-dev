@@ -18,6 +18,7 @@
  include __DIR__ . '/../PHPDiffText/autoload.php';
 
 use Jfcherng\Diff\DiffHelper;
+use Jfcherng\Diff\Differ;
 use Jfcherng\Diff\Factory\RendererFactory;
 use Jfcherng\Diff\Renderer\RendererConstant;
 
@@ -54,9 +55,9 @@ class DocsControlCambio extends BaseDocsControlCambio
             //*********************************************************************************************
             // options for Diff class
             $diffOptions = [
-                // show how many neighbor lines
-                // Differ::CONTEXT_ALL can be used to show the whole file
-                'context' => 3,
+                // show how many neighbor lines - CONTEXT_ALL para mostrar el documento completo en
+                // vez de recortar todo lo que no cambió a solo unas pocas líneas alrededor del cambio
+                'context' => Differ::CONTEXT_ALL,
                 // ignore case difference
                 'ignoreCase' => false,
                 // ignore line ending difference
