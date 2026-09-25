@@ -88,9 +88,9 @@ class InteresadosPeer extends BaseInteresadosPeer
     public static function getInteresadoByNuid($nuid)
     {
         try {
-            if ((!empty($pnombre) || !empty($papellido)) || !empty($nuid)) {
+            if (!empty($nuid)) {
                 $c = new Criteria();
-                $c->add(InteresadosPeer::NUMERO_IDENTIFICACION, $nuid);
+                $c->add(InteresadosPeer::NUMERO_IDENTIFICACION, trim($nuid));
                 $interesado  = InteresadosPeer::doSelectOne($c);
             } else {
                 $interesado = null;
@@ -98,6 +98,8 @@ class InteresadosPeer extends BaseInteresadosPeer
             //*********************************************************************************
             return $interesado;
         } catch (Exception $x) {
+            return null;
+        } catch (\Throwable $x) {
             return null;
         }
     }
