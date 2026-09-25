@@ -3354,6 +3354,19 @@ jQuery(document).ready(function ($) {
 			}
 		});
 	});
+
+	// UARIV-202605 (ampliación): abre la comparación visual de versiones de Word en una pestaña nueva.
+	// Se hace por JS (y no con un <form> propio en la vista) porque ese bloque vive dentro del formulario
+	// principal de edición, y un <form> anidado es HTML invalido: el navegador cierra el formulario
+	// principal antes de tiempo y deja fuera de el todo lo que viene despues (anexos, firmas, botones).
+	jQuery('body').on('click', '.js-comparar-word-version-btn', function (e) {
+		e.preventDefault();
+		var $wrapper = jQuery(this).closest('.js-comparar-word-version');
+		var url = $wrapper.data('url');
+		var version_a_id = $wrapper.find('select[name="version_a_id"]').val();
+		var version_b_id = $wrapper.find('select[name="version_b_id"]').val();
+		window.open(url + '?version_a_id=' + encodeURIComponent(version_a_id) + '&version_b_id=' + encodeURIComponent(version_b_id), '_blank');
+	});
 });
 
 (function ($) {

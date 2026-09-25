@@ -203,24 +203,27 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
             <div class="form-group">
               <label class="col-sm-1 control-label">Comparar versiones (Word):</label>
               <div class="col-sm-8">
-                <?php echo form_tag('acto_administrativo/compareWordVersion', array('name' => 'formCompararWord', 'method' => 'GET', 'target' => '_blank', 'class' => 'form-inline')); ?>
-                <select name="version_a_id" class="form-control input-sm">
-                  <?php foreach ($wordVersions as $version): ?>
-                    <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $version->getCurrentVersion() ? 'selected' : ''; ?>>
-                      Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
-                    </option>
-                  <?php endforeach; ?>
-                </select>
-                vs.
-                <select name="version_b_id" class="form-control input-sm">
-                  <?php foreach ($wordVersions as $index => $version): ?>
-                    <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $index == 1 ? 'selected' : ''; ?>>
-                      Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
-                    </option>
-                  <?php endforeach; ?>
-                </select>
-                <button type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-random"></span> Comparar</button>
-                </form>
+                <!-- No usar form_tag aqui: un <form> anidado dentro del form principal (form1) es HTML
+                     invalido y hace que el navegador cierre form1 antes de tiempo con el </form> de este
+                     bloque, dejando fuera del formulario todo lo que viene despues (anexos, firmas, botones). -->
+                <div class="form-inline js-comparar-word-version" data-url="<?php echo url_for('acto_administrativo/compareWordVersion'); ?>">
+                  <select name="version_a_id" class="form-control input-sm">
+                    <?php foreach ($wordVersions as $version): ?>
+                      <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $version->getCurrentVersion() ? 'selected' : ''; ?>>
+                        Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
+                  vs.
+                  <select name="version_b_id" class="form-control input-sm">
+                    <?php foreach ($wordVersions as $index => $version): ?>
+                      <option value="<?php echo $version->getPrimaryKey(); ?>" <?php echo $index == 1 ? 'selected' : ''; ?>>
+                        Versión <?php echo $version->getVersionNumber(); ?> (<?php echo $version->getFechaCreacion(); ?><?php echo $version->getCurrentVersion() ? ' - actual' : ''; ?>)
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
+                  <button type="button" class="btn btn-default btn-sm js-comparar-word-version-btn"><span class="glyphicon glyphicon-random"></span> Comparar</button>
+                </div>
               </div>
             </div>
           <?php } ?>
