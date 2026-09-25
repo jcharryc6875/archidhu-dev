@@ -1,10 +1,34 @@
-ins { background:#94f094; text-decoration:none; font-weight:600; }
-del { background:#f09494; text-decoration:line-through; font-weight:600; }
+/* Copiado literal de lib/PHPDiffText/example/diff-table.css (el propio CSS de la librería
+   jfcherng/php-diff, expuesto también vía DiffHelper::getStyleSheet()), que nunca se cargaba
+   en este visor. Solo se agregan bordes/encabezado (abajo) para que la tabla se vea prolija;
+   los selectores de color de aquí son los mismos que usa la librería, sin reinterpretarlos. */
+.diff-wrapper.diff.diff-html .change.change-eq .old,
+.diff-wrapper.diff.diff-html .change.change-eq .new {
+  background: #fff;
+}
+.diff-wrapper.diff.diff-html .change .old {
+  background: #fbe1e1;
+}
+.diff-wrapper.diff.diff-html .change .new {
+  background: #e1fbe1;
+}
+.diff-wrapper.diff.diff-html .change .rep {
+  background: #fef6d9;
+}
+.diff-wrapper.diff.diff-html .change ins,
+.diff-wrapper.diff.diff-html .change del {
+  font-weight: bold;
+  text-decoration: none;
+}
+.diff-wrapper.diff.diff-html .change ins {
+  background: #94f094;
+}
+.diff-wrapper.diff.diff-html .change del {
+  background: #f09494;
+}
 
-/* Estilos de la tabla de diferencias generada por el renderizador Combined de
-   jfcherng/php-diff (lib/PHPDiffText) -el único que usa este visor (DocsControlCambio::
-   compareVersions() lo fija de forma fija)-: nunca genera numeración de línea ni columna
-   de signo, solo un <td> por fila cuya clase indica el tipo de cambio ("eq"/"del"/"ins"/"rep"). */
+/* Estructura de la tabla (bordes/encabezado): el renderizador usado (Combined) no genera
+   numeración de línea ni columna de signo, solo un <td> por fila. */
 .diff-wrapper.diff {
   border-collapse: collapse;
   border-spacing: 0;
@@ -22,7 +46,6 @@ del { background:#f09494; text-decoration:line-through; font-weight:600; }
 .diff-wrapper.diff th {
   border: none;
   padding: 5px 10px;
-  background: #fff;
   vertical-align: top;
 }
 .diff-wrapper.diff thead th {
@@ -33,11 +56,3 @@ del { background:#f09494; text-decoration:line-through; font-weight:600; }
 .diff-wrapper.diff tbody.skipped td {
   display: none;
 }
-/* Líneas que no cambiaron: fondo blanco (por defecto). Líneas que solo existían en la
-   versión vieja (borradas por completo) o solo en la nueva (agregadas por completo). */
-.diff-wrapper.diff tbody.change-del td.old { background: #fdeaea; }
-.diff-wrapper.diff tbody.change-ins td.new { background: #eafdea; }
-/* Líneas "reemplazadas" (la más común: alguien edita una frase existente): llegan
-   fusionadas en una sola fila, con el texto viejo tachado en rojo y el nuevo resaltado
-   en verde justo en el punto donde cambió, vía las reglas de ins/del de arriba. */
-.diff-wrapper.diff tbody.change-rep td.rep { background: #fdf6e3; }
