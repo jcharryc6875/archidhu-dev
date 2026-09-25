@@ -243,10 +243,16 @@ class DocsControlCambio extends BaseDocsControlCambio
         //*********************************************************************************************
         $text = strip_tags($html);
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+        $text = str_replace("\xc2\xa0", ' ', $text); // &nbsp; decodificado, típico de los "divs" vacíos de CKEditor
         $text = preg_replace('/[ \t]+/', ' ', $text);
-        $text = preg_replace('/\n[ \t]+/', "\n", $text);
-        $text = preg_replace('/\n{3,}/', "\n\n", $text);
         //*********************************************************************************************
-        return trim($text);
+        // Descarta líneas vacías (o solo con espacios) en vez de conservarlas: CKEditor genera muchos
+        // <div> vacíos para espaciado visual, que de otro modo aparecen como filas en blanco sin
+        // ningún valor comparativo en el resultado del diff.
+        $lineas = explode("\n", $text);
+        $lineas = array_map('trim', $lineas);
+        $lineas = array_filter($lineas, function ($linea) { return $linea !== ''; });
+        //*********************************************************************************************
+        return implode("\n", $lineas);
     }
 }

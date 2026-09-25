@@ -1,2 +1,52 @@
 ins { background:#e6ffed; text-decoration:none; }
 del { background:#ffecec; text-decoration:line-through; }
+
+/* Estilos de la tabla generada por el renderizador Combined de jfcherng/php-diff
+   (lib/PHPDiffText), copiados de su propio diff-table.css que nunca se cargaba en
+   este visor (por eso la tabla salía sin ningún color/estructura visible). */
+.diff-wrapper.diff {
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+  color: #333;
+  empty-cells: show;
+  font-size: 13px;
+  width: 100%;
+}
+.diff-wrapper.diff th {
+  font-weight: 700;
+  background: #f0f0f0;
+}
+.diff-wrapper.diff td,
+.diff-wrapper.diff th {
+  border: none;
+  padding: 3px 8px;
+  background: #fff;
+  vertical-align: top;
+}
+.diff-wrapper.diff thead th {
+  background: #dfe6ee;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+.diff-wrapper.diff tbody.skipped td {
+  display: none;
+}
+.diff-wrapper.diff tbody th {
+  background: #f4f4f4;
+  border-right: 1px solid #ddd;
+  text-align: right;
+  width: 3em;
+}
+.diff-wrapper.diff tbody th.sign {
+  text-align: center;
+  width: 1.5em;
+}
+.diff-wrapper.diff tbody th.sign.del { background: #fbe1e1; }
+.diff-wrapper.diff tbody th.sign.ins { background: #e1fbe1; }
+.diff-wrapper.diff tbody th.sign.rep { background: #fdf3d0; }
+.diff-wrapper.diff tbody.change-eq td { background: #fff; }
+.diff-wrapper.diff tbody.change-del td.old { background: #fdeaea; }
+.diff-wrapper.diff tbody.change-ins td.new { background: #eafdea; }
+.diff-wrapper.diff tbody.change-rep td.old { background: #fdeaea; }
+.diff-wrapper.diff tbody.change-rep td.new { background: #eafdea; }
