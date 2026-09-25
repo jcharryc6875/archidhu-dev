@@ -254,7 +254,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
                 </h4>
 
                 <div id="versions-list">
-                  <?php include_partial('listVersion', array('ldocument_version' => $ldocument_version, 'acto_administrativo' => $acto_administrativo)); ?>
+                  <?php include_partial('listVersionCompact', array('ldocument_version' => $ldocument_version, 'acto_administrativo' => $acto_administrativo)); ?>
                 </div>
               </div>
             </div>
