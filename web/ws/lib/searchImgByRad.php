@@ -62,6 +62,7 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 	$infoxml = file_get_contents("php://input");
 	//*********************************************************************************************************************
 	$respuesta_vars = array();
+	$info_request = array();
 	$error = false;
 	$fecha_transaccion = date("Y-m-d G:i:s");
 	//*********************************************************************************************************************
@@ -118,7 +119,7 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 			$interesado = InteresadosPeer::getInteresadoByNuid($numero_identificacion);
 			if ($interesado != null) {
 				$list_comenviadas  = ComEnviadaPeer::getListComEnviadasByNuid($numero_identificacion);
-				$list_comrecibidas  = ComRecibidaPeer::getListComRecibidasByNuid($numero_identificacion, null, $radicado_entrada, $radicado_salida);
+				$list_comrecibidas  = ComRecibidaPeer::getListComRecibidasByNuid($numero_identificacion, null, $radicado_entrada);
 			}
 		}
 		//*****************************************************************************************************************
