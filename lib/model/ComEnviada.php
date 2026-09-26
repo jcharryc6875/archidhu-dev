@@ -2302,7 +2302,7 @@ class ComEnviada extends BaseComEnviada
                 }
                 //*****************************************************************************************************
                 $tmp_codebar = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
-                $codebar_radicado = $tmp_codebar . simad_util::generateCodeBarInFile(trim($this->getRadicado()));
+                $codebar_radicado = $tmp_codebar . DIRECTORY_SEPARATOR . $this->generateImgCodeCom(array('clearlabels' => true));
                 $replacement_images['CODEBAR_COM'] = ['path' => $codebar_radicado, 'wcm' => 150, 'hcm' => 40];
                 //*****************************************************************************************************
                 $datos = [
@@ -3815,7 +3815,7 @@ class ComEnviada extends BaseComEnviada
             $contenido_merge = str_replace("{[ASUNTO_COM]}", $this->getAsunto(), $contenido_merge);
             $contenido_merge = str_replace("{[RADICADO_COM]}", $this->getRadicado(), $contenido_merge);
             //*******************************************************************************************************
-            $codebar_radicado = simad_util::generateCodeBarInFile(trim($this->getRadicado()));
+            $codebar_radicado = $this->generateImgCodeCom(array('clearlabels' => true));
             $contenido_merge = str_replace("{[CODEBAR_COM]}", '<img style="width:80px; height:auto;" src="' . $base_path . '/tmp/' . $codebar_radicado . '"/>', $contenido_merge);
             //*******************************************************************************************************
             return $contenido_merge;
