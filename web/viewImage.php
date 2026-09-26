@@ -2,6 +2,7 @@
 require_once(dirname(__FILE__) . '/../config/ProjectConfiguration.class.php');
 $configuration = ProjectConfiguration::getApplicationConfiguration('backend', 'prod', false);
 sfContext::createInstance($configuration);
+//***********************************************************************************************
 $url_redirect = "/backend.php/inicio/errorFile";
 $base_path = !empty(trim(sfConfig::get('base_simad'))) ? sfConfig::get('base_simad') : sfConfig::get('publicUrl');
 $localUrl = sfConfig::get('localUrl');

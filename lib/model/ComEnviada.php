@@ -2286,7 +2286,7 @@ class ComEnviada extends BaseComEnviada
                 }
                 //*****************************************************************************************************
                 $userscom_data = $this->getUsuariosListComObjs();
-                //*******************************************************************************************************
+                //*****************************************************************************************************
                 $lstfirmas = $userscom_data['firmas'];
                 $unfirma = "";
                 $ufcargo = "";
@@ -2508,7 +2508,7 @@ class ComEnviada extends BaseComEnviada
                 $soffice_cli = simad_util::libreOfficeCliPath();
                 //*******************************************************************************************************
                 $command = sprintf(
-                    $soffice_cli . ' --headless --convert-to pdf --outdir %s %s',
+                    '"' . $soffice_cli . '" --headless --convert-to pdf --outdir %s %s',
                     escapeshellarg(dirname($pathToSave)),
                     escapeshellarg($docxSalida)
                 );

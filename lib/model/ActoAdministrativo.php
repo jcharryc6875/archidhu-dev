@@ -781,12 +781,11 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 $soffice_cli = simad_util::libreOfficeCliPath();
                 //*******************************************************************************************************
                 $command = sprintf(
-                    $soffice_cli . ' --headless --convert-to pdf --outdir %s %s',
+                    '"'.$soffice_cli.'" --headless --convert-to pdf --outdir %s %s',
                     escapeshellarg(dirname($pathToSave)),
                     escapeshellarg($docxSalida)
                 );
                 //*******************************************************************************************************
-                exec('whoami 2>&1', $o, $c);
                 exec($command . ' 2>&1', $output, $returnVar);
                 //*******************************************************************************************************
                 if ($returnVar !== 0) {
@@ -798,8 +797,8 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 }
                 //*******************************************************************************************************
                 return $returnFullPath ? $pathToSave : $outFileName;
-            } catch (Exception $e) {
-                echo $e->getMessage();
+            } catch(\Exception $e) {
+                error_log($e->getMessage());
                 return null;
             }
         } else {

@@ -133,9 +133,9 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 				if ($attach['TIPO_ATTACHMENT'] == 'DIGIT_COM') {
 					$url_download = $attach['URL_DOWNLOAD'];
 					$url_inline = $attach['URL'];
-					$url_inline = $attach['SIZE_FILE'];
+					$size_fdigit = $attach['SIZE_FILE'];
 				} elseif ($attach['TIPO_ATTACHMENT'] == 'ANEXO') {
-					$list_anexos[] = array('NOMBRE_ANEXO' => $attach['NOMBRE_ARCHIVO'], 'URL_ANEXO' => $attach['URL'], 'SIZE_ADJUNTO' => $attach['SIZE_FILE']);
+					$list_anexos[] = array('NOMBRE_ANEXO' => $attach['NOMBRE_ARCHIVO'], 'URL_ANEXO' => $attach['URL'], 'SIZE_FILE' => $attach['SIZE_FILE']);
 				}
 			}
 			//*********************************************************************************************************
@@ -146,7 +146,7 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 			$comenviada_vars['TELEFONO_REGISTRADO'] = $telefono_registra;
 			$comenviada_vars['URL_RADICADO'] = trim($url_inline) ?: null;
 			$comenviada_vars['URL_DOWNLOAD'] = trim($url_download) ?: null;
-			$comenviada_vars['SIZE_DIGIT'] = trim($url_download) ?: null;
+			$comenviada_vars['SIZE_FILE'] = $size_fdigit;
 			$comenviada_vars['ASUNTO'] = $com_enviada->getAsunto();
 			$comenviada_vars['SERVICIOS_RADICADO'] = (ServicioPeer::getListDigitDocument($radicado_salida, $radicado_origen, 4));
 			$comenviada_vars['ANEXOS_RADICADO'] = $list_anexos;
@@ -161,13 +161,15 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 			$url_download = null;
 			$url_inline = null;
 			$list_anexos = array();
+			$size_fdigit = 0;
 			//*********************************************************************************************************
 			foreach ($info_img as $attach) {
 				if ($attach['TIPO_ATTACHMENT'] == 'DIGIT_COM') {
 					$url_download = $attach['URL_DOWNLOAD'];
 					$url_inline = $attach['URL'];
+					$size_fdigit = $attach['SIZE_FILE'];
 				} elseif ($attach['TIPO_ATTACHMENT'] == 'ANEXO') {
-					$list_anexos[] = array('NOMBRE_ANEXO' => $attach['NOMBRE_ARCHIVO'], 'URL_ANEXO' => $attach['URL']);
+					$list_anexos[] = array('NOMBRE_ANEXO' => $attach['NOMBRE_ARCHIVO'], 'URL_ANEXO' => $attach['URL'], 'SIZE_FILE' => $attach['SIZE_FILE']);
 				}
 			}
 			//*********************************************************************************************************
@@ -178,6 +180,7 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 			$comrecibida_vars['TELEFONO_REGISTRADO'] = $telefono_registra;
 			$comrecibida_vars['URL_RADICADO'] = trim($url_inline) ?: null;
 			$comrecibida_vars['URL_DOWNLOAD'] = trim($url_download) ?: null;
+			$comrecibida_vars['SIZE_FILE'] = $size_fdigit;
 			$comrecibida_vars['ASUNTO'] = $com_recibida->getAsunto();
 			$comrecibida_vars['SERVICIOS_RADICADO'] = array();
 			$comrecibida_vars['ANEXOS_RADICADO'] = $list_anexos;
@@ -193,13 +196,15 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 				$url_download = null;
 				$url_inline = null;
 				$list_anexos = array();
+				$size_fdigit = 0;
 				//*********************************************************************************************************
 				foreach ($info_img as $attach) {
 					if ($attach['TIPO_ATTACHMENT'] == 'DIGIT_COM') {
 						$url_download = $attach['URL_DOWNLOAD'];
 						$url_inline = $attach['URL'];
+						$size_fdigit = $attach['SIZE_FILE'];
 					} elseif ($attach['TIPO_ATTACHMENT'] == 'ANEXO') {
-						$list_anexos[] = array('NOMBRE_ANEXO' => $attach['NOMBRE_ARCHIVO'], 'URL_ANEXO' => $attach['URL']);
+						$list_anexos[] = array('NOMBRE_ANEXO' => $attach['NOMBRE_ARCHIVO'], 'URL_ANEXO' => $attach['URL'], 'SIZE_FILE' => $attach['SIZE_FILE']);
 					}
 				}
 				//*********************************************************************************************************
@@ -210,6 +215,7 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 				$comenviada_vars['TELEFONO_REGISTRADO'] = $telefono_registra;
 				$comenviada_vars['URL_RADICADO'] = trim($url_inline) ?: null;
 				$comenviada_vars['URL_DOWNLOAD'] = trim($url_download) ?: null;
+				$comenviada_vars['SIZE_FILE'] = $size_fdigit;
 				$comenviada_vars['ASUNTO'] = $item->getAsunto();
 				$comenviada_vars['SERVICIOS_RADICADO'] = (ServicioPeer::getListDigitDocument($item->getRadicado(), null, 4));
 				$comenviada_vars['ANEXOS_RADICADO'] = $list_anexos;
@@ -226,13 +232,15 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 				$url_download = null;
 				$url_inline = null;
 				$list_anexos = array();
+				$size_fdigit = 0;
 				//*********************************************************************************************************
 				foreach ($info_img as $attach) {
 					if ($attach['TIPO_ATTACHMENT'] == 'DIGIT_COM') {
 						$url_download = $attach['URL_DOWNLOAD'];
 						$url_inline = $attach['URL'];
+						$size_fdigit = $attach['SIZE_FILE'];
 					} elseif ($attach['TIPO_ATTACHMENT'] == 'ANEXO') {
-						$list_anexos[] = array('NOMBRE_ANEXO' => $attach['NOMBRE_ARCHIVO'], 'URL_ANEXO' => $attach['URL']);
+						$list_anexos[] = array('NOMBRE_ANEXO' => $attach['NOMBRE_ARCHIVO'], 'URL_ANEXO' => $attach['URL'], 'SIZE_FILE' => $attach['SIZE_FILE']);
 					}
 				}
 				//*********************************************************************************************************
@@ -243,6 +251,7 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 				$comrecibida_vars['TELEFONO_REGISTRADO'] = $telefono_registra;
 				$comrecibida_vars['URL_RADICADO'] = trim($url_inline) ?: null;
 				$comrecibida_vars['URL_DOWNLOAD'] = trim($url_download) ?: null;
+				$comrecibida_vars['SIZE_FILE'] = $size_fdigit;
 				$comrecibida_vars['ASUNTO'] = $item->getAsunto();
 				$comrecibida_vars['SERVICIOS_RADICADO'] = array();
 				$comrecibida_vars['ANEXOS_RADICADO'] = $list_anexos;
@@ -261,6 +270,7 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 			$default_vars['TELEFONO_REGISTRADO'] = null;
 			$default_vars['URL_RADICADO'] = null;
 			$default_vars['URL_DOWNLOAD'] = null;
+			$default_vars['SIZE_FILE'] = null;
 			$default_vars['ASUNTO'] = null;
 			$default_vars['SERVICIOS_RADICADO'] = array();
 			$default_vars['ANEXOS_RADICADO'] = array();
@@ -269,7 +279,31 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 			$default_vars['FECHA_TRANSACCION'] = $fecha_transaccion;
 			$respuesta_vars[] = $default_vars;
 		}
-	} catch (\Throwable $th) {
+		//***************************************************************************************************************
+		if ($wslog != null) {
+			$wslog->setTipoOperacion("Consumen Servicio web SGDEA => " . implode(";", $info_request));
+			$wslog->setMensaje("Ejecuta Exitoso Genera Informacion");
+			$wslog->save();
+		}
+	} catch (PropelException $th) {
+		$respuesta_vars = array();
+		$default_vars['RADICADO'] = null;
+		$default_vars['FECHA_RADICACION'] = null;
+		$default_vars['NUMERO_FOLIOS'] = null;
+		$default_vars['DIRECCION_REGISTRADA'] = null;
+		$default_vars['TELEFONO_REGISTRADO'] = null;
+		$default_vars['URL_RADICADO'] = null;
+		$default_vars['URL_DOWNLOAD'] = null;
+		$default_vars['SIZE_FILE'] = null;
+		$default_vars['ASUNTO'] = null;
+		$default_vars['SERVICIOS_RADICADO'] = array();
+		$default_vars['ANEXOS_RADICADO'] = array();
+		$default_vars['ISERROR'] = true;
+		//$default_vars['MSG_INFO'] = $th->getMessage();
+		$default_vars['MSG_INFO'] = "Error de acceso a los datos";
+		$default_vars['FECHA_TRANSACCION'] = $fecha_transaccion;
+		$respuesta_vars[] = $default_vars;
+	} catch (Exception $th) {
 		$respuesta_vars = array();
 		$default_vars['RADICADO'] = null;
 		$default_vars['FECHA_RADICACION'] = null;
@@ -279,8 +313,6 @@ function ConsultaRadicadoPublic($EntSecurity = array(), $EntComInfo = array())
 		$default_vars['URL_RADICADO'] = null;
 		$default_vars['URL_DOWNLOAD'] = null;
 		$default_vars['ASUNTO'] = null;
-		$default_vars['SERVICIOS_RADICADO'] = array();
-		$default_vars['ANEXOS_RADICADO'] = array();
 		$default_vars['ISERROR'] = true;
 		$default_vars['MSG_INFO'] = $th->getMessage();
 		$default_vars['FECHA_TRANSACCION'] = $fecha_transaccion;
@@ -488,7 +520,7 @@ function GetHistoricoRadicado($EntSecurity = array(), $EntComHist = array())
 			//*************************************************************************************************************
 			$respuesta_vars['RADICADO_FLUJO'] = $wflist_acom;
 		}
-	} catch (\Throwable $th) {
+	} catch (Exception $th) {
 		$respuesta_vars = array();
 		$default_vars['RADICADO'] = null;
 		$default_vars['FECHA_RADICACION'] = null;
@@ -1563,7 +1595,7 @@ function AddRadicadoEntradaPublic($EntSecurity = array(), $EntComRecibida = arra
 		$com_recibida = ComRecibidaPeer::addComRecibida($params);
 		//***************************************************************************************************************
 		if (empty($com_recibida)) {
-			return responseErrorData('Ocurrio un error interno en el servidor al radicar');
+			return responseErrorData('No se puedo radicar, ocurrio un error interno en el servidor.');
 		}
 		//***************************************************************************************************************
 		if ($wslog != null) {
@@ -2343,7 +2375,7 @@ function AddRadicadoSalidaOferta($EntSecurity = array(), $EntComEnviada = array(
 		$params['ciudad_id'] = $cuser_firma[0]->getUsuario()->getRegional()->getCiudadId();
 		$params['periodo_id'] = $periodo_id;
 		$params['asunto'] = $asunto;
-		$params['folios'] = isset($EntComEnviada['FOLIOS']) ? trim($EntComEnviada['FOLIOS']) : 0;
+		$params['folios'] = isset($EntComEnviada['FOLIOS']) ? trim($EntComEnviada['FOLIOS']) : 1;
 		$params['observaciones_envio'] = isset($EntComEnviada['OBSERVACIONES_ENVIO']) ? utf8_encode(trim($EntComEnviada['OBSERVACIONES_ENVIO'])) : null;
 		$params['consecutivo_resp'] = null;
 		$params['firma_electronica'] = isset($EntComEnviada['FIRMA_DIGITAL']) ? trim($EntComEnviada['FIRMA_DIGITAL']) : 0;
