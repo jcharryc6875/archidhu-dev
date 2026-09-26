@@ -1717,10 +1717,8 @@ function AddRadicadoSalidaEnt($EntSecurity = array(), $EntComEnviada = array(), 
 	$util_simad = new simad_util();
 	//*******************************************************************************************************************
 	try {
-		//$filedir_target = sfConfig::get("sf_web_dir").DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR;
 		$dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto() . 'uploads');
 		$filedir_target = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd")) . DIRECTORY_SEPARATOR;
-		//$logname = sfConfig::get("sf_log_dir").DIRECTORY_SEPARATOR.'request_timed.log';
 		//***************************************************************************************************************
 		$usuario_ws = UsuarioPeer::autenticateUserWs($EntSecurity);
 		if ($usuario_ws['isError']) {
@@ -1737,6 +1735,8 @@ function AddRadicadoSalidaEnt($EntSecurity = array(), $EntComEnviada = array(), 
 		$tramite_origen = isset($EntComEnviada['CLASIFICACION_DOCUMENTO']) ? trim($EntComEnviada['CLASIFICACION_DOCUMENTO']) : null;
 		$uiduser_origen = isset($EntComEnviada['NUID_RADICA']) ? trim($EntComEnviada['NUID_RADICA']) : trim($EntComEnviada['NUID_GESTOR']);
 		$tipo_envio = isset($EntComEnviada['TIPO_ENVIO']) ? trim($EntComEnviada['TIPO_ENVIO']) : null;
+		$usuario_firma = null;
+		$nuid_firma = "";
 		//***************************************************************************************************************
 		$object_list = $EntComEnviada['FIRMAS'];
 		$cuser_firma = array();
@@ -1903,6 +1903,7 @@ function AddRadicadoSalidaEnt($EntSecurity = array(), $EntComEnviada = array(), 
 		}
 		//***************************************************************************************************************
 		$IsEntradaExterna = false;
+		$com_recibida = null;
 		if (!empty($radicado_entrada)) {
 			$com_recibida = ComRecibidaPeer::getComObjectByRadicado($radicado_entrada);
 			if ($com_recibida == null) {
@@ -2170,6 +2171,8 @@ function AddRadicadoSalidaOferta($EntSecurity = array(), $EntComEnviada = array(
 		$uiduser_origen = isset($EntComEnviada['NUID_RADICA']) ? trim($EntComEnviada['NUID_RADICA']) : trim($EntComEnviada['NUID_GESTOR']);
 		$tipo_envio = isset($EntComEnviada['TIPO_ENVIO']) ? trim($EntComEnviada['TIPO_ENVIO']) : null;
 		$app_origen = isset($EntComEnviada['APP_ORIGEN']) ? trim($EntComEnviada['APP_ORIGEN']) : "";
+		$usuario_firma = null;
+		$nuid_firma = "";
 		//***************************************************************************************************************
 		$object_list = $EntComEnviada['FIRMAS'];
 		$cuser_firma = array();
@@ -2504,7 +2507,7 @@ function AddRadicadoSalidaOferta($EntSecurity = array(), $EntComEnviada = array(
 				$msg_info[] = isset($response_servicio['message']) ? trim($response_servicio['message']) : "Error al crear la solicitud de servicio";
 			}
 		}
-		//****************************************************************************************************
+		//***************************************************************************************************************
 		AuditLogPeer::guardarAuditoriaLite("ComEnviada", $com_enviada_anterior, $com_enviada, ModulesEnable::ComEnviada, $com_enviada->getRadicado(), $cuser_origen->getPrimaryKey());
 		//***************************************************************************************************************
 		$response_data = array(
@@ -2553,6 +2556,7 @@ function AddActoAdministrativo($EntSecurity = array(), $EntActoAdministrativo = 
 	//*******************************************************************************************************************
 	$infoxml = file_get_contents("php://input");
 	$util_simad = new simad_util();
+
 	//*******************************************************************************************************************
 	try {
 		$dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto() . 'uploads');
@@ -2570,6 +2574,9 @@ function AddActoAdministrativo($EntSecurity = array(), $EntActoAdministrativo = 
 		//***************************************************************************************************************
 		$object_list = $EntActoAdministrativo['FIRMAS'];
 		$cuser_firma = array();
+		$usuario_firma = null;
+		$nuid_firma = "(unidefined)";
+
 		foreach ($object_list as $ufirma_list) {
 			if (is_array($ufirma_list)) {
 				foreach ($ufirma_list as $xufirma) {
@@ -2675,6 +2682,7 @@ function AddActoAdministrativo($EntSecurity = array(), $EntActoAdministrativo = 
 		$cargo_usuario = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario_creador->getPrimaryKey(), true);
 		//***************************************************************************************************************
 		$cargo_usuario_destinatario = null;
+		$ucargodestino_id = null;
 		if ($nuid_destinatario != null || $nuid_destinatario != "") {
 			$cargo_usuario_destinatario = CargoUsuarioPeer::getCargoUsuarioByNuidUser($nuid_destinatario, true);
 			$ucargodestino_id = $cargo_usuario_destinatario->getPrimaryKey();
@@ -3005,10 +3013,6 @@ function AddActoAdministrativo($EntSecurity = array(), $EntActoAdministrativo = 
 		}
 		//***************************************************************************************************************
 		if ($acto_administrativo->getEstadoactoadministrativoId() !== 6 && $radicar_automativo) {
-			//1. elimina usuarios del acto administrativo
-			//2. elimina interesados del acto administrativo
-			//3. elimina servicios del acto administrativo(falta revisar, hay tablas relacionas al servicio)
-			//4. elimina el acto administrativo
 			ActoAdministrativoPeer::deleteCascada($acto_administrativo->getPrimaryKey());
 			return responseErrorData('Error al generar el acto administrativo');
 		}
@@ -3022,7 +3026,7 @@ function AddActoAdministrativo($EntSecurity = array(), $EntActoAdministrativo = 
 			$usuario_creador->getUsuarioId()
 		);
 		//***************************************************************************************************************
-		ActoAdministrativoPeer::updateEstadosObj($acto_administrativo->getPrimaryKey(), $estado_documento);
+		ActoAdministrativoPeer::updateEstadosObj($acto_administrativo->getPrimaryKey(), $acto_administrativo->getEstadoactoadministrativoId());
 		ActoAdministrativoPeer::updateAproObjAllProcess($acto_administrativo->getPrimaryKey(), array(2, 3, 4));
 		//***************************************************************************************************************
 		if (!empty($unidaddocumental_id) && !empty($tipodocumental_id) && $radicar_automativo) {
