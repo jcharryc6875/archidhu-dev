@@ -14,13 +14,17 @@ $cantidad_registros = $pager->getNbResults();
 <div class="row">
   <div class="col-md-12">
     <?php
-      // Include Navbar
-      include_partial("navbar_recibida", array('parametros' => $parametros));
+    // Include Navbar
+    include_partial("navbar_recibida", array('parametros' => $parametros));
     ?>
 
     <?php if ($sf_user->hasFlash('messages_error')): ?>
       <?php echo ConsultaPermisoHelper::htmlAlertaSinPermiso($sf_user->getFlash('messages_error')); ?>
-      <script>jQuery(function($){ toastr.warning('<?php echo addslashes($sf_user->getFlash('messages_error')); ?>', 'Acceso restringido'); });</script>
+      <script>
+        jQuery(function($) {
+          toastr.warning('<?php echo addslashes($sf_user->getFlash('messages_error')); ?>', 'Acceso restringido');
+        });
+      </script>
     <?php endif; ?>
 
     <?php if ($cantidad_registros == 0): ?>
@@ -32,7 +36,11 @@ $cantidad_registros = $pager->getNbResults();
           <?php $mensajeVacio = isset($mensajeListaVacia) ? $mensajeListaVacia : ConsultaPermisoHelper::MSG_SIN_REGISTROS; ?>
           <?php if (ConsultaPermisoHelper::esMensajeSinPermiso($mensajeVacio)): ?>
             <?php echo ConsultaPermisoHelper::htmlAlertaSinPermiso($mensajeVacio); ?>
-            <script>jQuery(function($){ toastr.warning('<?php echo addslashes($mensajeVacio); ?>', 'Acceso restringido'); });</script>
+            <script>
+              jQuery(function($) {
+                toastr.warning('<?php echo addslashes($mensajeVacio); ?>', 'Acceso restringido');
+              });
+            </script>
           <?php else: ?>
             <div class="alert alert-default"><?php echo $mensajeVacio; ?></div>
           <?php endif; ?>
@@ -124,14 +132,13 @@ $cantidad_registros = $pager->getNbResults();
                     }
                   }
                   //**********************************************************************************************************/
-                  if ($estado_com_recibida_id == 5 && $com_recibida->getComenviadaId()) 
-                  {
+                  if ($estado_com_recibida_id == 5 && $com_recibida->getComenviadaId()) {
                     echo jq_link_to_function(image_tag('/images/simad/estados/mail_resp.png', array('width' => "30", 'height' => "30", 'align' => "middle")), 'javascript:jQuery.OpenModalSIMAD("' . $base_path . '/recibida.php/com_recibida/viewResp?comrecibida_id=' . $com_recibida->getPrimaryKey() . '&displayRespFirst=true")', array('class' => 'tooltip-primary', 'data-toggle' => 'tooltip', 'data-original-title' => 'Respondida'));
                   } elseif (mb_strtolower($alt_estado_recibida) == 'respondida' && $com_recibida->getComenviadaId()) {
                     echo jq_link_to_function(image_tag($icono_estado, array('border' => "0", 'width' => "30", 'height' => "30", 'align' => "middle")), 'javascript:jQuery.OpenModalSIMAD("' . $base_path . '/enviada.php/com_enviada/show?comenviada_id=' . $com_recibida->getComenviadaId() . '")', array('class' => 'tooltip-primary', 'data-toggle' => 'tooltip', 'data-original-title' => ucwords(mb_strtolower($alt_estado_recibida))));
                   } else {
                     echo image_tag($icono_estado, array('width' => "30", 'height' => "30", 'align' => "middle", 'class' => 'tooltip-primary', 'data-toggle' => 'tooltip', 'data-original-title' => ucwords(mb_strtolower($alt_estado_recibida))));
-                  }                  
+                  }
                   //**********************************************************************************************************/
                   ?>
                 </td>
@@ -152,7 +159,8 @@ $cantidad_registros = $pager->getNbResults();
                   $alias_image = $entidad_text ? $directorio_alias . $entidad_text . "/" . $directorio_com : $directorio_alias . $directorio_com;
                   $file_name = $com_recibida->getRadicado();
                   //*******************************************************************************
-                  $existe_file = false;$digit_fdocu = null;
+                  $existe_file = false;
+                  $digit_fdocu = null;
                   foreach ($format_digit_img as $format) {
                     $digit_fdocu = $directorio_final . $file_name . "." . $format;
                     if (file_exists($digit_fdocu)) {
@@ -176,24 +184,20 @@ $cantidad_registros = $pager->getNbResults();
                   //********************************************************************************
                   if ($com_recibida->getEstadodigitalizacionId() == 2) {
                     $extension_digit = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-                    if(LINKTYPE == 'MODAL' && $extension_digit == "pdf")
-                    {
-                      $url_params = "?comindex_pk=" . $com_recibida->getPrimaryKey() . "&q_vars=".base64_encode($com_recibida->getPrimaryKey()) . "&vtoken=". md5(base64_encode($com_recibida->getRadicado()).base64_encode($com_recibida->getFechaCreacion()));
-                      $uview_modal = url_for('com_recibida/viewerLiteModal') . $url_params; 
-                      echo show_modal_single($uview_modal, "ico_ver_adj",array('ndoc_text'=>$com_recibida->getRadicado(),'endpoint'=>'com_recibida/imageThumbData'.$url_params,'qthumb'=> SED::encryption($digit_fdocu),'qsource'=> SED::encryption($com_recibida->getRadicado())));
-                    }
-                    else
-                    {
+                    if (LINKTYPE == 'MODAL' && $extension_digit == "pdf") {
+                      $url_params = "?comindex_pk=" . $com_recibida->getPrimaryKey() . "&q_vars=" . base64_encode($com_recibida->getPrimaryKey()) . "&vtoken=" . md5(base64_encode($com_recibida->getRadicado()) . base64_encode($com_recibida->getFechaCreacion()));
+                      $uview_modal = url_for('com_recibida/viewerLiteModal') . $url_params;
+                      echo show_modal_single($uview_modal, "ico_ver_adj", array('ndoc_text' => $com_recibida->getRadicado(), 'endpoint' => 'com_recibida/imageThumbData' . $url_params, 'qthumb' => SED::encryption($digit_fdocu), 'qsource' => SED::encryption($com_recibida->getRadicado())));
+                    } else {
                       echo jq_link_to_remote(
-                        image_tag('simad/ico_ver_adj.png',array('id' => "feedcheck", 'border' => "0", 'width' => "25", 'height' => "25", 'align' => "middle")),
-                          array(
-                            'update'  => null,
-                            'url'     => url_for('com_recibida/viewImageDigit'),
-                            'with'    => "'q_vars=" . base64_encode($com_recibida->getPrimaryKey()) . "&vtoken=" . md5($com_recibida->getRadicado() . $usuariologuiado . $com_recibida->getFechaCreacion()) . "'",
-                            'loading' => "javascript:jQuery.LoadingStructData();",
-                            'complete' => "javascript:jQuery.CloseLoadingStructData();",
-                            'complete' => "javascript:jQuery.CloseLoadingStructData(); try{ var response_value = JSON.parse(XMLHttpRequest.responseText); if(response_value.status == 200){ toastr.success(response_value.message); window.open(response_value.url_file, 'MyWindow'); }else{ toastr.error(response_value.message); } }catch(err) { toastr.error(err.message); }",
-                          ),
+                        image_tag('simad/ico_ver_adj.png', array('id' => "feedcheck", 'border' => "0", 'width' => "25", 'height' => "25", 'align' => "middle")),
+                        array(
+                          'update'  => null,
+                          'url'     => url_for('com_recibida/viewImageDigit'),
+                          'with'    => "'q_vars=" . base64_encode($com_recibida->getPrimaryKey()) . "&vtoken=" . md5($com_recibida->getRadicado() . $usuariologuiado . $com_recibida->getFechaCreacion()) . "'",
+                          'loading' => "javascript:jQuery.LoadingStructData();",
+                          'complete' => "javascript:jQuery.CloseLoadingStructData(); try{ var response_value = JSON.parse(XMLHttpRequest.responseText); if(response_value.status == 200){ toastr.success(response_value.message); window.open(response_value.url_file, 'MyWindow'); }else{ toastr.error(response_value.message); } }catch(err) { toastr.error(err.message); }",
+                        ),
                         array('data-original-title' => $com_recibida->getEstadodigitalizacion()->getDescripcion(), 'class' => 'tooltip-primary', 'data-toggle' => 'tooltip', 'data-placement' => 'top')
                       );
                     }
@@ -284,17 +288,17 @@ $cantidad_registros = $pager->getNbResults();
             <?php } ?>
 
             <?php if (!$papelera && $sf_params->get('marcada')) { ?>
-                <a class="btn btn-white btn-sm tooltip-primary" style="" data-toggle="tooltip" data-original-title="Marcar como entregados" href="<?php echo $base_path; ?>/recibida.php/com_recibida/entregados?<?php echo $parametros; ?>">
-                  <img src="<?php echo $base_path; ?>/images/simad/ico_entregado.png" width="25" align="middle" />Marca Entregados
+              <a class="btn btn-white btn-sm tooltip-primary" style="" data-toggle="tooltip" data-original-title="Marcar como entregados" href="<?php echo $base_path; ?>/recibida.php/com_recibida/entregados?<?php echo $parametros; ?>">
+                <img src="<?php echo $base_path; ?>/images/simad/ico_entregado.png" width="25" align="middle" />Marca Entregados
+              </a>
+              <?php if (1 != 1) { ?>
+                <a class="btn btn-white btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Generar planilla de ventanilla unica" href="<?php echo $base_path; ?>/recibida.php/com_recibida/planillaVur?<?php echo $parametros; ?>" target="_blank">
+                  <img src="<?php echo $base_path; ?>/images/simad/ico_exportar.png" width="25" align="middle" />Planilla Ventanilla
                 </a>
-                <?php if (1 != 1) { ?>
-                  <a class="btn btn-white btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Generar planilla de ventanilla unica" href="<?php echo $base_path; ?>/recibida.php/com_recibida/planillaVur?<?php echo $parametros; ?>" target="_blank">
-                    <img src="<?php echo $base_path; ?>/images/simad/ico_exportar.png" width="25" align="middle" />Planilla Ventanilla
-                  </a>
-                <?php } ?>
-                <a class="btn btn-white btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Generar planilla de radicacion" href="<?php echo $base_path; ?>/recibida.php/com_recibida/planilla?<?php echo $parametros; ?>" target="_blank">
-                  <img src="<?php echo $base_path; ?>/images/simad/ico_exportar.png" width="25" align="middle" />Planilla
-                </a>
+              <?php } ?>
+              <a class="btn btn-white btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Generar planilla de radicacion" href="<?php echo $base_path; ?>/recibida.php/com_recibida/planilla?<?php echo $parametros; ?>" target="_blank">
+                <img src="<?php echo $base_path; ?>/images/simad/ico_exportar.png" width="25" align="middle" />Planilla
+              </a>
 
             <?php } ?>
 
@@ -325,14 +329,15 @@ $cantidad_registros = $pager->getNbResults();
             ?>
 
             <?php if ($sf_user->checkPerm("COM_RECIBIDA_DIGIT_DESCARGA_MASIVA", $usuariologuiado)) { ?>
-              <a class="btn btn-white btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Descargar documento(s) para impresi&oacute;n" href="#" onclick="<?php
-                                                                                                                                                                          echo jq_remote_function(array(
-                                                                                                                                                                            'update'    => md5('divstrlistrows'),
-                                                                                                                                                                            'url'  => url_for('com_recibida/printBatchFile'),
-                                                                                                                                                                            'confirm' => 'Esta seguro de realizar esta acci&oacute;n?, recuerde que puede descargar maximo 100 archivos',
-                                                                                                                                                                            'loading'  => "javascript:jQuery.LoadingStructData()",
-                                                                                                                                                                            'complete' => "javascript:jQuery.CloseLoadingStructData(); try{ var response_value = JSON.parse(XMLHttpRequest.responseText); if(response_value.status == 200){ toastr.success(response_value.message); window.open(response_value.url_file, 'MyWindow'); }else{ toastr.error(response_value.message); } }catch(err) { toastr.error(err.message); }",
-                                                                                                                                                                          )); ?>">
+              <a class="btn btn-white btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Descargar documento(s) para impresi&oacute;n" href="#"
+                onclick="<?php
+                          echo jq_remote_function(array(
+                            'update'    => md5('divstrlistrows'),
+                            'url'  => url_for('com_recibida/printBatchFile'),
+                            'confirm' => 'Esta seguro de realizar esta acci&oacute;n?, recuerde que puede descargar maximo 100 archivos',
+                            'loading'  => "javascript:jQuery.LoadingStructData()",
+                            'complete' => "javascript:jQuery.CloseLoadingStructData(); try{ var response_value = JSON.parse(XMLHttpRequest.responseText); if(response_value.status == 200){ toastr.success(response_value.message); window.open(response_value.url_file, 'MyWindow'); }else{ toastr.error(response_value.message); } }catch(err) { toastr.error(err.message); }",
+                          )); ?>">
                 <img src="<?php echo $base_path; ?>/images/simad/ico_imprimir.png" width="25" height="25" align="middle" />
                 Descargar Documentos
               </a>
