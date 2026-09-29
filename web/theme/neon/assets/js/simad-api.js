@@ -1424,15 +1424,44 @@ jQuery(document).ready(function ($) {
 		try {
 			$form = jQuery(this).closest('form');
 
-			// Limpiar inputs de texto y fechas
-			$form.find('input[type="text"], input[type="date"], textarea').val('');
+			// Limpiar campos de texto y fechas
+			$form.find(
+				'input[type="text"], ' +
+				'input[type="date"], ' +
+				'input[type="number"], ' +
+				'input[type="search"], ' +
+				'textarea'
+			).val('');
 
 			// Limpiar selects normales
-			$form.find('select').val('');
+			$form.find('select').each(function () {
+				$(this).val('').trigger('change');
+			});
 
 			// Actualizar Select2
 			$form.find('select').trigger('change');
 
+			// Limpiar checkbox y radio
+			$form.find('input[type="checkbox"], input[type="radio"]')
+				.prop('checked', false);
+
+			// Restablecer panel de resultados
+			$('#recibidor_rta').html(
+				'<div class="panel panel-gradient panel-shadow">' +
+				'<div class="panel-heading">' +
+				'<div class="panel-title">' +
+				'Lista de Publicaciones' +
+				'</div>' +
+				'</div>' +
+				'<div class="panel-body">' +
+				'<div class="alert alert-default">' +
+				'<strong>' +
+				'Por favor ingrese los filtros correspondientes en el panel de búsquedas' +
+				'</strong>.' +
+				'</div>' +
+				'</div>' +
+				'</div>'
+			);
 		} catch (error) {
 			$.CloseLoadingStructData();
 			toastr.error(error);

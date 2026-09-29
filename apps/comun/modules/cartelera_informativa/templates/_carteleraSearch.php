@@ -171,7 +171,7 @@ use_helper('Object', 'jQuery');
             <div class="row">
                 <div class="form-group">
                     <button type="button" id="ci_btn_enviar" class="btn btn-blue btn-icon" style="margin-left:14px;">Consultar Registros<i class="entypo-search"></i></button>
-                    <button type="button" id="ci_btn_reset" class="btn btn-red" onclick="jQuery('#ci_modulo').trigger('change')" style="margin-left:14px;">Deshacer<i class="entypo-eraser"></i></button>
+                    <button type="button" id="ci_btn_reset" class="btn btn-red" style="margin-left:14px;">Deshacer<i class="entypo-eraser"></i></button>
                 </div>
             </div>
 
