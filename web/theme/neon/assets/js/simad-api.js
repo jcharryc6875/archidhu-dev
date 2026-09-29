@@ -1388,6 +1388,57 @@ jQuery(document).ready(function ($) {
 			});
 	});
 
+	jQuery('#ci_btn_enviar').on("click", function (event) {
+		event.preventDefault();
+		try {
+			$form_container = jQuery(this).closest('form');
+			var validator = $form_container.valid();
+			if (validator) {
+				jQuery.LoadingStructData();
+				jQuery.ajax({
+					url: '/comun.php/cartelera_informativa/list',
+					method: 'POST',
+					data: $form_container.serialize(),
+					contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+					cache: false,
+					processData: false,
+					success: function (response) {
+						jQuery('#recibidor_rta').html(response);
+						jQuery.CloseLoadingStructData();
+						toastr.success("consulta exitosa!!!");
+					},
+					error: function (response) {
+						jQuery.CloseLoadingStructData();
+						toastr.error("Error Interno del Servidor!");
+					}
+				});
+			}
+		} catch (error) {
+			$.CloseLoadingStructData();
+			toastr.error(error);
+		}
+	});
+
+	jQuery('#ci_btn_reset').on("click", function (event) {
+		event.preventDefault();
+		try {
+			$form = jQuery(this).closest('form');
+
+			// Limpiar inputs de texto y fechas
+			$form.find('input[type="text"], input[type="date"], textarea').val('');
+
+			// Limpiar selects normales
+			$form.find('select').val('');
+
+			// Actualizar Select2
+			$form.find('select').trigger('change');
+
+		} catch (error) {
+			$.CloseLoadingStructData();
+			toastr.error(error);
+		}
+	});
+
 	jQuery('#saveAdminRuleExp').on("click", function (event) {
 		event.preventDefault();
 		try {

@@ -1149,6 +1149,76 @@ class contenido_documentalActions extends sfActions
 				if ($contenido->getVinculoRegistro()) {
 					$contenido->setEstadocontenidounidaddocId(3);
 					$contenido->setOrdenContenido(($contenido->getOrdenContenido() * -1));
+					//**********************************************************************************
+					$modulo_com = null;
+					$comunicacion_pk = null;
+					if (!empty($contenido->getModuloId()) && !empty($contenido->getConsecutivoId())) {
+						if ($contenido->getModuloId() == ModulesEnable::ComRecibida) {
+							$modulo_com = 'com_recibida';
+						} elseif ($contenido->getModuloId() == ModulesEnable::ComEnviada) {
+							$modulo_com = 'com_enviada';
+						} elseif ($contenido->getModuloId() == ModulesEnable::ComInterna) {
+							$modulo_com = 'com_interna';
+						} elseif ($contenido->getModuloId() == ModulesEnable::ActosAdministrativos) {
+							$modulo_com = 'acto_administrativo';
+						} else {
+							$modulo_com = null;
+							$comunicacion_pk = null;
+						}
+					} else {
+						preg_match('/^\/[^\/]+\/([^\/]+)\/.*\/(\d+)$/', trim($contenido->getRuta()), $matches);
+						$modulo_com = $matches[1] ?? null;
+						$comunicacion_pk = (int)($matches[2] ?? 0);
+					}
+					//**********************************************************************************
+					if (empty($comunicacion_pk) || empty($modulo_com)) {
+						continue;
+					}
+					//**********************************************************************************
+					switch ($modulo_com) {
+						case 'com_recibida':
+							$object_com = ComRecibidaPeer::retrieveByPK($comunicacion_pk);
+							$object_com_old = clone $object_com;
+							$object_com->setMarcaVinculacion(0);
+							$object_com->setContenidodocId(null);
+							$object_com->save();
+							//**************************************************************************
+							AuditLogPeer::guardarAuditoriaLite("ComRecibida", $object_com_old, $object_com, ModulesEnable::ComRecibida, $object_com->getRadicado(), $usuariologuiado);
+							break;
+						case 'com_enviada':
+							$object_com = ComEnviadaPeer::retrieveByPK($comunicacion_pk);
+							$object_com_old = clone $object_com;
+							$object_com->setMarcaVinculacion(0);
+							$object_com->setContenidodocId(null);
+							$object_com->setExpedienteId(null);
+							$object_com->save();
+							//**************************************************************************
+							AuditLogPeer::guardarAuditoriaLite("ComEnviada", $object_com_old, $object_com, ModulesEnable::ComEnviada, $object_com->getRadicado(), $usuariologuiado);
+							break;
+						case 'com_interna':
+							$object_com = ComInternaPeer::retrieveByPK($comunicacion_pk);
+							$object_com_old = clone $object_com;
+							$object_com->setMarcaVinculacion(0);
+							$object_com->setContenidodocId(null);
+							$object_com->setExpedienteId(null);
+							$object_com->save();
+							//**************************************************************************
+							AuditLogPeer::guardarAuditoriaLite("ComInterna", $object_com_old, $object_com, ModulesEnable::ComInterna, $object_com->getRadicado(), $usuariologuiado);
+							break;
+						case 'acto_administrativo':
+							$object_com = ActoAdministrativoPeer::retrieveByPK($comunicacion_pk);
+							$object_com_old = clone $object_com;
+							$object_com->setMarcaVinculacion(0);
+							$object_com->setContenidodocId(null);
+							$object_com->setExpedienteId(null);
+							$object_com->save();
+							//**************************************************************************
+							AuditLogPeer::guardarAuditoriaLite("ActoAdministrativo", $object_com_old, $object_com, ModulesEnable::ActosAdministrativos, $object_com->getRadicadoCompuesto(), $usuariologuiado);
+							break;
+						default:
+							continue;
+					}
+					//**********************************************************************************
 					$contenido->save();
 					//**********************************************************************************
 					AuditLogPeer::guardarAuditoriaLite("ContenidoUnidadDocumental", $contdoc_anterior, $contenido, ModulesEnable::Archivo, $unidad_documental->getCodigoBarras(), $usuariologuiado);
@@ -2122,6 +2192,72 @@ class contenido_documentalActions extends sfActions
 			if ($contenido_unidad_documental->getVinculoRegistro()) {
 				$contenido_unidad_documental->setEstadocontenidounidaddocId(3);
 				$contenido_unidad_documental->setOrdenContenido(($contenido_unidad_documental->getOrdenContenido() * -1));
+				//******************************************************************************************
+				$modulo_com = null;
+				$comunicacion_pk = null;
+				if (!empty($contenido_unidad_documental->getModuloId()) && !empty($contenido_unidad_documental->getConsecutivoId())) {
+					if ($contenido_unidad_documental->getModuloId() == ModulesEnable::ComRecibida) {
+						$modulo_com = 'com_recibida';
+					} elseif ($contenido_unidad_documental->getModuloId() == ModulesEnable::ComEnviada) {
+						$modulo_com = 'com_enviada';
+					} elseif ($contenido_unidad_documental->getModuloId() == ModulesEnable::ComInterna) {
+						$modulo_com = 'com_interna';
+					} elseif ($contenido_unidad_documental->getModuloId() == ModulesEnable::ActosAdministrativos) {
+						$modulo_com = 'acto_administrativo';
+					} else {
+						$modulo_com = null;
+						$comunicacion_pk = null;
+					}
+				} else {
+					preg_match('/^\/[^\/]+\/([^\/]+)\/.*\/(\d+)$/', trim($contenido_unidad_documental->getRuta()), $matches);
+					$modulo_com = $matches[1] ?? null;
+					$comunicacion_pk = (int)($matches[2] ?? 0);
+				}
+				//**********************************************************************************
+				switch ($modulo_com) {
+					case 'com_recibida':
+						$object_com = ComRecibidaPeer::retrieveByPK($comunicacion_pk);
+						$object_com_old = clone $object_com;
+						$object_com->setMarcaVinculacion(0);
+						$object_com->setContenidodocId(null);
+						$object_com->save();
+						//**************************************************************************
+						AuditLogPeer::guardarAuditoriaLite("ComRecibida", $object_com_old, $object_com, ModulesEnable::ComRecibida, $object_com->getRadicado(), $usuariologuiado);
+						break;
+					case 'com_enviada':
+						$object_com = ComEnviadaPeer::retrieveByPK($comunicacion_pk);
+						$object_com_old = clone $object_com;
+						$object_com->setMarcaVinculacion(0);
+						$object_com->setContenidodocId(null);
+						$object_com->setExpedienteId(null);
+						$object_com->save();
+						//**************************************************************************
+						AuditLogPeer::guardarAuditoriaLite("ComEnviada", $object_com_old, $object_com, ModulesEnable::ComEnviada, $object_com->getRadicado(), $usuariologuiado);
+						break;
+					case 'com_interna':
+						$object_com = ComInternaPeer::retrieveByPK($comunicacion_pk);
+						$object_com_old = clone $object_com;
+						$object_com->setMarcaVinculacion(0);
+						$object_com->setContenidodocId(null);
+						$object_com->setExpedienteId(null);
+						$object_com->save();
+						//**************************************************************************
+						AuditLogPeer::guardarAuditoriaLite("ComInterna", $object_com_old, $object_com, ModulesEnable::ComInterna, $object_com->getRadicado(), $usuariologuiado);
+						break;
+					case 'acto_administrativo':
+						$object_com = ActoAdministrativoPeer::retrieveByPK($comunicacion_pk);
+						$object_com_old = clone $object_com;
+						$object_com->setMarcaVinculacion(0);
+						$object_com->setContenidodocId(null);
+						$object_com->setExpedienteId(null);
+						$object_com->save();
+						//**************************************************************************
+						AuditLogPeer::guardarAuditoriaLite("ActoAdministrativo", $object_com_old, $object_com, ModulesEnable::ActosAdministrativos, $object_com->getRadicadoCompuesto(), $usuariologuiado);
+						break;
+					default:
+						continue;
+				}
+				//******************************************************************************************
 				$contenido_unidad_documental->save();
 				//******************************************************************************************
 				AuditLogPeer::guardarAuditoriaLite("ContenidoUnidadDocumental", $contdoc_anterior, $contenido_unidad_documental, ModulesEnable::Archivo, $unidad_documental->getCodigoBarras(), $usuariologuiado, "delete");
@@ -2129,7 +2265,7 @@ class contenido_documentalActions extends sfActions
 				ContenidoUnidadDocumentalPeer::deleteRegCascada($contenido_unidad_documental->getPrimaryKey());
 				$contenido_unidad_documental->delete();
 				//******************************************************************************************
-				AuditLogPeer::guardarAuditoriaLite("ContenidoUnidadDocumental", $contdoc_anterior, new ContenidoUnidadDocumental(), ModuleSgdea::Archivo, $unidad_documental->getCodigoBarras(), $usuariologuiado, "delete");
+				AuditLogPeer::guardarAuditoriaLite("ContenidoUnidadDocumental", $contdoc_anterior, new ContenidoUnidadDocumental(), ModulesEnable::Archivo, $unidad_documental->getCodigoBarras(), $usuariologuiado, "delete");
 			}
 			$this->forward404Unless($contenido_unidad_documental);
 			//**********************************************************************************************
