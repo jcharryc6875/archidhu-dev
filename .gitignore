@@ -19,7 +19,7 @@
 /config/auth.txt
 /config/databases.xml
 /config/propel.ini
-
+/scripts/*
 # ==========================================
 # Dependencias y Herramientas (PHP / Composer)
 # ==========================================
