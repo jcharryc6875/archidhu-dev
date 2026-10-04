@@ -127,7 +127,7 @@ class busqueda_avanzadaActions extends sfActions
 				//*********************************************************************************************************
 				$el_criteria = $all_array['criteria'];
 				break;
-			case ModulesEnable::ComEnviada:  //2 comenviada			
+			case ModulesEnable::ComEnviada:
 				$params['comenv_radicado'] =       !empty($this->getRequestParameter('comenv_radicado')) ? trim($this->getRequestParameter('comenv_radicado')) : null;
 				$params['comenv_asunto'] =         !empty($this->getRequestParameter('comenv_asunto')) ? trim($this->getRequestParameter('comenv_asunto')) : null;
 				$params['comenv_periodo'] =        !empty($this->getRequestParameter('comenv_periodo')) ? trim($this->getRequestParameter('comenv_periodo')) : null;
@@ -141,7 +141,7 @@ class busqueda_avanzadaActions extends sfActions
 				//*********************************************************************************************************
 				$el_criteria = ComEnviadaPeer::getReporteComEnviada($params);
 				break;
-			case ModulesEnable::ComRecibida:  //3 comrecibida
+			case ModulesEnable::ComRecibida:
 				$params['comrec_radicado'] =       !empty($this->getRequestParameter('comrec_radicado')) ? trim($this->getRequestParameter('comrec_radicado')) : null;
 				$params['comrec_asunto'] =         !empty($this->getRequestParameter('comrec_asunto')) ? trim($this->getRequestParameter('comrec_asunto')) : null;
 				$params['comrec_periodo'] =        !empty($this->getRequestParameter('comrec_periodo')) ? trim($this->getRequestParameter('comrec_periodo')) : null;
@@ -157,7 +157,7 @@ class busqueda_avanzadaActions extends sfActions
 				//*********************************************************************************************************
 				$el_criteria = $all_array['criteria'];
 				break;
-			case ModulesEnable::ComInterna:  //4 cominterna
+			case ModulesEnable::ComInterna:
 				$params['comint_radicado'] =       !empty($this->getRequestParameter('comint_radicado')) ? trim($this->getRequestParameter('comint_radicado')) : null;
 				$params['comint_asunto'] =         !empty($this->getRequestParameter('comint_asunto')) ? trim($this->getRequestParameter('comint_asunto')) : null;
 				$params['comint_periodo'] =        !empty($this->getRequestParameter('comint_periodo')) ? trim($this->getRequestParameter('comint_periodo')) : null;
@@ -1191,7 +1191,7 @@ class busqueda_avanzadaActions extends sfActions
 		if (!empty($param_list['codigo_barras'])) {
 			$c = new Criteria();
 			$c->add(UnidadDocumentalPeer::LOCALIZACIONUNIDADDOCUMENTAL_ID, $localizacion_id);
-			$c->add(UnidadDocumentalPeer::CODIGO_BARRAS, '%' . $param_list['codigo_barras'] . '%', Criteria::LIKE);
+			$c->add(UnidadDocumentalPeer::CODIGO_BARRAS, $param_list['codigo_barras'] . '%', Criteria::LIKE);
 
 			return UnidadDocumentalPeer::doCount($c);
 		}

@@ -38,6 +38,20 @@ class ConsultaPermisoHelper
     }
 
     /**
+     * Contador para el titulo de una pestana de resultados: el numero entre parentesis, o un
+     * candado con el motivo cuando hay registros que coinciden pero el usuario no puede verlos
+     * (un "0" ahi sugeriria que no existe nada).
+     */
+    public static function etiquetaConteoPestana($cantidad, $mensajeListaVacia = null)
+    {
+        if ((int) $cantidad === 0 && self::esMensajeSinPermiso($mensajeListaVacia)) {
+            return '(<span class="glyphicon glyphicon-lock" aria-hidden="true" title="'.htmlspecialchars(self::MSG_SIN_PERMISOS).'"></span>)';
+        }
+
+        return '('.(int) $cantidad.')';
+    }
+
+    /**
      * Cuenta, SIN ninguna condicion de permiso/alcance, si existe algun interesado que
      * coincida con los filtros de busqueda por interesado (pnombre_interesado,
      * snombre_interesado, papellido_interesado, sapellido_interesado, nuid_interesado -
