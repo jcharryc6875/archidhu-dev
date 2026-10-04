@@ -45,10 +45,19 @@ class ConsultaPermisoHelper
     public static function etiquetaConteoPestana($cantidad, $mensajeListaVacia = null)
     {
         if ((int) $cantidad === 0 && self::esMensajeSinPermiso($mensajeListaVacia)) {
-            return '(<span class="glyphicon glyphicon-lock" aria-hidden="true" title="'.htmlspecialchars(self::MSG_SIN_PERMISOS).'"></span>)';
+            return ' <span class="label label-warning pestana-restringida" title="'.htmlspecialchars(self::MSG_SIN_PERMISOS).'">'
+                .'<span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Restringido</span>';
         }
 
         return '('.(int) $cantidad.')';
+    }
+
+    /**
+     * Clase CSS para el <li> de la pestana cuando esta restringida, para resaltarla.
+     */
+    public static function clasePestana($cantidad, $mensajeListaVacia = null)
+    {
+        return ((int) $cantidad === 0 && self::esMensajeSinPermiso($mensajeListaVacia)) ? 'tab-sin-permiso' : '';
     }
 
     /**
