@@ -1600,9 +1600,8 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
 }
 /* Busqueda avanzada: pestana con registros que coinciden pero sin permiso de acceso, resaltada para que el usuario la note. */
 .nav-tabs > li.tab-sin-permiso > a {
-    background-color: #fcf8e3;
     border: 1px solid #f0ad4e;
-    border-bottom: 3px solid #f0ad4e;
+    border-bottom: 1px solid #f0ad4e;
     color: #8a6d3b;
     font-weight: bold;
 }
