@@ -24,10 +24,10 @@ class DirectorioExterno extends BaseDirectorioExterno
 		return $nombre_compuesto;
 	}
 
-	public function envioEmailNotificacion($radicado)
+	public function envioEmailNotificacion($radicado, $isEnable = false)
     {
 		try {
-			if(!empty($this->getEmail()) && !empty($radicado)){
+			if(!empty($this->getEmail()) && !empty($radicado) && $isEnable){
 				$cuerpo_email = "<p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:35.4pt;
 				background:white;vertical-align:baseline'><span style='font-family:Arial Narrow,sans-serif;
 				color:#201F1E;border:none windowtext 1.0pt;mso-border-alt:none windowtext 0cm;

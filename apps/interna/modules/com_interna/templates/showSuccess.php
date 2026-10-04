@@ -57,6 +57,9 @@ $wdg = new wf_widgets();
                     Detalle Comunicaci&oacute;n Interna <?php echo ($estadocominterna_id != 1 ? "(<strong>" . $com_interna->getRadicado() . "</strong>)" : ""); ?>
                 </div>
             </div>
+			<?php if ($sf_user->hasFlash('error')): ?>
+					<div class="alert alert-danger"><?php echo $sf_user->getFlash('error') ?></div>
+				<?php endif ?>
             <?php if ($sf_user->hasFlash('message_success')): ?>
                 <div class="alert alert-success"><strong>Excelente! </strong><?php echo $sf_user->getFlash('message_success') ?></div>
             <?php endif ?>
@@ -92,7 +95,7 @@ $wdg = new wf_widgets();
                                         <div class="col-sm-8">
                                             <p>
                                                 <?php
-                                                if ($com_interna->getEstadodigitalizacionId() == 2) {
+                                                if($com_interna->getEstadodigitalizacionId() == 2 || $com_interna->getFirmadoDigital() == 1){
                                                     $ico_ver_adj = $com_interna->getFirmadoDigital() == 1 ? "ico_ver_adj_efirma.png" : "ico_ver_adj.png";
                                                     echo "<b>" . $com_interna->getRadicado() . "</b>";
                                                     echo jq_link_to_remote(

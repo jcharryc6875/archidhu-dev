@@ -86,6 +86,10 @@ class PlantillasCom extends BasePlantillasCom {
 			if($this->getUseMembrete()){
 				$use_membrete_com = $this->getUseMembrete();
 				$path_membrete = $url_mebrete.DIRECTORY_SEPARATOR.$this->getImageMembrete();
+				
+				if(empty(trim($this->getImageMembrete()))){
+					$path_membrete = $url_mebrete.DIRECTORY_SEPARATOR.$membrete_com;
+				}
 			}elseif(isset($metadatos['use_membrete'])){
 				$use_membrete_com = $metadatos['use_membrete'];
 				$membrete_com = isset($metadatos['membrete_com']) ?  $metadatos['membrete_com'] : $url_mebrete.DIRECTORY_SEPARATOR.$this->getImageMembrete();
@@ -119,7 +123,12 @@ class PlantillasCom extends BasePlantillasCom {
 			$htmlLimpio = simad_util::sanitizeForPhpWord($this->getContents());
 			Html::addHtml($section, $htmlLimpio, false, false);
 			//*********************************************************************************
-			$uuid = $metadatos['comobject_id'].'#'.$this->getPrimaryKey();
+			//version original, solo permite documento de la comunicacion
+			//$uuid = $metadatos['comobject_id'].'#'.$this->getPrimaryKey();
+			
+			//version original, permite cualquier documento sin importar que sea de la comunicacion
+			$uuid = $this->getPrimaryKey().'#'.$this->getModuloId();
+
 			$plantillaId = $this->getPrimaryKey();
 			$modulo_id = $this->getModuloId();
 			$borradorId = $metadatos['comobject_id'];

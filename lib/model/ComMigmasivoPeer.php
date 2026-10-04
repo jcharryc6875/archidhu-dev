@@ -1932,7 +1932,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                                 if (!empty($com_enviada->getPrimaryKey())) {
                                     try {
                                         $simadSoap = new WsSimadUariv();
-                                        $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(), "Externa Enviada");
+                                        $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(), "Externa Enviada", ModulesEnable::ComEnviada);
                                         //$message_status = !empty($response_acto['status']) ? trim($response_acto['status']) : 400;
                                     } catch (Exception $th) {
                                         $msgintegracion = $th->getMessage();
@@ -2034,10 +2034,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             //$lexpedientes = array();$lcomtipo_servicio = array();$lexptransfer = array();$lcomservicios = array();
             //ESTE ES EL DE ARRIBA
             foreach ($blotes as $row) {
-                //******************************************************************************
                 self::commitNewComEnviadaByOne($row, $firma_digital);
-                //******************************************************************************
-
             }
             //**********************************************************************************
             return array('status' => 200, 'message' => 'Se radicaron todos los documentos, por favor verifique la informaci&oacute;n');
@@ -2064,10 +2061,8 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto() . 'uploads');
             $filedir_target = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
             //**********************************************************************************
-            //**********************************************************************************
             $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
             $usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
-            //**********************************************************************************
             //**********************************************************************************
             $ciudad_codigo = array();
             $dependencia_cod = array();
@@ -2076,8 +2071,6 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $lcomtipo_servicio = array();
             $lexptransfer = array();
             $lcomservicios = array();
-            //******************************************************************************
-            //foreach ($blotes as $row) 
             //******************************************************************************
             $params = array();
             $estado_enviada = 1;
@@ -2271,7 +2264,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                             if (!empty($com_enviada->getPrimaryKey())) {
                                 try {
                                     $simadSoap = new WsSimadUariv();
-                                    $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(), "Externa Enviada");
+                                    $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(), "Externa Enviada", ModulesEnable::ComEnviada);
                                     //$message_status = !empty($response_acto['status']) ? trim($response_acto['status']) : 400;
                                 } catch (Exception $th) {
                                     $msgintegracion = $th->getMessage();
@@ -2476,7 +2469,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
                     $row->setMensajeInfo("NUMERO RESOLUCION YA EXISTE");
                     $row->save();
-                    return;
+                    return array('status' => 400, 'message' => 'Error Radicando, el numero de la resolución con el interesado ya existe');
                 }
             }
             //**********************************************************************************
@@ -2486,7 +2479,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $row->setUsuarioId($usuario_origen->getPrimaryKey());
                 $row->setMensajeInfo("ERROR CON LOS INTERESADOS");
                 $row->save();
-                return;
+                return array('status' => 400, 'message' => 'Error Radicando, el numero de la resolución con el interesado ya existe');
             }
             //**********************************************************************************
             try {
@@ -2494,9 +2487,9 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 if ($com_enviada == null) {
                     $row->setEstadoMigracion('ERROR RADICANDO');
                     $row->setUsuarioId($usuario_origen->getPrimaryKey());
-                    $row->setMensajeInfo("ERROR AL GUARADAR LA COMUNICACION");
+                    $row->setMensajeInfo("ERROR AL GUARDAR LA COMUNICACION");
                     $row->save();
-                    return;
+                    return array('status' => 400, 'message' => 'Error Radicando, no se pudo crear el registro en la tabla de comunicaciones');
                 }
                 //******************************************************************************
                 $coll_intersadosPk = array();
@@ -2566,7 +2559,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                             if (!empty($com_enviada->getPrimaryKey())) {
                                 try {
                                     $simadSoap = new WsSimadUariv();
-                                    $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(), "Externa Enviada");
+                                    $response_acto = $simadSoap->loadWsRadActoAdministrativo($com_enviada->getPrimaryKey(), "Externa Enviada", ModulesEnable::ComEnviada);
                                     //$message_status = !empty($response_acto['status']) ? trim($response_acto['status']) : 400;
                                 } catch (Exception $th) {
                                     $msgintegracion = $th->getMessage();
@@ -2608,21 +2601,31 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $response_firma = $com_enviada->singDocumentProcess();
                     $msg_firma[] = isset($response_firma['message']) ? trim($response_firma['message']) : "Por favor verifique que el documento fue firmado correctamente";
                 }
+                //******************************************************************************
+                if (count($msg_firma)) {
+                    return array('status' => 400, 'message' => 'Error Firma Digital, el radicado se genero, pero el documento no se pudo firmar,' . implode(",", $msg_firma));
+                }
             } catch (PropelException $th) {
                 $row->setEstadoMigracion('ERROR RADICANDO');
                 $row->setUsuarioId($usuario_origen->getPrimaryKey());
                 $row->setMensajeInfo("ERROR DE DATOS, INSERT DATOS " . $th->getMessage());
                 $row->save();
+                //*******************************************************************************
+                return array('status' => 400, 'message' => 'Error Base de Datos, ocurrio adicionando el registro de la base de datos,' . $th->getMessage());
             } catch (Exception $th) {
                 $row->setEstadoMigracion('ERROR RADICANDO');
                 $row->setUsuarioId($usuario_origen->getPrimaryKey());
                 $row->setMensajeInfo("ERROR INTERNO SERVIDOR " . $th->getMessage());
                 $row->save();
+                //*******************************************************************************
+                return array('status' => 400, 'message' => 'Error Aplicacion, ocurrio un error en la aplicacion,' . $th->getMessage());
             } catch (Throwable $th) {
                 $row->setEstadoMigracion('ERROR RADICANDO');
                 $row->setUsuarioId($usuario_origen->getPrimaryKey());
                 $row->setMensajeInfo("ERROR INTERNO SERVIDOR");
                 $row->save();
+                //*******************************************************************************
+                return array('status' => 400, 'message' => 'Error Servidor, ocurrio un error en el servidor,' . $th->getMessage());
             }
             //***********************************************************************************
             return array('status' => 200, 'message' => 'Se radico la comunicación, por favor verifique la información');

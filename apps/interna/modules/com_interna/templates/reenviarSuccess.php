@@ -20,7 +20,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
     <div class="panel panel-gradient" data-collapsed="0">
       <div class="panel-heading">
         <div class="panel-title">
-          Reenviar Comunicaci�n Interna
+          Reenviar Comunicaci&oacute;n Interna
         </div>
       </div>
 
@@ -251,8 +251,10 @@ use_helper('Object', 'jQuery', 'UserComponent');
       //thumbnailHeight: 50,
       parallelUploads: 100,
       maxFiles: 100,
+	  maxFilesize: <?php echo (int)ini_get('upload_max_filesize'); ?>,
+	  timeout: 180000,
       dictResponseError: "Ha ocurrido un error en el server",
-      acceptedFiles: 'image/*,.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.TIF,.TIFF,.tif,.tiff,.rar,application/pdf,.psd,.xls,.doc,.ppt,.msg,.xlsx,.docx,.pptx,.7z,.zip',
+      acceptedFiles: 'image/*,.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.TIF,.TIFF,.tif,.tiff,.rar,application/pdf,.psd,.xls,.doc,.ppt,.eml,.msg,.xlsx,.docx,.pptx,.7z,.zip',
       init: function() {
         this.on("success", function(file, response) {
           jQuery(file.previewElement).find('[data-dz-name]').html(response.name);
@@ -284,8 +286,4 @@ use_helper('Object', 'jQuery', 'UserComponent');
       myDropzone.emit("complete", existingFiles[i]);
     }
   });
-</script>
-
-<script type="text/javascript">
-
 </script>

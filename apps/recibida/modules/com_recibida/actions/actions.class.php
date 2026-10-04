@@ -468,8 +468,15 @@ class com_recibidaActions extends sfActions
     //************************************************************************************************
     $comrecibida_id = trim($this->getRequestParameter('comrecibida_id'));
     $com_recibida = ComRecibidaPeer::retrieveByPk($comrecibida_id);
+    //************************************************************************************************
+    $com_recibida_anterior = clone $com_recibida;
+    //************************************************************************************************
     $response_data = $com_recibida->enviarRespuestaExterna();
-    //*******************************************************************************************
+    //************************************************************************************************
+    if ($response_data['status'] == 200) {
+      $this->guardarAuditoria($com_recibida_anterior, $com_recibida);
+    }
+    //************************************************************************************************
     $array = json_encode($response_data);
     $this->getResponse()->setContentType('application/json');
     return $this->renderText($array);
@@ -491,7 +498,7 @@ class com_recibidaActions extends sfActions
       //************************************************************************************************
       if ($comrecibida_id) {
         $simadSoap = new WsSimadUariv();
-        $response_data = $simadSoap->loadWsInfoRadicadoEntrada($comrecibida_id);
+        $response_data = $simadSoap->loadWsInfoRadicadoEntrada($comrecibida_id,false);
       } else {
         return "";
         $response_data = array('status' => $status, 'message' => 'Error la informaci&oacute; no es valida');
@@ -743,7 +750,7 @@ class com_recibidaActions extends sfActions
     /*********************************************************************************************************************************/
     if ($this->getRequestParameter('periodo_id')) {
       $periodo_id = trim($this->getRequestParameter('periodo_id'));
-      $c->add(ComRecibidaPeer::PERIODO_ID, $this->getRequestParameter('periodo_id'));
+      $c->add(ComRecibidaPeer::PERIODO_ID, (int)trim($this->getRequestParameter('periodo_id')));
       $parametros .= "&periodo_id=" . $this->getRequestParameter('periodo_id');
     }
     /*********************************************************************************************************************************/
@@ -1105,7 +1112,7 @@ class com_recibidaActions extends sfActions
     }
     /*******************************************************************************************************/
     if ($this->getRequestParameter('periodo_id')) {
-      $c->add(ComRecibidaPeer::PERIODO_ID, $this->getRequestParameter('periodo_id'));
+      $c->add(ComRecibidaPeer::PERIODO_ID, (int)trim($this->getRequestParameter('periodo_id')));
       $parametros .= "&periodo_id=" . $this->getRequestParameter('periodo_id');
       $periodo_id = $this->getRequestParameter('periodo_id');
     }
@@ -2120,7 +2127,6 @@ class com_recibidaActions extends sfActions
     return $this->renderText(json_encode($response_process));
   }
 
-
   public function executeViewResp()
   {
     $comrecibida_id = $this->getRequestParameter('comrecibida_id');
@@ -2605,25 +2611,21 @@ class com_recibidaActions extends sfActions
     //*********************************************************************************************
     $path = "{$pathzip}/{$zipFileName}";
     $stream = fopen($path, 'w');
-
+	//*********************************************************************************************
     $zip = new ZipStream($zipFileName, array(
       ZipStream::OPTION_OUTPUT_STREAM => $stream
     ));
-
+	//*********************************************************************************************
     $zip->opt['ContentType'] = 'application/octet-stream';
     //*********************************************************************************************
     try {
       foreach ($list_com as $com_object) {
         $dir_raiz = !empty($com_object->getDirDigit()) ? empty($com_object->getDirDigit()) : $dir_raiz;
-        $storage_com = $com_object->getBasicUrlDigitCom($dir_raiz, $digit_dir);
-        //*******************************************************************************************
-        foreach ($mimetypes as $format) {
-          $filename = sprintf("%s.%s", trim($com_object->getRadicado()), $format);
-          $filename_digit = $storage_com['storage_path'] . DIRECTORY_SEPARATOR . $filename;
-          if (file_exists($filename_digit)) {
-            //$zip->addFile($filename_digit,$filename);
-            $zip->addFileFromPath($filename, $filename_digit);
-          }
+        $filename_digit = $com_object->getLocalDigitDocument($dir_raiz, $digit_dir);
+        $filename = basename($filename_digit);
+        //*****************************************************************************************
+        if (file_exists($filename_digit)) {
+          $zip->addFileFromPath($filename, $filename_digit);
         }
       }
     } catch (\Exception $ex) {
@@ -2901,9 +2903,7 @@ class com_recibidaActions extends sfActions
         }
       }
     }
-    //************************************************************************************************************
-    //$this->msgerror = $msgerror;
-    //$this->setTemplate('fileDigitalizar');    
+    //*************************************************************************************************
     return $this->redirect($this->getRequest()->getScriptName() . '/com_recibida/digitAttach?msgerror=' . implode(";", $msgerror) . '&message_stamp=' . $this->message_stamp);
   }
 
@@ -3652,17 +3652,12 @@ class com_recibidaActions extends sfActions
     }
     //******************************************************************************************
     $com_recibida->setCodigoReenResp($com_recibida->getPrimaryKey());
-    $entidad_id = $com_recibida->getRegional()->getEntidadId();
     //******************************************************************************************
     if (trim($this->getRequestParameter('radicado'))) {
       $com_recibida->setRadicado(trim($this->getRequestParameter('radicado')));
-    } elseif ($entidad_id == 2) {
-      $radicado_compose = $com_recibida->getRadicadoFormatByTipoCom($com_recibida->getRegionalId(), $com_recibida->getDependenciaId(), null, false);
-      $com_recibida->setRadicado($radicado_compose);
     } else {
-      $radicado_compose = $com_recibida->getRadicadoFormat($com_recibida->getRegionalId(), $com_recibida->getDependenciaId(), null, false);
+      $radicado_compose = $com_recibida->getRadicadoFormat($com_recibida->getRegionalId(), $com_recibida->getDependenciaId(), 0, false);
       $com_recibida->setRadicado($radicado_compose);
-      //$com_recibida->save();
     }
     //******************************************************************************************
     if (!empty(trim($this->getRequestParameter('archivo')))) {
@@ -3911,12 +3906,12 @@ class com_recibidaActions extends sfActions
     /****************************************************************************************/
     $consulta_buzones = false;
     $consulta_usuarios = false;
-    $periodo_id = trim($this->getRequestParameter('periodo_id')) ? trim($this->getRequestParameter('periodo_id')) : date("Y");
+    $periodo_id = trim($this->getRequestParameter('periodo_id')) ? trim((int)$this->getRequestParameter('periodo_id')) : date("Y");
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     /****************************************************************************************/
     if ($this->getRequestParameter('radicado')) {
-      $c->add(ComRecibidaPeer::RADICADO, '%' . $this->getRequestParameter('radicado') . '%', Criteria::LIKE);
-      $this->parametros .= "&radicado=" . $this->getRequestParameter('radicado');
+      $c->add(ComRecibidaPeer::RADICADO, trim((string) $this->getRequestParameter('radicado')) . '%', Criteria::LIKE);
+      $this->parametros .= "&radicado=" . trim((string) $this->getRequestParameter('radicado'));
     }
     /**************************************************************************************/
     if ($this->getRequestParameter('destino_recibida')) {
@@ -4154,7 +4149,7 @@ class com_recibidaActions extends sfActions
     }
     /**************************************************************************************/
     if ($this->getRequestParameter('periodo_id')) {
-      $c->add(ComRecibidaPeer::PERIODO_ID, $this->getRequestParameter('periodo_id'));
+      $c->add(ComRecibidaPeer::PERIODO_ID, (int)trim($this->getRequestParameter('periodo_id')));
       $this->parametros .= "&periodo_id=" . $this->getRequestParameter('periodo_id');
     }
     /**************************************************************************************/
@@ -4298,7 +4293,7 @@ class com_recibidaActions extends sfActions
         $c->add(ComRecibidaPeer::TIPOPROCESOCOM_ID, 3);
         $c->add(ComRecibidaPeer::IS_LOCKED, 0);
         $c->add(ComRecibidaPeer::MARCA_VINCULACION, 0);
-        $c->add(ComrecibidaUsuarioPeer::ESTADOCOMRECIBIDA_ID, 5, Criteria::NOT_EQUAL);
+        //$c->add(ComrecibidaUsuarioPeer::ESTADOCOMRECIBIDA_ID, 5, Criteria::NOT_EQUAL);
       } elseif (trim($this->getRequestParameter('porProcesoCom')) == md5(4)) {
         $c->add(ComRecibidaPeer::TIPOPROCESOCOM_ID, 4);
         $c->add(ComRecibidaPeer::IS_LOCKED, 0);
@@ -4311,6 +4306,7 @@ class com_recibidaActions extends sfActions
       }
       $c->add(ComRecibidaPeer::PERIODO_ID, $periodo_id);
       $c->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA, 1);
+	  $c->add(ComrecibidaUsuarioPeer::ESTADOCOMRECIBIDA_ID, array(5, 13, 14), Criteria::NOT_IN);
       $this->parametros .= "&porProcesoCom=" . trim($this->getRequestParameter('porProcesoCom'));
       $consulta_buzones = true;
       $consulta_usuarios = true;

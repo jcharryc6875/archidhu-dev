@@ -524,4 +524,32 @@ class ComInternaPeer extends BaseComInternaPeer
             return array();
         }
     }
+
+    public static function getHashComData(ComInterna $object)
+    {
+        $dstorage = array();
+        $object_class = "ComInterna";
+        $field_include = array('Referencia', 'ComInternaId', 'PeriodoId', 'Radicado', 'FechaCreacion', 'NumeroRadicacion', 'RegionalId', 'DependenciaId');
+        try {
+            $peer_class = sprintf("%sPeer", $object_class);
+            $campos_objeto = $peer_class::getFieldNames();
+            foreach ($campos_objeto as $field) {
+                if (in_array($field, $field_include)) {
+                    $instanceMethod = 'get' . $field;
+                    $dstorage[] = $object->$instanceMethod();
+                }
+            }
+        } catch (PropelException $px) {
+            return false;
+        } catch (\Throwable $th) {
+            return false;
+        } catch (\Exception $ex) {
+            return false;
+        }
+        //********************************************************************
+        $str_encrypt = implode("", $dstorage);
+        $hashLog = hash('sha256', $str_encrypt);
+
+        return $hashLog;
+    }
 }

@@ -87,13 +87,18 @@ class directorio_externoActions extends sfActions
 	  }*/	
   	//**************************************************************************************************************
     if ($this->getRequestParameter('nombre')) {    		        
-        $c->add(DirectorioExternoPeer::NOMBRE,'%'.$this->getRequestParameter('nombre').'%',Criteria::LIKE);
-        $this->parametros .= "&nombre=" . $this->getRequestParameter('nombre');
+        $nombre_text = trim($this->getRequestParameter('nombre'));
+		$nombre_mb = iconv(mb_detect_encoding($nombre_text, mb_detect_order(), true), "UTF-8//IGNORE", $nombre_text);
+        $c->add(DirectorioExternoPeer::NOMBRE,'%'.$nombre_mb.'%',Criteria::LIKE);
+        $this->parametros .= "&nombre=" . $nombre_text;
     }
     //**************************************************************************************************************
     if ($this->getRequestParameter('remitente')) {    		        
-        $c->add(DirectorioExternoPeer::FUNCIONARIO,'%'.$this->getRequestParameter('remitente').'%',Criteria::LIKE);
-        $this->parametros .= "&remitente=" . $this->getRequestParameter('remitente');
+        $remitente_text = trim($this->getRequestParameter('remitente'));
+		$remitente_mb = iconv(mb_detect_encoding($remitente_text, mb_detect_order(), true), "UTF-8//IGNORE", $remitente_text);
+		
+        $c->add(DirectorioExternoPeer::FUNCIONARIO,'%'.$remitente_mb.'%',Criteria::LIKE);
+        $this->parametros .= "&remitente=" . $remitente_text;
     }
     //**************************************************************************************************************
     if ($this->getRequestParameter('nit')) {    		        
@@ -482,6 +487,7 @@ class directorio_externoActions extends sfActions
     //**********************************************************************************************
     $c = new Criteria();
     $c->setDistinct();
+	$c->setLimit(15);
     //**********************************************************************************************
     if(!$this->getUser()->checkPerm("COMUN_LISTAR_TODAS_ENTIDADES", $usuario_conectado)){   		        
       $c->add(DirectorioExternoPeer::ENTIDAD_ID,$entidad_conectado);

@@ -401,20 +401,7 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                                             <div class="col-sm-7"><p><?php echo $com_recibida->getNumeroFud(); ?></p></div>
                                         </div>					
                                     </div>
-                                <?php } ?>
-
-                                <?php if(trim($com_recibida->getFechaRecibido())) { ?>                
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="col-sm-4"><p><strong>Fecha Llegada:</strong></p></div>
-                                            <div class="col-sm-8"><p><?php echo $com_recibida->getFechaRecibido("Y-m-d"); ?></p></div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="col-sm-5"><p><strong>&nbsp;</strong></p></div>
-                                            <div class="col-sm-7"><p>&nbsp;</p></div>
-                                        </div>					
-                                    </div>
-                                <?php } ?>
+                                <?php } ?>                                
 
                                 <?php if(trim($com_recibida->getFechaDigit()) || trim($com_recibida->getPrioridadcomId())) { ?>
                                     <div class="row">
@@ -457,12 +444,16 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                                     </div>
                                 <?php } ?>
                                 
-                                <?php if(trim($com_recibida->getResptaIntegracion())) { ?>
+                                <?php if(trim($com_recibida->getResptaIntegracion()) || trim($com_recibida->getFechaRecibido())) { ?>
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="col-sm-4"><p><strong>Respuesta Integraci&oacute;n:</strong></p></div>
                                             <div class="col-sm-8"><p><?php echo $com_recibida->getResptaIntegracion(); ?></p></div>
                                         </div>
+										<div class="col-sm-6">
+                                                <div class="col-sm-5"><p><strong>Fecha Llegada:</strong></p></div>
+                                                <div class="col-sm-7"><p><?php echo $com_recibida->getFechaRecibido("Y-m-d"); ?></p></div>
+                                            </div>	
                                     </div>
                                 <?php } ?>
 								
@@ -578,17 +569,17 @@ if(jQuery('div#myDrop').length > 0)
 {
     Dropzone.options.myAwesomeDropzone = false;
     var myDropzone = new Dropzone("div#myDrop", { 
-        url: "<?php echo url_for('com_recibida/dzFileUpload?comrecibida_id='.$com_recibida->getPrimaryKey()); ?>",
+        url: "<?php echo (!$com_recibida->getPrimaryKey()) ? url_for('com_recibida/dzFileUpload') : url_for('com_recibida/dzFileUpload?comrecibida_id='.$com_recibida->getPrimaryKey()); ?>",
         autoProcessQueue: true,
         addRemoveLinks: true,
         thumbnailWidth: 50,
         thumbnailHeight: 50,
-        parallelUploads: 100,
-        maxFiles: 10,
+        parallelUploads: 500,
+        maxFiles: 500,
         timeout: 0,
-        maxFilesize: 1024,
+        maxFilesize: <?php echo (int)ini_get('upload_max_filesize'); ?>,
         dictResponseError: "Ha ocurrido un error en el server",
-        acceptedFiles: 'image/*,.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.TIF,.TIFF,.tif,.tiff,.zip,.7z,.rar,application/pdf,.psd,.csv,.xls,.doc,.dat,.ppt,.msg,.mso,.xlsx,.docx,.pptx,.txt,.3gp,.m4a,.mp3,.avi,.dwg,.kmz,.kmz,.wmv,.wav,.mp4,.m4v,.mov,.mpg,.mpeg,.mpeg-4,.avc,.acc_lc,.acc,.mpc-hc,.mpc,.mid,.midi,.gdb,.asf,.aac,.ogg,.opus,.wmz',
+      	acceptedFiles: 'image/*,.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.TIF,.TIFF,.tif,.tiff,.zip,.7z,.rar,application/pdf,.psd,.csv,.xls,.doc,.dat,.ppt,.eml,.msg,.mso,.xlsx,.docx,.pptx,.txt,.3gp,.m4a,.mp3,.avi,.dwg,.kmz,.kmz,.wmv,.wav,.mp4,.m4v,.mov,.mpg,.mpeg,.mpeg-4,.avc,.acc_lc,.acc,.mpc-hc,.mpc,.mid,.midi,.gdb,.asf,.aac,.ogg,.opus,.wmz,.amr',
         init: function () {
             this.on("success", function (file, response) {
                 jQuery(file.previewElement).find('[data-dz-name]').html(response.name);

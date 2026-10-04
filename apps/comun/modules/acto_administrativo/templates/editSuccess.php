@@ -8,7 +8,7 @@ $currentFormBotonRadicar  = "ACTO_ADMINISTRATIVO_RADICAR";
 $currentFormoSingStamp    = "ACTO_ADMINISTRATIVO_CREAR_FIRMA_DIGITAL";
 $currentFormSingAuto      = "ACTO_ADMINISTRATIVO_CREAR_FIRMA_DESATENDIDA";
 $currentFormCreateDoc     = "ACTO_ADMINISTRATIVO_CREAR_CON_DOCPDF";
-$currentFormUsarPdf       = "ACTO_ADMINISTRATIVO_USAR_PDF"; // UARIV-202605: controla la opción "Usar PDF" (CA-3.5)
+$currentFormUsarPdf       = "ACTO_ADMINISTRATIVO_USAR_PDF";
 
 $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 $acto_pradicar = $sf_user->checkPerm($currentFormBotonRadicar, $currentUser);

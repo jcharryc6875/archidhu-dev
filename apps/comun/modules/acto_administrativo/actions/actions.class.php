@@ -258,25 +258,6 @@ class acto_administrativoActions extends sfActions
    */
   public function executeIndex()
   {
-    /*$dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(25)->getValortexto() . 'tmp2');
-    $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
-
-    $acto_administrativo = ActoAdministrativoPeer::retrieveByPk(337);
-    $params['use_membrete'] = $acto_administrativo->getUseMembrete();
-    $params['membrete_com'] = $acto_administrativo->getRegional()->getImageMembrete();
-    $params['comobject_id'] = $acto_administrativo->getPrimaryKey();
-    $params['periodo_id'] = $acto_administrativo->getPeriodoId();
-    $response_tpl = $acto_administrativo->getPlantillasCom()->generateWordByPlantilla($filedir_upload,$params);*/
-
-    /*$acto_administrativo = ActoAdministrativoPeer::retrieveByPk(255);
-    $simadSoap = new WsSimadUariv();
-    $response_acto = $simadSoap->loadWsRadActoAdministrativo($acto_administrativo->getPrimaryKey(),"Acto Administrativo",ModulesEnable::ActosAdministrativos);*/
-
-    /*$weblog_id = 13108;
-    $ws_log = WebserviceLogPeer::retrieveByPK($weblog_id);
-    $xml_fname = $ws_log->getPrimaryKey() . '_wsinfo.xml';
-    file_put_contents(sfConfig::get('sf_log_dir') . '/' . $xml_fname, $ws_log->getRequestInfo());*/
-
     $this->forward('acto_administrativo', 'consulta');
   }
 
@@ -2022,7 +2003,7 @@ class acto_administrativoActions extends sfActions
     $acto_administrativo->setRegionalId($regional_id);
     $acto_administrativo->save();
     //***************************************************************************************************************
-    // UARIV-202605 CA-1.2.3/CA-3.1: captura el participante (firmante) que radica ANTES de que las
+    // captura el participante (firmante) que radica ANTES de que las
     // actualizaciones masivas de abajo le quiten ESTA_ASIGNADA, para poder registrar en la bitácora
     // del flujo la firma y el cierre del proceso. Este "Firmar y Generar" es un camino distinto (con
     // SQL masivo) al del resto del motor de aprobación, así que nunca pasaba por cerrarPasoYRegistrarBitacora().
@@ -2040,10 +2021,22 @@ class acto_administrativoActions extends sfActions
         $etapa_firmante_id = $etapa_firmante ? $etapa_firmante->getPrimaryKey() : null;
       }
       if ($etapa_firmante_id) {
-        ActoadminEtapaBitacoraPeer::addBitacora($acto_administrativo->getPrimaryKey(), $etapa_firmante_id, $usuariologuiado,
-          $ucom_firmante->getRolusuarioactoadministvoId(), $estadoactoadmin_id, ActoadminEtapaBitacoraPeer::ACCION_FIRMA);
-        ActoadminEtapaBitacoraPeer::addBitacora($acto_administrativo->getPrimaryKey(), $etapa_firmante_id, $usuariologuiado,
-          $ucom_firmante->getRolusuarioactoadministvoId(), $estadoactoadmin_id, ActoadminEtapaBitacoraPeer::ACCION_RADICACION);
+        ActoadminEtapaBitacoraPeer::addBitacora(
+          $acto_administrativo->getPrimaryKey(),
+          $etapa_firmante_id,
+          $usuariologuiado,
+          $ucom_firmante->getRolusuarioactoadministvoId(),
+          $estadoactoadmin_id,
+          ActoadminEtapaBitacoraPeer::ACCION_FIRMA
+        );
+        ActoadminEtapaBitacoraPeer::addBitacora(
+          $acto_administrativo->getPrimaryKey(),
+          $etapa_firmante_id,
+          $usuariologuiado,
+          $ucom_firmante->getRolusuarioactoadministvoId(),
+          $estadoactoadmin_id,
+          ActoadminEtapaBitacoraPeer::ACCION_RADICACION
+        );
       }
     }
     //***************************************************************************************************************

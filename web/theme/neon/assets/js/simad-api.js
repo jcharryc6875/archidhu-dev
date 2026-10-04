@@ -9,7 +9,7 @@ jQuery(document).ready(function ($) {
 		e.preventDefault();
 	});
 
-	// UARIV-202605 (ampliación): pone en modo solo lectura los CKEditor cuyo textarea
+	//Deja en modo solo lectura los CKEditor cuyo textarea
 	// original traiga data-ckeditor-readonly="1" (candado de edición por etapa/documento).
 	if (typeof CKEDITOR !== 'undefined') {
 		CKEDITOR.on('instanceReady', function (evt) {
@@ -2518,56 +2518,10 @@ jQuery(document).ready(function ($) {
 		} finally {
 			$.CloseLoadingStructData();
 		}
-	});
+	});	
 
-	/*jQuery('body').on('change','#dependencia_id', function (event)
-	{
-		var valorSeleccionado = parseInt(jQuery(this).val());
-		var valorActivador = jQuery('#div_regional_destino').data('valoractivador');
-
-		if (valorSeleccionado === valorActivador.toString()) 
-		{
-			jQuery.ajax( 
-			{
-			type:'POST',
-			url: '/recibida.php/com_recibida/regionalesDest',
-			contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-			cache:false,
-			processData: false,
-			success: function(response)
-			{
-				if(response.status == 200)
-				{
-					var nuevoDiv = response.text_select;
-					jQuery('#div_regional_destino').html(nuevoDiv);
-					jQuery('#div_regional_destino').show();
-					$.highlightElement(jQuery('#regional_destino_id'));
-				}
-				else if(response.status == 400)
-				{
-					jQuery('#div_regional_destino').hide();
-				}
-				else
-				{
-					jQuery('#div_regional_destino').hide();
-				}
-			},
-			error: function(response)
-			{
-				jQuery('#div_regional_destino').hide();
-			},
-			complete: function()
-			{
-			},
-			});
-		} 
-		else 
-		{
-			jQuery('#div_regional_destino').html('');
-			jQuery('#div_regional_destino').hide();
-		}
-	});*/
-
+	// Funcion para abrir Modal Fancybox
+	// Parametros URL, Ancho, Alto
 	// Funcion para abrir Modal Fancybox
 	// Parametros URL, Ancho, Alto
 	$.OpenModalCloseCallback = function (url, ancho, alto) {

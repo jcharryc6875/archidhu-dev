@@ -899,7 +899,7 @@ class ComInterna extends BaseComInterna
             $contenido_merge = str_replace("{[FIRMAS_NOMBRE]}", $unfirma, $contenido_merge);
             $contenido_merge = str_replace("{[FIRMAS_CARGO]}", $ufcargo, $contenido_merge);
             $contenido_merge = str_replace("{[FIRMAS_CARGOS]}", $ufcargo, $contenido_merge);
-			$contenido_merge = str_replace("{[FIRMAS_CARGOS]}", $ufcargo, $contenido_merge);
+            $contenido_merge = str_replace("{[FIRMAS_CARGOS]}", $ufcargo, $contenido_merge);
             $contenido_merge = str_replace("{[FIRMAS_DEPENDENCIA]}", $ufarea, $contenido_merge);
             $contenido_merge = str_replace("{[FIRMA_MECANICA]}", $ufmecanica, $contenido_merge);
             $contenido_merge = str_replace("{[FIRMAS_REGIONAL]}", $ufregional, $contenido_merge);
@@ -1018,12 +1018,12 @@ class ComInterna extends BaseComInterna
             $genQR = isset($ini_array['com_interna_sticker']) ? $ini_array['com_interna_sticker'] : 'CODEBAR';
             $codebar_radicado = $this->generateImgCodeCom(array('clearlabels' => true));
             //*******************************************************************************************************
-            if($genQR == 'QR'){
-                $contenido_merge = str_replace("{[CODEBAR_COM]}", '<img min-height="40px" max-height="50px" width="50px" src="'.$base_path.'/viewdoc/tmp/'.$codebar_radicado.'"/>', $contenido_merge);
-            }else{
-                $contenido_merge = str_replace("{[CODEBAR_COM]}", '<img src="'.$base_path.'/viewdoc/tmp/'.$codebar_radicado.'"/>', $contenido_merge);
-            }            
-			//********************************definir font para el documento*****************************************
+            if ($genQR == 'QR') {
+                $contenido_merge = str_replace("{[CODEBAR_COM]}", '<img min-height="40px" max-height="50px" width="50px" src="' . $base_path . '/viewdoc/tmp/' . $codebar_radicado . '"/>', $contenido_merge);
+            } else {
+                $contenido_merge = str_replace("{[CODEBAR_COM]}", '<img src="' . $base_path . '/tmp/' . $codebar_radicado . '"/>', $contenido_merge);
+            }
+            //********************************definir font para el documento*****************************************
             $struct_init = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title>
             <style type="text/css">body {font-family:Work Sans,sans-serif;font-size: 12pt;}</style></head><body>';
             //*******************************************************************************************************
@@ -1193,7 +1193,7 @@ class ComInterna extends BaseComInterna
         $asunto = trim($this->getReferencia());
         $mensaje = trim($this->getContenido());
         //**************************************************************************************************
-		if($cominterna_usuario_destino->getCargoUsuario()->getDependenciaId() != null){
+        if ($cominterna_usuario_destino->getCargoUsuario()->getDependenciaId() != null) {
             $dependenciaDestinatario = $cominterna_usuario_destino->getCargoUsuario()->getDependencia()->getNombre();
         }
         //**************************************************************************************************
@@ -1369,20 +1369,20 @@ class ComInterna extends BaseComInterna
         </table></pd4ml:page.footer>';
         fputs($pt, ($htmlfooter));
         //*********************************************************************************************
-		$ini_array = simad_util::readConfigFileApp();
+        $ini_array = simad_util::readConfigFileApp();
         $genQR = isset($ini_array['com_interna_sticker']) ? $ini_array['com_interna_sticker'] : 'CODEBAR';
         $codebar_radicado = $this->generateImgCodeCom(array('clearlabels' => true));
         //*******************************************************************************************************
-        if($genQR == 'QR'){
-            $image_com_code = '<img style="width:80px; height:auto;" src="'.$base_path.'/viewdoc/tmp/'.$codebar_radicado.'"/>';
-        }else{
-            $image_com_code = '<img style="width:80px; height:auto;" src="'.$base_path.'/viewdoc/tmp/'.$codebar_radicado.'"/>';
+        if ($genQR == 'QR') {
+            $image_com_code = '<img style="width:80px; height:auto;" src="' . $base_path . '/tmp/' . $codebar_radicado . '"/>';
+        } else {
+            $image_com_code = '<img style="width:80px; height:auto;" src="' . $base_path . '/tmp/' . $codebar_radicado . '"/>';
         }
         //*********************************************************************************************
         //se crea el html para el encabezado de la carta
         $htmlencabezado = '<pd4ml:page.header>';
         $htmlencabezado .= '<div width="100%" style="text-align:right;font-size: 7pt;"><b>F-OAP-018-CAR</b></div>';
-        $htmlencabezado .= '<div width="100%" style="text-align:right;font-size: 8pt;">'.$image_com_code.'</div>';
+        $htmlencabezado .= '<div width="100%" style="text-align:right;font-size: 8pt;">' . $image_com_code . '</div>';
         $htmlencabezado .= '<div width="100%" style="text-align:right;font-size: 8pt;"><b>Al contestar por favor cite estos datos:</b></div>';
         $htmlencabezado .= '<div width="100%" style="text-align:right;font-size: 8pt;">Radicado No.: <b>' . $this->getRadicado() . '</b></div>';
         $htmlencabezado .= '<div width="100%" style="text-align:right;font-size: 8pt;">Fecha: ' . $this->getFechaCreacion("d/m/Y H:i:s A") . '</div>';
@@ -1469,13 +1469,13 @@ class ComInterna extends BaseComInterna
         try {
             $text_radicado = trim($this->getRadicado());
             return simad_util::generateCodeBarInFile($text_radicado, $clearlabels, $scale, $height, $fsize, $dpi);
-        } catch(PropelException $e) {
+        } catch (PropelException $e) {
             return null;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return null;
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             return null;
-        }        
+        }
     }
 
     public function generateFileInDisk($margins_list = null)
@@ -1566,7 +1566,7 @@ class ComInterna extends BaseComInterna
         $source_filename = md5(date("YmdGis") . pathinfo($inputFileName, PATHINFO_FILENAME));
         $target_dir = md5(date("YmdGis"));
         //**********************************************************************************************
-		$read_sections = array('com_interna_sticker');
+        $read_sections = array('com_interna_sticker');
         $ini_array = simad_util::readConfigFileApp($read_sections);
         $genQR = isset($ini_array['com_interna_sticker']) ? $ini_array['com_interna_sticker'] : 'CODEBAR';
         if (trim($inputFileName)) {
@@ -1588,44 +1588,44 @@ class ComInterna extends BaseComInterna
                 // use the imported page and place it at point 10,10 with a width of 100 mm
                 $pdf->useTemplate($tplId, null, null, null, null, true);
                 $pdf->SetFont('Arial', 'B', 7);
-				//**************************************************************************************
-                if($genQR == "CODEBAR"){
+                //**************************************************************************************
+                if ($genQR == "CODEBAR") {
                     $pdf->Cell(0, 10, "F-OAP-018-CAR", 0, 0, 'R');
                     $pdf->Ln($ptln);
                 }
                 //**************************************************************************************
-                if($genQR == "CODEBAR"){
-                    $pdf->Cell( 0, 10, $pdf->Image($codebar,157.5,16.5,0,0,'png'), 0, 0, 'R');
-                }elseif($genQR == "QR"){
-                    $imgW = 15;// ancho del QR en mm
+                if ($genQR == "CODEBAR") {
+                    $pdf->Cell(0, 10, $pdf->Image($codebar, 157.5, 16.5, 0, 0, 'png'), 0, 0, 'R');
+                } elseif ($genQR == "QR") {
+                    $imgW = 15; // ancho del QR en mm
                     $y    = 10.5;
                     //**********************************************************************************
                     $x = $pdf->GetPageWidth() - $imgW - 10; // 5 mm del borde
                     //**********************************************************************************
                     $pdf->Cell(0, 10, $pdf->Image($codebar, $x, $y, $imgW, 0, 'PNG'), 0, 0, 'R');
-                    $pdf->Ln($ptln+6);
-                    $pdf->SetFont('Arial','B',4);
-                    $pdf->Cell(0, 10, "Rad No.: ".$this->getRadicado(), 0, 0, 'R');
-                }else{
-                    $pdf->Cell(0, 10, $pdf->Image($codebar,157.5,16.5,0,0,'png'), 0, 0, 'R');
-                }                
-				
-				$pdf->Ln($ptln);
-				//**************************************************************************************
-                if($genQR == "CODEBAR"){
-	                $pdf->SetFont('Arial', 'B', 8);
-	                $pdf->Cell(0, 10, "Al contestar por favor cite estos datos:", 0, 0, 'R');
-	                $pdf->Ln($ptln - 1);
-	                $pdf->SetFont('Arial', '', 8);
-	                $pdf->Cell(164, 10, "Radicado No.:", 0, 0, 'R');
-	                $pdf->SetFont('Arial', 'B', 9);
-	                $pdf->Cell(0, 10, $this->getRadicado(), 0, 0, 'R');
-	                $pdf->Ln($ptln - 1);
-	                $pdf->SetFont('Arial', '', 8);
-	                $pdf->Cell(154, 10, "Fecha:", 0, 0, 'R');
-	                $pdf->SetFont('Arial', '', 9);
-	                $pdf->Cell(0, 10, $this->getFechaCreacion("d/m/Y H:i:s A"), 0, 0, 'R');
-				}
+                    $pdf->Ln($ptln + 6);
+                    $pdf->SetFont('Arial', 'B', 4);
+                    $pdf->Cell(0, 10, "Rad No.: " . $this->getRadicado(), 0, 0, 'R');
+                } else {
+                    $pdf->Cell(0, 10, $pdf->Image($codebar, 157.5, 16.5, 0, 0, 'png'), 0, 0, 'R');
+                }
+
+                $pdf->Ln($ptln);
+                //**************************************************************************************
+                if ($genQR == "CODEBAR") {
+                    $pdf->SetFont('Arial', 'B', 8);
+                    $pdf->Cell(0, 10, "Al contestar por favor cite estos datos:", 0, 0, 'R');
+                    $pdf->Ln($ptln - 1);
+                    $pdf->SetFont('Arial', '', 8);
+                    $pdf->Cell(164, 10, "Radicado No.:", 0, 0, 'R');
+                    $pdf->SetFont('Arial', 'B', 9);
+                    $pdf->Cell(0, 10, $this->getRadicado(), 0, 0, 'R');
+                    $pdf->Ln($ptln - 1);
+                    $pdf->SetFont('Arial', '', 8);
+                    $pdf->Cell(154, 10, "Fecha:", 0, 0, 'R');
+                    $pdf->SetFont('Arial', '', 9);
+                    $pdf->Cell(0, 10, $this->getFechaCreacion("d/m/Y H:i:s A"), 0, 0, 'R');
+                }
                 //***************************************************************************************
                 for ($pageNo = ($pageNo + 1); $pageNo <= $pagecount; $pageNo++) {
                     $tplIdx = $pdf->importPage($pageNo);
@@ -1652,24 +1652,21 @@ class ComInterna extends BaseComInterna
         return $source_filename;
     }
 
-	public function generateImgCodeCom($params = array())   //metodo bisagra
+    public function generateImgCodeCom($params = array())   //metodo bisagra
     {
         $ini_array = simad_util::readConfigFileApp();
         $genQR = isset($ini_array['com_interna_sticker']) ? $ini_array['com_interna_sticker'] : 'CODEBAR';
 
-        if($genQR == 'QR')
-        {
+        if ($genQR == 'QR') {
             $text_radicado = trim($this->getRadicado());
             $csv_com = ComInternaPeer::getHashComData($this);
 
-            $tamano = isset($params['tamano']) ? $params['tamano'] : 5 ;
-            $level = isset($params['level']) ? $params['level'] : 'H' ;
-            $framesize = isset($params['framesize']) ? $params['framesize'] : 1 ;
+            $tamano = isset($params['tamano']) ? $params['tamano'] : 5;
+            $level = isset($params['level']) ? $params['level'] : 'H';
+            $framesize = isset($params['framesize']) ? $params['framesize'] : 1;
 
-            return simad_util::generateCodeQrInFile($text_radicado.' / '.$csv_com, $tamano, $level, $framesize);   
-        }
-        else
-        {
+            return simad_util::generateCodeQrInFile($text_radicado . ' / ' . $csv_com, $tamano, $level, $framesize);
+        } else {
             $text_radicado = trim($this->getRadicado());
             $clearlabels = isset($params['clearlabels']) ? $params['clearlabels'] : false;
             $scale = isset($params['scale']) ? $params['scale'] : 1;
@@ -1677,7 +1674,7 @@ class ComInterna extends BaseComInterna
             $fsize = isset($params['fsize']) ? $params['fsize'] : 8;
             $dpi = isset($params['dpi']) ? $params['dpi'] : 72;
 
-            return simad_util::generateCodeBarInFile($text_radicado, $clearlabels, $scale, $height, $fsize, $dpi); 
+            return simad_util::generateCodeBarInFile($text_radicado, $clearlabels, $scale, $height, $fsize, $dpi);
         }
     }
 
@@ -1723,12 +1720,12 @@ class ComInterna extends BaseComInterna
                 $ini_array = simad_util::readConfigFileApp();
                 $genQR = isset($ini_array['com_interna_sticker']) ? $ini_array['com_interna_sticker'] : 'CODEBAR';
                 //*****************************************************************************************************
-                $tmp_codebar = sfConfig::get('sf_shared_tmp_dir').DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR;
-                $codebar_radicado = $tmp_codebar.$this->generateImgCodeCom(array('clearlabels' => true));
+                $tmp_codebar = sfConfig::get('sf_shared_tmp_dir') . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
+                $codebar_radicado = $tmp_codebar . $this->generateImgCodeCom(array('clearlabels' => true));
                 //*****************************************************************************************************
-                if($genQR == 'QR'){
+                if ($genQR == 'QR') {
                     $replacement_images['CODEBAR_COM'] = ['path' => $codebar_radicado, 'wcm' => 60, 'hcm' => 50];
-                }else{
+                } else {
                     $replacement_images['CODEBAR_COM'] = ['path' => $codebar_radicado, 'wcm' => 150, 'hcm' => 40];
                 }
                 //*****************************************************************************************************
@@ -1757,7 +1754,7 @@ class ComInterna extends BaseComInterna
                 }
                 //*****************************************************************************************************
                 $IsCheckAprobComAnyUsers = true;
-				if($this->getEstadocominternaId() != 1 || $IsCheckAprobComAnyUsers){
+                if ($this->getEstadocominternaId() != 1 || $IsCheckAprobComAnyUsers) {
                     if (isset($userscom_data['fmecanica_uradicador']) && !empty($userscom_data['fmecanica_uradicador']))
                         $replacement_images['RADICADOR_FMECANICA'] = ['path' => $userscom_data['fmecanica_uradicador'], 'wcm' => 50, 'hcm' => 30];
                     else
@@ -1977,8 +1974,8 @@ class ComInterna extends BaseComInterna
     }
 
     /**
-	* @deprecated Reemplazado por singDocumentProcessMulti() [2026-08-12]. 
-    * Conservado como respaldo de rollback. Eliminar tras periodo de estabilizacion.
+     * @deprecated Reemplazado por singDocumentProcessMulti() [2026-08-12]. 
+     * Conservado como respaldo de rollback. Eliminar tras periodo de estabilizacion.
      * objectActions::singDocumentProcessAndes()
      * firma el documento digitalmente
      * @param bool $signAllPages indica que se debe adicionarse la firma visible en todas las paginas
@@ -2057,7 +2054,7 @@ class ComInterna extends BaseComInterna
                         $singOnMsg = 'Documento firmado existosamente!';
                         $response_process = array('httpStatus' => 200, 'message' => $singOnMsg);
                         $this->setFirmadoDigital(1); //FIRMA EXITOSA
-						$this->setDirDigit($dir_raiz);
+                        $this->setDirDigit($dir_raiz);
                         $this->save();
                     } else {
                         $this->setFirmadoDigital(3); //ERROR SERVIDOR PROVEEDOR FIRMA
@@ -2097,8 +2094,8 @@ class ComInterna extends BaseComInterna
     }
 
     /**
-	* @deprecated Reemplazado por singDocumentProcessMulti() [2026-08-12]. 
-    * Conservado como respaldo de rollback. Eliminar tras periodo de estabilizacion.
+     * @deprecated Reemplazado por singDocumentProcessMulti() [2026-08-12]. 
+     * Conservado como respaldo de rollback. Eliminar tras periodo de estabilizacion.
      * objectActions::singDocumentProcessGse()
      * firma la comunicacion digitalmente
      * @param bool $signAllPages indica que se debe adicionarse la firma visible en todas las paginas
@@ -2171,7 +2168,7 @@ class ComInterna extends BaseComInterna
                         $singOnMsg = 'Documento firmado existosamente!';
                         $response_process = array('httpStatus' => 200, 'message' => $singOnMsg);
                         $this->setFirmadoDigital(1); //FIRMA EXITOSA
-						$this->setDirDigit($dir_raiz);
+                        $this->setDirDigit($dir_raiz);
                         $this->save();
                     } else {
                         $this->setFirmadoDigital(3); //ERROR SERVIDOR PROVEEDOR FIRMA
@@ -2222,23 +2219,23 @@ class ComInterna extends BaseComInterna
      */
     public function singDocumentProcess($signAllPages = false)
     {
-		try{
-            if(!in_array($this->getEstadocominternaId(),array(1,4))){
+        try {
+            if (!in_array($this->getEstadocominternaId(), array(1, 4))) {
                 return $this->singDocumentProcessMulti($signAllPages);
                 //return $this->singDocumentProcessAndes($signAllPages);
                 //return $this->singDocumentProcessGse($signAllPages);
-            }else{
+            } else {
                 return array('httpStatus' => 400, 'message' => 'Este radicado no se puede firmar(no cuenta con un consecutivo de radicación), esta anulado o es un borrador');
             }
-		} catch (\PropelException $ex) {
-            return array('httpStatus' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
-        }catch (\Throwable $th) {
+        } catch (\PropelException $ex) {
+            return array('httpStatus' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
+        } catch (\Throwable $th) {
             //throw $th;
             return array('httpStatus' => 400, 'message' => $th->getMessage());
         }
-	}
-	
-	/**
+    }
+
+    /**
      * objectActions::singDocumentProcessMulti()
      * Firma la comunicacion digitalmente, resolviendo el proveedor de firma
      * (Andes | GSE) por cada usuario firmante, permitiendo documentos mixtos.
@@ -2249,144 +2246,163 @@ class ComInterna extends BaseComInterna
      */
     public function singDocumentProcessMulti($signAllPages = false)
     {
-        try{
+        try {
             $firmaApiGse = new WsFirmaApiGse();
             $firmaApiAndes = new WsFirmaApiAndes();
             //***************************************************************************************************
             $dir_raiz = !empty($this->getDirDigit()) ? trim($this->getDirDigit()) : ParametroPeer::retrieveByPk(25)->getValortexto();
             $digit_dir  = ParametroPeer::retrieveByPk(15)->getValortexto();
-            $filename   = sprintf("%s.%s",trim($this->getRadicado()),'pdf');
-            $tempdir_firma = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.md5(date("YmdGis"));
+            $filename   = sprintf("%s.%s", trim($this->getRadicado()), 'pdf');
+            $tempdir_firma = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . md5(date("YmdGis"));
             $ulist_firma = CominternaUsuarioPeer::getAllUserFirmaDigitalObj($this->getPrimaryKey());
             $isFirmaDigital = count($ulist_firma) ? true : false;
             //***************************************************************************************************
-            if(!empty($this->getUrlFileWord())){
-                $file_attach = $this->generatePdfByFile($this->getUrlFileWord(),true);
-            }else{
-                $margins = array('top' => 15,'left' => 25,'buttom' => 20,'rigth' => 25);
+            if (!empty($this->getUrlFileWord())) {
+                $file_attach = $this->generatePdfByFile($this->getUrlFileWord(), true);
+            } else {
+                $margins = array('top' => 15, 'left' => 25, 'buttom' => 20, 'rigth' => 25);
                 $file_attach = $this->generateFileInDisk($margins);
             }
             //***************************************************************************************************
-            if($file_attach == null || !file_exists($file_attach)){
+            if ($file_attach == null || !file_exists($file_attach)) {
                 return array('httpStatus' => 400, 'message' => 'Error al generar el archivo pdf');
             }
             //***************************************************************************************************
-            $storage_com = $this->getBasicUrlDigitCom($dir_raiz,$digit_dir);
+            $storage_com = $this->getBasicUrlDigitCom($dir_raiz, $digit_dir);
             $targetpath = $storage_com['storage_path'] . DIRECTORY_SEPARATOR . $filename;
             //***************************************************************************************************
-            if(count($ulist_firma) <= 0){
-                $this->setFirmadoDigital(4);//EL DOCUMENTO NO SE FIRMA DIGITAL
+            if (count($ulist_firma) <= 0) {
+                $this->setFirmadoDigital(4); //EL DOCUMENTO NO SE FIRMA DIGITAL
                 $this->save();
-                if(file_exists($file_attach)){ unlink($file_attach); }
+                if (file_exists($file_attach)) {
+                    unlink($file_attach);
+                }
                 return array('httpStatus' => 400, 'message' => 'Ninguno de los usuarios que firman la comunicaci&oacute;n tienen habilitada la firma digital');
             }
             //***************************************************************************************************
-            if($signAllPages){
-                $filesing_base64 = $firmaApiGse->addSignVisbleAll($file_attach,$ulist_firma);
-            }else{
+            if ($signAllPages) {
+                $filesing_base64 = $firmaApiGse->addSignVisbleAll($file_attach, $ulist_firma);
+            } else {
                 $filesing_base64 = simad_util::getConvertFileToB64($file_attach);
             }
             //***************************************************************************************************
             $size_message = strlen($filesing_base64);
             $isSignHash = ($size_message >= WsFirmaApiGse::MAX_FILE_SIZE_MESSAGE);
             //***************************************************************************************************
-            $Yc = 640;$Hc = 100;$Xc = 5;$Wc = 40;$fy1 = 120;
-            if($isSignHash){
-                $Xc = 0;$Yc = 750;$Wc = 40;$Hc = 640;
+            $Yc = 640;
+            $Hc = 100;
+            $Xc = 5;
+            $Wc = 40;
+            $fy1 = 120;
+            if ($isSignHash) {
+                $Xc = 0;
+                $Yc = 750;
+                $Wc = 40;
+                $Hc = 640;
             }
             //***************************************************************************************************
-            $tokenGse = null;//login perezoso: solo si algun firmante usa GSE, y una sola vez
-            $isSingned = true;$response_list = array();$response_sing = array();
-            $ubicacionFirma = array('x' => $Xc,'y' => $Yc,'w' => $Wc,'h' => $Hc);
+            $tokenGse = null; //login perezoso: solo si algun firmante usa GSE, y una sola vez
+            $isSingned = true;
+            $response_list = array();
+            $response_sing = array();
+            $ubicacionFirma = array('x' => $Xc, 'y' => $Yc, 'w' => $Wc, 'h' => $Hc);
             //***************************************************************************************************
             foreach ($ulist_firma as $eufirma) {
                 $firma_info = $eufirma->getNombreApellido();
                 $proveedor  = $this->getProveedorFirmaUsuario($eufirma);
                 //***********************************************************************************************
-                if($proveedor == AppApiExternal::FIRMA_GSE){
+                if ($proveedor == AppApiExternal::FIRMA_GSE) {
                     //*******************************************************************************************
-                    if($tokenGse == null){
+                    if ($tokenGse == null) {
                         $tokenGse = $firmaApiGse->loginWsApiFirmaGse();
-                        if($tokenGse == null){
+                        if ($tokenGse == null) {
                             $response_list[] = array('error' => true, 'mesagge' => 'No fue posible autenticarse con el proveedor GSE', 'usuario' => $firma_info);
                             $isSingned = false;
                             break;
                         }
                     }
                     //*******************************************************************************************
-                    $b64firma = simad_util::createImgFirmaDigital($firma_info,$tempdir_firma);
-                    $response_sing = $firmaApiGse->documentWsApiFirmaGse($eufirma->getLoginFirma(),base64_decode($eufirma->getPassFirma()),$filesing_base64,$tokenGse,$targetpath,$b64firma,$ubicacionFirma);
+                    $b64firma = simad_util::createImgFirmaDigital($firma_info, $tempdir_firma);
+                    $response_sing = $firmaApiGse->documentWsApiFirmaGse($eufirma->getLoginFirma(), base64_decode($eufirma->getPassFirma()), $filesing_base64, $tokenGse, $targetpath, $b64firma, $ubicacionFirma);
                     //*******************************************************************************************
                     $file_result = (!$response_sing['error'] && isset($response_sing['file_base64'])) ? $response_sing['file_base64'] : null;
-                }else{
+                } else {
                     //*******************************************************************************************
                     //Andes (jar) trabaja con rutas: materializar el b64 de la cadena en un archivo temporal
-                    $tmp_andes = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.md5(uniqid().date("YmdGis"))."_andes.pdf";
-                    if(!simad_util::getConvertB64ToFile($filesing_base64,$tmp_andes)){
+                    $tmp_andes = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . md5(uniqid() . date("YmdGis")) . "_andes.pdf";
+                    if (!simad_util::getConvertB64ToFile($filesing_base64, $tmp_andes)) {
                         $response_sing = array('error' => true, 'msg_info' => 'No fue posible preparar el archivo temporal para la firma Andes');
                         $file_result = null;
-                    }else{
-                        $b64firma = sfConfig::get("sf_lib_dir").DIRECTORY_SEPARATOR.'efirma'.DIRECTORY_SEPARATOR.WsFirmaApiAndes::FIRMA_VISIBLE_IMAGE;
-                        $response_sing = $firmaApiAndes->documentWsApiFirmaAndes($eufirma->getLoginFirma(),base64_decode($eufirma->getPassFirma()),$tmp_andes,$targetpath,$b64firma,$ubicacionFirma);
+                    } else {
+                        $b64firma = sfConfig::get("sf_lib_dir") . DIRECTORY_SEPARATOR . 'efirma' . DIRECTORY_SEPARATOR . WsFirmaApiAndes::FIRMA_VISIBLE_IMAGE;
+                        $response_sing = $firmaApiAndes->documentWsApiFirmaAndes($eufirma->getLoginFirma(), base64_decode($eufirma->getPassFirma()), $tmp_andes, $targetpath, $b64firma, $ubicacionFirma);
                         //***************************************************************************************
                         //normalizar la salida del jar (ruta o b64) de vuelta a b64 para la cadena
-                        if(!$response_sing['error']){
+                        if (!$response_sing['error']) {
                             $file_result = is_file($response_sing['filesing']) ? simad_util::getConvertFileToB64($response_sing['filesing']) : $response_sing['filesing'];
-                        }else{
+                        } else {
                             $file_result = null;
                         }
                     }
                     //*******************************************************************************************
-                    if(file_exists($tmp_andes)){ unlink($tmp_andes); }
+                    if (file_exists($tmp_andes)) {
+                        unlink($tmp_andes);
+                    }
                 }
                 //***********************************************************************************************
                 $response_list[] = array('error' => $response_sing['error'], 'mesagge' => $response_sing['msg_info'], 'usuario' => $firma_info);
                 //***********************************************************************************************
-                if(!$response_sing['error'] && $file_result != null){
-                    if($isSignHash){
+                if (!$response_sing['error'] && $file_result != null) {
+                    if ($isSignHash) {
                         $Yc = $Yc - $fy1;
                         $Hc = $Hc - $fy1;
-                    }else{
+                    } else {
                         $Yc = ($Yc - $fy1);
                     }
                     //*******************************************************************************************
                     $filesing_base64 = $file_result;
-                    $ubicacionFirma = array('x' => $Xc,'y' => $Yc,'w' => $Wc,'h' => $Hc);
-                }else{
+                    $ubicacionFirma = array('x' => $Xc, 'y' => $Yc, 'w' => $Wc, 'h' => $Hc);
+                } else {
                     $isSingned = false;
                     break;
                 }
             }
             //***************************************************************************************************
-            if($isSingned){ $isSingned = simad_util::getConvertB64ToFile($filesing_base64,$targetpath); }
+            if ($isSingned) {
+                $isSingned = simad_util::getConvertB64ToFile($filesing_base64, $targetpath);
+            }
             //***************************************************************************************************
-            if($isSingned){
+            if ($isSingned) {
                 $singOnMsg = 'Documento firmado existosamente!';
                 $response_process = array('httpStatus' => 200, 'message' => $singOnMsg);
                 $this->setEstadodigitalizacionId(2);
                 $this->setDirDigit($dir_raiz);
-                $this->setFirmadoDigital(1);//FIRMA EXITOSA
+                $this->setFirmadoDigital(1); //FIRMA EXITOSA
                 $this->save();
-            }else{
-                $this->setFirmadoDigital(3);//ERROR SERVIDOR PROVEEDOR FIRMA
+            } else {
+                $this->setFirmadoDigital(3); //ERROR SERVIDOR PROVEEDOR FIRMA
                 $this->save();
                 $singOnMsg = 'Ocurrio un error con el proveedor de firma digital, el documento no se firmo!';
                 //***********************************************************************************************
                 foreach ($response_list as $item_error) {
-                    if($item_error['error']){
-                        $singOnMsg .= ", [".$item_error['usuario']."] ".$item_error['mesagge'];
+                    if ($item_error['error']) {
+                        $singOnMsg .= ", [" . $item_error['usuario'] . "] " . $item_error['mesagge'];
                     }
                 }
                 //***********************************************************************************************
-                if(file_exists($file_attach)){ unlink($file_attach); }
+                if (file_exists($file_attach)) {
+                    unlink($file_attach);
+                }
                 return array('httpStatus' => 400, 'message' => $singOnMsg);
             }
             //***************************************************************************************************
-            if(file_exists($file_attach)){ unlink($file_attach); }
+            if (file_exists($file_attach)) {
+                unlink($file_attach);
+            }
             return $response_process;
         } catch (\PropelException $ex) {
-            return array('httpStatus' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage());
-        }catch (\Throwable $th) {
+            return array('httpStatus' => 400, 'message' => 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage());
+        } catch (\Throwable $th) {
             return array('httpStatus' => 400, 'message' => $th->getMessage());
         }
     }
@@ -2402,11 +2418,11 @@ class ComInterna extends BaseComInterna
     private function getProveedorFirmaUsuario($eufirma)
     {
         $proveedor = $eufirma->getProveedorFirmaDigital();
- 
-        if($proveedor === null || !$proveedor->getEstaActivo()){
+
+        if ($proveedor === null || !$proveedor->getEstaActivo()) {
             return AppApiExternal::FIRMA_ANDES;
         }
- 
+
         $enum_name = strtoupper(trim((string) $proveedor->getEnumName()));
         return ($enum_name == AppApiExternal::FIRMA_GSE) ? AppApiExternal::FIRMA_GSE : AppApiExternal::FIRMA_ANDES;
     }

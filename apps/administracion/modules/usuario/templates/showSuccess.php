@@ -30,7 +30,7 @@ use_helper('Object', 'jQuery');
 		<div class="panel panel-gradient" data-collapsed="0">
 			<div class="panel-heading">
 				<div class="panel-title">
-					Detalles del Usuario
+					Detalles del Usuario (<strong><?php echo $usuario->getNombreApellido(); ?></strong>)
 				</div>
 			</div>
 			<!-- Contenedor Contenido Formulario-->

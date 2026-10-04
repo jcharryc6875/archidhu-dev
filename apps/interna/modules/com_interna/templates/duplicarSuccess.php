@@ -129,7 +129,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
         <div class="form-group">
           <!-- Requiere respuesta -->
           <label for="lbgetRequiereRespuesta" class="col-sm-1 control-label">Requiere Respuesta:<span class="text-danger">*</span></label>
-          <div class="col-sm-2">
+          <div class="col-sm-1">
             <?php $value_check0 = $com_interna->getRequiereRespuesta() !== null ? ($com_interna->getRequiereRespuesta() ? true : false) : true; ?>
             <div class="make-switch switch-small" data-on="danger" data-off="info" data-on-label="SI" data-off-label="NO">
               <?php echo checkbox_tag('requiere_respuesta_switch', 1, $value_check0, array('id' => 'requiere_respuesta_switch', 'class' => 'reqresp-switch')); ?>
@@ -155,12 +155,12 @@ use_helper('Object', 'jQuery', 'UserComponent');
 
         <div class="form-group">
           <!-- Unidad Documental -->
-          <label for="nombre" class="col-sm-1 control-label">Nombre Expediente:</label>
+          <label for="nombre" class="col-sm-1 control-label">Nombre Expediente<span class="ctrlreq">(*)</span>:</label>
           <div class="col-sm-8">
             <div class="input-group">
               <?php
               echo input_hidden_tag('unidaddocumental_id', $expediente_id, array('class' => 'explinkto'));
-              echo input_tag('nombre', (isset($nombre_expediente) ? $nombre_expediente : ''), array('size' => '80', 'class' => 'data-readonly form-control input-sm'));
+              echo input_tag('nombre', (isset($nombre_expediente) ? $nombre_expediente : ''), array('size' => '80','class' => 'data-readonly form-control input-sm required'));
               ?>
               <div class="input-group-btn">
                 <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print $base_path; ?>/archivo.php/transferencia/unidad'); return false;">Buscar</button>
@@ -174,7 +174,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
           <label for="lbgettipodocumental" class="col-sm-1 control-label">Tipo Documental:</label>
           <div class="col-sm-6">
             <div id="contenedor_tipos">
-              <select name="tipodocumental_id" id="tipodocumental_id" class="select2 form-control input-sm">
+              <select name="tipodocumental_id" id="tipodocumental_id" class="select2 form-control input-sm required">
                 <option value="">Seleccione expediente...</option>
                 <?php
                 foreach ($list_tdocs as $tipo_documental) {
@@ -199,8 +199,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
                 echo input_tag('replyfile', basename($com_interna->getUrlFileWord()), array('class' => 'data-readonly form-control input-sm'));
                 ?>
                 <div class="input-group-btn">
-                  <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print url_for('com_interna/uploadTemplate');
-                                                                                                                  $base_path; ?>', 800, 400);">Seleccionar archivo</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print url_for('com_interna/uploadTemplate'); $base_path;?>', 800, 400);">Seleccionar archivo</button>
                   <button type="button" class="btn btn-default btn-sm" onclick="javascript:jQuery.LimpiarCampoFormulario('replyfile');"><i class="entypo-cancel-circled"></i></button>
                 </div>
               </div>
@@ -405,8 +404,10 @@ use_helper('Object', 'jQuery', 'UserComponent');
       thumbnailHeight: 50,
       parallelUploads: 100,
       maxFiles: 10,
+	  maxFilesize: <?php echo (int)ini_get('upload_max_filesize'); ?>,
+	  timeout: 180000,
       dictResponseError: "Ha ocurrido un error en el server",
-      acceptedFiles: 'image/*,.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.TIF,.TIFF,.tif,.tiff,.rar,application/pdf,.psd,.xls,.doc,.ppt,.msg,.xlsx,.docx,.pptx',
+      acceptedFiles: 'image/*,.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.TIF,.TIFF,.tif,.tiff,.rar,application/pdf,.psd,.xls,.doc,.ppt,.eml,.msg,.xlsx,.docx,.pptx',
       init: function() {
         this.on("success", function(file, response) {
           jQuery(file.previewElement).find('[data-dz-name]').html(response.name);

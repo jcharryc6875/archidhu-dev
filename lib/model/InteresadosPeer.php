@@ -296,6 +296,7 @@ class InteresadosPeer extends BaseInteresadosPeer
     {
         try {
             $smart_interesado = new Interesados();
+			//*************************************************************************************
             if (!empty($interesado->getPrimaryKey())) {
                 $smart_interesado = $interesado->copy();
             }
@@ -304,13 +305,13 @@ class InteresadosPeer extends BaseInteresadosPeer
             $smart_interesado->setCiudadId(isset($params['ciudad_id']) ? trim($params['ciudad_id']) : null);
             $smart_interesado->setTipoidentificacionId(isset($params['tipoidentificacion_id']) ? trim($params['tipoidentificacion_id']) : null);
             $smart_interesado->setTipogeneroId(isset($params['tipogenero_id']) ? trim($params['tipogenero_id']) : null);
-
+			//*************************************************************************************
 
             $smart_interesado->setPrimerNombre(isset($params['primer_nombre']) ? utf8_encode(trim($params['primer_nombre'])) : null);
             $smart_interesado->setSegundoNombre(isset($params['segundo_nombre']) ? utf8_encode(trim($params['segundo_nombre'])) : null);
             $smart_interesado->setPrimerApellido(isset($params['primer_apellido']) ? utf8_encode(trim($params['primer_apellido'])) : null);
             $smart_interesado->setSegundoApellido(isset($params['segundo_apellido']) ? utf8_encode(trim($params['segundo_apellido'])) : null);
-
+			//*************************************************************************************
             $smart_interesado->setNumeroIdentificacion(isset($params['numero_identificacion']) ? trim($params['numero_identificacion']) : null);
             $smart_interesado->setDireccion(isset($params['direccion']) ? utf8_encode(trim($params['direccion'])) : null);
             $smart_interesado->setCodigoPostal(isset($params['codigo_postal']) ? trim($params['codigo_postal']) : null);
@@ -318,7 +319,7 @@ class InteresadosPeer extends BaseInteresadosPeer
             $smart_interesado->setCelular(isset($params['celular']) ? trim($params['celular']) : null);
             $smart_interesado->setFax(isset($params['fax']) ? trim($params['fax']) : null);
             $smart_interesado->setEmail(isset($params['email']) ? trim($params['email']) : null);
-
+			//*************************************************************************************
             $smart_interesado->setFechaCreacion(date("Y-m-d G:i:s"));
             $smart_interesado->setNumeroFud(isset($params['numero_fud']) ? trim($params['numero_fud']) : null);
             $smart_interesado->setFechaModificacion(date("Y-m-d G:i:s"));
@@ -329,7 +330,7 @@ class InteresadosPeer extends BaseInteresadosPeer
             $smart_interesado->setVersionLast(isset($params['version_last']) ? trim($params['version_last']) : 1);
             $smart_interesado->setParentinteresadoId(isset($params['parentinteresado_id']) ? trim($params['parentinteresado_id']) : null);
             $smart_interesado->save();
-            //******************************************************************
+            //*************************************************************************************
 
             if (!empty($interesado->getPrimaryKey())) {
                 $interesado->setEsActivo(0);
@@ -337,6 +338,7 @@ class InteresadosPeer extends BaseInteresadosPeer
                 $interesado->setParentinteresadoId($params['parentinteresado_id']);
                 $interesado->setFechaModificacion(date("Y-m-d G:i:s"));
                 $interesado->save();
+				//*************************************************************************************
                 $interesado_anterior = $interesado;
             } else {
                 $interesado_anterior = new Interesados();
@@ -347,16 +349,22 @@ class InteresadosPeer extends BaseInteresadosPeer
             AuditLogPeer::guardarAuditoriaLite(InteresadosPeer::OM_CLASS, $interesado_anterior, $smart_interesado, ModulesEnable::Interesados, $smart_interesado->getNumeroIdentificacion(), $params['usuario_id']);
             //******************************************************************
             return $smart_interesado;
-        } catch (PropelException $ex) {
-            //$ex->getMessage();
-            return "Error al acceder a los datos del registro";
-        } catch (\Exception $ex) {
-            //$ex->getMessage();
-            return "Error interno interno de la aplicación";
-        } catch (\Throwable $ex) {
-            //$ex->getMessage();
-            return "Error interno del servidor";
-        }
+        } 
+        catch(PropelException $ex)
+		{
+            error_log($ex->getMessage());
+			return null;
+		}
+		catch(\Exception $ex)
+		{
+			error_log($ex->getMessage());
+			return null;
+		}
+        catch(\Throwable $ex)
+		{
+            error_log($ex->getMessage());
+			return null;
+		}
     }
 
     public static function validateInfoNewInteresado(&$info_data, $optfileds = array())

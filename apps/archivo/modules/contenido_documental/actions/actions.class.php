@@ -153,10 +153,10 @@ class contenido_documentalActions extends sfActions
 		$list_alltre = ContenidodocFiletreePeer::getFileTreeByUnidadDocumentalId($unidaddocumental_id);
 		//*****************************************************************************************************************
 		if (!$list_contenidos && !$list_alltre) {
+			$this->getResponse()->setContentType('application/json');
 			return $this->renderText(json_encode([]));
 		}
 		//*****************************************************************************************************************
-		// Convertimos los objetos Propel en un array asociativo más simple
 		// Convertimos los objetos Propel en un array asociativo más simple
 		$items = [];
 		foreach ($list_contenidos as $row_contenido) {
@@ -945,14 +945,11 @@ class contenido_documentalActions extends sfActions
 	{
 		$unidaddocumental_id = trim($this->getRequestParameter('unidaddocumental_id')) ? trim($this->getRequestParameter('unidaddocumental_id')) : 0;
 		$unidad_documental = UnidadDocumentalPeer::retrieveByPK($unidaddocumental_id);
-		$nro_expediente = trim($unidad_documental->getCodigoBarras());
-		$nombre_expediente = trim($unidad_documental->getTitulo());
-		$folder_bzip = sprintf("%s_%s", $nro_expediente, $nombre_expediente);
 		//********************************************************************************
 		if ($unidad_documental == null) {
 			$this->redirect(sfConfig::get('base_simad') . '/no_autorizado_cerrar.html');
 		}
-		//********************************************************************************************************
+		//********************************************************************************
 		$modulo  = strtoupper($unidad_documental->getLocalizacionUnidadDocumental()->getDescripcion());
 		$currentForm = $modulo . "_DESCARGAR_DOCUMENTOS";
 		$include_folderdoc = false;
@@ -966,6 +963,19 @@ class contenido_documentalActions extends sfActions
 			return $this->renderText(json_encode($response_info));
 		}
 		//********************************************************************************
+		$nro_expediente = simad_util::sanitizeNameBySaveFile(trim($unidad_documental->getCodigoBarras()));
+		$nombre_expediente = simad_util::sanitizeNameBySaveFile(trim($unidad_documental->getTitulo()));
+		$folder_bzip_raw = sprintf("%s_%s",$nro_expediente,$nombre_expediente);
+		//********************************************************************************
+		$MAX_FOLDER_LENGTH = 80;
+		if(strlen($folder_bzip_raw) > $MAX_FOLDER_LENGTH){
+			$folder_bzip = substr($folder_bzip_raw, 0, $MAX_FOLDER_LENGTH);
+			// Asegurar que no quede cortado en medio de un underscore
+			$folder_bzip = rtrim($folder_bzip, '_- ');
+		} else {
+			$folder_bzip = $folder_bzip_raw;
+		}
+		//********************************************************************************
 		$response_info['httpStatus'] = 200;
 		$response_info['message'] = "Archivo generado..";
 		$base_path = sfConfig::get('base_simad');
@@ -974,19 +984,28 @@ class contenido_documentalActions extends sfActions
 		$list_docs = ContenidoUnidadDocumentalPeer::getListDocsDownload($unidaddocumental_id);
 		//********************************************************************************
 		$zip = new ZipArchive();
-		$zipFileName = $nro_expediente . ' - ' . md5(date("YmdGis")) . ".zip";
-		$pathzip = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $zipFileName;
-		if (file_exists($pathzip)) {
-			unlink($pathzip);
-		}
-		if ($zip->open($pathzip, ZIPARCHIVE::CREATE) != TRUE) {
-			die("Could not open archive");
-		}
+		$zipFileName = $nro_expediente.' - '.md5(date("YmdGis")).".zip";
+		//$zipFileName = md5(date("YmdGis")).".zip";
 		//********************************************************************************
-		while ($object = $list_docs->fetch()) {
+		$base_zpath = sfConfig::get('sf_shared_tmp_dir').DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.'dwasync';
+		simad_util::createPath($base_zpath);
+		$pathzip = $base_zpath.DIRECTORY_SEPARATOR.$zipFileName;
+		//********************************************************************************
+		if(file_exists($pathzip)) { unlink ($pathzip); }
+		if ($zip->open($pathzip, ZIPARCHIVE::CREATE) != TRUE) { die ("Could not open archive"); }
+		//********************************************************************************
+		set_time_limit(0);
+		ini_set('max_execution_time', '1800');
+		//********************************************************************************
+		while($object = $list_docs->fetch())
+		{
 			$addfile = null;
 			//$file_digit = null;
 			$ruta_file = $object['RUTA'];
+			if(empty($ruta_file) || empty($object['PATH_ABSOLUTE'])){
+				continue;
+			}			
+
 			if ($object['VINCULO_REGISTRO'] == 1) {
 				if (strpos($ruta_file, 'cominterna_id')) {
 					$cominterna_id = basename($ruta_file);
@@ -1020,14 +1039,37 @@ class contenido_documentalActions extends sfActions
 					continue;
 				}
 			} else {
-				$path_absolute = $object['PATH_ABSOLUTE'];
-				$path_relative = $object['PATH_RELATIVE'];
-				$source_path = sprintf("%s%s%s%s", $path_absolute, $path_relative, DIRECTORY_SEPARATOR, $ruta_file);
-				//file_put_contents(sfConfig::get('sf_log_dir').'/'.'AsyncDownloadDocs.log', $source_path.PHP_EOL, FILE_APPEND);
-				//if(file_exists(utf8_decode($source_path))){ $addfile = utf8_decode($source_path); }
-				if (file_exists(mb_convert_encoding($source_path, 'UTF-8'))) {
-					$addfile = mb_convert_encoding($source_path, 'UTF-8');
+				$path_absolute = rtrim($object['PATH_ABSOLUTE'], '/\\');
+				$path_relative = trim($object['PATH_RELATIVE'], '/\\');
+				$ruta_file_encoded = mb_convert_encoding($ruta_file, 'UTF-8');
+				$source_path = $path_absolute . DIRECTORY_SEPARATOR . $path_relative . DIRECTORY_SEPARATOR . $ruta_file_encoded;
+				
+				if(file_exists($source_path)){ 
+					$addfile = $source_path; 
+				} else {
+					// Fallback sin encoding
+					$ruta_file_raw = trim($ruta_file);
+					$source_path_raw = $path_absolute . DIRECTORY_SEPARATOR . $path_relative . DIRECTORY_SEPARATOR . $ruta_file_raw;
+					if(file_exists($source_path_raw)){
+						$addfile = $source_path_raw;
+					} else {
+						file_put_contents(
+							sfConfig::get('sf_log_dir').DIRECTORY_SEPARATOR.$unidaddocumental_id.'_AsyncDownloadDocs.log', 
+							"NO ENCONTRADO: " . $source_path . PHP_EOL, 
+							FILE_APPEND
+						);
+						continue;
+					}
 				}
+			}
+			//****************************************************************************
+			if(empty($addfile) || !file_exists($addfile)){
+				file_put_contents(
+					sfConfig::get('sf_log_dir').DIRECTORY_SEPARATOR.$unidaddocumental_id.'_AsyncDownloadDocs.log', 
+					"ADDFILE INVALIDO: ".($addfile ?? 'null').PHP_EOL, 
+					FILE_APPEND
+				);
+				continue;
 			}
 			//****************************************************************************
 			$tipodoc_name = trim($object['TIPODOC_NOMBRE']);
@@ -1047,7 +1089,15 @@ class contenido_documentalActions extends sfActions
 			}
 		}
 		//********************************************************************************
-		$zip->close();
+		$close_result = $zip->close();
+		if(!$close_result){
+			file_put_contents(
+				sfConfig::get('sf_log_dir').DIRECTORY_SEPARATOR.$unidaddocumental_id.'_AsyncDownloadDocs.log',
+				"ERROR: zip->close() falló".PHP_EOL, 
+				FILE_APPEND
+			);
+		}
+		//********************************************************************************
 		if (file_exists($pathzip)) {
 			$response_info['url_descarga'] = "/tmp/" . $zipFileName;
 		} else {
@@ -1129,8 +1179,6 @@ class contenido_documentalActions extends sfActions
 		$unidaddocumental_id = $this->getRequestParameter('unidaddocumental_id');
 		$modulo = trim($this->getRequestParameter('modulo'));
 		//**********************************************************************************************
-		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-		$unidaddocumental_id = $this->getRequestParameter('unidaddocumental_id');
 		$unidad_documental = UnidadDocumentalPeer::retrieveByPK($unidaddocumental_id);
 		//**********************************************************************************************
 		if (!empty($unidad_documental->getEstaCerrado())) {
@@ -1736,8 +1784,7 @@ class contenido_documentalActions extends sfActions
 				$this->getUser()->setFlash('error', 'Nombre no valido, prueba otro nombre');
 				return $this->redirect($this->getRequest()->getScriptName() . '/contenido_documental/createFiletree');
 			}
-		} else  //modo edicion
-		{
+		} else {
 			$contenidodocfiletree_id = trim($this->getRequestParameter('contenidodocfiletree_id'));
 			$obj_file_tree = ContenidodocFiletreePeer::retrieveByPk($contenidodocfiletree_id);
 
@@ -1800,13 +1847,21 @@ class contenido_documentalActions extends sfActions
 						//**************************************************************************************
 						$absolute_path = $contenido_unidad_documental->getPathAbsolute();
 						$relative_path = $contenido_unidad_documental->getPathRelative();
-						$fullpath = iconv('utf-8', 'cp1252', $absolute_path . DIRECTORY_SEPARATOR . $relative_path . DIRECTORY_SEPARATOR . basename($urlfile[0]));
+						//Normalizar separadores al construir la ruta
+					$absolute_path = rtrim($absolute_path, '/\\');
+					$relative_path = trim($relative_path, '/\\');
+					$basename_file = mb_convert_encoding(basename($urlfile[0]), 'UTF-8');
+					//**************************************************************************************
+					//$fullpath = iconv('utf-8', 'cp1252',$absolute_path.DIRECTORY_SEPARATOR.$relative_path.DIRECTORY_SEPARATOR.basename($urlfile[0]));
+					$fullpath = $absolute_path.DIRECTORY_SEPARATOR.$relative_path.DIRECTORY_SEPARATOR.$basename_file;
+					$file_source = simad_util::NormalizePath($fullpath);
+					$file_source_extended = simad_util::toExtendedPath($file_source);
 						$file_source = simad_util::NormalizePath($fullpath);
 						$extension = pathinfo($file_source, PATHINFO_EXTENSION);
 						//**************************************************************************************
 						//este bloque es necesario, porq hay nombres de archivo que utilizan el caracter coma(,)
 						//esto hace que el bloque anterior falle al hacer el split
-						if (!file_exists($file_source)) {
+						if(!file_exists($file_source) && !file_exists($file_source_extended)){
 							$urlfile = trim($contenido_unidad_documental->getRuta());
 							$fullpath = iconv('utf-8', 'cp1252', $absolute_path . DIRECTORY_SEPARATOR . $relative_path . DIRECTORY_SEPARATOR . basename($urlfile));
 							$file_source = simad_util::NormalizePath($fullpath);
@@ -1816,25 +1871,21 @@ class contenido_documentalActions extends sfActions
 						$filename = md5(time() . uniqid()) . '.' . $extension;
 						$tmpfile_path = sfConfig::get('sf_web_dir') . '/tmp/' . $filename;
 						//**************************************************************************************
-						if (file_exists($file_source)) {
-							//$this->redirect($base_web.'/no_file_exists.html'); 					
-							//file_put_contents($tmpfile_path,file_get_contents($file_source));
-							//**********************************************************************************
-							if (!copy($file_source, $tmpfile_path)) {
-								if ($nlog) {
-									simad_util::writetolog($logfile, "Ocurrio un error con el archivo o este no existe en el servidor: " . $file_source . ' ContenidoDoc: ' . $contenido_unidad_documental->getPrimaryKey());
-								}
+						//Intentar con ruta extendida primero, luego ruta normal
+						$file_to_use = simad_util::fileExistsLongPath($file_source);
+						//**************************************************************************************
+						if(!empty($file_to_use)){
+						if(!simad_util::copyLongPath($file_to_use, $tmpfile_path)){
+							if($nlog){ simad_util::writetolog($logfile,"Ocurrio un error con el archivo o este no existe en el servidor: ".$file_to_use. ' ContenidoDoc: '.$contenido_unidad_documental->getPrimaryKey()); }
 								$response_process['message'] = 'Ocurrio un error con el archivo o este no existe en el servidor, error al acceder a los archivos de visualización';
 							} else {
-								$url_viewer = $base_web . '/tmp/' . $filename;
+								$url_viewer = $base_web . '/tmp/' . $filename
 								if (strtolower($extension) == 'pdf') {
 									$url_viewer = $base_web . '/viewerEx.php?fileview=' . $filename;
 								}
 								//******************************************************************************
 								$response_process = array('status' => 200, 'message' => 'Archivo generado y enviado para visualizacion', 'url_file' => $url_viewer);
 							}
-							//**********************************************************************************
-							//$this->redirect($base_web.'/tmp/'.$filename);
 						} else {
 							if ($nlog) {
 								simad_util::writetolog($logfile, "Archivo no existe path: " . $relative_path . ' ContenidoDoc: ' . $contenido_unidad_documental->getPrimaryKey());
@@ -1844,11 +1895,9 @@ class contenido_documentalActions extends sfActions
 					}
 				} else {
 					$response_process['message'] = 'El archivo no puede ser visualizado, actualice la pagina e intente de nuevo';
-					//$this->redirect($base_web.'/no_file_exists.html');
 				}
 			} else {
 				$response_process['message'] = 'No tine acceso a este recurso, actualice la pagina e intente de nuevo';
-				//$this->redirect($base_web.'/no_file_exists.html');
 			}
 		} catch (PropelException $th) {
 			if ($nlog) {
@@ -1869,61 +1918,6 @@ class contenido_documentalActions extends sfActions
 		//******************************************************************************************************
 		$this->getResponse()->setContentType('application/json');
 		return $this->renderText(json_encode($response_process));
-	}
-
-	public function executeViewImageOld()
-	{
-		$token = trim($this->getRequestParameter('vtoken'));
-		$base_web = sfConfig::get('base_simad');
-		//**************************************************************************************************
-		if (!empty($token)) {
-			$contenido_unidad_documental = ContenidoUnidadDocumentalPeer::retrieveByPk($this->getRequestParameter('key_id'));
-			//**********************************************************************************************
-			$total_char = strlen($token);
-			$offset =  $total_char - 128;
-			$parte01 = substr($token, 0, 64);
-			$parte02 = substr($token, (64 + $offset), $total_char);
-			$token_url = $parte01 . $parte02;
-			$keytime = substr($token, 64, $offset);
-			$time = urldecode($keytime);
-			$token_base = hash("sha512", $contenido_unidad_documental->getPrimaryKey() . $contenido_unidad_documental->getFechaCreacion() . $time);
-			//**********************************************************************************************
-			/*$date_actual = new DateTime(date("Y-m-d G:i:s",time()));
-			$date_expiracion = new DateTime(date("Y-m-d G:i:s",$time));
-			$date_expiracion->modify('+2 hours');
-			//**********************************************************************************************
-			$time_expiracion = $date_expiracion->format('Y-m-d G:i:s');
-			$time_actual =  $date_actual->format('Y-m-d G:i:s');*/
-			//**********************************************************************************************
-			$time_actual = strtotime(date("Y-m-d G:i:s", time()));
-			$date_expiracion = strtotime("+30 minutes", strtotime(date("Y-m-d G:i:s", $time)));
-			//**********************************************************************************************
-			if ($time_actual <= $date_expiracion) {
-				if ($token_url == $token_base) {
-					$urlfile = preg_split("/[,]+/", trim($contenido_unidad_documental->getRuta()), -1, PREG_SPLIT_NO_EMPTY);
-					//**************************************************************************************
-					$absolute_path = $contenido_unidad_documental->getPathAbsolute();
-					$relative_path = $contenido_unidad_documental->getPathRelative();
-					$fullpath = iconv('utf-8', 'cp1252', $absolute_path . DIRECTORY_SEPARATOR . $relative_path . DIRECTORY_SEPARATOR . basename($urlfile[0]));
-					$file_source = simad_util::NormalizePath($fullpath);
-					$extension = pathinfo($file_source, PATHINFO_EXTENSION);
-					//**************************************************************************************
-					$filename = md5(time() . uniqid()) . '.' . $extension;
-					$tmpfile_path = sfConfig::get('sf_web_dir') . '/tmp/' . $filename;
-					//**************************************************************************************
-					if (!file_exists($file_source)) {
-						$this->redirect($base_web . '/no_file_exists.html');
-					}
-					file_put_contents($tmpfile_path, file_get_contents($file_source));
-					//**************************************************************************************
-					$this->redirect($base_web . '/tmp/' . $filename);
-				}
-			} else {
-				$this->redirect($base_web . '/no_file_exists.html');
-			}
-		} else {
-			$this->redirect($base_web . '/no_file_exists.html');
-		}
 	}
 
 	private function getCriteriaFilters(Criteria $c)

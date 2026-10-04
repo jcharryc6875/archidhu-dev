@@ -204,8 +204,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
                 echo input_tag('replyfile', basename($com_interna->getUrlFileWord()), array('class' => 'data-readonly form-control input-sm'));
                 ?>
                 <div class="input-group-btn">
-                  <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print url_for('com_interna/uploadTemplate');
-                                                                                                                  $base_path; ?>', 800, 400);">Seleccionar archivo</button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="javascript:jQuery.OpenModalSIMAD('<?php print url_for('com_interna/uploadTemplate'); $base_path;?>', 800, 400);">Seleccionar archivo</button>
                   <button type="button" class="btn btn-default btn-sm" onclick="javascript:jQuery.LimpiarCampoFormulario('replyfile');"><i class="entypo-cancel-circled"></i></button>
                 </div>
               </div>
@@ -400,8 +399,10 @@ use_helper('Object', 'jQuery', 'UserComponent');
       //thumbnailHeight: 50,
       parallelUploads: 100,
       maxFiles: 100,
+	  maxFilesize: <?php echo (int)ini_get('upload_max_filesize'); ?>,
+	  timeout: 180000,
       dictResponseError: "Ha ocurrido un error en el server",
-      acceptedFiles: 'image/*,.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.TIF,.TIFF,.tif,.tiff,.rar,application/pdf,.psd,.xls,.doc,.ppt,.msg,.xlsx,.docx,.pptx',
+      acceptedFiles: 'image/*,.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.TIF,.TIFF,.tif,.tiff,.rar,application/pdf,.psd,.xls,.doc,.ppt,.eml,.msg,.xlsx,.docx,.pptx',
       init: function() {
         this.on("success", function(file, response) {
           jQuery(file.previewElement).find('[data-dz-name]').html(response.name);

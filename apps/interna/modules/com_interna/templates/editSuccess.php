@@ -53,7 +53,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
         <div class="form-group">
           <!-- Documento Pdf -->
           <?php if (!$com_interna->getPrimaryKey()) { ?>
-            <label for="lbradByInt" class="col-sm-1 control-label">Usar Documento:</label>
+            <label for="lbradByInt" class="col-sm-1 control-label">Usar Pdf:</label>
             <div class="col-sm-1">
               <?php $value_check0 = false; ?>
               <div class="make-switch tooltip-primary switch-input tploptionset switch-small exclusive-group" data-idcurrent="<?php echo md5('radComByPdf'); ?>" data-erefresh="tplcomrad" data-endpoint="<?php echo url_for('com_interna/fileTemplate'); ?>"
@@ -96,11 +96,11 @@ use_helper('Object', 'jQuery', 'UserComponent');
         </div>
 
         <?php
-        echo component_user_multiple("paraUser", "destinatarioId", "cargousuarioId", array('url' => 'usuario_firma/selectUserSearching', 'caption' => 'Destinatario<span class="ctrlreq">(*)</span>', 'buttontitle' => 'Buscar Destinatario', 'class' => 'form-control input-sm required strdestcom', 'values' => $destinatarioId, 'values_text' => $destinatarioName, 'values_cuid' => $cargousuarioId, 'option' => 1, 'maximumSelectionSize' => -1));
+        echo component_user_multiple("paraUser","destinatarioId","cargousuarioId",array('url'=>'usuario_firma/selectUserSearching','coldivwidth' => 'col-sm-10', 'caption'=>'Destinatario<span class="ctrlreq">(*)</span>', 'buttontitle'=>'Buscar Destinatario','class'=>'form-control input-sm required strdestcom','values'=>$destinatarioId,'values_text'=>$destinatarioName,'values_cuid'=>$cargousuarioId,'option'=>1,'maximumSelectionSize'=>-1));
         ?>
 
         <?php
-        echo component_user_multiple('copiaUser', "copiaInternaId", "cargousuarioIdCopias", array('url' => 'usuario_firma/selectUserSearching', 'caption' => 'Copias', 'buttontitle' => 'Asignar Copias', 'values' => $copiaInternaId, 'values_text' => $copiaInternaName, 'values_cuid' => $cargousuarioIdCopias, 'option' => 1, 'maximumSelectionSize' => -1));
+        echo component_user_multiple('copiaUser',"copiaInternaId","cargousuarioIdCopias",array('url'=>'usuario_firma/selectUserSearching','coldivwidth' => 'col-sm-10','caption'=>'Copias', 'buttontitle'=>'Asignar Copias','values'=>$copiaInternaId,'values_text'=>$copiaInternaName,'values_cuid'=>$cargousuarioIdCopias,'option'=>1,'maximumSelectionSize'=>-1));
         ?>
 
         <div class="form-group">
@@ -388,25 +388,29 @@ use_helper('Object', 'jQuery', 'UserComponent');
                       echo input_hidden_tag('save_and_send', md5('save_and_send' . $currentUser));
                       echo submit_tag('Guardar Comunicaci&oacute;n', array('name' => 'save', 'value' => 'Guardar Comunicaci&oacute;n', 'class' => 'btn btn-success'));
                       echo "&nbsp;";
+						echo jq_submit_to_remote('save_and_send','Guardar y Enviar', array(
+                          'url'      => 'com_interna/update',
+                          'loading'  => "javascript:jQuery.LoadingStructData();",
+                          'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); if(response_value.status == 200){ toastr.success(response_value.message);setTimeout(function(){ document.location.reload(); }, 3000); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
+                        ),array('class'=>'btn btn-primary tooltip-primary','data-toggle'=>'tooltip', 'data-original-title'=>'Guardar los cambios de la comunicaci&oacute;n y enviar al siguiente usuario')
+                      );
+                    }
                     ?>
-                      <button type="button" name="save_and_send" id="save_and_send" class="btn btn-primary tooltip-primary confirm-link" data-submit_time="<?php echo $submit_time; ?>" value="save_and_send" data-toggle='tooltip' data-original-title='Guardar los cambios de la comunicaci&oacute;n y enviar al siguiente usuario' data-endpoint="<?php echo url_for('com_interna/update'); //url_for(array('module' => 'com_interna', 'action' => 'update', 'qoper' => md5('savesend'.$currentUser.$com_interna->getPrimaryKey())))         
-                                                                                                                                                                                                                                                                                                                                                      ?>">
-                        Guardar y Enviar
-                      </button>
-                    <?php } ?>
                   <?php } ?>
                 <?php } ?>
               <?php } elseif (in_array($currentUser, $users_aprueban) || $user_asignado) {
                 echo input_hidden_tag('save_and_send', md5('save_and_send' . $currentUser));
                 echo submit_tag('Guardar Comunicaci&oacute;n', array('name' => 'save', 'value' => 'Guardar Comunicaci&oacute;n', 'class' => 'btn btn-success'));
                 echo "&nbsp;";
-              ?>
-                <button type="button" name="save_and_send" id="save_and_send" class="btn btn-primary tooltip-primary confirm-link" data-submit_time="<?php echo $submit_time; ?>" value="save_and_send" data-toggle='tooltip' data-original-title='Guardar los cambios de la comunicaci&oacute;n y enviar al siguiente usuario' data-endpoint="<?php echo url_for('com_interna/update'); //url_for(array('module' => 'com_interna', 'action' => 'update', 'qoper' => md5('savesend'.$currentUser.$com_interna->getPrimaryKey())))         
-                                                                                                                                                                                                                                                                                                                                                ?>">
-                  Guardar y Enviar
-                </button>
-              <?php } ?>
-
+				echo jq_submit_to_remote('save_and_send','Guardar y Enviar', array(
+                      'url'      => 'com_interna/update',
+                      //'with'     => "'qoper=".md5('savesend'.$currentUser.$com_interna->getPrimaryKey())."'",
+                      'loading'  => "javascript:jQuery.LoadingStructData();",
+                      'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); if(response_value.status == 200){ toastr.success(response_value.message);setTimeout(function(){ document.location.reload(); }, 3000); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
+                    ),array('class'=>'btn btn-primary tooltip-primary','data-toggle'=>'tooltip', 'data-original-title'=>'Guardar los cambios de la comunicaci&oacute;n y enviar al siguiente usuario')
+                  );
+                }
+			  ?>
               <?php if ($user_asignado) { ?>
                 <div class="btn-group processreject dropdown">
                   <button type="button" class="btn btn-danger tooltip-primary dropdown-toggle" data-toggle="dropdown">

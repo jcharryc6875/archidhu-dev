@@ -69,7 +69,7 @@ class AdEstadoSyncManager
     private function conectarDirectorioActivo()
     {
         try {
-            $config = require sfConfig::get('sf_config_dir').DIRECTORY_SEPARATOR.'ldap_settings.php';
+            $config = require sfConfig::get('sf_config_dir') . DIRECTORY_SEPARATOR . 'ldap_settings.php';
             //*****************************************************************************
             $config_controllers = simad_util::readConfigFileApp(array('domain_controllers'));
             $domains_controllers = isset($config_controllers['domain_controllers']) ? $config_controllers['domain_controllers'] : null;
@@ -79,7 +79,7 @@ class AdEstadoSyncManager
             //*****************************************************************************
             return new AdldapAuth($config);
         } catch (Exception $e) {
-            $this->log('No se pudo conectar al Directorio Activo: '.$e->getMessage());
+            $this->log('No se pudo conectar al Directorio Activo: ' . $e->getMessage());
 
             return null;
         }
@@ -87,12 +87,12 @@ class AdEstadoSyncManager
 
     private function crearArchivoLog()
     {
-        $carpetaDia = sfConfig::get('sf_log_dir').DIRECTORY_SEPARATOR.'ad_sync'.DIRECTORY_SEPARATOR.date('Y-m-d');
+        $carpetaDia = sfConfig::get('sf_log_dir') . DIRECTORY_SEPARATOR . 'ldap_sync' . DIRECTORY_SEPARATOR . date('Y-m-d');
         if (!is_dir($carpetaDia)) {
             @mkdir($carpetaDia, 0755, true);
         }
 
-        return $carpetaDia.DIRECTORY_SEPARATOR.'ad_sync_'.date('Y-m-d_His').'.log';
+        return $carpetaDia . DIRECTORY_SEPARATOR . 'ad_sync_' . date('Y-m-d_His') . '.log';
     }
 
     private function log($mensaje)
@@ -100,7 +100,7 @@ class AdEstadoSyncManager
         if ($this->logFile) {
             simad_util::writetolog($this->logFile, $mensaje);
         } else {
-            error_log('AdEstadoSyncManager: '.$mensaje);
+            error_log('AdEstadoSyncManager: ' . $mensaje);
         }
     }
 }
