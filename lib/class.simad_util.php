@@ -159,40 +159,6 @@ class simad_util{
         return $finfo_list;
     }
     
-    public static function generateTablaHtml($arrayHtml) 
-    {
-		$html_table = '<table border="0" cellpadding="1" cellspacing="2" style="font-size: 12px;width:auto;max-width:99%">  
-        <tbody>';
-
-        foreach ($arrayHtml as $row) // va creando cada FILA
-        {
-            $html_table .= '<tr>';
-
-            foreach ($row as $clave => $valor)  // va creando cada COLUMNA
-            {
-                $html_table .= '<td style="text-align: left;">';
-                
-                // Verificar si es un campo de imagen o firma
-                if ((strpos($clave, 'fmecanica') !== false || strpos($clave, 'firma') !== false || strpos($clave, 'image') !== false) && !empty($valor)) 
-                {
-                    $html_table .= '<img src="' . trim($valor) . '" style="vertical-align:middle;display:inline-block;height:20px;width:40px;">';
-                } 
-                else 
-                {
-                    $html_table .= $valor !== NULL ? $valor : '';
-                }
-                
-                $html_table .= '</td>';
-            }
-
-            $html_table .= '</tr>';
-        }
-
-        // Cerrar la estructura de la tabla
-        $html_table .= '</tbody></table>';
-
-        return $html_table;
-	}
     
 	/**
      * validateEmail()
@@ -747,14 +713,17 @@ class simad_util{
             $sticker_dir = sfConfig::get('sf_web_dir');
             $font_dir = sfConfig::get('sf_lib_dir') . "/BarcodeGenerator/class/font/ariblk.ttf";
             $filename = md5($text_radicado) . '.png';
-            $filepath = $sticker_dir . "/tmp/" . $filename;
+            $filepath = $sticker_dir . DIRECTORY_SEPARATOR ."tmp". DIRECTORY_SEPARATOR . $filename;
             GenerateCode($filepath, $text_radicado, $font_dir, $scale, $height, $fsize, $dpi, $clearlabels);
             //******************************************************************************
             return file_exists($filepath) ?  $filename : null;
         } 
-        catch (Exception $e) 
+        catch (\Exception $e) 
         {
-            //$error_text = $e->getMessage();
+            return null;
+        }
+		catch (\Throwable $e) 
+        {
             return null;
         }
     }
@@ -812,6 +781,46 @@ class simad_util{
         return $str_clean;
     }
 	
+	/**
+    * @author Elvis Martin
+    * @copyright 2025
+    * @$arrayHtml lista de datos de usuarios para implementar la tabla en html, modulo comunicaciones y actos administrativos
+    */
+	public static function generateTablaHtml($arrayHtml) 
+    {
+		$html_table = '<table border="0" cellpadding="1" cellspacing="2" style="font-size: 12px;width:auto;max-width:99%">  
+        <tbody>';
+
+        foreach ($arrayHtml as $row) // va creando cada FILA
+        {
+            $html_table .= '<tr>';
+
+            foreach ($row as $clave => $valor)  // va creando cada COLUMNA
+            {
+                $html_table .= '<td style="text-align: left;">';
+                
+                // Verificar si es un campo de imagen o firma
+                if ((strpos($clave, 'fmecanica') !== false || strpos($clave, 'firma') !== false || strpos($clave, 'image') !== false) && !empty($valor)) 
+                {
+                    $html_table .= '<img src="' . trim($valor) . '" style="vertical-align:middle;display:inline-block;height:20px;width:40px;">';
+                } 
+                else 
+                {
+                    $html_table .= $valor !== NULL ? $valor : '';
+                }
+                
+                $html_table .= '</td>';
+            }
+
+            $html_table .= '</tr>';
+        }
+
+        // Cerrar la estructura de la tabla
+        $html_table .= '</tbody></table>';
+
+        return $html_table;
+	}
+
     /**
     * @author Javier Fernando Charry
     * @copyright 2001 - 2022
@@ -868,16 +877,35 @@ class simad_util{
         return (substr($string, -$len) === $endString); 
     }
 
-    public static function createPath($path,$mode = 0775)
+    public static function createPath($path,$mode = 0775,$isShared = false)
 	{
-	    $str_folder = simad_util::NormalizePath($path);		
-        if (is_dir($str_folder)){
-          return $str_folder;
-        }            
-        //******************************************************************
-        $isCreate = @mkdir(($str_folder), $mode, true);            
-        if(!$isCreate){ $str_folder = ""; }
-        return $str_folder;
+        try {
+            $isShared = simad_util::startsWith($path,"\\");
+            $str_folder = $isShared ? $path : simad_util::NormalizePath($path);
+            if (is_dir($str_folder)){
+                return $str_folder;
+            }            
+            //******************************************************************
+            if($isShared){
+                $mode = 0777;
+                //$str_folder = preg_replace('/([\\\])/','${1}${1}',$str_folder);
+                if(simad_util::endsWith($str_folder,"\\")){
+                    $str_folder = rtrim($str_folder,"\\");
+                }elseif(simad_util::endsWith($str_folder,"/")){
+                    $str_folder = rtrim($str_folder,"/");
+                }
+            }
+            //******************************************************************
+            $isCreate = @mkdir(($str_folder), $mode, true);            
+            if(!$isCreate){ $str_folder = ""; }
+            return $str_folder;
+        } catch (\IOException $th) {
+            return null;
+        } catch (\Exception $th) {
+            return null;
+        } catch (\Throwable $th) {
+            return null;
+        }
    	}
     
 	/**
@@ -972,6 +1000,9 @@ class simad_util{
     
     public static function NormalizePath($path)
     {
+		$isShared = simad_util::startsWith($path,"\\");
+        if($isShared){ return $path; }
+        //******************************************************************************************
         $parts = array();// Array to build a new path from the good parts
         $path = str_replace('\\', '/', $path);// Replace backslashes with forwardslashes
         $path = preg_replace('/\/+/', '/', $path);// Combine multiple slashes into a single slash
@@ -1002,6 +1033,102 @@ class simad_util{
         return implode(DIRECTORY_SEPARATOR, $parts);
     }
     
+	//Función robusta para verificar existencia de archivos con rutas largas en Windows/IIS
+    public static function fileExistsLongPath($path) {
+        // Intento 1: file_exists normal
+        if(@file_exists($path)) return $path;
+        if(@fopen($path, 'rb') !== false) return $path;
+
+        if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
+            // Intento 2: Con ruta extendida UNC
+            $extended = self::toExtendedPath($path);
+            if(@file_exists($extended)) return $extended;
+            
+            // Intento 3: glob() que maneja mejor rutas largas
+            // Escapar caracteres especiales de glob
+            $glob_path = str_replace(['[',']'], ['[[]','[]]'], $path);
+            $result = @glob($glob_path);
+            if(!empty($result)) return $result[0];
+            
+            // Intento 4: Comando del sistema (Windows) - más confiable con rutas UNC largas
+            $path_win = str_replace('/', '\\', $path);
+            $cmd = 'cmd /c IF EXIST "' . $path_win . '" (echo 1) ELSE (echo 0)';
+            $output = trim(shell_exec($cmd));
+            if($output === '1') return $path;
+        }
+        
+        return null;
+    }
+
+    //Función robusta para copiar archivos con rutas largas
+    public static function copyLongPath($source, $dest) {
+        // Intento 1: copy() normal
+        if(@copy($source, $dest)) return true;
+
+        if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
+            // Intento 2: copy() con ruta extendida en origen
+            $source_extended = self::toExtendedPath($source);
+            if(@copy($source_extended, $dest)) return true;
+
+            // Intento 3: xcopy con rutas extendidas UNC
+            // NO usar addslashes - solo normalizar separadores
+            $source_win = str_replace('/', '\\', $source);
+            $dest_win   = str_replace('/', '\\', $dest);
+            
+            $cmd = sprintf('xcopy /Y /Q "%s" "%s*"', $source_win, dirname($dest_win) . '\\');
+            shell_exec($cmd . ' 2>&1');
+            
+            // xcopy copia con el nombre original, renombrar si es necesario
+            $copied_file = dirname($dest) . DIRECTORY_SEPARATOR . basename($source);
+            if(file_exists($copied_file)){
+                if($copied_file !== $dest) rename($copied_file, $dest);
+                return file_exists($dest);
+            }
+
+            // Intento 4: cmd /c copy (nativo Windows, soporta rutas largas)
+            $cmd = sprintf('cmd /c copy /Y "%s" "%s"', $source_win, $dest_win);
+            shell_exec($cmd . ' 2>&1');
+            if(file_exists($dest)) return true;
+        } else {
+            // En Linux con rutas largas o caracteres especiales usar cp del sistema
+            $cmd = sprintf("cp '%s' '%s'", addslashes($source), addslashes($dest));
+            shell_exec($cmd . ' 2>&1');
+            if(file_exists($dest)) return true;
+        }
+        return false;
+    }
+
+    public static function toExtendedPath($path) {
+        $path = str_replace('/', '\\', $path);
+        if(substr($path, 0, 2) === '\\\\') {
+            return '\\\\?\\UNC\\' . substr($path, 2);
+        } elseif(substr($path, 1, 2) === ':\\') {
+            return '\\\\?\\' . $path;
+        }
+        return $path;
+    }
+
+    public static function sanitizeNameBySaveFile($name) {
+        // 1. Convertir caracteres con tilde/especiales a equivalentes ASCII
+        $from = ['á','é','í','ó','ú','Á','É','Í','Ó','Ú','ñ','Ñ','ü','Ü','¿','¡'];
+        $to   = ['a','e','i','o','u','A','E','I','O','U','n','N','u','U','','' ];
+        $name = str_replace($from, $to, $name);
+        
+        // 2. Eliminar caracteres prohibidos en Windows: \ / : * ? " < > |
+        $name = preg_replace('/[\\\\\/:\*\?"<>\|]/', '', $name);
+        
+        // 3. Reemplazar espacios y puntos consecutivos por guion bajo
+        $name = preg_replace('/[\s\.]+/', '_', $name);
+        
+        // 4. Eliminar cualquier otro caracter no ASCII imprimible
+        $name = preg_replace('/[^\x20-\x7E]/', '', $name);
+        
+        // 5. Trim de guiones/underscores sobrantes
+        $name = trim($name, '_- ');
+        
+        return $name;
+    }
+
     public static function strpos_array($haystack, $needles) {
         if ( is_array($needles) ) {
         	foreach ($needles as $str) {
@@ -1062,7 +1189,7 @@ class simad_util{
 	public static function writetolog($logfilename,$msg)
     {
         $f = fopen($logfilename,"a");
-		if($f){fprintf($f,"%s => %s",date("Y-m-d H:i:s"),$msg . "\r\n");}
+		if($f){fprintf($f,"%s | %s",date("Y-m-d H:i:s"),$msg . "\r\n");}
 		fclose($f);
     }
 	
