@@ -1596,8 +1596,8 @@ class com_internaActions extends sfActions
         //**************************************************************************************************
         $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         if (!$this->usuarioTieneAccesoComInterna($comInterna, $usuariologuiado)) {
-            $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
-            return $this->redirect($this->getRequest()->getScriptName() . '/com_interna/list');
+            $this->setTemplate(ConsultaPermisoHelper::plantillaSinPermiso());
+            return sfView::SUCCESS;
         }
         //**************************************************************************************************
         $stateview = trim($this->getRequestParameter('viewstate'));
@@ -4679,9 +4679,20 @@ class com_internaActions extends sfActions
         $c = new Criteria();
         $c->add(CominternaUsuarioPeer::COMINTERNA_ID, $com_interna->getPrimaryKey());
         $c->add(CominternaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN);
-        $c->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, array(2, 3, 4), Criteria::IN);
+        $esBorrador = $com_interna->getEstadocominternaId() == 1;
+        foreach (CominternaUsuarioPeer::doSelect($c) as $asignacion) {
+            $rol = $asignacion->getRolusuariocominternaId();
+            // Destinatario (4) y copia (3) solo ven la comunicacion una vez sale de borrador.
+            if (in_array($rol, array(3, 4)) && ($esBorrador || $asignacion->getEstadocominternaId() == 1)) {
+                continue;
+            }
+            // El propio usuario accede con cualquier rol; quien lo tiene autorizado, solo como firma/copia/destinatario.
+            if ($asignacion->getUsuarioId() == $usuario_id || in_array($rol, array(2, 3, 4))) {
+                return true;
+            }
+        }
 
-        return CominternaUsuarioPeer::doCount($c) > 0;
+        return false;
     }
 
     private function getCriteriaBasic(Criteria $c)

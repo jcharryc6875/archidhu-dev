@@ -308,8 +308,8 @@ class acto_administrativoActions extends sfActions
     //**************************************************************************************************
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     if (!$this->usuarioTieneAccesoActoAdministrativo($acto_administrativo, $usuariologuiado)) {
-      $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
-      return $this->redirect($this->getRequest()->getScriptName() . '/acto_administrativo/list');
+      $this->setTemplate(ConsultaPermisoHelper::plantillaSinPermiso());
+      return sfView::SUCCESS;
     }
     //**************************************************************************************************
     $stateview = trim($this->getRequestParameter('viewstate'));

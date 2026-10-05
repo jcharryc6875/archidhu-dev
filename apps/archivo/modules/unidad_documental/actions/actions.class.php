@@ -956,8 +956,8 @@ class unidad_documentalActions extends sfActions
 		$this->forward404Unless($unidad_documental);
 		$usuariologueado_acceso = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
 		if (!$this->usuarioTieneAccesoUnidadDocumental($unidad_documental, $usuariologueado_acceso)) {
-			$this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
-			return $this->redirect($this->getRequest()->getScriptName() . '/unidad_documental/list?localizacionunidaddocumental_id=' . $unidad_documental->getLocalizacionunidaddocumentalId());
+			$this->setTemplate(ConsultaPermisoHelper::plantillaSinPermiso());
+			return sfView::SUCCESS;
 		}
 		//**************************************************************************************************************/
 		$this->expediente_origen = "";

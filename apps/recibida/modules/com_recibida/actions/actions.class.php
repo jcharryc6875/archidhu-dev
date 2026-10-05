@@ -2148,8 +2148,8 @@ class com_recibidaActions extends sfActions
     $com_recibida = ComRecibidaPeer::retrieveByPk($comrecibida_id);
     $this->forward404Unless($com_recibida);
     if (!$this->usuarioTieneAccesoComRecibida($com_recibida, $usuariologuiado)) {
-      $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
-      return $this->redirect($this->getRequest()->getScriptName() . '/com_recibida/list');
+      $this->setTemplate(ConsultaPermisoHelper::plantillaSinPermiso());
+      return sfView::SUCCESS;
     }
     //**************************************************************************************************
     $this->ilist_comenviadas =  ComRecibidaRespuestaPeer::getComEnviadasByComrecibidaId($comrecibida_id);

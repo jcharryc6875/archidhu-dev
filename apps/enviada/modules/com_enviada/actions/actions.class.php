@@ -889,9 +889,20 @@ class com_enviadaActions extends sfActions
         $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $com_enviada->getPrimaryKey());
         $c->add(EnviadaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN);
-        $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, array(1, 2, 3), Criteria::IN);
+        foreach (EnviadaUsuarioPeer::doSelect($c) as $asignacion) {
+            $rol = $asignacion->getRoluscomenviadaId();
+            // La copia (3) solo ve la comunicacion una vez sale de borrador.
+            if ($rol == 3 && $asignacion->getEstadocomenviadaId() == 1) {
+                continue;
+            }
+            // El propio usuario accede con cualquier rol (creador, firma, revisor, gestor, copia);
+            // quien lo tiene autorizado, solo como firma/copia.
+            if ($asignacion->getUsuarioId() == $usuario_id || in_array($rol, array(2, 3))) {
+                return true;
+            }
+        }
 
-        return EnviadaUsuarioPeer::doCount($c) > 0;
+        return false;
     }
 
     private function getCriteriaBasic(Criteria $c)
@@ -1695,8 +1706,8 @@ class com_enviadaActions extends sfActions
         //**************************************************************************************************
         $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         if (!$this->usuarioTieneAccesoComEnviada($com_enviada, $usuariologuiado)) {
-            $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
-            return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/list');
+            $this->setTemplate(ConsultaPermisoHelper::plantillaSinPermiso());
+            return sfView::SUCCESS;
         }
         //*********************************************************************************************************
         $stateview = trim($this->getRequestParameter('viewstate'));

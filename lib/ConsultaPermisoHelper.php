@@ -19,6 +19,16 @@ class ConsultaPermisoHelper
         return $countSinPermiso > 0 ? self::MSG_SIN_PERMISOS : self::MSG_SIN_REGISTROS;
     }
 
+    /**
+     * Plantilla unica (sin extension ni sufijo de vista) para mostrar "sin permiso" en el lugar
+     * del detalle, en vez de redirigir a la lista (el detalle suele abrirse en una modal).
+     * Uso en una accion: $this->setTemplate(ConsultaPermisoHelper::plantillaSinPermiso()); return sfView::SUCCESS;
+     */
+    public static function plantillaSinPermiso()
+    {
+        return sfConfig::get('sf_data_dir').'/templates/sinPermiso';
+    }
+
     public static function esMensajeSinPermiso($mensaje)
     {
         return $mensaje === self::MSG_SIN_PERMISOS;

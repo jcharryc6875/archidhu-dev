@@ -635,8 +635,8 @@ class servicioActions extends sfActions
         $this->forward404Unless($this->servicio);
         $usuariologuiado_acceso = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         if (!$this->usuarioTieneAccesoServicio($this->servicio, $usuariologuiado_acceso)) {
-          $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
-          return $this->redirect($this->getRequest()->getScriptName().'/servicio/list');
+          $this->setTemplate(ConsultaPermisoHelper::plantillaSinPermiso());
+          return sfView::SUCCESS;
         }
         //**************************************************************************************
 		//echo print_r($this->servicio->getBasicUrlAttach());

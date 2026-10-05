@@ -708,8 +708,8 @@ class transferenciaActions extends sfActions
     $this->forward404Unless($this->transferencia);
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     if (!$this->usuarioTieneAccesoTransferencia($this->transferencia, $usuariologuiado)) {
-      $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
-      return $this->redirect($this->getRequest()->getScriptName().'/transferencia/list');
+      $this->setTemplate(ConsultaPermisoHelper::plantillaSinPermiso());
+      return sfView::SUCCESS;
     }
   }
 
@@ -739,8 +739,8 @@ class transferenciaActions extends sfActions
     $this->forward404Unless($transferencia);
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     if (!$this->usuarioTieneAccesoTransferencia($transferencia, $usuariologuiado)) {
-      $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
-      return $this->redirect($this->getRequest()->getScriptName().'/transferencia/list');
+      $this->setTemplate(ConsultaPermisoHelper::plantillaSinPermiso());
+      return sfView::SUCCESS;
     }
     //**************************************************************************************************************
     // USUARIO SOLICITA
