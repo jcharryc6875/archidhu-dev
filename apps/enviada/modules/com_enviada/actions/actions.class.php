@@ -12,771 +12,735 @@
  * @author     Ing. Luis Gabriel Quiceno Cardenas
  * @version    SVN: $Id: actions.class.php 3335 2007-01-23 16:19:56Z fabien $
  */
+
 use \setasign\Fpdi\Fpdi;
 use \setasign\Fpdi\FpdfWatermark;
 
 class com_enviadaActions extends sfActions
-{ 
-  
-  public function preExecute()
-  {    
-	$isAuthenticated = $this->getUser()->isAuthenticated();
-	$base_path = sfConfig::get('base_simad');
-	if(!$isAuthenticated){
-		$this->redirect($base_path."/backend.php/security/login");
-	}
-  }
-  
-  public function executeAsociarEntrante()
-  {
-	$this->verificaPrilegio("COM_ENVIADA_ASOCIAR_TRAMITE_ENTRADA");
-	$this->comenviada_id = trim($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
-  }
-  
-  public function executeResultado()
-  {
-	$this->verificaPrilegio("COM_ENVIADA_ASOCIAR_TRAMITE_ENTRADA");
-	$radicado = trim($this->getRequestParameter('radicado')) ? trim($this->getRequestParameter('radicado')) : null;
-	$asunto = trim($this->getRequestParameter('asunto')) ? trim($this->getRequestParameter('asunto')) : null;
-	$comenviada_id = trim($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
-    //********************************************************************************************************
-	if($radicado == null)
-	{
-		$data_array['status'] = 403;
-		$data_array['mensaje'] = 'El numero de radicado es obligatorio';
-		//****************************************************************************************************
-		$this->getResponse()->setContentType('application/json');
-		$data_json = json_encode($data_array);
-		return $this->renderText($data_json);
-	}
-    //********************************************************************************************************
-	$list_object = ComRecibidaPeer::getComRecibidaByRadicadoOrAsunto($radicado, $asunto);
-	return $this->renderPartial('listSearchComRecibida', array('list_object' => $list_object, 'comenviada_id' => $comenviada_id));
-  }
-  
-  public function executeUpdateComrecibidaRespuesta()
-  {
-	$this->verificaPrilegio("COM_ENVIADA_ASOCIAR_TRAMITE_ENTRADA");
-	$usuario_id = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-	$comenviada_id = trim($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
-	$comrecibida_id = trim($this->getRequestParameter('comrecibida_id')) ? trim($this->getRequestParameter('comrecibida_id')) : null;
-	//******************************************************************************************************************
-    $com_recibida = ComRecibidaPeer::retrieveByPK($comrecibida_id);
-    if(empty($com_recibida->getMarcaVinculacion()) || empty($com_recibida->getContenidodocId()))
+{
+
+    public function preExecute()
     {
-        $data_array['status'] = 401;
-		$data_array['mensaje'] = sprintf("La comunicacion externa recibida con radicado %s, no esta archivada, por favor debe archivar el radicado",$com_recibida->getRadicado());
-        $url_show = '/recibida.php/com_recibida/show?comrecibida_id='.$com_recibida->getPrimaryKey();
-        $enlace_to = '<a href="#" data-toggle="tooltip" data-original-title="Vincular comunicacion externa recibida" class="tooltip-primary archivedoc" onclick="javascript:jQuery.OpenModalSIMAD(\''.$url_show.'\');">  
+        $isAuthenticated = $this->getUser()->isAuthenticated();
+        $base_path = sfConfig::get('base_simad');
+        if (!$isAuthenticated) {
+            $this->redirect($base_path . "/backend.php/security/login");
+        }
+    }
+
+    public function executeAsociarEntrante()
+    {
+        $this->verificaPrilegio("COM_ENVIADA_ASOCIAR_TRAMITE_ENTRADA");
+        $this->comenviada_id = trim($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
+    }
+
+    public function executeResultado()
+    {
+        $this->verificaPrilegio("COM_ENVIADA_ASOCIAR_TRAMITE_ENTRADA");
+        $radicado = trim($this->getRequestParameter('radicado')) ? trim($this->getRequestParameter('radicado')) : null;
+        $asunto = trim($this->getRequestParameter('asunto')) ? trim($this->getRequestParameter('asunto')) : null;
+        $comenviada_id = trim($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
+        //********************************************************************************************************
+        if ($radicado == null) {
+            $data_array['status'] = 403;
+            $data_array['mensaje'] = 'El numero de radicado es obligatorio';
+            //****************************************************************************************************
+            $this->getResponse()->setContentType('application/json');
+            $data_json = json_encode($data_array);
+            return $this->renderText($data_json);
+        }
+        //********************************************************************************************************
+        $list_object = ComRecibidaPeer::getComRecibidaByRadicadoOrAsunto($radicado, $asunto);
+        return $this->renderPartial('listSearchComRecibida', array('list_object' => $list_object, 'comenviada_id' => $comenviada_id));
+    }
+
+    public function executeUpdateComrecibidaRespuesta()
+    {
+        $this->verificaPrilegio("COM_ENVIADA_ASOCIAR_TRAMITE_ENTRADA");
+        $usuario_id = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $comenviada_id = trim($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
+        $comrecibida_id = trim($this->getRequestParameter('comrecibida_id')) ? trim($this->getRequestParameter('comrecibida_id')) : null;
+        //******************************************************************************************************************
+        $com_recibida = ComRecibidaPeer::retrieveByPK($comrecibida_id);
+        if (empty($com_recibida->getMarcaVinculacion()) || empty($com_recibida->getContenidodocId())) {
+            $data_array['status'] = 401;
+            $data_array['mensaje'] = sprintf("La comunicacion externa recibida con radicado %s, no esta archivada, por favor debe archivar el radicado", $com_recibida->getRadicado());
+            $url_show = '/recibida.php/com_recibida/show?comrecibida_id=' . $com_recibida->getPrimaryKey();
+            $enlace_to = '<a href="#" data-toggle="tooltip" data-original-title="Vincular comunicacion externa recibida" class="tooltip-primary archivedoc" onclick="javascript:jQuery.OpenModalSIMAD(\'' . $url_show . '\');">  
                         <img border="0" src="/images/simad/ico_doc_vincular.png" width="20" height="20" align="middle" />
                     </a>';
-        $data_array['url_linkto'] = $enlace_to;
-		//***************************************************************************************************************
-		$this->getResponse()->setContentType('application/json');
-		$data_json = json_encode($data_array);
-		return $this->renderText($data_json);
-    }
-	//******************************************************************************************************************
-	// HACER VALIDACION QUE ESA ASOCIACION NO EXISTA PREVIAMENTE
-	$validacion = ComrecibidaRespuestaPeer::validarComRecibidaRespuesta($comrecibida_id, $comenviada_id);
-    //******************************************************************************************************************
-	if($validacion['status'] == 200)
-	{
-		//guarda el nvo registro en la tabla
-		$resultado = ComrecibidaRespuestaPeer::addComRecibidaRespuesta($comrecibida_id, $comenviada_id, $usuario_id);
-        if($resultado['status'] == 200)
-        {
-            $com_enviada = ComEnviadaPeer::retrieveByPK($comenviada_id);
-            $com_enviada->setResponseComByComRecibidaId($comrecibida_id);
+            $data_array['url_linkto'] = $enlace_to;
+            //***************************************************************************************************************
+            $this->getResponse()->setContentType('application/json');
+            $data_json = json_encode($data_array);
+            return $this->renderText($data_json);
         }
-        //***************************************************************************************************************
-		$data_array['status'] = $validacion['status'];
-		$data_array['mensaje'] = $resultado['message'];
-		//***************************************************************************************************************
-		$this->getResponse()->setContentType('application/json');
-		$data_json = json_encode($data_array);
-		return $this->renderText($data_json);
-	}
-	else
-	{
-		$data_array['status'] = $validacion['status'];
-		$data_array['mensaje'] = $validacion['message'] ;
-		//***************************************************************************************************************
-		$this->getResponse()->setContentType('application/json');
-		$data_json = json_encode($data_array);
-		return $this->renderText($data_json);
-	}
-  }
-	
-  public function envioEmail(ComEnviada $comunicacion_mail, Usuario $user_email, $encabezado_cuerpo="")
-  {
-    if(trim($encabezado_cuerpo) == ""){
-      $encabezado_cuerpo = "Este es un mensaje para informarle que se le ha generado una copia informativa de la siguiente Comunicacion Enviada:";
+        //******************************************************************************************************************
+        // HACER VALIDACION QUE ESA ASOCIACION NO EXISTA PREVIAMENTE
+        $validacion = ComrecibidaRespuestaPeer::validarComRecibidaRespuesta($comrecibida_id, $comenviada_id);
+        //******************************************************************************************************************
+        if ($validacion['status'] == 200) {
+            //guarda el nvo registro en la tabla
+            $resultado = ComrecibidaRespuestaPeer::addComRecibidaRespuesta($comrecibida_id, $comenviada_id, $usuario_id);
+            if ($resultado['status'] == 200) {
+                $com_enviada = ComEnviadaPeer::retrieveByPK($comenviada_id);
+                $com_enviada->setResponseComByComRecibidaId($comrecibida_id);
+            }
+            //***************************************************************************************************************
+            $data_array['status'] = $validacion['status'];
+            $data_array['mensaje'] = $resultado['message'];
+            //***************************************************************************************************************
+            $this->getResponse()->setContentType('application/json');
+            $data_json = json_encode($data_array);
+            return $this->renderText($data_json);
+        } else {
+            $data_array['status'] = $validacion['status'];
+            $data_array['mensaje'] = $validacion['message'];
+            //***************************************************************************************************************
+            $this->getResponse()->setContentType('application/json');
+            $data_json = json_encode($data_array);
+            return $this->renderText($data_json);
+        }
     }
-    //*******************************************************************************************************
-    if($comunicacion_mail == null){
-        return false;
-    }
-    //*******************************************************************************************************
-    $cuerpo = '
-    <html>
-    <head>
-    <title></title>
-    </head>
-    <body>
-    <div id="cotenedor">
-    <br>'.$encabezado_cuerpo.'     
-    <br>
-    <br>
-        <b>Fecha Radicacion:</b> '.$comunicacion_mail->getFechaCreacion().' <br>
-        <b>Numero Radicado:</b> '.$comunicacion_mail->getRadicado().'<br>
-        <b>Asunto:</b> '.utf8_encode($comunicacion_mail->getAsunto()).'<br>
-    <br>
-    </div>
-    </body></html>';
-    $cabeceras = "Content-type: text/html; charset=UTF-8\r\n";
-	//*******************************************************************************************************
-    $baseMail = new BaseMailSimad();
-    $baseMail->SetSubject('SGDEA .::. Correspondencia Externa Enviada');
-    $baseMail->SetMsgHTML($cuerpo);
-    $baseMail->SetAddAddress($user_email->getEmail(), $user_email->getEmail());    
-    if($baseMail->InitSend() === true){
-       $baseMail->writetolog("Alerta enviada: " . $comunicacion_mail->getRadicado() . " Enviado a: " . $user_email->getEmail());
-    }else{
-       $baseMail->writetolog("Error al enviar alerta: " . $comunicacion_mail->getRadicado() . " Cuenta correo: " . $user_email->getEmail());
-    }
-  }
-  
-  public function sendMailAprob(ComEnviada $comunicacion_mail,Usuario $usuario,$encabezado_cuerpo="")
-  {
-    if(trim($encabezado_cuerpo) == ""){
-      $encabezado_cuerpo = "Este es un mensaje para informarle que hay una Comunicacion Enviada pendiente para su aprobacion <br>";
-      $encabezado_cuerpo .= "Podra consultar la comunicacion en su buzon de borradores con la siguiente informacion:";
-    }
-    $comenviada_id = $comunicacion_mail->getPrimaryKey();
-    //***************************************************************************
-    $cuerpo = '
-    <html>
-    <head>
-    <title></title>
-    </head>
-    <body>
-    <div id="cotenedor">
-    <br>'.$encabezado_cuerpo.'     
-    <br>
-    <br>
-    <b>Fecha Documento:</b> '.$comunicacion_mail->getFechaCreacion().' <br>    
-    <b>Asunto:</b> '.($comunicacion_mail->getAsunto()).'<br>
-    <b>Dependencia:</b> '.($comunicacion_mail->getDependencia()).'<br>
-    <br>
-    </div>
-    </body></html>';
-    $cabeceras = "Content-type: text/html\r\n";
-    //*****************************************************************************
-    $baseMail = new BaseMailSimad();
-    $baseMail->SetSubject('CAD : Aprobacion Correspondencia Externa Enviada');
-    $baseMail->SetMsgHTML($cuerpo);
-    $baseMail->SetAddAddress($usuario->getEmail(), $usuario->getEmail());    
-    if($baseMail->InitSend() === true)
+
+    public function envioEmail(ComEnviada $comunicacion_mail, Usuario $user_email, $encabezado_cuerpo = "")
     {
-       $baseMail->writetolog("Alerta enviada: " . $comenviada_id . " Enviado a: " . $usuario->getEmail());
-    }else{
-       $baseMail->writetolog("Error al enviar alerta: " . $comenviada_id . " Cuenta correo: " . $usuario->getEmail());
-    }
-  }
-  
-  public function getAutorizaciones()
-  {
-    /*****************************Verificar las autorizaciones para usuario actual*********************************/
-     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-     $userIdAut  = array(); 
-     $a = new Criteria();
-     $a->addJoin(AutorizacionComPeer::AUTORIZACIONCOM_ID,AutcomUsuarioPeer::AUTORIZACIONCOM_ID);
-     $a->add(AutorizacionComPeer::FECHA_INICIAL_AUT_COM,date('Y-m-d G:i:s'),Criteria::LESS_EQUAL);
-     $a->add(AutorizacionComPeer::FECHA_FINAL_AUT_COM,date('Y-m-d G:i:s'),Criteria::GREATER_EQUAL);
-     $a->add(AutcomUsuarioPeer::USUARIO_ID,$usuariologuiado);
-     $a->add(AutcomUsuarioPeer::ROLAUTCOMUSUARIO_ID,2);
-     $aut = AutcomUsuarioPeer::doSelect($a);
-     foreach($aut as $temp){
-    	 $b = new Criteria();
-    	 $b->add(AutcomUsuarioPeer::AUTORIZACIONCOM_ID,$temp->getAutorizacioncomId());
-    	 $b->add(AutcomUsuarioPeer::ROLAUTCOMUSUARIO_ID,1);
-    	 $resp = AutcomUsuarioPeer::doSelect($b);
-    	 foreach($resp as $result){
-     		 $userIdAut[] = $result->getUsuarioId();
-    	 }	
-     }
-     return $userIdAut;	
-  }
-
-  public function executeIndex()
-  {
-    //$simadSoap = new WsSimadUariv();
-    //$response_data = $simadSoap->loadWsCrearExpedienteOferta(1019);
-    //var_dump($response_data);exit;
-	//$ulist_firma = EnviadaUsuarioPeer::getAllUserFirmaDigitalObj(109221);
-	//var_dump($ulist_firma);
-    /*$comenviada_id = 735867;//734997;
-    $com_enviada = ComEnviadaPeer::retrieveByPk($comenviada_id);
-    $params['use_membrete'] = $com_enviada->getUseMembrete();
-    $params['membrete_com'] = $com_enviada->getRegional()->getImageMembrete();
-    $params['comobject_id'] = $com_enviada->getPrimaryKey();
-    $params['periodo_id'] = $com_enviada->getPeriodoId();
-    $response_tpl = $com_enviada->getPlantillasCom()->generateWordByPlantilla(sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp',$params);*/
-
-    $ws_gse = new WsFirmaApiGse();
-    $resp_token = $ws_gse->loginWsApiFirmaGse();
-    echo $resp_token;exit;
-
-    /*$comenviada_id = 735844;//734997;
-    $com_enviada = ComEnviadaPeer::retrieveByPk($comenviada_id);
-    $response_process = $com_enviada->singDocumentProcess(true);*/
-    //**************************************************************************************************************
-    /*if($response_process['httpStatus'] == 200){
-        $resp_serv = $com_enviada->initServicioProcess();
-        if($resp_serv['isError'] == true){
-            $response_process['message'] = sprintf("%s => %s",$response_process['message'],$resp_serv['message']);
+        if (trim($encabezado_cuerpo) == "") {
+            $encabezado_cuerpo = "Este es un mensaje para informarle que se le ha generado una copia informativa de la siguiente Comunicacion Enviada:";
         }
-    }*/
-  }
-  
-  public function tienePrilegio($currentForm)
-  { 
-  	$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-    $isValid = true;
-  	if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
-  		$isValid = false;
-  	}
-    return $isValid;
-  }
-
-  public function verificaPrilegio($currentForm)
-  { 
-  	$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-	if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
-		$this->redirect(sfConfig::get('base_simad').'/no_autorizado.html');
-	}
-	 
-  }
-
-  public function verificaPrilegioCerrar($currentForm)
-  { 
- 	$usuarioLoguiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-	if(!$this->getUser()->checkPerm($currentForm, $usuarioLoguiado)){
-		$this->redirect(sfConfig::get('base_simad').'/no_autorizado.html');
-	}	 	  
-  }
-  
-  public function executeDigitalizar()
-  { 
-  	$this->verificaPrilegioCerrar("com_enviada/digitalizar");
-  	$this->comenviada_id = $this->getRequestParameter('comenviada_id');
-  }
-  
-  public function executeAddCopia()
-  {
-    $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-    $this->usuario = new Usuario();
-    if($this->getRequestParameter('usuario_copia')){
-      $this->usuario_copia = UsuarioPeer::retrieveByPK($this->getRequestParameter('usuario_copia'));
-      $this->envioEmail($this->com_enviada,$this->usuario_copia);
-    }else{
-      $this->usuario_copia = null;
-    }
-  }
-  
-  public function executeDownload()
-  {
-    header("Pragma: cache");
-    header("Expires: 0");
-    header("Cache-control: private");
-    header('Content-type: application/zip');        
-    header('Content-Disposition: attachment; filename="'.$this->getRequestParameter('qfile').'"');
-  }
-  
-  public function executePrintBatch()
-  { 
-  	$this->verificaPrilegio("IMPRESION_COM_MASIVA");
-    $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
-    $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
-    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-    //*********************************************************************************************
-    $dir_raiz = ParametroPeer::retrieveByPk(29)->getValortexto();
-	$digit_dir  = ParametroPeer::retrieveByPk(13)->getValortexto();
-    //*********************************************************************************************
-    $c = new Criteria();
-    $c->add(ComEnviadaPeer::MARCA,$usuariologuiado);    
-    $list_com = ComEnviadaPeer::doSelect($c);
-    //*********************************************************************************************
-    $zip = new ZipArchive();
-    $zipFileName = md5(date("YmdGis")).".zip";
-    $pathzip = sfConfig::get('sf_web_dir')."/tmp/".$zipFileName;
-    
-    if(file_exists($pathzip)) {        
-        unlink ($pathzip);
-    }
-    
-    if ($zip->open($pathzip, ZIPARCHIVE::CREATE) != TRUE) {
-        die ("Could not open archive");
-    }
-    //*********************************************************************************************
-    foreach($list_com as $com_enviada){
-        $storage_com = $com_enviada->getBasicUrlDigitCom($dir_raiz,$digit_dir);
-        $filename = $com_enviada->getRadicado().".pdf";
-        $filename_digit = $storage_com['storage_path'].DIRECTORY_SEPARATOR.$filename;
-        if(!file_exists($filename_digit)){
-            //MARGENES DE IMPRESION
-            $margins_list['top'] = 5;
-            $margins_list['left'] = 15;
-            $margins_list['buttom'] = 50;
-            $margins_list['rigth'] = 18;
-            //*************************************************************************************
-            $filename_digit = $com_enviada->generateFileInDisk($margins_list);
+        //*******************************************************************************************************
+        if ($comunicacion_mail == null) {
+            return false;
         }
-        //*****************************************************************************************
-        $zip->addFile($filename_digit,basename($filename));
+        //*******************************************************************************************************
+        $cuerpo = '
+    <html>
+    <head>
+    <title></title>
+    </head>
+    <body>
+    <div id="cotenedor">
+    <br>' . $encabezado_cuerpo . '     
+    <br>
+    <br>
+        <b>Fecha Radicacion:</b> ' . $comunicacion_mail->getFechaCreacion() . ' <br>
+        <b>Numero Radicado:</b> ' . $comunicacion_mail->getRadicado() . '<br>
+        <b>Asunto:</b> ' . utf8_encode($comunicacion_mail->getAsunto()) . '<br>
+    <br>
+    </div>
+    </body></html>';
+        $cabeceras = "Content-type: text/html; charset=UTF-8\r\n";
+        //*******************************************************************************************************
+        $baseMail = new BaseMailSimad();
+        $baseMail->SetSubject('SGDEA .::. Correspondencia Externa Enviada');
+        $baseMail->SetMsgHTML($cuerpo);
+        $baseMail->SetAddAddress($user_email->getEmail(), $user_email->getEmail());
+        if ($baseMail->InitSend() === true) {
+            $baseMail->writetolog("Alerta enviada: " . $comunicacion_mail->getRadicado() . " Enviado a: " . $user_email->getEmail());
+        } else {
+            $baseMail->writetolog("Error al enviar alerta: " . $comunicacion_mail->getRadicado() . " Cuenta correo: " . $user_email->getEmail());
+        }
     }
-    //*********************************************************************************************
-    $zip->close();
-    //*********************************************************************************************  
-    //echo $base_path = sfConfig::get('base_simad')."/tmp/".$zipFileName;exit;
-    //$this->redirect(sfConfig::get('base_simad').'/enviada.php/com_enviada/download?qfile='.$zipFileName);
-    //***********************************************************************************************
-    /*header("Pragma: cache");
+
+    public function sendMailAprob(ComEnviada $comunicacion_mail, Usuario $usuario, $encabezado_cuerpo = "")
+    {
+        if (trim($encabezado_cuerpo) == "") {
+            $encabezado_cuerpo = "Este es un mensaje para informarle que hay una Comunicacion Enviada pendiente para su aprobacion <br>";
+            $encabezado_cuerpo .= "Podra consultar la comunicacion en su buzon de borradores con la siguiente informacion:";
+        }
+        $comenviada_id = $comunicacion_mail->getPrimaryKey();
+        //***************************************************************************
+        $cuerpo = '
+    <html>
+    <head>
+    <title></title>
+    </head>
+    <body>
+    <div id="cotenedor">
+    <br>' . $encabezado_cuerpo . '     
+    <br>
+    <br>
+    <b>Fecha Documento:</b> ' . $comunicacion_mail->getFechaCreacion() . ' <br>    
+    <b>Asunto:</b> ' . ($comunicacion_mail->getAsunto()) . '<br>
+    <b>Dependencia:</b> ' . ($comunicacion_mail->getDependencia()) . '<br>
+    <br>
+    </div>
+    </body></html>';
+        $cabeceras = "Content-type: text/html\r\n";
+        //*****************************************************************************
+        $baseMail = new BaseMailSimad();
+        $baseMail->SetSubject('CAD : Aprobacion Correspondencia Externa Enviada');
+        $baseMail->SetMsgHTML($cuerpo);
+        $baseMail->SetAddAddress($usuario->getEmail(), $usuario->getEmail());
+        if ($baseMail->InitSend() === true) {
+            $baseMail->writetolog("Alerta enviada: " . $comenviada_id . " Enviado a: " . $usuario->getEmail());
+        } else {
+            $baseMail->writetolog("Error al enviar alerta: " . $comenviada_id . " Cuenta correo: " . $usuario->getEmail());
+        }
+    }
+
+    public function getAutorizaciones()
+    {
+        /*****************************Verificar las autorizaciones para usuario actual*********************************/
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $userIdAut  = array();
+        $a = new Criteria();
+        $a->addJoin(AutorizacionComPeer::AUTORIZACIONCOM_ID, AutcomUsuarioPeer::AUTORIZACIONCOM_ID);
+        $a->add(AutorizacionComPeer::FECHA_INICIAL_AUT_COM, date('Y-m-d G:i:s'), Criteria::LESS_EQUAL);
+        $a->add(AutorizacionComPeer::FECHA_FINAL_AUT_COM, date('Y-m-d G:i:s'), Criteria::GREATER_EQUAL);
+        $a->add(AutcomUsuarioPeer::USUARIO_ID, $usuariologuiado);
+        $a->add(AutcomUsuarioPeer::ROLAUTCOMUSUARIO_ID, 2);
+        $aut = AutcomUsuarioPeer::doSelect($a);
+        foreach ($aut as $temp) {
+            $b = new Criteria();
+            $b->add(AutcomUsuarioPeer::AUTORIZACIONCOM_ID, $temp->getAutorizacioncomId());
+            $b->add(AutcomUsuarioPeer::ROLAUTCOMUSUARIO_ID, 1);
+            $resp = AutcomUsuarioPeer::doSelect($b);
+            foreach ($resp as $result) {
+                $userIdAut[] = $result->getUsuarioId();
+            }
+        }
+        return $userIdAut;
+    }
+
+    public function executeIndex()
+    {
+        $this->forward('com_enviada', 'consulta');
+    }
+
+    public function tienePrilegio($currentForm)
+    {
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $isValid = true;
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
+            $isValid = false;
+        }
+        return $isValid;
+    }
+
+    public function verificaPrilegio($currentForm)
+    {
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
+            $this->redirect(sfConfig::get('base_simad') . '/no_autorizado.html');
+        }
+    }
+
+    public function verificaPrilegioCerrar($currentForm)
+    {
+        $usuarioLoguiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        if (!$this->getUser()->checkPerm($currentForm, $usuarioLoguiado)) {
+            $this->redirect(sfConfig::get('base_simad') . '/no_autorizado.html');
+        }
+    }
+
+    public function executeDigitalizar()
+    {
+        $this->verificaPrilegioCerrar("com_enviada/digitalizar");
+        $this->comenviada_id = $this->getRequestParameter('comenviada_id');
+    }
+
+    public function executeAddCopia()
+    {
+        $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
+        $this->usuario = new Usuario();
+        if ($this->getRequestParameter('usuario_copia')) {
+            $this->usuario_copia = UsuarioPeer::retrieveByPK($this->getRequestParameter('usuario_copia'));
+            $this->envioEmail($this->com_enviada, $this->usuario_copia);
+        } else {
+            $this->usuario_copia = null;
+        }
+    }
+
+    public function executeDownload()
+    {
+        header("Pragma: cache");
+        header("Expires: 0");
+        header("Cache-control: private");
+        header('Content-type: application/zip');
+        header('Content-Disposition: attachment; filename="' . $this->getRequestParameter('qfile') . '"');
+    }
+
+    public function executePrintBatch()
+    {
+        $this->verificaPrilegio("IMPRESION_COM_MASIVA");
+        $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
+        $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        //*********************************************************************************************
+        $dir_raiz = ParametroPeer::retrieveByPk(29)->getValortexto();
+        $digit_dir  = ParametroPeer::retrieveByPk(13)->getValortexto();
+        //*********************************************************************************************
+        $c = new Criteria();
+        $c->add(ComEnviadaPeer::MARCA, $usuariologuiado);
+        $list_com = ComEnviadaPeer::doSelect($c);
+        //*********************************************************************************************
+        $zip = new ZipArchive();
+        $zipFileName = md5(date("YmdGis")) . ".zip";
+        $pathzip = sfConfig::get('sf_web_dir') . "/tmp/" . $zipFileName;
+
+        if (file_exists($pathzip)) {
+            unlink($pathzip);
+        }
+
+        if ($zip->open($pathzip, ZIPARCHIVE::CREATE) != TRUE) {
+            die("Could not open archive");
+        }
+        //*********************************************************************************************
+        foreach ($list_com as $com_enviada) {
+            $storage_com = $com_enviada->getBasicUrlDigitCom($dir_raiz, $digit_dir);
+            $filename = $com_enviada->getRadicado() . ".pdf";
+            $filename_digit = $storage_com['storage_path'] . DIRECTORY_SEPARATOR . $filename;
+            if (!file_exists($filename_digit)) {
+                //MARGENES DE IMPRESION
+                $margins_list['top'] = 5;
+                $margins_list['left'] = 15;
+                $margins_list['buttom'] = 50;
+                $margins_list['rigth'] = 18;
+                //*************************************************************************************
+                $filename_digit = $com_enviada->generateFileInDisk($margins_list);
+            }
+            //*****************************************************************************************
+            $zip->addFile($filename_digit, basename($filename));
+        }
+        //*********************************************************************************************
+        $zip->close();
+        //*********************************************************************************************  
+        //echo $base_path = sfConfig::get('base_simad')."/tmp/".$zipFileName;exit;
+        //$this->redirect(sfConfig::get('base_simad').'/enviada.php/com_enviada/download?qfile='.$zipFileName);
+        //***********************************************************************************************
+        /*header("Pragma: cache");
     header("Expires: 0");
     header("Cache-control: private");
     header('Content-type: application/zip');        
     header('Content-Disposition: attachment; filename="'.$zipFileName.'"');*/
-            
-    header("Content-Type: application/zip");
-    header("Content-Disposition: attachment; filename=$zipFileName");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-    readfile("$pathzip");
-    exit;
-    
-    /*header("Content-type: application/zip"); 
+
+        header("Content-Type: application/zip");
+        header("Content-Disposition: attachment; filename=$zipFileName");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        readfile("$pathzip");
+        exit;
+
+        /*header("Content-type: application/zip"); 
     header("Content-Disposition: attachment; filename=$zipFileName");
     header("Content-length: " . filesize($zipFileName));
     header("Pragma: no-cache"); 
     header("Expires: 0"); 
     readfile("$zipFileName");*/
-  }
-  
-  public function executeCreateNewComBatch(sfWebRequest $request)
-  {
-    $currentForm = "CREAR_RESPUESTA_MASIVA";
-    $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
-    $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
-    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-    //*********************************************************************************************
-    if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
-		return sfView::ERROR;
-        //return $this->redirect404();
-	}
-    //*********************************************************************************************
-	$c = new Criteria();
-    $c->setDistinct();
-	$c->add(ComenviadaMasivasPeer::ESTADO_PROCESO,1);    
-	$list_batch  = ComenviadaMasivasPeer::doSelect($c);
-    //*********************************************************************************************
-    set_time_limit(0);
-    //*********************************************************************************************
-    $dir_raiz = ParametroPeer::retrieveByPk(9)->getValortexto();
-	$digit_dir  = ParametroPeer::retrieveByPk(13)->getValortexto();
-    //*********************************************************************************************
-	foreach($list_batch as $com_masivo){
-	   $comrecibida_id = $com_masivo->getComrecibidaId();
-       $com_recibida = ComRecibidaPeer::retrieveByPK($comrecibida_id);
-       //******************************************************************************************
-       $tipo_asunto = $com_recibida->getTipoComRecibida();
-       $radicado = $com_recibida->getRadicado();
-       $directorioexterno_id = $com_recibida->getDirectorioexternoId();
-       $email_destino = trim($com_recibida->getDirectorioExterno()->getEmail());
-       //******************************************************************************************
-       $usuario_radicador = UsuarioPeer::retrieveByPK($com_masivo->getUsuarioId());
-       //******************************************************************************************
-       $membrete_default = $usuario_radicador->getRegional()->getEntidad()->getUsarMembrete() ? 1 : 0;    
-       //******************************************************************************************
-	   $com_enviada = new ComEnviada();
-       $com_enviada->setCiudadId($usuario_radicador->getRegional()->getCiudadId());
-       $com_enviada->setDependenciaId($usuario_radicador->getDependenciaId());
-       $com_enviada->setEstadocomenviadaId(2);
-       $com_enviada->setRegionalId($usuario_radicador->getRegionalId());
-       $com_enviada->setPeriodoId(date("Y"));
-       $com_enviada->setEstadodigitalizacionId(1);
-       $com_enviada->setNumeroRadicacion(0);
-       $com_enviada->setEsCopia(0);
-       $com_enviada->setEstaentregado(0);
-       $com_enviada->setRadicado("Sin Radicar");
-       $com_enviada->setUseMembrete($membrete_default);
-       $com_enviada->setContenido($com_masivo->getContenidoText());
-       $com_enviada->setAsunto("Respuesta a ".$tipo_asunto." con radicado ".$radicado);
-       $com_enviada->setFechaCreacion(date("Y-m-d G:i:s"));
-       $com_enviada->setFolios(1);
-       $com_enviada->setPlantillascomId($com_masivo->getPlantillascomId());
-       $com_enviada->setConsecutivoResp($comrecibida_id);
-       $com_enviada->setFirmaElectronica(1);
-       $com_enviada->save();
-       //******************************************************************************************
-       if($com_enviada->getPrimaryKey()){
-          //$arrUser  = preg_split("/[,]+/",trim($com_masivo->getUsuariosFirmas()),null,PREG_SPLIT_NO_EMPTY);
-          //$arrCargoUser  = preg_split("/[,]+/",trim($com_masivo->getCargosFirmas()),null,PREG_SPLIT_NO_EMPTY);
-          //***************************************************************************************
-          $strFirmas = trim($com_masivo->getUsuariosFirmas());
-          $strCargoFirmas = trim($com_masivo->getCargosFirmas());
-          $cargo_radicador = CargoUsuarioPeer::getCargoUsuarioByIdUser($com_masivo->getUsuarioId());
-          //***************************************************************************************
-          $isProyecto = ComEnviadaPeer::insertaEnviadaUsuarios($com_masivo->getUsuarioId(),$com_enviada->getPrimaryKey(),1,$cargo_radicador);
-          $isFirmas = ComEnviadaPeer::insertaEnviadaUsuarios($strFirmas,$com_enviada->getPrimaryKey(),2,$strCargoFirmas);
-          $isDestino = EnviadaDirectorioPeer::insertaEnviadaDirectorios($directorioexterno_id,$com_enviada->getPrimaryKey(),1);
-          //***************************************************************************************
-          if(!$isProyecto || !$isFirmas || !$isDestino){
-             EnviadaDirectorioPeer::borrarEnviadaDirectorios($com_enviada->getPrimaryKey());
-             ComEnviadaPeer::borrarEnviadaUsuarios($com_enviada->getPrimaryKey());
-             $com_enviada->delete();
-             //************************************************************************************
-             $com_masivo->setEstadoProceso(3);
-             $com_masivo->setMsgProceso("Error el destinatario o las firmas de la comunicaci&oacute;n");
-             $com_masivo->setFechaEjecucion(date("Y-m-d G:i:s"));
-             $com_masivo->setSendEmail(0);
-             $com_masivo->setGenerateFile(0);
-             $com_masivo->save();
-            //*************************************************************************************
-             continue;
-          }
-          //***************************************************************************************
-          $regional_id = $com_enviada->getRegionalId();
-          $depen_codigo = $com_enviada->getDependencia()->getCodigo();
-          //***************************************************************************************
-          //$numero_radicado = $this->getNumeroRadicacion($regional_id,$com_enviada->getDependenciaId());
-          $radicado = $com_enviada->getRadicadoFormat(null,$regional_id,$depen_codigo);
-          //$com_enviada->setNumeroRadicacion($numero_radicado);
-          $com_enviada->setRadicado($radicado);
-          $com_enviada->save();          
-          //***************************************************************************************
-          EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey());
-          //***************************************************************************************
-          //MARGENES DE IMPRESION
-          $margins_list['top'] = 5;
-          $margins_list['left'] = 15;
-          $margins_list['buttom'] = 50;
-          $margins_list['rigth'] = 18;
-          //*************************************************************************************
-          $file_attach = $com_enviada->generateFileInDisk($margins_list);
-          $storage_com = $com_enviada->getBasicUrlDigitCom($dir_raiz,$digit_dir);
-          //*************************************************************************************
-          $fileinfo = pathinfo($file_attach);
-          $extension = $fileinfo['extension'];
-          //*************************************************************************************
-          $storage_com = $storage_com['storage_path'].DIRECTORY_SEPARATOR.$com_enviada->getRadicado().".".$extension;
-          //*************************************************************************************
-          $isCopyDigit = false;
-          if($file_attach){
-            $isCopyDigit = copy($file_attach,$storage_com);
-          }
-          //***************************************************************************************
-          if($com_recibida->getMediorespuestaId() == 2){//correo
-            $mailValid = $com_enviada->envioEmailRespuesta($email_destino,$file_attach);
-            //*************************************************************************************
-            $com_masivo->setComenviadaId($com_enviada->getPrimaryKey());
-            $com_masivo->setRadicadoRespuesta($com_enviada->getRadicado());
-            $com_masivo->setEstadoProceso(2);
-            $com_masivo->setMsgProceso(sprintf("Radicaci&oacute;n exitosa radicado respuesta %s",$com_enviada->getRadicado()));
-            $com_masivo->setFechaEjecucion(date("Y-m-d G:i:s"));
-            $com_masivo->setSendEmail($mailValid ? 1 : 0);
-            $com_masivo->setGenerateFile($isCopyDigit ? 1 : 0);
-            $com_masivo->save();
-            //*************************************************************************************
-            $estado_respondida = 5;    	    
-    	    $com_recibida->setEstadocomrecibidaId($estado_respondida);
-    	    $com_recibida->setComenviadaId($com_enviada->getPrimaryKey());
-    	    $com_recibida->save();
-            ComRecibidaPeer::updateEstadosComRecibida($com_recibida->getPrimaryKey(),$estado_respondida);
-          }else{
-            $com_masivo->setComenviadaId($com_enviada->getPrimaryKey());
-            $com_masivo->setRadicadoRespuesta($com_enviada->getRadicado());
-            $com_masivo->setEstadoProceso(2);
-            $com_masivo->setMsgProceso(sprintf("Radicaci&oacute;n exitosa radicado respuesta %s, el destinatario no tiene email registrado",$com_enviada->getRadicado()));
-            $com_masivo->setFechaEjecucion(date("Y-m-d G:i:s"));
-            $com_masivo->setSendEmail(0);
-            $com_masivo->setGenerateFile($isCopyDigit ? 1 : 0);
-            $com_masivo->save();
-            //*************************************************************************************
-            $estado_respondida = 5;    	    
-    	    $com_recibida->setEstadocomrecibidaId($estado_respondida);
-    	    $com_recibida->setComenviadaId($com_enviada->getPrimaryKey());
-    	    $com_recibida->save();
-            ComRecibidaPeer::updateEstadosComRecibida($com_recibida->getPrimaryKey(),$estado_respondida);
-          }
-       }else{
-            $com_masivo->setEstadoProceso(3);
-            $com_masivo->setMsgProceso("Error interno al radicar");
-            $com_masivo->setFechaEjecucion(date("Y-m-d G:i:s"));
-            $com_masivo->setSendEmail(0);
-            $com_masivo->setGenerateFile(0);
-            $com_masivo->save();
-       }
-	}
-  }
-  
-  public function executeUpdateUserCopia()
-  {
-    $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-    $usuario_copia =  $this->getRequestParameter('usuario_copia');
-    $cargo_user = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario_copia);
-    $params_url = "";
-    //**********************************************************************************************
-    if(trim($cargo_user) && trim($usuario_copia)){
-      try{
-        ComEnviadaPeer::insertaEnviadaUsuariosEdit($usuario_copia,$com_enviada->getComenviadaId(),3,$cargo_user);
-        $params_url = '&cod_msg=2&usuario_copia='.$usuario_copia;       
-      }catch (Exception $ex){       
-        $params_url = '&cod_msg=1';       
-      }
     }
-    //**********************************************************************************************
-    $this->redirect(sfConfig::get('base_simad').'/enviada.php/com_enviada/addCopia?comenviada_id='.$com_enviada->getPrimaryKey().$params_url);
-  }
-  
-  public function executeFileDigitalizar()
-  {
-    $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-    //******************************************************************************************************
-    //CREANDO ESTRUCTURA DE DIRECTORIOS
-    $dirRaiz   = ParametroPeer::retrieveByPk(29)->getValortexto();
-    $dir_alias  = ParametroPeer::retrieveByPk(13)->getValortexto();
-    $extensions = explode(";",ParametroPeer::retrieveByPK(31)->getValortexto());
-    //******************************************************************************************************
-	$dirRaiz   = !empty($com_enviada->getDirDigit()) ? trim($com_enviada->getDirDigit()) : $dirRaiz;
-	//******************************************************************************************************    foreach ($this->getRequest()->getFiles() as $file) 	
-	foreach ($this->getRequest()->getFiles() as $file) 
+
+    public function executeCreateNewComBatch(sfWebRequest $request)
     {
-    	$usuariologuiado = $this->getUser()->getAttribute('username', '', 'subscriber');
-    	$file_vars = pathinfo($file['name']);
-        $nomFile   =  ($com_enviada->getRadicado());
-        //**************************************************************************************************
-    	$entidad_text = $com_enviada->getRegional()->getEntidad()->getDirectorioName();
-    	$regional_text = $com_enviada->getRegional()->getDirectorioName();
-    	$entidad_text = $entidad_text.'/'.$regional_text;
-    	$periodo = $com_enviada->getPeriodoId();
-    	$directorio_entidad = $dirRaiz . $entidad_text.'/';
-    	$directorio_entidad .= $dir_alias.'/'.$periodo;
-        //**************************************************************************************************
-        $directorio = simad_util::createPath($directorio_entidad);
-        //**************************************************************************************************
-        if(in_array($file_vars['extension'], $extensions)){
-            $file_name =  $nomFile.'.'.$file_vars['extension'];            
-            //**********************************************************************************************
-            @move_uploaded_file($file['tmp_name'], $directorio.'/'.$file_name);
-            //**********************************************************************************************
-            if(file_exists($directorio.'/'.$file_name)){
-                $this->fileName = $file_name;
-				//******************************************************************************************
-				$com_enviada->setDirDigit($dirRaiz);
-				$com_enviada->save();
-            }else{
+        $currentForm = "CREAR_RESPUESTA_MASIVA";
+        $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
+        $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        //*********************************************************************************************
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
+            return sfView::ERROR;
+            //return $this->redirect404();
+        }
+        //*********************************************************************************************
+        $c = new Criteria();
+        $c->setDistinct();
+        $c->add(ComenviadaMasivasPeer::ESTADO_PROCESO, 1);
+        $list_batch  = ComenviadaMasivasPeer::doSelect($c);
+        //*********************************************************************************************
+        set_time_limit(0);
+        //*********************************************************************************************
+        $dir_raiz = ParametroPeer::retrieveByPk(9)->getValortexto();
+        $digit_dir  = ParametroPeer::retrieveByPk(13)->getValortexto();
+        //*********************************************************************************************
+        foreach ($list_batch as $com_masivo) {
+            $comrecibida_id = $com_masivo->getComrecibidaId();
+            $com_recibida = ComRecibidaPeer::retrieveByPK($comrecibida_id);
+            //******************************************************************************************
+            $tipo_asunto = $com_recibida->getTipoComRecibida();
+            $radicado = $com_recibida->getRadicado();
+            $directorioexterno_id = $com_recibida->getDirectorioexternoId();
+            $email_destino = trim($com_recibida->getDirectorioExterno()->getEmail());
+            //******************************************************************************************
+            $usuario_radicador = UsuarioPeer::retrieveByPK($com_masivo->getUsuarioId());
+            //******************************************************************************************
+            $membrete_default = $usuario_radicador->getRegional()->getEntidad()->getUsarMembrete() ? 1 : 0;
+            //******************************************************************************************
+            $com_enviada = new ComEnviada();
+            $com_enviada->setCiudadId($usuario_radicador->getRegional()->getCiudadId());
+            $com_enviada->setDependenciaId($usuario_radicador->getDependenciaId());
+            $com_enviada->setEstadocomenviadaId(2);
+            $com_enviada->setRegionalId($usuario_radicador->getRegionalId());
+            $com_enviada->setPeriodoId(date("Y"));
+            $com_enviada->setEstadodigitalizacionId(1);
+            $com_enviada->setNumeroRadicacion(0);
+            $com_enviada->setEsCopia(0);
+            $com_enviada->setEstaentregado(0);
+            $com_enviada->setRadicado("Sin Radicar");
+            $com_enviada->setUseMembrete($membrete_default);
+            $com_enviada->setContenido($com_masivo->getContenidoText());
+            $com_enviada->setAsunto("Respuesta a " . $tipo_asunto . " con radicado " . $radicado);
+            $com_enviada->setFechaCreacion(date("Y-m-d G:i:s"));
+            $com_enviada->setFolios(1);
+            $com_enviada->setPlantillascomId($com_masivo->getPlantillascomId());
+            $com_enviada->setConsecutivoResp($comrecibida_id);
+            $com_enviada->setFirmaElectronica(1);
+            $com_enviada->save();
+            //******************************************************************************************
+            if ($com_enviada->getPrimaryKey()) {
+                //$arrUser  = preg_split("/[,]+/",trim($com_masivo->getUsuariosFirmas()),null,PREG_SPLIT_NO_EMPTY);
+                //$arrCargoUser  = preg_split("/[,]+/",trim($com_masivo->getCargosFirmas()),null,PREG_SPLIT_NO_EMPTY);
+                //***************************************************************************************
+                $strFirmas = trim($com_masivo->getUsuariosFirmas());
+                $strCargoFirmas = trim($com_masivo->getCargosFirmas());
+                $cargo_radicador = CargoUsuarioPeer::getCargoUsuarioByIdUser($com_masivo->getUsuarioId());
+                //***************************************************************************************
+                $isProyecto = ComEnviadaPeer::insertaEnviadaUsuarios($com_masivo->getUsuarioId(), $com_enviada->getPrimaryKey(), 1, $cargo_radicador);
+                $isFirmas = ComEnviadaPeer::insertaEnviadaUsuarios($strFirmas, $com_enviada->getPrimaryKey(), 2, $strCargoFirmas);
+                $isDestino = EnviadaDirectorioPeer::insertaEnviadaDirectorios($directorioexterno_id, $com_enviada->getPrimaryKey(), 1);
+                //***************************************************************************************
+                if (!$isProyecto || !$isFirmas || !$isDestino) {
+                    EnviadaDirectorioPeer::borrarEnviadaDirectorios($com_enviada->getPrimaryKey());
+                    ComEnviadaPeer::borrarEnviadaUsuarios($com_enviada->getPrimaryKey());
+                    $com_enviada->delete();
+                    //************************************************************************************
+                    $com_masivo->setEstadoProceso(3);
+                    $com_masivo->setMsgProceso("Error el destinatario o las firmas de la comunicaci&oacute;n");
+                    $com_masivo->setFechaEjecucion(date("Y-m-d G:i:s"));
+                    $com_masivo->setSendEmail(0);
+                    $com_masivo->setGenerateFile(0);
+                    $com_masivo->save();
+                    //*************************************************************************************
+                    continue;
+                }
+                //***************************************************************************************
+                $regional_id = $com_enviada->getRegionalId();
+                $depen_codigo = $com_enviada->getDependencia()->getCodigo();
+                //***************************************************************************************
+                //$numero_radicado = $this->getNumeroRadicacion($regional_id,$com_enviada->getDependenciaId());
+                $radicado = $com_enviada->getRadicadoFormat(null, $regional_id, $depen_codigo);
+                //$com_enviada->setNumeroRadicacion($numero_radicado);
+                $com_enviada->setRadicado($radicado);
+                $com_enviada->save();
+                //***************************************************************************************
+                EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey());
+                //***************************************************************************************
+                //MARGENES DE IMPRESION
+                $margins_list['top'] = 5;
+                $margins_list['left'] = 15;
+                $margins_list['buttom'] = 50;
+                $margins_list['rigth'] = 18;
+                //*************************************************************************************
+                $file_attach = $com_enviada->generateFileInDisk($margins_list);
+                $storage_com = $com_enviada->getBasicUrlDigitCom($dir_raiz, $digit_dir);
+                //*************************************************************************************
+                $fileinfo = pathinfo($file_attach);
+                $extension = $fileinfo['extension'];
+                //*************************************************************************************
+                $storage_com = $storage_com['storage_path'] . DIRECTORY_SEPARATOR . $com_enviada->getRadicado() . "." . $extension;
+                //*************************************************************************************
+                $isCopyDigit = false;
+                if ($file_attach) {
+                    $isCopyDigit = copy($file_attach, $storage_com);
+                }
+                //***************************************************************************************
+                if ($com_recibida->getMediorespuestaId() == 2) { //correo
+                    $mailValid = $com_enviada->envioEmailRespuesta($email_destino, $file_attach);
+                    //*************************************************************************************
+                    $com_masivo->setComenviadaId($com_enviada->getPrimaryKey());
+                    $com_masivo->setRadicadoRespuesta($com_enviada->getRadicado());
+                    $com_masivo->setEstadoProceso(2);
+                    $com_masivo->setMsgProceso(sprintf("Radicaci&oacute;n exitosa radicado respuesta %s", $com_enviada->getRadicado()));
+                    $com_masivo->setFechaEjecucion(date("Y-m-d G:i:s"));
+                    $com_masivo->setSendEmail($mailValid ? 1 : 0);
+                    $com_masivo->setGenerateFile($isCopyDigit ? 1 : 0);
+                    $com_masivo->save();
+                    //*************************************************************************************
+                    $estado_respondida = 5;
+                    $com_recibida->setEstadocomrecibidaId($estado_respondida);
+                    $com_recibida->setComenviadaId($com_enviada->getPrimaryKey());
+                    $com_recibida->save();
+                    ComRecibidaPeer::updateEstadosComRecibida($com_recibida->getPrimaryKey(), $estado_respondida);
+                } else {
+                    $com_masivo->setComenviadaId($com_enviada->getPrimaryKey());
+                    $com_masivo->setRadicadoRespuesta($com_enviada->getRadicado());
+                    $com_masivo->setEstadoProceso(2);
+                    $com_masivo->setMsgProceso(sprintf("Radicaci&oacute;n exitosa radicado respuesta %s, el destinatario no tiene email registrado", $com_enviada->getRadicado()));
+                    $com_masivo->setFechaEjecucion(date("Y-m-d G:i:s"));
+                    $com_masivo->setSendEmail(0);
+                    $com_masivo->setGenerateFile($isCopyDigit ? 1 : 0);
+                    $com_masivo->save();
+                    //*************************************************************************************
+                    $estado_respondida = 5;
+                    $com_recibida->setEstadocomrecibidaId($estado_respondida);
+                    $com_recibida->setComenviadaId($com_enviada->getPrimaryKey());
+                    $com_recibida->save();
+                    ComRecibidaPeer::updateEstadosComRecibida($com_recibida->getPrimaryKey(), $estado_respondida);
+                }
+            } else {
+                $com_masivo->setEstadoProceso(3);
+                $com_masivo->setMsgProceso("Error interno al radicar");
+                $com_masivo->setFechaEjecucion(date("Y-m-d G:i:s"));
+                $com_masivo->setSendEmail(0);
+                $com_masivo->setGenerateFile(0);
+                $com_masivo->save();
+            }
+        }
+    }
+
+    public function executeUpdateUserCopia()
+    {
+        $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
+        $usuario_copia =  $this->getRequestParameter('usuario_copia');
+        $cargo_user = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario_copia);
+        $params_url = "";
+        //**********************************************************************************************
+        if (trim($cargo_user) && trim($usuario_copia)) {
+            try {
+                ComEnviadaPeer::insertaEnviadaUsuariosEdit($usuario_copia, $com_enviada->getComenviadaId(), 3, $cargo_user);
+                $params_url = '&cod_msg=2&usuario_copia=' . $usuario_copia;
+            } catch (Exception $ex) {
+                $params_url = '&cod_msg=1';
+            }
+        }
+        //**********************************************************************************************
+        $this->redirect(sfConfig::get('base_simad') . '/enviada.php/com_enviada/addCopia?comenviada_id=' . $com_enviada->getPrimaryKey() . $params_url);
+    }
+
+    public function executeFileDigitalizar()
+    {
+        $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
+        //******************************************************************************************************
+        //CREANDO ESTRUCTURA DE DIRECTORIOS
+        $dirRaiz   = ParametroPeer::retrieveByPk(29)->getValortexto();
+        $dir_alias  = ParametroPeer::retrieveByPk(13)->getValortexto();
+        $extensions = explode(";", ParametroPeer::retrieveByPK(31)->getValortexto());
+        //******************************************************************************************************
+        $dirRaiz   = !empty($com_enviada->getDirDigit()) ? trim($com_enviada->getDirDigit()) : $dirRaiz;
+        //******************************************************************************************************    foreach ($this->getRequest()->getFiles() as $file) 	
+        foreach ($this->getRequest()->getFiles() as $file) {
+            $usuariologuiado = $this->getUser()->getAttribute('username', '', 'subscriber');
+            $file_vars = pathinfo($file['name']);
+            $nomFile   =  ($com_enviada->getRadicado());
+            //**************************************************************************************************
+            $entidad_text = $com_enviada->getRegional()->getEntidad()->getDirectorioName();
+            $regional_text = $com_enviada->getRegional()->getDirectorioName();
+            $entidad_text = $entidad_text . '/' . $regional_text;
+            $periodo = $com_enviada->getPeriodoId();
+            $directorio_entidad = $dirRaiz . $entidad_text . '/';
+            $directorio_entidad .= $dir_alias . '/' . $periodo;
+            //**************************************************************************************************
+            $directorio = simad_util::createPath($directorio_entidad);
+            //**************************************************************************************************
+            if (in_array($file_vars['extension'], $extensions)) {
+                $file_name =  $nomFile . '.' . $file_vars['extension'];
+                //**********************************************************************************************
+                @move_uploaded_file($file['tmp_name'], $directorio . '/' . $file_name);
+                //**********************************************************************************************
+                if (file_exists($directorio . '/' . $file_name)) {
+                    $this->fileName = $file_name;
+                    //******************************************************************************************
+                    $com_enviada->setDirDigit($dirRaiz);
+                    $com_enviada->save();
+                } else {
+                    $this->fileName = "Ocurrio un error al adjuntar el archivo,Por favor intente de nuevo";
+                }
+                //**********************************************************************************************
+            } else {
+                $file_name =  null;
                 $this->fileName = "Ocurrio un error al adjuntar el archivo,Por favor intente de nuevo";
             }
-            //**********************************************************************************************
-        }else{
-            $file_name =  null;
-            $this->fileName = "Ocurrio un error al adjuntar el archivo,Por favor intente de nuevo";
+            //**************************************************************************************************
         }
-        //**************************************************************************************************
     }
-  }
-  
-  public function executeFile()
-  {
-    $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-  }
-  
-  public function executeFileWord()
-  {
-    $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-  }
-  
-  public function executeUploadsWord()
-  {
-    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-	$dirRaiz = ParametroPeer::retrieveByPk(29)->getValortexto();
-	$dirTmp  = ParametroPeer::retrieveByPk(65)->getValortexto();
-    $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
-    //***********************************************************************************************
-  	foreach ($this->getRequest()->getFiles() as $file)  	
+
+    public function executeFile()
     {
-        //*******************************************************************************************
-    	$entidad_text = $usuario->getRegional()->getEntidad()->getDirectorioName();
-    	$directorio_entidad = $dirRaiz.$entidad_text."/";
-    	$directorio_tmp = $directorio_entidad.$dirTmp."/";    	
-        //*******************************************************************************************
-		$cons    = $this->getNewConsecutivo();
-        $file_vars = pathinfo($file['name']);
-        $util_simad = new simad_util();
-        $fileName = $util_simad->clean_name_file($file_vars);
-        $directorio = simad_util::createPath($directorio_tmp);
-        //*******************************************************************************************
-        @move_uploaded_file($file['tmp_name'], $directorio.'/'.$cons.'_'.$fileName);
-        //*********************************************************************************
-        $this->fileName = $cons.'_'.$fileName;
+        $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
     }
-  }
-  
-  public function executeUploads()
-  { 
-  	//*************************************************************************************
-	$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-	$dirRaiz = ParametroPeer::retrieveByPk(29)->getValortexto();
-	$dirTmp  = ParametroPeer::retrieveByPk(65)->getValortexto();
-    $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
-    $entidad_text = $usuario->getRegional()->getEntidad()->getDirectorioName();
-	//*************************************************************************************
-    foreach ($this->getRequest()->getFiles() as $file)	
+
+    public function executeFileWord()
     {
-        //*********************************************************************************
-    	$directorio_entidad = $dirRaiz.$entidad_text.DIRECTORY_SEPARATOR;
-    	$directorio_tmp = $directorio_entidad.$dirTmp.DIRECTORY_SEPARATOR;    	
-        //*********************************************************************************
-		$cons    = $this->getNewConsecutivo();
-        $file_vars = pathinfo($file['name']);
-        $util_simad = new simad_util();
-        $fileName = $util_simad->clean_name_file($file_vars);
-        $directorio = simad_util::createPath($directorio_tmp);
-        //*********************************************************************************
-        @move_uploaded_file($file['tmp_name'], $directorio.DIRECTORY_SEPARATOR.$cons.'_'.$fileName);
-        //*********************************************************************************
-        $this->fileName = $cons.'_'.$fileName;
+        $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
     }
-  }
-  
-  public function executeDzFileUpload()
-  {
-    $data_array = array();
-  	if (!empty($_FILES))
+
+    public function executeUploadsWord()
     {
-    	$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');        
-    	$dirRaiz = ParametroPeer::retrieveByPk(29)->getValortexto();
-		$dirTmp  = ParametroPeer::retrieveByPk(65)->getValortexto();
-        //***************************************************************************************
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $dirRaiz = ParametroPeer::retrieveByPk(29)->getValortexto();
+        $dirTmp  = ParametroPeer::retrieveByPk(65)->getValortexto();
+        $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
+        //***********************************************************************************************
+        foreach ($this->getRequest()->getFiles() as $file) {
+            //*******************************************************************************************
+            $entidad_text = $usuario->getRegional()->getEntidad()->getDirectorioName();
+            $directorio_entidad = $dirRaiz . $entidad_text . "/";
+            $directorio_tmp = $directorio_entidad . $dirTmp . "/";
+            //*******************************************************************************************
+            $cons    = $this->getNewConsecutivo();
+            $file_vars = pathinfo($file['name']);
+            $util_simad = new simad_util();
+            $fileName = $util_simad->clean_name_file($file_vars);
+            $directorio = simad_util::createPath($directorio_tmp);
+            //*******************************************************************************************
+            @move_uploaded_file($file['tmp_name'], $directorio . '/' . $cons . '_' . $fileName);
+            //*********************************************************************************
+            $this->fileName = $cons . '_' . $fileName;
+        }
+    }
+
+    public function executeUploads()
+    {
+        //*************************************************************************************
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $dirRaiz = ParametroPeer::retrieveByPk(29)->getValortexto();
+        $dirTmp  = ParametroPeer::retrieveByPk(65)->getValortexto();
         $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
         $entidad_text = $usuario->getRegional()->getEntidad()->getDirectorioName();
-		$cons    = $this->getNewConsecutivo();
-        //***************************************************************************************
-    	$directorio_entidad = $dirRaiz.$entidad_text.DIRECTORY_SEPARATOR;
-    	$directorio_tmp = $directorio_entidad.$dirTmp.DIRECTORY_SEPARATOR;    	
-        //***************************************************************************************
-        $file_vars = pathinfo($_FILES['file']['name']);
-        $util_simad = new simad_util();
-        $fileName = $util_simad->clean_name_file($file_vars);
-        //***************************************************************************************
-        $tempFile = $_FILES['file']['tmp_name'];
-		$directorio = simad_util::createPath($directorio_tmp);
-        //***************************************************************************************
-        @move_uploaded_file($tempFile,$directorio.DIRECTORY_SEPARATOR.$cons.'_'.$fileName);
-        $data_array['name'] = $cons.'_'.$fileName;
-        //***************************************************************************************
-        $this->getResponse()->setContentType('application/json');
-        $data_json = json_encode($data_array);
-        return $this->renderText($data_json);
-    }else{
-        $this->getResponse()->setContentType('application/json');
-        $data_json = json_encode($data_array);
-        return $this->renderText($data_json);
+        //*************************************************************************************
+        foreach ($this->getRequest()->getFiles() as $file) {
+            //*********************************************************************************
+            $directorio_entidad = $dirRaiz . $entidad_text . DIRECTORY_SEPARATOR;
+            $directorio_tmp = $directorio_entidad . $dirTmp . DIRECTORY_SEPARATOR;
+            //*********************************************************************************
+            $cons    = $this->getNewConsecutivo();
+            $file_vars = pathinfo($file['name']);
+            $util_simad = new simad_util();
+            $fileName = $util_simad->clean_name_file($file_vars);
+            $directorio = simad_util::createPath($directorio_tmp);
+            //*********************************************************************************
+            @move_uploaded_file($file['tmp_name'], $directorio . DIRECTORY_SEPARATOR . $cons . '_' . $fileName);
+            //*********************************************************************************
+            $this->fileName = $cons . '_' . $fileName;
+        }
     }
-  }
-  
-  public function getNewConsecutivo()
-  {
+
+    public function executeDzFileUpload()
+    {
+        $data_array = array();
+        if (!empty($_FILES)) {
+            $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+            $dirRaiz = ParametroPeer::retrieveByPk(29)->getValortexto();
+            $dirTmp  = ParametroPeer::retrieveByPk(65)->getValortexto();
+            //***************************************************************************************
+            $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
+            $entidad_text = $usuario->getRegional()->getEntidad()->getDirectorioName();
+            $cons    = $this->getNewConsecutivo();
+            //***************************************************************************************
+            $directorio_entidad = $dirRaiz . $entidad_text . DIRECTORY_SEPARATOR;
+            $directorio_tmp = $directorio_entidad . $dirTmp . DIRECTORY_SEPARATOR;
+            //***************************************************************************************
+            $file_vars = pathinfo($_FILES['file']['name']);
+            $util_simad = new simad_util();
+            $fileName = $util_simad->clean_name_file($file_vars);
+            //***************************************************************************************
+            $tempFile = $_FILES['file']['tmp_name'];
+            $directorio = simad_util::createPath($directorio_tmp);
+            //***************************************************************************************
+            @move_uploaded_file($tempFile, $directorio . DIRECTORY_SEPARATOR . $cons . '_' . $fileName);
+            $data_array['name'] = $cons . '_' . $fileName;
+            //***************************************************************************************
+            $this->getResponse()->setContentType('application/json');
+            $data_json = json_encode($data_array);
+            return $this->renderText($data_json);
+        } else {
+            $this->getResponse()->setContentType('application/json');
+            $data_json = json_encode($data_array);
+            return $this->renderText($data_json);
+        }
+    }
+
+    public function getNewConsecutivo()
+    {
         $cons = ParametroPeer::retrieveByPk(8);
         $regId = $cons->getValorNumerico();
-        if($regId > 0){
-            $cons->setValorNumerico($regId+1);
+        if ($regId > 0) {
+            $cons->setValorNumerico($regId + 1);
             $cons->save();
         }
-        return $regId;		
-  }
-  
-  public function getAprobadores($comenviada_id)
-  {
-    /*********************************************APROBACIONES**********************************************/
-    $modulo_id = 4;$matriz_data = array();$col=0;
-    $ap = new Criteria();
-    $ap->add(ComAprobacionPeer::CONSECUTIVO_ID,$comenviada_id);
-    $ap->add(ComAprobacionPeer::MODULO_ID,$modulo_id);
-    $reg_aprobadores = ComAprobacionPeer::doSelect($ap);
-    foreach($reg_aprobadores as $data)
-    {
-        $fila=0;
-        $matriz_data[$fila][$col] = $data->getUsuarioId();
-        $matriz_data[++$fila][$col] = $data->getUsuario()->getNombre().' '.$data->getUsuario()->getApellido();        
-        $col++;
+        return $regId;
     }
-    return $matriz_data;
-    /*******************************************************************************************************/
-  }
-  
+
+    public function getAprobadores($comenviada_id)
+    {
+        /*********************************************APROBACIONES**********************************************/
+        $modulo_id = 4;
+        $matriz_data = array();
+        $col = 0;
+        $ap = new Criteria();
+        $ap->add(ComAprobacionPeer::CONSECUTIVO_ID, $comenviada_id);
+        $ap->add(ComAprobacionPeer::MODULO_ID, $modulo_id);
+        $reg_aprobadores = ComAprobacionPeer::doSelect($ap);
+        foreach ($reg_aprobadores as $data) {
+            $fila = 0;
+            $matriz_data[$fila][$col] = $data->getUsuarioId();
+            $matriz_data[++$fila][$col] = $data->getUsuario()->getNombre() . ' ' . $data->getUsuario()->getApellido();
+            $col++;
+        }
+        return $matriz_data;
+        /*******************************************************************************************************/
+    }
+
     public function getDestinatario($comenviada_id)
     {
-            $c=new Criteria();
-            $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $comenviada_id);
-            $c->add(EnviadaDirectorioPeer::ROLDIRENVIADA_ID, 1);
-            $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);        
-            foreach($respo as $res){		
-            return $this->destinatarioName = $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario();			
-            }
+        $c = new Criteria();
+        $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $comenviada_id);
+        $c->add(EnviadaDirectorioPeer::ROLDIRENVIADA_ID, 1);
+        $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);
+        foreach ($respo as $res) {
+            return $this->destinatarioName = $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario();
+        }
     }
-    
+
     public function executeExcel()
     {
         $this->setLayout(false);
         $c = new Criteria();
-        $this->usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');    
+        $this->usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         //**************************************************************************************************
         $this->parametros = "&a=1";
-        $this->papelera = false;    
+        $this->papelera = false;
         $c = $this->getCriteriaBasic($c);
         //**************************************************************************************************
         $arrComEnviadas = $this->com_enviadas = ComEnviadaPeer::doSelect($c);
         $this->destinatario = array();
         $this->firmas = array();
         $i = 0;
-        foreach ($arrComEnviadas as $com_enviada){
+        foreach ($arrComEnviadas as $com_enviada) {
             $this->destinatario[$i] = $this->getDestinatario($com_enviada->getComenviadaId());
             $this->firmas[$i] = $this->getFirstUsurioFirmaName($com_enviada->getComenviadaId());
             $i++;
-        }    
+        }
     }
 
     public function executePlanillaPdf()
     {
         $this->setLayout(false);
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');		 	        
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $parametros = '';
         //**********************************************************************************************************
         $parametros .= " AND enviada_usuario.ROLUSCOMENVIADA_ID=2";
         if ($this->getRequestParameter('periodo_id')) {
-            $parametros .= " AND periodo_id=" . $this->getRequestParameter('periodo_id');     
+            $parametros .= " AND periodo_id=" . $this->getRequestParameter('periodo_id');
         }
-        
-        if ($this->getRequestParameter('marca')) {		   
-        //$c->add(ComRecibidaPeer::MARCA,$usuariologuiado);
-        $parametros .= " AND MARCA=" . $usuariologuiado;
+
+        if ($this->getRequestParameter('marca')) {
+            //$c->add(ComRecibidaPeer::MARCA,$usuariologuiado);
+            $parametros .= " AND MARCA=" . $usuariologuiado;
         }
         //**********************************************************************************************************
-        $conexion = Propel::getConnection();				
+        $conexion = Propel::getConnection();
         $cadSet = '';
-		//********************************************************************************************
+        //********************************************************************************************
         $sql_uproyecta = "(SELECT TOP 1 CONCAT(UPROYECTA.NOMBRE, ' ', UPROYECTA.APELLIDO)";
         $sql_uproyecta .= " FROM USUARIO UPROYECTA";
         $sql_uproyecta .= " JOIN ENVIADA_USUARIO COMUPROYECTA ON UPROYECTA.USUARIO_ID=COMUPROYECTA.USUARIO_ID";
         $sql_uproyecta .= " WHERE COMUPROYECTA.ROLUSCOMENVIADA_ID = 1";
-        $sql_uproyecta .= " AND COMUPROYECTA.COMENVIADA_ID = ".ComEnviadaPeer::COMENVIADA_ID.") AS USUARIO_PROYECTA";
+        $sql_uproyecta .= " AND COMUPROYECTA.COMENVIADA_ID = " . ComEnviadaPeer::COMENVIADA_ID . ") AS USUARIO_PROYECTA";
         //**********************************************************************************************************
         $query = "SELECT 
         com_enviada.RADICADO,com_enviada.ASUNTO, CONCAT(directorio_externo.NOMBRE , ' - ' , directorio_externo.NOMBRE) AS DESTINATARIO, 
         CONCAT(usuario.NOMBRE,' ',usuario.APELLIDO) AS REMITENTE, com_enviada.FECHA_CREACION,empresa_mensajeria.NOMBRE AS COURRIER, 
-		com_enviada.GUIA AS NUM_GUIA,ciudad.NOMBRE AS NOMBRE_CIUDAD, ".$sql_uproyecta."
+		com_enviada.GUIA AS NUM_GUIA,ciudad.NOMBRE AS NOMBRE_CIUDAD, " . $sql_uproyecta . "
         FROM com_enviada
         JOIN enviada_usuario ON com_enviada.COMENVIADA_ID = enviada_usuario.COMENVIADA_ID
         JOIN enviada_directorio ON com_enviada.COMENVIADA_ID = enviada_directorio.COMENVIADA_ID
@@ -784,7 +748,7 @@ class com_enviadaActions extends sfActions
         JOIN directorio_externo ON directorio_externo.DIRECTORIOEXTERNO_ID = enviada_directorio.DIRECTORIOEXTERNO_ID
         LEFT JOIN empresa_mensajeria ON empresa_mensajeria.EMPRESA_MENSAJERIA_ID = com_enviada.EMPRESA_MENSAJERIA_ID
         JOIN ciudad ON directorio_externo.CIUDAD_ID = ciudad.CIUDAD_ID
-        WHERE 1=1 ".$parametros;
+        WHERE 1=1 " . $parametros;
         /******************************INICIO GENERACION DEL PDF****************************************************/
         $orientacion_pdf = "L";
         $pdf = new MYPDF($orientacion_pdf, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -796,15 +760,15 @@ class com_enviadaActions extends sfActions
         $pdf->SetAuthor('ARCHIDHU');
         $pdf->SetTitle('Planilla Distribucion Documentos Correo Certificado');
         $pdf->SetSubject('Comunicaciones Salientes');
-        $pdf->SetKeywords('ARCHIDHU, PDF, planilla, distribucion, salientes');          
+        $pdf->SetKeywords('ARCHIDHU, PDF, planilla, distribucion, salientes');
         // set header and footer fonts
-        $pdf->setHeaderFont(Array(PDF_FONT_MONOSPACED, 'B', 10));    
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', 6));
+        $pdf->setHeaderFont(array(PDF_FONT_MONOSPACED, 'B', 10));
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', 6));
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
         //set margins
         //$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $pdf->SetMargins(3,54, 20);    
+        $pdf->SetMargins(3, 54, 20);
         $pdf->SetHeaderMargin(3);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
         $pdf->setPrintFooter(false);
@@ -813,8 +777,8 @@ class com_enviadaActions extends sfActions
         //set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         //set some language-dependent strings
-        $l=0;
-        $pdf->setLanguageArray($l);     
+        $l = 0;
+        $pdf->setLanguageArray($l);
         //***********************************************************************************************************
         // set font
         $pdf->SetFont('dejavusans', '', 10);
@@ -823,68 +787,68 @@ class com_enviadaActions extends sfActions
         $html_cuerpo = '<table border="1" width="100%" cellspacing="0"  cellpadding="0" >';
         $html_encabezado = "";
         //***********************************************************************************************************
-		//echo $query;exit;
+        //echo $query;exit;
         $sentencia = $conexion->prepare($query);
         $sentencia->execute();
-		$list_object = $sentencia->fetchAll(PDO::FETCH_BOTH);
+        $list_object = $sentencia->fetchAll(PDO::FETCH_BOTH);
         //***********************************************************************************************************
-        foreach($list_object as $enviada_report){
+        foreach ($list_object as $enviada_report) {
             $html_cuerpo .= '<tr>';
-            $html_cuerpo .= '<td width="100" nowrap="" align="left"><font size="8">'.date("Y-m-d G:i:s",strtotime($enviada_report['FECHA_CREACION'])).'</font></td>';
-            $html_cuerpo .= '<td width="150" nowrap align="left"><font size="7">'.utf8_encode($enviada_report['COURRIER']).' '.utf8_encode($enviada_report['NUM_GUIA']).'</font></td>';
-            $html_cuerpo .= '<td width="200" nowrap="" align="left"><font size="8">'.utf8_encode($enviada_report['DESTINATARIO']).'</font></td>';
+            $html_cuerpo .= '<td width="100" nowrap="" align="left"><font size="8">' . date("Y-m-d G:i:s", strtotime($enviada_report['FECHA_CREACION'])) . '</font></td>';
+            $html_cuerpo .= '<td width="150" nowrap align="left"><font size="7">' . utf8_encode($enviada_report['COURRIER']) . ' ' . utf8_encode($enviada_report['NUM_GUIA']) . '</font></td>';
+            $html_cuerpo .= '<td width="200" nowrap="" align="left"><font size="8">' . utf8_encode($enviada_report['DESTINATARIO']) . '</font></td>';
             //$html_cuerpo .= '<td width="140" nowrap="" align="left"><font size="8">'.utf8_encode($enviada_report['DESTINATARIO']).'</font></td>';
-            $html_cuerpo .= '<td width="150" nowrap="" align="center"><font size="8">'.$enviada_report['RADICADO'].'</font></td>';
-            $html_cuerpo .= '<td width="78"><font size="8">'.utf8_encode($enviada_report['NOMBRE_CIUDAD']).'</font></td>';
+            $html_cuerpo .= '<td width="150" nowrap="" align="center"><font size="8">' . $enviada_report['RADICADO'] . '</font></td>';
+            $html_cuerpo .= '<td width="78"><font size="8">' . utf8_encode($enviada_report['NOMBRE_CIUDAD']) . '</font></td>';
             $html_cuerpo .= '<td width="150" nowrap="" align="center"></td>';
-            $html_cuerpo .= '</tr>'; 
+            $html_cuerpo .= '</tr>';
         }
         //***********************************************************************************************************
         $html_cuerpo .= '</table>';
         $html_encabezado .= $html_cuerpo;
-        $pdf->writeHTML($html_encabezado, true, false, true, false,'');
+        $pdf->writeHTML($html_encabezado, true, false, true, false, '');
         ob_clean();
-        $pdf->Output('planilla_distribucion_salientes.pdf','D');    
+        $pdf->Output('planilla_distribucion_salientes.pdf', 'D');
         //***********************************************************************************************************
         $this->username = $usuariologuiado;
         $this->enviada_report = $enviada_report;
         return sfView::NONE;
     }
-	
+
     public function executePlanilla()
     {
         $this->setLayout(false);
         $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $this->usuario_genera = UsuarioPeer::retrieveByPK($usuariologuiado);
-        $parametros = '';        
+        $parametros = '';
         //*************************************************************************************************
         $c = new Criteria();
         $c->setDistinct();
         $c = $this->getCriteriaBasic($c);
 
         $c->addJoin(ComEnviadaPeer::DEPENDENCIA_ID, DependenciaPeer::DEPENDENCIA_ID);
-        $c->addJoin(ComEnviadaPeer::EMPRESA_MENSAJERIA_ID, EmpresaMensajeriaPeer::EMPRESA_MENSAJERIA_ID, Criteria::LEFT_JOIN); 
-        $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaInteresadosPeer::COMENVIADA_ID, Criteria::LEFT_JOIN); 
-        $c->addJoin(EnviadaInteresadosPeer::INTERESADO_ID, InteresadosPeer::INTERESADO_ID, Criteria::LEFT_JOIN); 
+        $c->addJoin(ComEnviadaPeer::EMPRESA_MENSAJERIA_ID, EmpresaMensajeriaPeer::EMPRESA_MENSAJERIA_ID, Criteria::LEFT_JOIN);
+        $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaInteresadosPeer::COMENVIADA_ID, Criteria::LEFT_JOIN);
+        $c->addJoin(EnviadaInteresadosPeer::INTERESADO_ID, InteresadosPeer::INTERESADO_ID, Criteria::LEFT_JOIN);
 
         $c->clearSelectColumns();
 
         $c->addAsColumn('NOMBRE_DEPENDENCIA', DependenciaPeer::NOMBRE);
         $c->addAsColumn('NUM_GUIA', ComEnviadaPeer::GUIA);
-        $c->addAsColumn('COURRIER', EmpresaMensajeriaPeer::NOMBRE); 
-        $c->addAsColumn('NUMRESOLUCION',ComEnviadaPeer::NUMERO_RESOLUCION);
-        $c->addAsColumn('FRESOLUCION',ComEnviadaPeer::FECHA_RESOLUCION);
-        $c->addAsColumn('INTERESADO_NUID',InteresadosPeer::NUMERO_IDENTIFICACION);
-        $c->addAsColumn('INTERESADO_NOMBRE',InteresadosPeer::PRIMER_NOMBRE);
-        $c->addAsColumn('INTERESADO_APELLIDO',InteresadosPeer::PRIMER_APELLIDO);
+        $c->addAsColumn('COURRIER', EmpresaMensajeriaPeer::NOMBRE);
+        $c->addAsColumn('NUMRESOLUCION', ComEnviadaPeer::NUMERO_RESOLUCION);
+        $c->addAsColumn('FRESOLUCION', ComEnviadaPeer::FECHA_RESOLUCION);
+        $c->addAsColumn('INTERESADO_NUID', InteresadosPeer::NUMERO_IDENTIFICACION);
+        $c->addAsColumn('INTERESADO_NOMBRE', InteresadosPeer::PRIMER_NOMBRE);
+        $c->addAsColumn('INTERESADO_APELLIDO', InteresadosPeer::PRIMER_APELLIDO);
 
         $c->addSelectColumn(ComEnviadaPeer::FECHA_CREACION);
         $c->addSelectColumn(ComEnviadaPeer::CARGO_DESTINATARIO);
         $c->addSelectColumn(ComEnviadaPeer::RADICADO);
         $c->addSelectColumn(ComEnviadaPeer::ASUNTO);
         $c->addSelectColumn(ComEnviadaPeer::COMENVIADA_ID);
-		$c->addSelectColumn(ComEnviadaPeer::FECHA_DE_ANULACION);
-		$c->addSelectColumn(ComEnviadaPeer::OBS_ANULACION);
+        $c->addSelectColumn(ComEnviadaPeer::FECHA_DE_ANULACION);
+        $c->addSelectColumn(ComEnviadaPeer::OBS_ANULACION);
         //********************************************************************************************
         $sql_uproyecta = "(SELECT TOP 1 CONCAT(UPROYECTA.NOMBRE, ' ', UPROYECTA.APELLIDO)";
         $sql_uproyecta .= " FROM USUARIO UPROYECTA";
@@ -893,11 +857,11 @@ class com_enviadaActions extends sfActions
         $sql_uproyecta .= " AND COMUPROYECTA.COMENVIADA_ID = " . ComEnviadaPeer::COMENVIADA_ID . ")";
         $c->addAsColumn('USUARIO_PROYECTA', $sql_uproyecta);
         //********************************************************************************************
-        $sql_destinatario = "(SELECT TOP 1 CONCAT( ". DirectorioExternoPeer::NOMBRE .", ' ', ". DirectorioExternoPeer::NIT .")";
-        $sql_destinatario .= " FROM ". DirectorioExternoPeer::TABLE_NAME;
-        $sql_destinatario .= " JOIN ". EnviadaDirectorioPeer::TABLE_NAME ."  ON ". DirectorioExternoPeer::DIRECTORIOEXTERNO_ID ." = ". EnviadaDirectorioPeer::DIRECTORIOEXTERNO_ID;
-        $sql_destinatario .= " WHERE ". EnviadaDirectorioPeer::ROLDIRENVIADA_ID ." = 1";
-        $sql_destinatario .= " AND ". EnviadaDirectorioPeer::COMENVIADA_ID . " = " . ComEnviadaPeer::COMENVIADA_ID . ")";
+        $sql_destinatario = "(SELECT TOP 1 CONCAT( " . DirectorioExternoPeer::NOMBRE . ", ' ', " . DirectorioExternoPeer::NIT . ")";
+        $sql_destinatario .= " FROM " . DirectorioExternoPeer::TABLE_NAME;
+        $sql_destinatario .= " JOIN " . EnviadaDirectorioPeer::TABLE_NAME . "  ON " . DirectorioExternoPeer::DIRECTORIOEXTERNO_ID . " = " . EnviadaDirectorioPeer::DIRECTORIOEXTERNO_ID;
+        $sql_destinatario .= " WHERE " . EnviadaDirectorioPeer::ROLDIRENVIADA_ID . " = 1";
+        $sql_destinatario .= " AND " . EnviadaDirectorioPeer::COMENVIADA_ID . " = " . ComEnviadaPeer::COMENVIADA_ID . ")";
         $c->addAsColumn('DESTINATARIO', $sql_destinatario);
         //********************************************************************************************
         $sql_ufirma = "(SELECT TOP 1 CONCAT(UFIRMA.NOMBRE, ' ', UFIRMA.APELLIDO)";
@@ -936,154 +900,158 @@ class com_enviadaActions extends sfActions
         $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
         $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $estado_anulado = trim($this->getRequestParameter('estadocomenviada_id'));
-		$periodo_id = trim($this->getRequestParameter('periodo_id')) ? trim($this->getRequestParameter('periodo_id')) : date("Y");
+        $periodo_id = trim($this->getRequestParameter('periodo_id')) ? trim($this->getRequestParameter('periodo_id')) : date("Y");
         //****************************************************************************************
-        if($this->getRequestParameter('porFunciSalida')=="1"){
-            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);
-            $c->add(ComEnviadaPeer::PERIODO_ID,$periodo_id);
-            $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,array(4,5,1),Criteria::NOT_IN);
-            $c->add(EnviadaUsuarioPeer::USUARIO_ID,$usuariologuiado);	
-            $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,2);//firma
-            $c->addOr(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,1);//creador
-            if($this->getRequestParameter('estadocomenviada_id') == 1){
-                $c->addOr(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,4);//aprobador
+        if ($this->getRequestParameter('porFunciSalida') == "1") {
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+            $c->add(ComEnviadaPeer::PERIODO_ID, $periodo_id);
+            $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, array(4, 5, 1), Criteria::NOT_IN);
+            $c->add(EnviadaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+            $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 2); //firma
+            $c->addOr(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 1); //creador
+            if ($this->getRequestParameter('estadocomenviada_id') == 1) {
+                $c->addOr(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 4); //aprobador
                 $this->isBorradorCom = true;
             }
-            $this->parametros.="&porFunciSalida=1";
-        }elseif($this->getRequestParameter('porFunciCopia')=="1"){
-            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);	
-            $c->add(EnviadaUsuarioPeer::USUARIO_ID,$usuariologuiado);
-            $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,1,Criteria::NOT_EQUAL);
-            $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,3);
-            $c->add(ComEnviadaPeer::PERIODO_ID,$periodo_id);
-            $this->parametros.="&porFunciCopia=1";
-        }elseif($this->getRequestParameter('porProcesoCom')){
+            $this->parametros .= "&porFunciSalida=1";
+        } elseif ($this->getRequestParameter('porFunciCopia') == "1") {
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+            $c->add(EnviadaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+            $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, 1, Criteria::NOT_EQUAL);
+            $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 3);
+            $c->add(ComEnviadaPeer::PERIODO_ID, $periodo_id);
+            $this->parametros .= "&porFunciCopia=1";
+        } elseif ($this->getRequestParameter('porProcesoCom')) {
             $value_process = $this->getRequestParameter('porProcesoCom');
             //**************************************************************************
-            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);	
-            $c->add(EnviadaUsuarioPeer::USUARIO_ID,$usuariologuiado);
-            $c->addAnd(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,1);//borrador
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+            $c->add(EnviadaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+            $c->addAnd(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, 1); //borrador
             //**************************************************************************
-            $rolus_id = 0;$tipoproceso_id = 0;
-            if($value_process == md5(5)){//firma
-                $rolus_id = 2;$tipoproceso_id = 5;
-            }elseif($value_process == md5(3)){
-                $rolus_id = 5;$tipoproceso_id = 3;
-            }elseif($value_process == md5(4)){
-                $rolus_id = 4;$tipoproceso_id = 4;
+            $rolus_id = 0;
+            $tipoproceso_id = 0;
+            if ($value_process == md5(5)) { //firma
+                $rolus_id = 2;
+                $tipoproceso_id = 5;
+            } elseif ($value_process == md5(3)) {
+                $rolus_id = 5;
+                $tipoproceso_id = 3;
+            } elseif ($value_process == md5(4)) {
+                $rolus_id = 4;
+                $tipoproceso_id = 4;
             }
             //**************************************************************************
-            $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,$rolus_id);
-            $c->add(EnviadaUsuarioPeer::TIPOPROCESOCOM_ID,$tipoproceso_id);
-            $c->add(EnviadaUsuarioPeer::ESTA_ASIGNADA,1);
-            $this->parametros.="&porProcesoCom=".$value_process;
-        }elseif($this->getRequestParameter('porRadicadas')=="1"){
-            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);	
-            $c->add(EnviadaUsuarioPeer::USUARIO_ID,$usuariologuiado);
-            $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,1,Criteria::NOT_EQUAL);	
-            $c->add(ComEnviadaPeer::PERIODO_ID,$periodo_id);
-            $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,1);	
-            $this->parametros.="&porRadicadas=1";
-		}elseif($this->getRequestParameter('porGestSaldida') == md5($usuariologuiado.'porGestSaldida')){
-			$c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);
-			$c->add(ComEnviadaPeer::PERIODO_ID,$periodo_id);
-			$c->add(ComEnviadaPeer::SERVICIO_ID,null,Criteria::ISNULL);
-			$c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,2);
-			$c->addOr(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,3);
-			if($this->getUser()->checkPerm("COM_ENVIADA_LIST_DEPENDENCIA", $usuariologuiado)){
-				$usuario = UsuarioPeer::retrieveByPk($usuariologuiado);
-				$c->add(ComEnviadaPeer::DEPENDENCIA_ID,$usuario->getDependenciaId());
-        }else{
-				$c->add(EnviadaUsuarioPeer::USUARIO_ID,$usuariologuiado);
-				$c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,2);
-			}	
-            $this->parametros.="&porGestSaldida=".md5($usuariologuiado.'porGestSaldida');
-        }else{
+            $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, $rolus_id);
+            $c->add(EnviadaUsuarioPeer::TIPOPROCESOCOM_ID, $tipoproceso_id);
+            $c->add(EnviadaUsuarioPeer::ESTA_ASIGNADA, 1);
+            $this->parametros .= "&porProcesoCom=" . $value_process;
+        } elseif ($this->getRequestParameter('porRadicadas') == "1") {
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+            $c->add(EnviadaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+            $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, 1, Criteria::NOT_EQUAL);
+            $c->add(ComEnviadaPeer::PERIODO_ID, $periodo_id);
+            $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 1);
+            $this->parametros .= "&porRadicadas=1";
+        } elseif ($this->getRequestParameter('porGestSaldida') == md5($usuariologuiado . 'porGestSaldida')) {
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+            $c->add(ComEnviadaPeer::PERIODO_ID, $periodo_id);
+            $c->add(ComEnviadaPeer::SERVICIO_ID, null, Criteria::ISNULL);
+            $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, 2);
+            $c->addOr(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, 3);
+            if ($this->getUser()->checkPerm("COM_ENVIADA_LIST_DEPENDENCIA", $usuariologuiado)) {
+                $usuario = UsuarioPeer::retrieveByPk($usuariologuiado);
+                $c->add(ComEnviadaPeer::DEPENDENCIA_ID, $usuario->getDependenciaId());
+            } else {
+                $c->add(EnviadaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+                $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 2);
+            }
+            $this->parametros .= "&porGestSaldida=" . md5($usuariologuiado . 'porGestSaldida');
+        } else {
             $perm_list_all = $this->getUser()->checkPerm('COM_ENVIADA_LISTAR_TODAS', $usuariologuiado);
-            if(!$perm_list_all){
+            if (!$perm_list_all) {
                 $arrIds = $this->getAutorizaciones();
-                if($arrIds){
+                if ($arrIds) {
                     $arrIds[] = $usuariologuiado;
-                    $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);	
-                    $c->add(EnviadaUsuarioPeer::USUARIO_ID,$arrIds,Criteria::IN);
-					//$c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,array(2,3),Criteria::IN);
-					//*******************************************************************************
-					$cton0 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,2);
-					$cton1 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,3);  	
-					$cton0->addOr($cton1);
-					$c->add($cton0);
-                }else{				
-                    $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);
-                    $c->add(EnviadaUsuarioPeer::USUARIO_ID,$usuariologuiado);
-					//$c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,array(1,2,3),Criteria::IN);
-					//*******************************************************************************
-					$cton0 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,1);
-					$cton1 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,2);
-					$cton2 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,3);
-					$cton0->addOr($cton1);
-					$cton2->addOr($cton0);
-					$c->add($cton2);
+                    $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+                    $c->add(EnviadaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN);
+                    //$c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,array(2,3),Criteria::IN);
+                    //*******************************************************************************
+                    $cton0 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 2);
+                    $cton1 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 3);
+                    $cton0->addOr($cton1);
+                    $c->add($cton0);
+                } else {
+                    $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+                    $c->add(EnviadaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+                    //$c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,array(1,2,3),Criteria::IN);
+                    //*******************************************************************************
+                    $cton0 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 1);
+                    $cton1 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 2);
+                    $cton2 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 3);
+                    $cton0->addOr($cton1);
+                    $cton2->addOr($cton0);
+                    $c->add($cton2);
                 }
             }
         }
-		//*************************************************************************************************
-		$perm_list_anuladas = $this->getUser()->checkPerm('COM_ENVIADA_LISTAR_ANULADAS', $usuariologuiado);
-		//*************************************************************************************************
-        if($estado_anulado == 4 && $perm_list_anuladas){
-			$c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);
-            if($c->containsKey(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID)){
-			    $c->addAnd(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,$estado_anulado,Criteria::EQUAL);
-            }else{
-                $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,$estado_anulado,Criteria::EQUAL);
+        //*************************************************************************************************
+        $perm_list_anuladas = $this->getUser()->checkPerm('COM_ENVIADA_LISTAR_ANULADAS', $usuariologuiado);
+        //*************************************************************************************************
+        if ($estado_anulado == 4 && $perm_list_anuladas) {
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+            if ($c->containsKey(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID)) {
+                $c->addAnd(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, $estado_anulado, Criteria::EQUAL);
+            } else {
+                $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, $estado_anulado, Criteria::EQUAL);
             }
-        }elseif(!$perm_list_anuladas){
-        	$estado_anulado = 4;
-			$c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);
-            if($c->containsKey(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID)){
-			    $c->addAnd(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,$estado_anulado,Criteria::NOT_EQUAL);
-            }else{
-                $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,$estado_anulado,Criteria::NOT_EQUAL);
+        } elseif (!$perm_list_anuladas) {
+            $estado_anulado = 4;
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+            if ($c->containsKey(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID)) {
+                $c->addAnd(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, $estado_anulado, Criteria::NOT_EQUAL);
+            } else {
+                $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, $estado_anulado, Criteria::NOT_EQUAL);
             }
         }
         //*************************************************************************************************/
-        if($this->getRequestParameter('marca')){
-            if($this->getRequestParameter('marca')=="sinMarca"){		  	
-                $c->add(ComEnviadaPeer::MARCA,$usuariologuiado,Criteria::NOT_EQUAL);		
-                $this->parametros.="&marca=".$this->getRequestParameter('marca');	
-            }else{	
-                $c->add(ComEnviadaPeer::MARCA,$usuariologuiado);		
-                $this->parametros.="&marca=".$this->getRequestParameter('marca');
+        if ($this->getRequestParameter('marca')) {
+            if ($this->getRequestParameter('marca') == "sinMarca") {
+                $c->add(ComEnviadaPeer::MARCA, $usuariologuiado, Criteria::NOT_EQUAL);
+                $this->parametros .= "&marca=" . $this->getRequestParameter('marca');
+            } else {
+                $c->add(ComEnviadaPeer::MARCA, $usuariologuiado);
+                $this->parametros .= "&marca=" . $this->getRequestParameter('marca');
                 $this->marcarEntrega = 1;
-            }			 	
+            }
         }
         //*************************************************************************************************/
-        if($this->getRequestParameter('radicado')){	
-            $c->add(ComEnviadaPeer::RADICADO,'%'.$this->getRequestParameter('radicado').'%',Criteria::LIKE);		
-            $this->parametros.="&radicado=".$this->getRequestParameter('radicado');			 	
+        if ($this->getRequestParameter('radicado')) {
+            $c->add(ComEnviadaPeer::RADICADO, $this->getRequestParameter('radicado') . '%', Criteria::LIKE);
+            $this->parametros .= "&radicado=" . $this->getRequestParameter('radicado');
         }
         //*************************************************************************************************/
-        if($this->getRequestParameter('entidad_origen')){
-            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaDirectorioPeer::COMENVIADA_ID);
-            $c->addJoin(EnviadaDirectorioPeer::DIRECTORIOEXTERNO_ID,DirectorioExternoPeer::DIRECTORIOEXTERNO_ID);
-            $c->add(DirectorioExternoPeer::NOMBRE,'%'.$this->getRequestParameter('entidad_origen').'%',Criteria::LIKE);	
-            $c->add(EnviadaDirectorioPeer::ROLDIRENVIADA_ID,1);	
-            $this->parametros.="&entidad_origen=".$this->getRequestParameter('entidad_origen');			 	
+        if ($this->getRequestParameter('entidad_origen')) {
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaDirectorioPeer::COMENVIADA_ID);
+            $c->addJoin(EnviadaDirectorioPeer::DIRECTORIOEXTERNO_ID, DirectorioExternoPeer::DIRECTORIOEXTERNO_ID);
+            $c->add(DirectorioExternoPeer::NOMBRE, '%' . $this->getRequestParameter('entidad_origen') . '%', Criteria::LIKE);
+            $c->add(EnviadaDirectorioPeer::ROLDIRENVIADA_ID, 1);
+            $this->parametros .= "&entidad_origen=" . $this->getRequestParameter('entidad_origen');
         }
         //*************************************************************************************************/
-        if($this->getRequestParameter('funcionario_origen')){
-            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaDirectorioPeer::COMENVIADA_ID);
-            $c->addJoin(EnviadaDirectorioPeer::DIRECTORIOEXTERNO_ID,DirectorioExternoPeer::DIRECTORIOEXTERNO_ID);
-            $c->add(EnviadaDirectorioPeer::ROLDIRENVIADA_ID,1);
-            $c1 = $c->getNewCriterion(DirectorioExternoPeer::FUNCIONARIO,'%'.$this->getRequestParameter('funcionario_origen').'%',Criteria::LIKE);			
-            $c2 = $c->getNewCriterion(ComEnviadaPeer::FUNCIONARIO_DESTINO,'%'.$this->getRequestParameter('funcionario_origen').'%',Criteria::LIKE);
+        if ($this->getRequestParameter('funcionario_origen')) {
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaDirectorioPeer::COMENVIADA_ID);
+            $c->addJoin(EnviadaDirectorioPeer::DIRECTORIOEXTERNO_ID, DirectorioExternoPeer::DIRECTORIOEXTERNO_ID);
+            $c->add(EnviadaDirectorioPeer::ROLDIRENVIADA_ID, 1);
+            $c1 = $c->getNewCriterion(DirectorioExternoPeer::FUNCIONARIO, '%' . $this->getRequestParameter('funcionario_origen') . '%', Criteria::LIKE);
+            $c2 = $c->getNewCriterion(ComEnviadaPeer::FUNCIONARIO_DESTINO, '%' . $this->getRequestParameter('funcionario_origen') . '%', Criteria::LIKE);
             $c1->addOr($c2);
-            $c->add($c1);        
+            $c->add($c1);
             //$this->parametros.="&entidad_origen=".$this->getRequestParameter('entidad_origen');			
-            $this->parametros.="&funcionario_origen=".$this->getRequestParameter('funcionario_origen');			 	
+            $this->parametros .= "&funcionario_origen=" . $this->getRequestParameter('funcionario_origen');
         }
         //*************************************************************************************************/
-		$tipo_integracion = trim($this->getRequestParameter('tipo_integracion'));
-        if ($tipo_integracion){
+        $tipo_integracion = trim($this->getRequestParameter('tipo_integracion'));
+        if ($tipo_integracion) {
             $c->add(ComEnviadaPeer::TIPO_INTEGRACION, $tipo_integracion);
             $this->parametros .= "&tipo_integracion=" . $tipo_integracion;
         }
@@ -1094,238 +1062,232 @@ class com_enviadaActions extends sfActions
             $this->parametros .= "&firmado_digital=" . trim($this->getRequestParameter('firmado_digital'));
         }
         //*************************************************************************************************/
-        if($this->getRequestParameter('regional_id')){
-            $c->add(ComEnviadaPeer::REGIONAL_ID,$this->getRequestParameter('regional_id'));		
-            $this->parametros.="&regional_id=".$this->getRequestParameter('regional_id');			 	
+        if ($this->getRequestParameter('regional_id')) {
+            $c->add(ComEnviadaPeer::REGIONAL_ID, $this->getRequestParameter('regional_id'));
+            $this->parametros .= "&regional_id=" . $this->getRequestParameter('regional_id');
         }
         //*************************************************************************************************/
-        if($this->getRequestParameter('dependencia_id')){
-            $c->add(ComEnviadaPeer::DEPENDENCIA_ID,$this->getRequestParameter('dependencia_id'));		
-            $this->parametros.="&dependencia_id=".$this->getRequestParameter('dependencia_id');			 	
+        if ($this->getRequestParameter('dependencia_id')) {
+            $c->add(ComEnviadaPeer::DEPENDENCIA_ID, $this->getRequestParameter('dependencia_id'));
+            $this->parametros .= "&dependencia_id=" . $this->getRequestParameter('dependencia_id');
         }
         //*************************************************************************************************/
         if ($this->getRequestParameter('estadodigitalizacion_id')) {
-            $c->add(ComEnviadaPeer::ESTADODIGITALIZACION_ID,$this->getRequestParameter('estadodigitalizacion_id'));
+            $c->add(ComEnviadaPeer::ESTADODIGITALIZACION_ID, $this->getRequestParameter('estadodigitalizacion_id'));
             $this->parametros .= "&estadodigitalizacion_id=" . $this->getRequestParameter('estadodigitalizacion_id');
         }
         //************************************************************************************
-        if($this->getRequestParameter('prioridadcom_id')){	
-            $c->add(ComEnviadaPeer::PRIORIDADCOM_ID,$this->getRequestParameter('prioridadcom_id'));		
-            $this->parametros.="&prioridadcom_id=".$this->getRequestParameter('prioridadcom_id');
+        if ($this->getRequestParameter('prioridadcom_id')) {
+            $c->add(ComEnviadaPeer::PRIORIDADCOM_ID, $this->getRequestParameter('prioridadcom_id'));
+            $this->parametros .= "&prioridadcom_id=" . $this->getRequestParameter('prioridadcom_id');
         }
         //*************************************************************************************************/
-        if($this->getRequestParameter('asunto')){
-            $c->add(ComEnviadaPeer::ASUNTO,'%'.$this->getRequestParameter('asunto').'%',Criteria::LIKE);		
-            $this->parametros.="&asunto=".$this->getRequestParameter('asunto');			 	
+        if ($this->getRequestParameter('asunto')) {
+            $c->add(ComEnviadaPeer::ASUNTO, '%' . $this->getRequestParameter('asunto') . '%', Criteria::LIKE);
+            $this->parametros .= "&asunto=" . $this->getRequestParameter('asunto');
         }
         //*************************************************************************************************/
-        if($this->getRequestParameter('contenido')){
-            $c->add(ComEnviadaPeer::CONTENIDO,'%'.$this->getRequestParameter('contenido').'%',Criteria::LIKE);		
-            $this->parametros.="&contenido=".$this->getRequestParameter('contenido');			 	
+        if ($this->getRequestParameter('contenido')) {
+            $c->add(ComEnviadaPeer::CONTENIDO, '%' . $this->getRequestParameter('contenido') . '%', Criteria::LIKE);
+            $this->parametros .= "&contenido=" . $this->getRequestParameter('contenido');
         }
         //*************************************************************************************************/
-        if($this->getRequestParameter('guia')){
-            $c->add(ComEnviadaPeer::GUIA,'%'.$this->getRequestParameter('guia').'%',Criteria::LIKE);		
-            $this->parametros.="&guia=".$this->getRequestParameter('guia');			 	
-        }	
+        if ($this->getRequestParameter('guia')) {
+            $c->add(ComEnviadaPeer::GUIA, '%' . $this->getRequestParameter('guia') . '%', Criteria::LIKE);
+            $this->parametros .= "&guia=" . $this->getRequestParameter('guia');
+        }
         //////////////////FILTROS POR USUARIO CON DIFERENTES ROLES///////////////////////////////////////////
-        if($this->getRequestParameter('usuarioProyecto')){
-            if(!$perm_list_all)
-            {
-                $c->addAlias('CEUP',EnviadaUsuarioPeer::TABLE_NAME);
-                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,'CEUP.COMENVIADA_ID');
-                $c->add('CEUP.USUARIO_ID',$this->getRequestParameter('usuarioProyecto'));            
-                $c->add('CEUP.ROLUSCOMENVIADA_ID',1);
-            }else{    	
-                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);
-                $c->add(EnviadaUsuarioPeer::USUARIO_ID,$this->getRequestParameter('usuarioProyecto'));	
-                $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,1);
+        if ($this->getRequestParameter('usuarioProyecto')) {
+            if (!$perm_list_all) {
+                $c->addAlias('CEUP', EnviadaUsuarioPeer::TABLE_NAME);
+                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, 'CEUP.COMENVIADA_ID');
+                $c->add('CEUP.USUARIO_ID', $this->getRequestParameter('usuarioProyecto'));
+                $c->add('CEUP.ROLUSCOMENVIADA_ID', 1);
+            } else {
+                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+                $c->add(EnviadaUsuarioPeer::USUARIO_ID, $this->getRequestParameter('usuarioProyecto'));
+                $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 1);
             }
-            $this->parametros.="&usuarioProyecto=".$this->getRequestParameter('usuarioProyecto');
+            $this->parametros .= "&usuarioProyecto=" . $this->getRequestParameter('usuarioProyecto');
         }
         /******************************************************************************************************/
-        if($this->getRequestParameter('usuarioFirma')){
-            if(!$perm_list_all)
-            {
-                $c->addAlias('CEUF',EnviadaUsuarioPeer::TABLE_NAME);
-                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,'CEUF.COMENVIADA_ID');
-                $c->add('CEUF.USUARIO_ID',$this->getRequestParameter('usuarioFirma'));            
-                $c->add('CEUF.ROLUSCOMENVIADA_ID',2);
-            }else{ 
-                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);
-                $c->add(EnviadaUsuarioPeer::USUARIO_ID,$this->getRequestParameter('usuarioFirma'));	
-                $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,2);
+        if ($this->getRequestParameter('usuarioFirma')) {
+            if (!$perm_list_all) {
+                $c->addAlias('CEUF', EnviadaUsuarioPeer::TABLE_NAME);
+                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, 'CEUF.COMENVIADA_ID');
+                $c->add('CEUF.USUARIO_ID', $this->getRequestParameter('usuarioFirma'));
+                $c->add('CEUF.ROLUSCOMENVIADA_ID', 2);
+            } else {
+                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+                $c->add(EnviadaUsuarioPeer::USUARIO_ID, $this->getRequestParameter('usuarioFirma'));
+                $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 2);
             }
-            $this->parametros.="&usuarioFirma=".$this->getRequestParameter('usuarioFirma');			 	
+            $this->parametros .= "&usuarioFirma=" . $this->getRequestParameter('usuarioFirma');
         }
         /******************************************************************************************************/
-        if($this->getRequestParameter('usuarioCopia')){
-            if(!$perm_list_all)
-            {
-                $c->addAlias('CEUCOP',EnviadaUsuarioPeer::TABLE_NAME);
-                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,'CEUCOP.COMENVIADA_ID');
-                $c->add('CEUCOP.USUARIO_ID',$this->getRequestParameter('usuarioCopia'));            
-                $c->add('CEUCOP.ROLUSCOMENVIADA_ID',3);
+        if ($this->getRequestParameter('usuarioCopia')) {
+            if (!$perm_list_all) {
+                $c->addAlias('CEUCOP', EnviadaUsuarioPeer::TABLE_NAME);
+                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, 'CEUCOP.COMENVIADA_ID');
+                $c->add('CEUCOP.USUARIO_ID', $this->getRequestParameter('usuarioCopia'));
+                $c->add('CEUCOP.ROLUSCOMENVIADA_ID', 3);
+            } else {
+                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+                $c->add(EnviadaUsuarioPeer::USUARIO_ID, $this->getRequestParameter('usuarioCopia'));
+                $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 3);
             }
-            else
-            {   
-                $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);
-                $c->add(EnviadaUsuarioPeer::USUARIO_ID,$this->getRequestParameter('usuarioCopia'));	
-                $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,3);
-            }
-            $this->parametros.="&usuarioCopia=".$this->getRequestParameter('usuarioCopia');			 	
+            $this->parametros .= "&usuarioCopia=" . $this->getRequestParameter('usuarioCopia');
         }
         //*************************************************************************************************
         $expaddjoin_interesado = false;
         $pnombre_interesado = trim($this->getRequestParameter('pnombre_interesado'));
-        if(!empty($pnombre_interesado)){
+        if (!empty($pnombre_interesado)) {
             $expaddjoin_interesado = true;
-            $c->add(InteresadosPeer::PRIMER_NOMBRE,'%'.$pnombre_interesado.'%',Criteria::LIKE);  
-            $this->parametros .= "&pnombre_interesado=".$pnombre_interesado;
+            $c->add(InteresadosPeer::PRIMER_NOMBRE, '%' . $pnombre_interesado . '%', Criteria::LIKE);
+            $this->parametros .= "&pnombre_interesado=" . $pnombre_interesado;
         }
         //*************************************************************************************************
         $snombre_interesado = trim($this->getRequestParameter('snombre_interesado'));
-        if(!empty($snombre_interesado)){
+        if (!empty($snombre_interesado)) {
             $expaddjoin_interesado = true;
-            $c->add(InteresadosPeer::SEGUNDO_NOMBRE,'%'.$snombre_interesado.'%',Criteria::LIKE);  
-            $this->parametros .= "&snombre_interesado=".$snombre_interesado;
+            $c->add(InteresadosPeer::SEGUNDO_NOMBRE, '%' . $snombre_interesado . '%', Criteria::LIKE);
+            $this->parametros .= "&snombre_interesado=" . $snombre_interesado;
         }
         //*************************************************************************************************
         $papellido_interesado = trim($this->getRequestParameter('papellido_interesado'));
-        if(!empty($papellido_interesado)){
+        if (!empty($papellido_interesado)) {
             $expaddjoin_interesado = true;
-            $c->add(InteresadosPeer::PRIMER_APELLIDO,'%'.$papellido_interesado.'%',Criteria::LIKE);  
-            $this->parametros .= "&papellido_interesado=".$papellido_interesado;
+            $c->add(InteresadosPeer::PRIMER_APELLIDO, '%' . $papellido_interesado . '%', Criteria::LIKE);
+            $this->parametros .= "&papellido_interesado=" . $papellido_interesado;
         }
         //*************************************************************************************************
         $sapellido_interesado = trim($this->getRequestParameter('sapellido_interesado'));
-        if(!empty($sapellido_interesado)){
+        if (!empty($sapellido_interesado)) {
             $expaddjoin_interesado = true;
-            $c->add(InteresadosPeer::SEGUNDO_APELLIDO,'%'.$sapellido_interesado.'%',Criteria::LIKE);  
-            $this->parametros .= "&sapellido_interesado=".$sapellido_interesado;
+            $c->add(InteresadosPeer::SEGUNDO_APELLIDO, '%' . $sapellido_interesado . '%', Criteria::LIKE);
+            $this->parametros .= "&sapellido_interesado=" . $sapellido_interesado;
         }
         //*************************************************************************************************
         $nuid_interesado = trim($this->getRequestParameter('nuid_interesado'));
-        if(!empty($nuid_interesado)){
+        if (!empty($nuid_interesado)) {
             $expaddjoin_interesado = true;
-            $c->add(InteresadosPeer::NUMERO_IDENTIFICACION,'%'.$nuid_interesado.'%',Criteria::LIKE);  
-            $this->parametros .= "&nuid_interesado=".$nuid_interesado;
+            $c->add(InteresadosPeer::NUMERO_IDENTIFICACION, '%' . $nuid_interesado . '%', Criteria::LIKE);
+            $this->parametros .= "&nuid_interesado=" . $nuid_interesado;
         }
         //*************************************************************************************************
-        if($expaddjoin_interesado){
-            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaInteresadosPeer::COMENVIADA_ID);
-            $c->addJoin(EnviadaInteresadosPeer::INTERESADO_ID,InteresadosPeer::INTERESADO_ID);
+        if ($expaddjoin_interesado) {
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaInteresadosPeer::COMENVIADA_ID);
+            $c->addJoin(EnviadaInteresadosPeer::INTERESADO_ID, InteresadosPeer::INTERESADO_ID);
         }
         //*************************************************************************************************
         $nombre_representantelegal = trim($this->getRequestParameter('nombre_representantelegal'));
-        if ($nombre_representantelegal) {		
-            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaInteresadosPeer::COMENVIADA_ID);
-            $c->addJoin(EnviadaInteresadosPeer::REPRESENTANTELEGAL_ID,RepresentanteLegalPeer::REPRESENTANTELEGAL_ID);
-            $c->add(RepresentanteLegalPeer::PRIMER_NOMBRE,'%'.$nombre_representantelegal.'%',Criteria::LIKE);
+        if ($nombre_representantelegal) {
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaInteresadosPeer::COMENVIADA_ID);
+            $c->addJoin(EnviadaInteresadosPeer::REPRESENTANTELEGAL_ID, RepresentanteLegalPeer::REPRESENTANTELEGAL_ID);
+            $c->add(RepresentanteLegalPeer::PRIMER_NOMBRE, '%' . $nombre_representantelegal . '%', Criteria::LIKE);
             $this->parametros .= "&nombre_representantelegal=" . $nombre_representantelegal;
         }
         //*************************************************************************************************
         $nuid_representantelegal = trim($this->getRequestParameter('nuid_representantelegal'));
-        if ($nuid_representantelegal) {		
-            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaInteresadosPeer::COMENVIADA_ID);
-            $c->addJoin(EnviadaInteresadosPeer::REPRESENTANTELEGAL_ID,RepresentanteLegalPeer::REPRESENTANTELEGAL_ID);
-            $c->add(RepresentanteLegalPeer::NUMERO_IDENTIFICACION,'%'.$nuid_representantelegal.'%',Criteria::LIKE);
+        if ($nuid_representantelegal) {
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaInteresadosPeer::COMENVIADA_ID);
+            $c->addJoin(EnviadaInteresadosPeer::REPRESENTANTELEGAL_ID, RepresentanteLegalPeer::REPRESENTANTELEGAL_ID);
+            $c->add(RepresentanteLegalPeer::NUMERO_IDENTIFICACION, '%' . $nuid_representantelegal . '%', Criteria::LIKE);
             $this->parametros .= "&nuid_representantelegal=" . $nuid_representantelegal;
         }
         //*************************************************************************************************
-        if(trim($this->getRequestParameter('numero_resolucion'))){
+        if (trim($this->getRequestParameter('numero_resolucion'))) {
             $c->add(ComEnviadaPeer::NUMERO_RESOLUCION, trim($this->getRequestParameter('numero_resolucion')));
             $this->parametros .= "&numero_resolucion=" . trim($this->getRequestParameter('numero_resolucion'));
         }
         //*************************************************************************************************
-        if(trim($this->getRequestParameter('fecha_resolucion'))){
-            $c->add(ComEnviadaPeer::FECHA_RESOLUCION, trim($this->getRequestParameter('numero_resolucion')).' 00:00:00',Criteria::GREATER_EQUAL);
-            $c->addAnd(ComEnviadaPeer::FECHA_RESOLUCION, trim($this->getRequestParameter('numero_resolucion')).' 23:59:59',Criteria::LESS_EQUAL);
+        if (trim($this->getRequestParameter('fecha_resolucion'))) {
+            $c->add(ComEnviadaPeer::FECHA_RESOLUCION, trim($this->getRequestParameter('numero_resolucion')) . ' 00:00:00', Criteria::GREATER_EQUAL);
+            $c->addAnd(ComEnviadaPeer::FECHA_RESOLUCION, trim($this->getRequestParameter('numero_resolucion')) . ' 23:59:59', Criteria::LESS_EQUAL);
             $this->parametros .= "&numero_resolucion=" . trim($this->getRequestParameter('numero_resolucion'));
         }
         //*************************************************************************************************
-        if($this->getRequestParameter('estadocomenviada_id')){
-            $this->estado_com_enviada = $this->getRequestParameter('estadocomenviada_id');		
-            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID);
-            $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,$this->getRequestParameter('estadocomenviada_id'));		
-            $this->parametros.="&estadocomenviada_id=".$this->getRequestParameter('estadocomenviada_id');			 	
+        if ($this->getRequestParameter('estadocomenviada_id')) {
+            $this->estado_com_enviada = $this->getRequestParameter('estadocomenviada_id');
+            $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
+            $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, $this->getRequestParameter('estadocomenviada_id'));
+            $this->parametros .= "&estadocomenviada_id=" . $this->getRequestParameter('estadocomenviada_id');
         }
         //*************************************************************************************************
-        if($this->getRequestParameter('estadodigitalizacion_id')){
-            $c->add(ComEnviadaPeer::ESTADODIGITALIZACION_ID,$this->getRequestParameter('estadodigitalizacion_id'));		
-            $this->parametros.="&estadodigitalizacion_id=".$this->getRequestParameter('estadodigitalizacion_id');
-                    
+        if ($this->getRequestParameter('estadodigitalizacion_id')) {
+            $c->add(ComEnviadaPeer::ESTADODIGITALIZACION_ID, $this->getRequestParameter('estadodigitalizacion_id'));
+            $this->parametros .= "&estadodigitalizacion_id=" . $this->getRequestParameter('estadodigitalizacion_id');
         }
         //*************************************************************************************************
         if ($this->getRequestParameter('fechaCreaInicial')) {
-            $c->add(ComEnviadaPeer::FECHA_CREACION, $this->getRequestParameter('fechaCreaInicial'),Criteria::GREATER_EQUAL);      
-            $this->parametros.="&fechaCreaInicial=".str_replace("/","-",$this->getRequestParameter('fechaCreaInicial'));
+            $c->add(ComEnviadaPeer::FECHA_CREACION, $this->getRequestParameter('fechaCreaInicial'), Criteria::GREATER_EQUAL);
+            $this->parametros .= "&fechaCreaInicial=" . str_replace("/", "-", $this->getRequestParameter('fechaCreaInicial'));
         }
         //*************************************************************************************************
-        if ($this->getRequestParameter('fechaCreaFinal')) {        
-            $c->addAnd(ComEnviadaPeer::FECHA_CREACION, $this->getRequestParameter('fechaCreaFinal')." 23:59",Criteria::LESS_EQUAL);        
-            $this->parametros.="&fechaCreaFinal=".str_replace("/","-",$this->getRequestParameter('fechaCreaFinal'));
+        if ($this->getRequestParameter('fechaCreaFinal')) {
+            $c->addAnd(ComEnviadaPeer::FECHA_CREACION, $this->getRequestParameter('fechaCreaFinal') . " 23:59", Criteria::LESS_EQUAL);
+            $this->parametros .= "&fechaCreaFinal=" . str_replace("/", "-", $this->getRequestParameter('fechaCreaFinal'));
         }
         //*************************************************************************************************
-        if($this->getRequestParameter('estaEntregado')!=""){
-            $c->add(ComEnviadaPeer::ESTAENTREGADO,$this->getRequestParameter('estaEntregado'));		
-            $this->parametros.="&estaEntregado=".$this->getRequestParameter('estaEntregado');			 	
-        } 
+        if ($this->getRequestParameter('estaEntregado') != "") {
+            $c->add(ComEnviadaPeer::ESTAENTREGADO, $this->getRequestParameter('estaEntregado'));
+            $this->parametros .= "&estaEntregado=" . $this->getRequestParameter('estaEntregado');
+        }
         //*************************************************************************************************
-        if($this->getRequestParameter('periodo_id')){
-            $c->add(ComEnviadaPeer::PERIODO_ID,$this->getRequestParameter('periodo_id'));		
-            $this->parametros.="&periodo_id=".$this->getRequestParameter('periodo_id');			 	
+        if ($this->getRequestParameter('periodo_id')) {
+            $c->add(ComEnviadaPeer::PERIODO_ID, $this->getRequestParameter('periodo_id'));
+            $this->parametros .= "&periodo_id=" . $this->getRequestParameter('periodo_id');
         }
         //*************************************************************************************************
         if ($this->getRequestParameter('fechaEnvioInicial')) {
-            $c->add(ComEnviadaPeer::FECHA_ENVIO_GUIA, $this->getRequestParameter('fechaEnvioInicial'),Criteria::GREATER_EQUAL);      
-            $this->parametros.="&fechaEnvioInicial=".str_replace("/","-",$this->getRequestParameter('fechaEnvioInicial'));
+            $c->add(ComEnviadaPeer::FECHA_ENVIO_GUIA, $this->getRequestParameter('fechaEnvioInicial'), Criteria::GREATER_EQUAL);
+            $this->parametros .= "&fechaEnvioInicial=" . str_replace("/", "-", $this->getRequestParameter('fechaEnvioInicial'));
         }
         //*************************************************************************************************
-        if ($this->getRequestParameter('fechaEnvioFinal')) {        
-            $c->addAnd(ComEnviadaPeer::FECHA_ENVIO_GUIA, $this->getRequestParameter('fechaEnvioFinal'),Criteria::LESS_EQUAL);        
-            $this->parametros.="&fechaEnvioFinal=".str_replace("/","-",$this->getRequestParameter('fechaEnvioFinal'));
+        if ($this->getRequestParameter('fechaEnvioFinal')) {
+            $c->addAnd(ComEnviadaPeer::FECHA_ENVIO_GUIA, $this->getRequestParameter('fechaEnvioFinal'), Criteria::LESS_EQUAL);
+            $this->parametros .= "&fechaEnvioFinal=" . str_replace("/", "-", $this->getRequestParameter('fechaEnvioFinal'));
         }
         //*************************************************************************************************
         if ($this->getRequestParameter('fechaAnulInicial')) {
-            $c->add(ComEnviadaPeer::FECHA_DE_ANULACION, $this->getRequestParameter('fechaAnulInicial'),Criteria::GREATER_EQUAL);      
-            $this->parametros.="&fechaAnulInicial=".str_replace("/","-",$this->getRequestParameter('fechaAnulInicial'));
+            $c->add(ComEnviadaPeer::FECHA_DE_ANULACION, $this->getRequestParameter('fechaAnulInicial'), Criteria::GREATER_EQUAL);
+            $this->parametros .= "&fechaAnulInicial=" . str_replace("/", "-", $this->getRequestParameter('fechaAnulInicial'));
         }
         //*************************************************************************************************
-        if ($this->getRequestParameter('fechaAnulFinal')) {        
-            $c->addAnd(ComEnviadaPeer::FECHA_DE_ANULACION, $this->getRequestParameter('fechaAnulFinal'),Criteria::LESS_EQUAL);        
-            $this->parametros.="&fechaAnulFinal=".str_replace("/","-",$this->getRequestParameter('fechaAnulFinal'));
+        if ($this->getRequestParameter('fechaAnulFinal')) {
+            $c->addAnd(ComEnviadaPeer::FECHA_DE_ANULACION, $this->getRequestParameter('fechaAnulFinal'), Criteria::LESS_EQUAL);
+            $this->parametros .= "&fechaAnulFinal=" . str_replace("/", "-", $this->getRequestParameter('fechaAnulFinal'));
         }
         //*************************************************************************************************
-        if($this->getRequestParameter('obs_anulacion')){
-            $c->add(ComEnviadaPeer::OBS_ANULACION,'%'.$this->getRequestParameter('obs_anulacion').'%',Criteria::LIKE);		
-            $this->parametros.="&obs_anulacion=".$this->getRequestParameter('obs_anulacion');			 	
+        if ($this->getRequestParameter('obs_anulacion')) {
+            $c->add(ComEnviadaPeer::OBS_ANULACION, '%' . $this->getRequestParameter('obs_anulacion') . '%', Criteria::LIKE);
+            $this->parametros .= "&obs_anulacion=" . $this->getRequestParameter('obs_anulacion');
         }
         //*************************************************************************************************
-        if($this->getRequestParameter('consecutivo_resp')){
-            $c->add(ComEnviadaPeer::CONSECUTIVO_RESP,$this->getRequestParameter('consecutivo_resp'));		
-            $this->parametros.="&consecutivo_resp=".$this->getRequestParameter('consecutivo_resp');			 	
+        if ($this->getRequestParameter('consecutivo_resp')) {
+            $c->add(ComEnviadaPeer::CONSECUTIVO_RESP, $this->getRequestParameter('consecutivo_resp'));
+            $this->parametros .= "&consecutivo_resp=" . $this->getRequestParameter('consecutivo_resp');
         }
         //*************************************************************************************************
         $pkcomids = trim($this->getRequestParameter('pkcomids'));
-        if($pkcomids){
-            $c->add(ComEnviadaPeer::COMENVIADA_ID,explode(",",$pkcomids),Criteria::IN);		
-            $this->parametros.="&pkcomids=".$pkcomids;			 	
+        if ($pkcomids) {
+            $c->add(ComEnviadaPeer::COMENVIADA_ID, explode(",", $pkcomids), Criteria::IN);
+            $this->parametros .= "&pkcomids=" . $pkcomids;
         }
         //*************************************************************************************************
-        if($this->getRequestParameter('ruta')){
-            $c->add(ComEnviadaPeer::RUTA,'%'.$this->getRequestParameter('ruta').'%',Criteria::LIKE);		
-            $this->parametros.="&ruta=".$this->getRequestParameter('ruta');			 	
+        if ($this->getRequestParameter('ruta')) {
+            $c->add(ComEnviadaPeer::RUTA, '%' . $this->getRequestParameter('ruta') . '%', Criteria::LIKE);
+            $this->parametros .= "&ruta=" . $this->getRequestParameter('ruta');
         }
         //*************************************************************************************************
-        if($this->getRequestParameter('orden')){
-            $c->addDescendingOrderByColumn(sprintf("%s.%s",ComEnviadaPeer::TABLE_NAME,$this->getRequestParameter('orden')));		
-            $this->parametros.="&orden=".$this->getRequestParameter('orden');			 	
-        }else{
+        if ($this->getRequestParameter('orden')) {
+            $c->addDescendingOrderByColumn(sprintf("%s.%s", ComEnviadaPeer::TABLE_NAME, $this->getRequestParameter('orden')));
+            $this->parametros .= "&orden=" . $this->getRequestParameter('orden');
+        } else {
             $c->addDescendingOrderByColumn(ComEnviadaPeer::FECHA_CREACION);
         }
-		//**************************************************************************************
-		$c->addDescendingOrderByColumn(ComEnviadaPeer::COMENVIADA_ID);
+        //**************************************************************************************
+        $c->addDescendingOrderByColumn(ComEnviadaPeer::COMENVIADA_ID);
         //*************************************************************************************************
         return $c;
     }
@@ -1340,7 +1302,7 @@ class com_enviadaActions extends sfActions
     {
         $this->verificaPrilegio("com_enviada/list");
         $this->verificaPrilegio("COM_ENVIADA_FIRMA_LOTE");
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         //*********************************************************************************************
         $this->ilist_objects = ComEnviadaPeer::getListComRadicarByUser($usuariologuiado);
     }
@@ -1355,58 +1317,58 @@ class com_enviadaActions extends sfActions
     {
         $this->verificaPrilegio("com_enviada/radicar");
         $this->verificaPrilegio("COM_ENVIADA_FIRMA_LOTE");
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $pkcom_id = trim($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : 0;
         $response_data = array();
         //*********************************************************************************************
-        if(!empty($pkcom_id)){
+        if (!empty($pkcom_id)) {
             $comenviada_id = (int)$pkcom_id;
-            $ilist_coms = ComEnviadaPeer::getListComRadicarByUser($usuariologuiado,$comenviada_id);
-        }else{
+            $ilist_coms = ComEnviadaPeer::getListComRadicarByUser($usuariologuiado, $comenviada_id);
+        } else {
             $ilist_coms = ComEnviadaPeer::getListComRadicarByUser($usuariologuiado);
         }
         //*********************************************************************************************
-        if(count($ilist_coms) <= 0){
-            $com_data = array('comenviada_id' => null,'radicado' => null,'fecha_creacion' => null);
+        if (count($ilist_coms) <= 0) {
+            $com_data = array('comenviada_id' => null, 'radicado' => null, 'fecha_creacion' => null);
             $com_data['isError'] = true;
             $com_data['message'] = "Ningun registro se seleccionado para radicar";
             $response_data = $com_data;
-        }else{
+        } else {
             foreach ($ilist_coms as $com_object) {
                 $com_enviada = ComEnviadaPeer::retrieveByPK($com_object['COMENVIADA_ID']);
-                $com_data = array('comenviada_id' => $com_enviada->getPrimaryKey(),'radicado' => $com_enviada->getRadicado(),'fecha_creacion' => $com_enviada->getFechaCreacion());
-                $com_data['statusel'] = md5($com_enviada->getPrimaryKey().$com_enviada->getMarca());
-                $com_data['radcomel'] = md5('lbRADICADOcom'.$com_enviada->getPrimaryKey().$com_enviada->getMarca());
-                $com_data['fcreatecomel'] = md5('lbFECHA_CREACIONcom'.$com_enviada->getPrimaryKey().$com_enviada->getMarca());
+                $com_data = array('comenviada_id' => $com_enviada->getPrimaryKey(), 'radicado' => $com_enviada->getRadicado(), 'fecha_creacion' => $com_enviada->getFechaCreacion());
+                $com_data['statusel'] = md5($com_enviada->getPrimaryKey() . $com_enviada->getMarca());
+                $com_data['radcomel'] = md5('lbRADICADOcom' . $com_enviada->getPrimaryKey() . $com_enviada->getMarca());
+                $com_data['fcreatecomel'] = md5('lbFECHA_CREACIONcom' . $com_enviada->getPrimaryKey() . $com_enviada->getMarca());
                 //*****************************************************************************************
-                if($com_object['IS_RADICAR'] == 0){
+                if ($com_object['IS_RADICAR'] == 0) {
                     try {
                         $com_enviada_anterior = clone $com_enviada;
-                        $isGenerateRad = $com_enviada->radicaComBatch();                        
-                        
-                        if($isGenerateRad){
+                        $isGenerateRad = $com_enviada->radicaComBatch();
+
+                        if ($isGenerateRad) {
                             $com_data['isError'] = false;
                             $com_data['radicado'] = $com_enviada->getRadicado();
                             $com_data['fecha_creacion'] = $com_enviada->getFechaCreacion();
                             $com_data['message'] = "La comunicaci&oacute;n fue radicada satisfactoriamente";
-                            if($com_enviada->getFirmadoDigital() == 0){
+                            if ($com_enviada->getFirmadoDigital() == 0) {
                                 $response_sign = $com_enviada->singDocumentProcess(true);
                             }
-                        }else{
+                        } else {
                             $com_data['isError'] = true;
                             $com_data['message'] = "Ocurrio un error, el sistema no pudo generar el radicado";
                         }
                     } catch (PropelException $ex) {
                         $com_data['isError'] = true;
-                        $com_data['message'] = sprintf("Ocurrio un error en el servidor %s",$ex->getMessage());
+                        $com_data['message'] = sprintf("Ocurrio un error en el servidor %s", $ex->getMessage());
                     } catch (Exception $ex) {
                         $com_data['isError'] = true;
-                        $com_data['message'] = sprintf("Ocurrio un error en el servidor %s",$ex->getMessage());
+                        $com_data['message'] = sprintf("Ocurrio un error en el servidor %s", $ex->getMessage());
                     }
                     //*************************************************************************************
                     $response_data = $com_data;
-                    $this->guardarAuditoria($com_enviada_anterior,$com_enviada);
-                }else{
+                    $this->guardarAuditoria($com_enviada_anterior, $com_enviada);
+                } else {
                     $com_data['isError'] = true;
                     $com_data['message'] = "";
                     $response_data = $com_data;
@@ -1415,11 +1377,11 @@ class com_enviadaActions extends sfActions
         }
         //*********************************************************************************************
         $array = json_encode($response_data);
-        $this->getResponse()->setContentType('application/json');      
+        $this->getResponse()->setContentType('application/json');
         return $this->renderText($array);
     }
 
-	/**
+    /**
      * executeBatchFirmaDigital function
      * Inicia el proceso de radicacion de comunicaciones en estado borrador para el usuario actual
      * se realizan las validaciones correspondientes para constatar que comunicaciones se pueden radicar
@@ -1428,248 +1390,120 @@ class com_enviadaActions extends sfActions
     public function executeBatchFirmaDigital()
     {
         $this->verificaPrilegio("COM_ENVIADA_FIRMA_LOTE");
-		$this->verificaPrilegio("FIRMA_DIGITAL_RELANZAR");
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $this->verificaPrilegio("FIRMA_DIGITAL_RELANZAR");
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         //*********************************************************************************************
         ini_set('max_execution_time', 0);
-        $ilist_coms = ComEnviadaPeer::getListComMarcadosByUser($usuariologuiado,300);
-        $response_data = array();$count_error = 0;$radicado_list = array();$radicado_error = array();
+        $ilist_coms = ComEnviadaPeer::getListComMarcadosByUser($usuariologuiado, 300);
+        $response_data = array();
+        $count_error = 0;
+        $radicado_list = array();
+        $radicado_error = array();
         foreach ($ilist_coms as $com_object) {
-            if(in_array($com_object['FIRMADO_DIGITAL'],array(3,0))){
+            if (in_array($com_object['FIRMADO_DIGITAL'], array(3, 0))) {
                 $com_enviada = ComEnviadaPeer::retrieveByPK($com_object['COMENVIADA_ID']);
                 //$com_data = array('COMENVIADA_ID' => $com_enviada->getPrimaryKey(),'RADICADO' => $com_enviada->getRadicado(),'FECHA_CREACION' => $com_enviada->getFechaCreacion());
-				//*************************************************************************************
+                //*************************************************************************************
                 try {
                     $com_enviada_anterior = clone $com_enviada;
-					$response_sign = $com_enviada->singDocumentProcess(true);
-					$radicado_list[] = $com_enviada->getRadicado();
+                    $response_sign = $com_enviada->singDocumentProcess(true);
+                    $radicado_list[] = $com_enviada->getRadicado();
                 } catch (PropelException $th) {
                     //$com_data['isError'] = true;
-					$count_error += 1;
-					$radicado_error[] = $com_object['RADICADO'];
+                    $count_error += 1;
+                    $radicado_error[] = $com_object['RADICADO'];
                 } catch (Exception $th) {
                     //$com_data['isError'] = true;
-					$count_error += 1;
-					$radicado_error[] = $com_object['RADICADO'];
+                    $count_error += 1;
+                    $radicado_error[] = $com_object['RADICADO'];
                 }
-				//*************************************************************************************
-                $response_data[$com_object['COMENVIADA_ID']] = $com_data;
-                $this->guardarAuditoria($com_enviada_anterior,$com_enviada);
-            }else{
-				$count_error += 1;
-				$radicado_error[] = $com_object['RADICADO'];
-			}
+                //*************************************************************************************
+                $response_data[$com_object['COMENVIADA_ID']] = $com_enviada->getPrimaryKey();
+                $this->guardarAuditoria($com_enviada_anterior, $com_enviada);
+            } else {
+                $count_error += 1;
+                $radicado_error[] = $com_object['RADICADO'];
+            }
         }
         //*********************************************************************************************
-		$response_data['httpStatus'] = $count_error > 0 ? 400 : 200;
-		$str_firmados = implode(",", $radicado_list);
-		$str_no_firmados = implode(",", $radicado_error);
-		$response_data['message'] = $count_error > 0 ? "Algunas comunicaciones no se pudieron firmar, $str_no_firmados, por favor validar los radicados" : "Todas las comunicaciones se firmaron, $str_firmados";
-		//*********************************************************************************************
+        $response_data['httpStatus'] = $count_error > 0 ? 400 : 200;
+        $str_firmados = implode(",", $radicado_list);
+        $str_no_firmados = implode(",", $radicado_error);
+        $response_data['message'] = $count_error > 0 ? "Algunas comunicaciones no se pudieron firmar, $str_no_firmados, por favor validar los radicados" : "Todas las comunicaciones se firmaron, $str_firmados";
+        //*********************************************************************************************
         $array = json_encode($response_data);
-        $this->getResponse()->setContentType('application/json');      
+        $this->getResponse()->setContentType('application/json');
         return $this->renderText($array);
     }
-	
-  public function executeList()
-  { 
-  	$this->verificaPrilegio("com_enviada/list");
-    //*************************************************************************************************
-	$this->directorio_raiz = ParametroPeer::retrieveByPk(29)->getValortexto();
-    $this->directorio_alias  = ParametroPeer::retrieveByPk(30)->getValortexto();
-    $this->format_digit_img = explode(";",ParametroPeer::retrieveByPk(31)->getValortexto());
-	$this->directorio_adj  = ParametroPeer::retrieveByPk(13)->getValortexto();
-	//*************************************************************************************************
-	$this->marcarEntrega = "";
-    $this->parametros = "&a=1";
-	$this->papelera = false;
-    $this->isBorradorCom = false;
-	//*************************************************************************************************
-    $c = new Criteria();
-	$c->setDistinct();
-    $c = $this->getCriteriaBasic($c);
-	//*************************************************************************************************
-	$pager = new sfPropelPager('ComEnviada',10);
-	$pager->setCriteria($c);
-	$pager->setPage($this->getRequestParameter('page',1));
-	$pager->init();
-    //***********************************************************************************************
-	$this->pager = $pager;
-	$this->controlPaginacion = 1;
-	//***********************************************************************************************
-	$this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
-	if ($pager->getNbResults() == 0) {
-		if (trim($this->getRequestParameter('radicado'))) {
-			$countSinPermiso = ComEnviadaPeer::doCount((new Criteria())->add(ComEnviadaPeer::RADICADO, '%'.trim($this->getRequestParameter('radicado')).'%', Criteria::LIKE));
-		} else {
-			$countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('EnviadaInteresadosPeer', EnviadaInteresadosPeer::INTERESADO_ID);
-		}
-		$this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
-	}
-	$this->destinatario = array();
-	$this->firmas = array();    
-	$permisoAnular = 1;
-	//***********************************************************************************************
-	$this->anular="";
-	if($permisoAnular) { $this->anular="Anular"; }
-  }
-  
-  public function executeMarcar()
-  {
-  	$marcar = 0;
-  	$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-  	$com_enviada = ComEnviadaPeer::retrieveByPK($this->getRequestParameter('comenviada_id'));
-  	if($com_enviada->getMarca() == 0 || $com_enviada->getMarca() != $usuariologuiado)
-  	{
-  		$marcar = $usuariologuiado;
-  	}
-  	$com_enviada->setMarca($marcar);
-  	$com_enviada->save();
-  }
-  
-  public function colocarMarca($comenviadaId,$marca){	 
-  	 
-  	 $com_enviada = ComEnviadaPeer::retrieveByPk($comenviadaId);
-  	 $com_enviada->setMarca($marca);
-  	 $com_enviada->save();
-  }
-  
-  public function executeDesmarcarTodos()
-	{
-		$currentForm="com_enviada/list";
-		//**************************************************************************************************
-		$entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
-		$regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
-		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-		$conexion = Propel::getConnection();
-		//**************************************************************************************************
-		$this->usuariologuiado = $usuariologuiado;
-		$this->verificaPrilegio($currentForm);	
-		$this->parametros = "&a=1";
-		$this->papelera = false;    
-		$wherec = new Criteria();
-		$wherec = $this->getCriteriaBasic($wherec);
-		$wherec->setDistinct();
-		$wherec->clearSelectColumns();
-		//**************************************************************************************************
-		try{
-			$updc = new Criteria();
-			$updc->add(ComEnviadaPeer::MARCA, 0);
 
-			$affectedRows = BasePeer::doUpdate($wherec, $updc, $conexion);
-			//**********************************************************************************************
-			$this->message_info = sprintf('Las %s comunicaciones fueron marcadas satisfactoriamente',$affectedRows);
-			$this->isError = false;
-		}catch (PropelException $ex){
-			$this->message_info = 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage();
-			$this->isError = true;
-		}catch (Exception $ex){
-			$this->message_info = 'Error interno del servidor, '.$ex->getMessage();
-			$this->isError = true;
-		}
-	}
-  
-  public function executeBorrarMarcados()
-  {
-     $usuariologuiado=$this->getUser()->getAttribute('usuario_id','', 'subscriber');  	 
-  	 $conexion = Propel::getConnection();         	 
-  	 $consulta = "UPDATE %s SET  %s=5 WHERE %s in(SELECT %s FROM %s WHERE %s=".$usuariologuiado.") AND %s NOT IN (4,5,6)";
-	 $sql = sprintf($consulta, EnviadaUsuarioPeer::TABLE_NAME, EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID,ComEnviadaPeer::COMENVIADA_ID,ComEnviadaPeer::TABLE_NAME,ComEnviadaPeer::MARCA,EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID);
-     $sentencia = $conexion->prepare($sql);
-     $sentencia->execute();
-  }
-  
-  public function updateAnularComEnviada($id_enviada,$estado_id){          
-     $com_enviada= ComEnviadaPeer::retrieveByPK($id_enviada);          
-     $com_enviada->setEstadocomenviadaId($estado_id);                     
-     $com_enviada->save();
-  }
-  
-  public function executeRestaurarMarcados()
-  {
-		try{
-			$usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');  	 
-			$conexion = Propel::getConnection();
-			//*********************************************************************************************
-			$consulta = "UPDATE %s SET  %s = 2 WHERE %s IN(SELECT %s FROM %s WHERE %s = ".$usuariologuiado." AND ESTADOCOMENVIADA_ID NOT IN(4,1,6)) AND %s != 4";
-			$sql      = sprintf($consulta, EnviadaUsuarioPeer::TABLE_NAME, EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID,ComEnviadaPeer::COMENVIADA_ID,ComEnviadaPeer::TABLE_NAME,ComEnviadaPeer::MARCA,EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID);
-			$sentencia = $conexion->prepare($sql);
-			$sentencia->execute();
-			//*********************************************************************************************
-			$consulta = "UPDATE %s SET  %s = 1 WHERE %s IN(SELECT %s FROM %s WHERE %s = ".$usuariologuiado." AND ESTADOCOMENVIADA_ID = 1) AND %s NOT IN (4,6)";
-			$sql      = sprintf($consulta, EnviadaUsuarioPeer::TABLE_NAME, EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID,EnviadaUsuarioPeer::COMENVIADA_ID,ComEnviadaPeer::COMENVIADA_ID,ComEnviadaPeer::TABLE_NAME,ComEnviadaPeer::MARCA,EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID);
-			$sentencia = $conexion->prepare($sql);
-			$sentencia->execute();
-		}catch (PropelException $ex){
-			$this->message_info = 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage();
-		}catch (Exception $ex){
-			$this->message_info = 'Error interno del servidor, '.$ex->getMessage();
-		}
-	}
-  
-    public function executeMarcarEntregados($comenviadaId,$marca)
+    public function executeList()
     {
-		try{
-			$conexion = Propel::getConnection();
-			$usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-			$consulta = "UPDATE %s SET  %s=1 WHERE %s = ".$usuariologuiado." ";
-			$sql      = sprintf($consulta, ComEnviadaPeer::TABLE_NAME, ComEnviadaPeer::ESTAENTREGADO,ComEnviadaPeer::MARCA);
-			$sentencia = $conexion->prepare($sql);
-			$sentencia->execute();
-		}catch (PropelException $ex){
-			$this->message_info = 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage();
-		}catch (Exception $ex){
-			$this->message_info = 'Error interno del servidor, '.$ex->getMessage();
-		}
-    }
-   
-    public function executeMarcarTodos()
-    {		
-        $currentForm="com_enviada/list";
-        //**************************************************************************************************
-        $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
-        $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-        //**************************************************************************************************
-        $this->usuariologuiado = $usuariologuiado;
-        $this->verificaPrilegio($currentForm);	
+        $this->verificaPrilegio("com_enviada/list");
+        //*************************************************************************************************
+        $this->directorio_raiz = ParametroPeer::retrieveByPk(29)->getValortexto();
+        $this->directorio_alias  = ParametroPeer::retrieveByPk(30)->getValortexto();
+        $this->format_digit_img = explode(";", ParametroPeer::retrieveByPk(31)->getValortexto());
+        $this->directorio_adj  = ParametroPeer::retrieveByPk(13)->getValortexto();
+        //*************************************************************************************************
+        $this->marcarEntrega = "";
         $this->parametros = "&a=1";
-        $this->papelera = false;    
-        $c = new Criteria();  	
-        $c->setLimit(500);
+        $this->papelera = false;
+        $this->isBorradorCom = false;
+        //*************************************************************************************************
+        $c = new Criteria();
+        $c->setDistinct();
         $c = $this->getCriteriaBasic($c);
-        //**************************************************************************************************
-		try{
-			$c->clearSelectColumns();
-			$c->addSelectColumn(ComEnviadaPeer::COMENVIADA_ID);//0
-			$c->addSelectColumn(ComEnviadaPeer::PERIODO_ID);//1
-			$c->addSelectColumn(ComEnviadaPeer::DEPENDENCIA_ID);//2
-			$resultset =  ComEnviadaPeer::doSelectStmt($c);	
-			$conexion = Propel::getConnection();
-			//**********************************************************************************************
-			while($object = $resultset->fetch()){	  	
-				//$set ="UPDATE %s SET %s = ".$usuariologuiado." WHERE %s = ".$object[0]." AND %s = ".$object[1]." AND %s = ".$object[2];
-				//$query = sprintf($set, ComEnviadaPeer::TABLE_NAME, ComEnviadaPeer::MARCA,ComEnviadaPeer::COMENVIADA_ID,ComEnviadaPeer::PERIODO_ID,ComEnviadaPeer::DEPENDENCIA_ID);
-				$set ="UPDATE %s SET %s = ".$usuariologuiado." WHERE %s = ".$object[0]." AND %s = ".$object[1];
-				$query = sprintf($set, ComEnviadaPeer::TABLE_NAME, ComEnviadaPeer::MARCA,ComEnviadaPeer::COMENVIADA_ID,ComEnviadaPeer::PERIODO_ID);
-				$stmt = $conexion->prepare($query);
-				$res = $stmt->execute();	
-			}
-			//**********************************************************************************************
-			$this->message_info = 'Las comunicaciones fueron marcadas satisfactoriamente';
-			$this->isError = false;
-		}catch (PropelException $ex){
-			$this->message_info = 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage();
-			$this->isError = true;
-		}catch (Exception $ex){
-			$this->message_info = 'Error interno del servidor, '.$ex->getMessage();
-			$this->isError = true;
-		}
+        //*************************************************************************************************
+        $pager = new sfPropelPager('ComEnviada', 10);
+        $pager->setCriteria($c);
+        $pager->setPage($this->getRequestParameter('page', 1));
+        $pager->init();
+        //***********************************************************************************************
+        $this->pager = $pager;
+        $this->controlPaginacion = 1;
+        //***********************************************************************************************
+        $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
+        if ($pager->getNbResults() == 0) {
+            if (trim($this->getRequestParameter('radicado'))) {
+                $countSinPermiso = ComEnviadaPeer::doCount((new Criteria())->add(ComEnviadaPeer::RADICADO, trim($this->getRequestParameter('radicado')) . '%', Criteria::LIKE));
+            } else {
+                $countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('EnviadaInteresadosPeer', EnviadaInteresadosPeer::INTERESADO_ID);
+            }
+            $this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
+        }
+        $this->destinatario = array();
+        $this->firmas = array();
+        $permisoAnular = 1;
+        //***********************************************************************************************
+        $this->anular = "";
+        if ($permisoAnular) {
+            $this->anular = "Anular";
+        }
     }
 
-    public function executeMarcarTodosBulk()
-    {		
-        $currentForm="com_enviada/list";
+    public function executeMarcar()
+    {
+        $marcar = 0;
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $com_enviada = ComEnviadaPeer::retrieveByPK($this->getRequestParameter('comenviada_id'));
+        if ($com_enviada->getMarca() == 0 || $com_enviada->getMarca() != $usuariologuiado) {
+            $marcar = $usuariologuiado;
+        }
+        $com_enviada->setMarca($marcar);
+        $com_enviada->save();
+    }
+
+    public function colocarMarca($comenviadaId, $marca)
+    {
+
+        $com_enviada = ComEnviadaPeer::retrieveByPk($comenviadaId);
+        $com_enviada->setMarca($marca);
+        $com_enviada->save();
+    }
+
+    public function executeDesmarcarTodos()
+    {
+        $currentForm = "com_enviada/list";
         //**************************************************************************************************
         $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
         $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
@@ -1677,29 +1511,163 @@ class com_enviadaActions extends sfActions
         $conexion = Propel::getConnection();
         //**************************************************************************************************
         $this->usuariologuiado = $usuariologuiado;
-        $this->verificaPrilegio($currentForm);	
+        $this->verificaPrilegio($currentForm);
         $this->parametros = "&a=1";
-        $this->papelera = false;    
+        $this->papelera = false;
         $wherec = new Criteria();
         $wherec = $this->getCriteriaBasic($wherec);
-		$wherec->setDistinct();
+        $wherec->setDistinct();
         $wherec->clearSelectColumns();
         //**************************************************************************************************
-		try{
-			$updc = new Criteria();
+        try {
+            $updc = new Criteria();
+            $updc->add(ComEnviadaPeer::MARCA, 0);
+
+            $affectedRows = BasePeer::doUpdate($wherec, $updc, $conexion);
+            //**********************************************************************************************
+            $this->message_info = sprintf('Las %s comunicaciones fueron marcadas satisfactoriamente', $affectedRows);
+            $this->isError = false;
+        } catch (PropelException $ex) {
+            $this->message_info = 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage();
+            $this->isError = true;
+        } catch (Exception $ex) {
+            $this->message_info = 'Error interno del servidor, ' . $ex->getMessage();
+            $this->isError = true;
+        }
+    }
+
+    public function executeBorrarMarcados()
+    {
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $conexion = Propel::getConnection();
+        $consulta = "UPDATE %s SET  %s=5 WHERE %s in(SELECT %s FROM %s WHERE %s=" . $usuariologuiado . ") AND %s NOT IN (4,5,6)";
+        $sql = sprintf($consulta, EnviadaUsuarioPeer::TABLE_NAME, EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID, ComEnviadaPeer::COMENVIADA_ID, ComEnviadaPeer::TABLE_NAME, ComEnviadaPeer::MARCA, EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID);
+        $sentencia = $conexion->prepare($sql);
+        $sentencia->execute();
+    }
+
+    public function updateAnularComEnviada($id_enviada, $estado_id)
+    {
+        $com_enviada = ComEnviadaPeer::retrieveByPK($id_enviada);
+        $com_enviada->setEstadocomenviadaId($estado_id);
+        $com_enviada->save();
+    }
+
+    public function executeRestaurarMarcados()
+    {
+        try {
+            $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+            $conexion = Propel::getConnection();
+            //*********************************************************************************************
+            $consulta = "UPDATE %s SET  %s = 2 WHERE %s IN(SELECT %s FROM %s WHERE %s = " . $usuariologuiado . " AND ESTADOCOMENVIADA_ID NOT IN(4,1,6)) AND %s != 4";
+            $sql      = sprintf($consulta, EnviadaUsuarioPeer::TABLE_NAME, EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID, ComEnviadaPeer::COMENVIADA_ID, ComEnviadaPeer::TABLE_NAME, ComEnviadaPeer::MARCA, EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID);
+            $sentencia = $conexion->prepare($sql);
+            $sentencia->execute();
+            //*********************************************************************************************
+            $consulta = "UPDATE %s SET  %s = 1 WHERE %s IN(SELECT %s FROM %s WHERE %s = " . $usuariologuiado . " AND ESTADOCOMENVIADA_ID = 1) AND %s NOT IN (4,6)";
+            $sql      = sprintf($consulta, EnviadaUsuarioPeer::TABLE_NAME, EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID, ComEnviadaPeer::COMENVIADA_ID, ComEnviadaPeer::TABLE_NAME, ComEnviadaPeer::MARCA, EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID);
+            $sentencia = $conexion->prepare($sql);
+            $sentencia->execute();
+        } catch (PropelException $ex) {
+            $this->message_info = 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage();
+        } catch (Exception $ex) {
+            $this->message_info = 'Error interno del servidor, ' . $ex->getMessage();
+        }
+    }
+
+    public function executeMarcarEntregados($comenviadaId, $marca)
+    {
+        try {
+            $conexion = Propel::getConnection();
+            $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+            $consulta = "UPDATE %s SET  %s=1 WHERE %s = " . $usuariologuiado . " ";
+            $sql      = sprintf($consulta, ComEnviadaPeer::TABLE_NAME, ComEnviadaPeer::ESTAENTREGADO, ComEnviadaPeer::MARCA);
+            $sentencia = $conexion->prepare($sql);
+            $sentencia->execute();
+        } catch (PropelException $ex) {
+            $this->message_info = 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage();
+        } catch (Exception $ex) {
+            $this->message_info = 'Error interno del servidor, ' . $ex->getMessage();
+        }
+    }
+
+    public function executeMarcarTodos()
+    {
+        $currentForm = "com_enviada/list";
+        //**************************************************************************************************
+        $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
+        $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        //**************************************************************************************************
+        $this->usuariologuiado = $usuariologuiado;
+        $this->verificaPrilegio($currentForm);
+        $this->parametros = "&a=1";
+        $this->papelera = false;
+        $c = new Criteria();
+        $c->setLimit(500);
+        $c = $this->getCriteriaBasic($c);
+        //**************************************************************************************************
+        try {
+            $c->clearSelectColumns();
+            $c->addSelectColumn(ComEnviadaPeer::COMENVIADA_ID); //0
+            $c->addSelectColumn(ComEnviadaPeer::PERIODO_ID); //1
+            $c->addSelectColumn(ComEnviadaPeer::DEPENDENCIA_ID); //2
+            $resultset =  ComEnviadaPeer::doSelectStmt($c);
+            $conexion = Propel::getConnection();
+            //**********************************************************************************************
+            while ($object = $resultset->fetch()) {
+                //$set ="UPDATE %s SET %s = ".$usuariologuiado." WHERE %s = ".$object[0]." AND %s = ".$object[1]." AND %s = ".$object[2];
+                //$query = sprintf($set, ComEnviadaPeer::TABLE_NAME, ComEnviadaPeer::MARCA,ComEnviadaPeer::COMENVIADA_ID,ComEnviadaPeer::PERIODO_ID,ComEnviadaPeer::DEPENDENCIA_ID);
+                $set = "UPDATE %s SET %s = " . $usuariologuiado . " WHERE %s = " . $object[0] . " AND %s = " . $object[1];
+                $query = sprintf($set, ComEnviadaPeer::TABLE_NAME, ComEnviadaPeer::MARCA, ComEnviadaPeer::COMENVIADA_ID, ComEnviadaPeer::PERIODO_ID);
+                $stmt = $conexion->prepare($query);
+                $res = $stmt->execute();
+            }
+            //**********************************************************************************************
+            $this->message_info = 'Las comunicaciones fueron marcadas satisfactoriamente';
+            $this->isError = false;
+        } catch (PropelException $ex) {
+            $this->message_info = 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage();
+            $this->isError = true;
+        } catch (Exception $ex) {
+            $this->message_info = 'Error interno del servidor, ' . $ex->getMessage();
+            $this->isError = true;
+        }
+    }
+
+    public function executeMarcarTodosBulk()
+    {
+        $currentForm = "com_enviada/list";
+        //**************************************************************************************************
+        $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
+        $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $conexion = Propel::getConnection();
+        //**************************************************************************************************
+        $this->usuariologuiado = $usuariologuiado;
+        $this->verificaPrilegio($currentForm);
+        $this->parametros = "&a=1";
+        $this->papelera = false;
+        $wherec = new Criteria();
+        $wherec = $this->getCriteriaBasic($wherec);
+        $wherec->setDistinct();
+        $wherec->clearSelectColumns();
+        //**************************************************************************************************
+        try {
+            $updc = new Criteria();
             $updc->add(ComEnviadaPeer::MARCA, $usuariologuiado);
 
             $affectedRows = BasePeer::doUpdate($wherec, $updc, $conexion);
-			//**********************************************************************************************
-			$this->message_info = sprintf('Las %s comunicaciones fueron marcadas satisfactoriamente',$affectedRows);
-			$this->isError = false;
-		}catch (PropelException $ex){
-			$this->message_info = 'Error interno del servidor, Por favor comuniquese con el administrador,'.$ex->getMessage();
-			$this->isError = true;
-		}catch (Exception $ex){
-			$this->message_info = 'Error interno del servidor, '.$ex->getMessage();
-			$this->isError = true;
-		}
+            //**********************************************************************************************
+            $this->message_info = sprintf('Las %s comunicaciones fueron marcadas satisfactoriamente', $affectedRows);
+            $this->isError = false;
+        } catch (PropelException $ex) {
+            $this->message_info = 'Error interno del servidor, Por favor comuniquese con el administrador,' . $ex->getMessage();
+            $this->isError = true;
+        } catch (Exception $ex) {
+            $this->message_info = 'Error interno del servidor, ' . $ex->getMessage();
+            $this->isError = true;
+        }
         //**************************************************************************************************
         $this->setTemplate('marcarTodos');
     }
@@ -1709,11 +1677,11 @@ class com_enviadaActions extends sfActions
         $plantillas_com = PlantillasComPeer::retrieveByPk($this->getRequestParameter('plantillascom_id'));
         $contents = "";
         //***************************************************************************************************
-        if($plantillas_com == null){
+        if ($plantillas_com == null) {
             return $this->renderText($contents);
         }
         //***************************************************************************************************
-        if($plantillas_com->getPrimaryKey()){
+        if ($plantillas_com->getPrimaryKey()) {
             $contents = trim($plantillas_com->getContents());
         }
         return $this->renderText($contents);
@@ -1727,113 +1695,119 @@ class com_enviadaActions extends sfActions
         //**************************************************************************************************
         $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         if (!$this->usuarioTieneAccesoComEnviada($com_enviada, $usuariologuiado)) {
-          $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
-          return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/list');
+            $this->getUser()->setFlash('messages_error', ConsultaPermisoHelper::MSG_SIN_PERMISOS);
+            return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/list');
         }
         //*********************************************************************************************************
         $stateview = trim($this->getRequestParameter('viewstate'));
         $backid = trim($this->getRequestParameter('backid'));
-        $this->dataShared = ContenidoUnidadDocumentalPeer::getFormatSharedComUrlView($backid,$com_enviada->getPrimaryKey(),$stateview,4);
+        $this->dataShared = ContenidoUnidadDocumentalPeer::getFormatSharedComUrlView($backid, $com_enviada->getPrimaryKey(), $stateview, 4);
         //*********************************************************************************************************
-       	$fullpath = $com_enviada->getPathImageDigitByCom();
-		$existe_file = !empty($fullpath) ? true : false;
+        $fullpath = $com_enviada->getPathImageDigitByCom();
+        $existe_file = !empty($fullpath) ? true : false;
         //*********************************************************************************************************
-        if($existe_file){
-			$dirRaiz = !empty($com_enviada->getDirDigit()) ? trim($com_enviada->getDirDigit()) : ParametroPeer::retrieveByPk(29)->getValortexto();
-			//*****************************************************************************************************
-			$com_enviada->setEstadodigitalizacionId(2);
-			$com_enviada->setDirDigit($dirRaiz);
-		}else{
-			$com_enviada->setEstadodigitalizacionId(1);
-		}
+        if ($existe_file) {
+            $dirRaiz = !empty($com_enviada->getDirDigit()) ? trim($com_enviada->getDirDigit()) : ParametroPeer::retrieveByPk(29)->getValortexto();
+            //*****************************************************************************************************
+            $com_enviada->setEstadodigitalizacionId(2);
+            $com_enviada->setDirDigit($dirRaiz);
+        } else {
+            $com_enviada->setEstadodigitalizacionId(1);
+        }
         //*********************************************************************************************************
         $com_enviada->save();
         //*********************************************************************************************************
-        $email_destino = "";$ldirectorio_destino = array();
+        $email_destino = "";
+        $ldirectorio_destino = array();
         $c = new Criteria();
         $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
         $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);
         $copiasListDest = array();
-        foreach($respo as $res){    
-            if($res->getRoldirenviadaId() ==1 ){
+        foreach ($respo as $res) {
+            if ($res->getRoldirenviadaId() == 1) {
                 $this->destinatario = $res->getDirectorioexternoId();
                 $entidad_name = $res->getDirectorioExterno()->getNombre();
-                if(trim($com_enviada->getFuncionarioDestino())){            
+                if (trim($com_enviada->getFuncionarioDestino())) {
                     $funcionario_name = $com_enviada->getFuncionarioDestino();
-                }else{
-                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();   
+                } else {
+                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();
                 }
                 $ldirectorio_destino['directoriocom_id'][] = $res->getDirectorioexternoId();
-                $ldirectorio_destino['directoriocom_text'][] = $entidad_name." - ".$funcionario_name;
-                $this->destinatarioName = $entidad_name." - ".$funcionario_name;
+                $ldirectorio_destino['directoriocom_text'][] = $entidad_name . " - " . $funcionario_name;
+                $this->destinatarioName = $entidad_name . " - " . $funcionario_name;
                 $email_destino = trim($res->getDirectorioExterno()->getEmail());
-            }else{
+            } else {
                 $copiasListDest[] = $res->getDirectorioexternoId();
-                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario().",";
+                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario() . ",";
             }
         }
         //*********************************************************************************************************
-        $this->copiasDestinatarios = isset($ldirectorio_destino['directoriocom_text']) ? implode(",",$ldirectorio_destino['directoriocom_text']) : "";
-        $this->destinatario = isset($ldirectorio_destino['directoriocom_id']) ? implode(",",$ldirectorio_destino['directoriocom_id']) : "";
-        $this->destinatario = count($copiasListDest) ? implode(",",$copiasListDest) : "";
+        $this->copiasDestinatarios = isset($ldirectorio_destino['directoriocom_text']) ? implode(",", $ldirectorio_destino['directoriocom_text']) : "";
+        $this->destinatario = isset($ldirectorio_destino['directoriocom_id']) ? implode(",", $ldirectorio_destino['directoriocom_id']) : "";
+        $this->destinatario = count($copiasListDest) ? implode(",", $copiasListDest) : "";
         //*********************************************************************************************************
         $a = new Criteria();
         $a->add(EnviadaUsuarioPeer::COMENVIADA_ID, $com_enviada->getPrimaryKey());
         $result = EnviadaUsuarioPeer::doSelect($a);
         //*********************************************************************************************************
-        $user_firman = array();$this->estado_com_enviada_id = 0;$usuario_asigando = array();$user_copias = array();$firmas_desatendida = true;
-        $firmas_aprobacion = array();$object_asignado = null;
-        foreach($result as $enviada){
-            if($enviada->getUsuarioId() == $usuariologuiado){
-                if($enviada->getEstadocomenviadaId() == 2 && $com_enviada->getEstadodigitalizacionId() == 2){
+        $user_firman = array();
+        $this->estado_com_enviada_id = 0;
+        $usuario_asigando = array();
+        $user_copias = array();
+        $firmas_desatendida = true;
+        $firmas_aprobacion = array();
+        $object_asignado = null;
+        foreach ($result as $enviada) {
+            if ($enviada->getUsuarioId() == $usuariologuiado) {
+                if ($enviada->getEstadocomenviadaId() == 2 && $com_enviada->getEstadodigitalizacionId() == 2) {
                     $enviada->setEstadocomenviadaId(3);
                     $enviada->setFechaAcceso(date("Y-m-d G:i:s"));
                     $enviada->save();
                 }
                 $estado = $enviada->getEstadocomenviada();
                 $this->estado_com_enviada_id = $enviada->getEstadocomenviadaId();
-            }elseif($enviada->getRoluscomenviadaId() == 2){
+            } elseif ($enviada->getRoluscomenviadaId() == 2) {
                 //en caso q e usuario logueado no sea copia se devuelve el estado del que firma
                 $estado = $enviada->getEstadocomenviada();
-                $this->estado_com_enviada_id = $enviada->getEstadocomenviadaId();        
+                $this->estado_com_enviada_id = $enviada->getEstadocomenviadaId();
             }
             //******************************************************************************************************
-            if($enviada->getRoluscomenviadaId() == 2){        
+            if ($enviada->getRoluscomenviadaId() == 2) {
                 $user_firman[] = $enviada->getUsuarioId();
-                if($enviada->getFirmaAprueba() == 0){ 
-                    if(!$enviada->getUsuario()->getFirmaDesatendida()){
+                if ($enviada->getFirmaAprueba() == 0) {
+                    if (!$enviada->getUsuario()->getFirmaDesatendida()) {
                         $firmas_aprobacion[] = $enviada->getUsuarioId();
                         //******************************************************************************************
-                        if(!empty($com_enviada->getPlantillascomId())){
-                            if($com_enviada->getPlantillasCom()->getDependenciaId() == $enviada->getUsuario()->getDependenciaId()){
+                        if (!empty($com_enviada->getPlantillascomId())) {
+                            if ($com_enviada->getPlantillasCom()->getDependenciaId() == $enviada->getUsuario()->getDependenciaId()) {
                                 $firmas_desatendida = $com_enviada->getPlantillasCom()->getFirmaDesatendida() ? true : false;
-                            }else{
+                            } else {
                                 $firmas_desatendida = false;
-                    		}
-                        }else{
+                            }
+                        } else {
                             $firmas_desatendida = false;
-                		}
+                        }
                     }
                 }
             }
             //******************************************************************************************************
-            if($enviada->getRoluscomenviadaId() == 3){        
+            if ($enviada->getRoluscomenviadaId() == 3) {
                 $user_copias[] = $enviada->getUsuarioId();
             }
             //******************************************************************************************************
-            if($enviada->getRoluscomenviadaId() == 1){
+            if ($enviada->getRoluscomenviadaId() == 1) {
                 $this->radicador = $enviada->getUsuario();
                 $this->radicador_id = $enviada->getUsuarioId();
             }
             //******************************************************************************************************
-            if($enviada->getEstaAsignada() == 1){ 
+            if ($enviada->getEstaAsignada() == 1) {
                 $usuario_asigando[] = $enviada->getUsuarioId();
                 $object_asignado = $enviada;
             }
         }
         //**********************************************************************************************************
-        $aprob_urlist = $firmas_desatendida ? EnviadaUsuarioPeer::getListUncheckApro($com_enviada->getPrimaryKey(),0,array(4,5)) : 
-                            EnviadaUsuarioPeer::getListUncheckApro($com_enviada->getPrimaryKey());
+        $aprob_urlist = $firmas_desatendida ? EnviadaUsuarioPeer::getListUncheckApro($com_enviada->getPrimaryKey(), 0, array(4, 5)) :
+            EnviadaUsuarioPeer::getListUncheckApro($com_enviada->getPrimaryKey());
         //**********************************************************************************************************
         if (($clave = array_search($usuariologuiado, $aprob_urlist)) !== false) {
             unset($aprob_urlist[$clave]);
@@ -1852,18 +1826,18 @@ class com_enviadaActions extends sfActions
         //**********************************************************************************************************
         $matriz_data = $this->getAprobadores($this->getRequestParameter('comenviada_id'));
         $this->is_usuario_aprobador = false;
-        if(count($matriz_data) > 0){
-            $this->aprobadores = implode(",",$matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",",$matriz_data[1]) . ',';
-            if(in_array($usuariologuiado,$matriz_data[0])){
+        if (count($matriz_data) > 0) {
+            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+            if (in_array($usuariologuiado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
             }
         }
         //**********************************************************************************************************
         //verificar permiso firma electronica(la misma firma mecanica) para radicar
         $this->permisoRadicarFirmaElectronica = 0;
-        if($this->estado_com_enviada_id == 1){
-            $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado,implode(",",$user_firman),4);
+        if ($this->estado_com_enviada_id == 1) {
+            $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, implode(",", $user_firman), 4);
         }
         //**********************************************************************************************************
         $this->forward404Unless($this->com_enviada);
@@ -1874,40 +1848,42 @@ class com_enviadaActions extends sfActions
         $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
         $this->default_terpel = false;
         $this->default_gazel = false;
-        if($this->com_enviada->getRegional()->getEntidadId() == 1){
+        if ($this->com_enviada->getRegional()->getEntidadId() == 1) {
             $this->default_terpel = true;
-        }elseif($this->com_enviada->getRegional()->getEntidadId() == 2){
+        } elseif ($this->com_enviada->getRegional()->getEntidadId() == 2) {
             $this->default_gazel = true;
-        }else{
+        } else {
             $this->default_terpel = true;
-        }        
+        }
     }
-    
+
     public function executeDeleteInterCom()
     {
         $currentForm = "COM_ENVIADA_ELIMINAR_INTERESADO";
         $status = 400;
         $errorMsg = "Error de servidor";
-        if($this->tienePrilegio($currentForm)){
+        if ($this->tienePrilegio($currentForm)) {
             $com_enviada = ComEnviadaPeer::retrieveByPk(trim($this->getRequestParameter('comenviada_id')));
             $interesado_com = EnviadaInteresadosPeer::retrieveByPk(trim($this->getRequestParameter('interesadocom_id')));
             //*******************************************************************************************
-            if($interesado_com != null){
+            if ($interesado_com != null) {
                 $interesado_com->delete();
                 //*****************************************************************************************
-                if($interesado_com->isDeleted()) { 
+                if ($interesado_com->isDeleted()) {
                     $errorMsg = "Registro eliminado satisfactoriamente!";
                     $status = 200;
-                }else{ $errorMsg = "La solicitud no se puede procesar!"; }
-            }else{
+                } else {
+                    $errorMsg = "La solicitud no se puede procesar!";
+                }
+            } else {
                 $errorMsg = "Se detecto un error interno!";
             }
-        }else{
+        } else {
             $errorMsg = "Esta funcionalidad no esta disponible!";
         }
         //*******************************************************************************************
-        $array = json_encode(array( 'status' => $status, 'message' => $errorMsg));
-        $this->getResponse()->setContentType('application/json');      
+        $array = json_encode(array('status' => $status, 'message' => $errorMsg));
+        $this->getResponse()->setContentType('application/json');
         return $this->renderText($array);
     }
 
@@ -1916,24 +1892,24 @@ class com_enviadaActions extends sfActions
         try {
             $status = 400;
             $comenviada_id = !empty($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
-            $response_data = array( 'status' => 400, 'message' => 'error interno realizo la aprobacion de la firma');
-            $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+            $response_data = array('status' => 400, 'message' => 'error interno realizo la aprobacion de la firma');
+            $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
             $rol_firma = 2;
             //************************************************************************************************
-            if($comenviada_id != null){
+            if ($comenviada_id != null) {
                 $com_enviada = ComEnviadaPeer::retrieveByPk(trim($this->getRequestParameter('comenviada_id')));
                 $list_objects = $com_enviada->getEnviadaUsuarios();
-                $wait_firmas = array();//$update_firmas = array();
+                $wait_firmas = array(); //$update_firmas = array();
                 //********************************************************************************************
-                foreach ($list_objects as $object){
-                    if(($object->getRoluscomenviadaId() == $rol_firma) && ($usuariologuiado == $object->getUsuarioId())){
+                foreach ($list_objects as $object) {
+                    if (($object->getRoluscomenviadaId() == $rol_firma) && ($usuariologuiado == $object->getUsuarioId())) {
                         $object->setEstaAsignada(0);
                         $object->setFirmaAprueba(1);
                         $object->setFechaAprueba(date("Y-m-d G:i:s"));
                         $object->setNotaAprueba("Usuario aprueba firma");
                         $object->save();
                         //$update_firmas[$object->getPrimaryKey()] = $object->getPrimaryKey();
-                    }elseif($object->getRoluscomenviadaId() == $rol_firma){
+                    } elseif ($object->getRoluscomenviadaId() == $rol_firma) {
                         $wait_firmas[] = $object;
                     }
                 }
@@ -1941,9 +1917,9 @@ class com_enviadaActions extends sfActions
                 $wait_firmas = array_unique($wait_firmas);
                 $usuario_asignado = null;
                 //********************************************************************************************
-                foreach ($wait_firmas as $efirma){
-                    if(empty($efirma->getFirmaAprueba())){
-                        $efirma->setEstaAsignada(1);                    
+                foreach ($wait_firmas as $efirma) {
+                    if (empty($efirma->getFirmaAprueba())) {
+                        $efirma->setEstaAsignada(1);
                         $efirma->setFechaAsigna(date("Y-m-d G:i:s"));
                         $efirma->save();
                         $usuario_asignado = $efirma->getUsuario()->getFullNombre();
@@ -1951,16 +1927,16 @@ class com_enviadaActions extends sfActions
                     }
                 }
                 //********************************************************************************************
-                $response_data = array( 'status' => 200, 'message' => 'Se envio la comunicacion al siguiente firmante ('.$usuario_asignado.')');
-            }else{
-                $response_data = array( 'status' => $status, 'message' => 'Error la informaci&oacute;n, la comunicaci&oacute;n no es valida');
+                $response_data = array('status' => 200, 'message' => 'Se envio la comunicacion al siguiente firmante (' . $usuario_asignado . ')');
+            } else {
+                $response_data = array('status' => $status, 'message' => 'Error la informaci&oacute;n, la comunicaci&oacute;n no es valida');
             }
         } catch (\Exception $ex) {
-            $response_data = array( 'status' => 400, 'message' => $ex->getMessage());
+            $response_data = array('status' => 400, 'message' => $ex->getMessage());
         }
         //****************************************************************************************************
         $array = json_encode($response_data);
-        $this->getResponse()->setContentType('application/json');      
+        $this->getResponse()->setContentType('application/json');
         return $this->renderText($array);
     }
 
@@ -1969,46 +1945,46 @@ class com_enviadaActions extends sfActions
         try {
             $status = 400;
             $comenviada_id = !empty($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
-            $response_data = array( 'status' => 400, 'message' => 'error interno no se realizo la aprobaci&oacute;n');
-            $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+            $response_data = array('status' => 400, 'message' => 'error interno no se realizo la aprobaci&oacute;n');
+            $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
             $rol_firma = 2;
             //************************************************************************************************
-            if($comenviada_id != null){
+            if ($comenviada_id != null) {
                 $com_enviada = ComEnviadaPeer::retrieveByPk(trim($this->getRequestParameter('comenviada_id')));
                 //********************************************************************************************
                 $ucom_current = EnviadaUsuarioPeer::getCurrentUserAsignado($com_enviada->getPrimaryKey());
                 //********************************************************************************************
-                if($ucom_current == null){
+                if ($ucom_current == null) {
                     $array = json_encode($response_data);
-                    $this->getResponse()->setContentType('application/json');      
+                    $this->getResponse()->setContentType('application/json');
                     return $this->renderText($array);
                 }
                 //********************************************************************************************
-                if($ucom_current->getUsuarioId() != $usuariologuiado){
+                if ($ucom_current->getUsuarioId() != $usuariologuiado) {
                     $array = json_encode($response_data);
-                    $this->getResponse()->setContentType('application/json');      
+                    $this->getResponse()->setContentType('application/json');
                     return $this->renderText($array);
                 }
                 //********************************************************************************************
                 $ucom_next = EnviadaUsuarioPeer::setNextUserProceso($com_enviada->getPrimaryKey());
                 $usuario_asignado = $ucom_next != null ? $ucom_next->getUsuario() : null;
                 //********************************************************************************************
-                if($usuario_asignado != null){
+                if ($usuario_asignado != null) {
                     $nombre_asignado = $usuario_asignado->getFullNombre();
                     //$email_destino = !empty($usuario_asignado->getEmail()) ? trim($usuario_asignado->getEmail()) : null;
-                    $this->sendMailAprob($com_enviada,$usuario_asignado);
+                    $this->sendMailAprob($com_enviada, $usuario_asignado);
                 }
                 //********************************************************************************************
-                $response_data = array( 'status' => 200, 'message' => 'Se envio la comunicacion al siguiente usuario del proceso ('.$nombre_asignado.')');
-            }else{
-                $response_data = array( 'status' => $status, 'message' => 'Error la informaci&oacute;n, la comunicaci&oacute;n no es valida');
+                $response_data = array('status' => 200, 'message' => 'Se envio la comunicacion al siguiente usuario del proceso (' . $nombre_asignado . ')');
+            } else {
+                $response_data = array('status' => $status, 'message' => 'Error la informaci&oacute;n, la comunicaci&oacute;n no es valida');
             }
         } catch (\Exception $ex) {
-            $response_data = array( 'status' => 400, 'message' => $ex->getMessage());
+            $response_data = array('status' => 400, 'message' => $ex->getMessage());
         }
         //****************************************************************************************************
         $array = json_encode($response_data);
-        $this->getResponse()->setContentType('application/json');      
+        $this->getResponse()->setContentType('application/json');
         return $this->renderText($array);
     }
 
@@ -2017,19 +1993,20 @@ class com_enviadaActions extends sfActions
         try {
             $status = 400;
             $comenviada_id = !empty($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
-            $response_data = array( 'status' => 400, 'message' => 'error interno no se realizo la aprobaci&oacute;n');
-            $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+            $response_data = array('status' => 400, 'message' => 'error interno no se realizo la aprobaci&oacute;n');
+            $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
             $rol_firma = 2;
             //************************************************************************************************
-            if($comenviada_id != null){
+            if ($comenviada_id != null) {
                 $com_enviada = ComEnviadaPeer::retrieveByPk(trim($this->getRequestParameter('comenviada_id')));
                 $list_objects = $com_enviada->getEnviadaUsuarios();
-                $wait_process = array();//$update_firmas = array();
+                $wait_process = array(); //$update_firmas = array();
                 //********************************************************************************************
-                $proceso_actual = 0;$object_current = null;
+                $proceso_actual = 0;
+                $object_current = null;
                 //********************************************************************************************
-                foreach ($list_objects as $object){
-                    if(($object->getEstaAsignada() == 1) && ($usuariologuiado == $object->getUsuarioId())){ 
+                foreach ($list_objects as $object) {
+                    if (($object->getEstaAsignada() == 1) && ($usuariologuiado == $object->getUsuarioId())) {
                         $object->setEstaAsignada(0);
                         $object->setFirmaAprueba(1);
                         $object->setFechaAprueba(date("Y-m-d G:i:s"));
@@ -2039,42 +2016,43 @@ class com_enviadaActions extends sfActions
                         $proceso_actual = $object->getTipoprocesocomId();
                         $object_current = $object;
                         //$update_firmas[$object->getPrimaryKey()] = $object->getPrimaryKey();
-                    }elseif(!in_array($object->getRoluscomenviadaId(),array(1,3))){
-                        if(empty($object->getFirmaAprueba())){
+                    } elseif (!in_array($object->getRoluscomenviadaId(), array(1, 3))) {
+                        if (empty($object->getFirmaAprueba())) {
                             $wait_process[] = array('tproceso_id' => $object->getTipoprocesocomId(), 'object' => $object);
                         }
                     }
                 }
                 //********************************************************************************************
-                $usuario_asignado = new Usuario();$next_process = 0;
+                $usuario_asignado = new Usuario();
+                $next_process = 0;
                 //********************************************************************************************
-                if($proceso_actual == 3){
+                if ($proceso_actual == 3) {
                     $next_process = 4;
                     $list_next = simad_util::search_array($wait_process, 'tproceso_id', $proceso_actual);
-                    if(count($list_next) <= 0){
+                    if (count($list_next) <= 0) {
                         $list_next = simad_util::search_array($wait_process, 'tproceso_id', $next_process);
-                        if(count($list_next) <= 0){
+                        if (count($list_next) <= 0) {
                             $list_next = array('tproceso_id' => $object_current->getTipoprocesocomId(), 'object' => $object_current);
                         }
                     }
-                }elseif($proceso_actual == 4){
+                } elseif ($proceso_actual == 4) {
                     $next_process = 5;
                     $list_next = simad_util::search_array($wait_process, 'tproceso_id', $proceso_actual);
-                    if(count($list_next) <= 0){
+                    if (count($list_next) <= 0) {
                         $list_next = simad_util::search_array($wait_process, 'tproceso_id', $next_process);
-                        if(count($list_next) <= 0){
+                        if (count($list_next) <= 0) {
                             $list_next = array('tproceso_id' => $object_current->getTipoprocesocomId(), 'object' => $object_current);
                         }
                     }
-                }else{
+                } else {
                     $next_process = 5;
                     $list_next = simad_util::search_array($wait_process, 'tproceso_id', $next_process);
                 }
                 //********************************************************************************************
-                foreach ($list_next as $eobject){
+                foreach ($list_next as $eobject) {
                     $efirma = $eobject["object"];
-                    if(empty($efirma->getFirmaAprueba())){
-                        $efirma->setEstaAsignada(1);                    
+                    if (empty($efirma->getFirmaAprueba())) {
+                        $efirma->setEstaAsignada(1);
                         $efirma->setFechaAsigna(date("Y-m-d G:i:s"));
                         $efirma->save();
                         $usuario_asignado = $efirma->getUsuario();
@@ -2082,52 +2060,52 @@ class com_enviadaActions extends sfActions
                     }
                 }
                 //********************************************************************************************
-                if($usuario_asignado != null){
+                if ($usuario_asignado != null) {
                     $nombre_asignado = $usuario_asignado->getFullNombre();
                     //$email_destino = !empty($usuario_asignado->getEmail()) ? trim($usuario_asignado->getEmail()) : null;
-                    $this->sendMailAprob($com_enviada,$usuario_asignado);
+                    $this->sendMailAprob($com_enviada, $usuario_asignado);
                 }
                 //********************************************************************************************
-                $response_data = array( 'status' => 200, 'message' => 'Se envio la comunicacion al siguiente usuario del proceso ('.$nombre_asignado.')');
-            }else{
-                $response_data = array( 'status' => $status, 'message' => 'Error la informaci&oacute;n, la comunicaci&oacute;n no es valida');
+                $response_data = array('status' => 200, 'message' => 'Se envio la comunicacion al siguiente usuario del proceso (' . $nombre_asignado . ')');
+            } else {
+                $response_data = array('status' => $status, 'message' => 'Error la informaci&oacute;n, la comunicaci&oacute;n no es valida');
             }
         } catch (\Exception $ex) {
-            $response_data = array( 'status' => 400, 'message' => $ex->getMessage());
+            $response_data = array('status' => 400, 'message' => $ex->getMessage());
         }
         //****************************************************************************************************
         $array = json_encode($response_data);
-        $this->getResponse()->setContentType('application/json');      
+        $this->getResponse()->setContentType('application/json');
         return $this->renderText($array);
     }
 
     public function executeSendNotifyWsRad()
     {
-        try{
+        try {
             $status = 400;
             $comenviada_id = !empty($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
-            $response_data = array( 'status' => 400, 'message' => 'error interno de integracion, fachada');
+            $response_data = array('status' => 400, 'message' => 'error interno de integracion, fachada');
             //************************************************************************************************
-            if($comenviada_id != null){
+            if ($comenviada_id != null) {
                 $com_enviada = ComEnviadaPeer::retrieveByPk(trim($this->getRequestParameter('comenviada_id')));
                 //********************************************************************************************
-                if(empty($com_enviada->getConsecutivoResp())){
-                    $response_data = array( 'status' => $status, 'message' => 'Error no se encontro el radicado de entrada');
-                }else{
+                if (empty($com_enviada->getConsecutivoResp())) {
+                    $response_data = array('status' => $status, 'message' => 'Error no se encontro el radicado de entrada');
+                } else {
                     $simadSoap = new WsSimadUariv();
-                    $response_data = $simadSoap->loadWsInfoRadicadoSalida($com_enviada->getPrimaryKey(),$com_enviada->getConsecutivoResp());
+                    $response_data = $simadSoap->loadWsInfoRadicadoSalida($com_enviada->getPrimaryKey(), $com_enviada->getConsecutivoResp());
                 }
-            }else{
-                $response_data = array( 'status' => $status, 'message' => 'Error la informaci&oacute;n no es valida');
+            } else {
+                $response_data = array('status' => $status, 'message' => 'Error la informaci&oacute;n no es valida');
             }
-        }catch(Exception $ex){
-            $response_data = array( 'status' => 400, 'message' => $ex->getMessage());
+        } catch (Exception $ex) {
+            $response_data = array('status' => 400, 'message' => $ex->getMessage());
         }
         //****************************************************************************************************
         $array = json_encode($response_data);
-        $this->getResponse()->setContentType('application/json');      
+        $this->getResponse()->setContentType('application/json');
         return $this->renderText($array);
-    }    
+    }
 
     public function executeViewImageDigit()
     {
@@ -2137,30 +2115,30 @@ class com_enviadaActions extends sfActions
         $response_process = array('status' => 400, 'message' => 'Error interno del servidor');
         //******************************************************************************************************************
         $vtoken = $this->getRequestParameter('vtoken') ? trim($this->getRequestParameter('vtoken')) : null;
-        $current_token = md5($com_enviada->getRadicado().$usuariologuiado.$com_enviada->getFechaCreacion());
-        if($vtoken == $current_token){
+        $current_token = md5($com_enviada->getRadicado() . $usuariologuiado . $com_enviada->getFechaCreacion());
+        if ($vtoken == $current_token) {
             $response_process = $com_enviada->getUriImageDigitById();
-        }else{
+        } else {
             $response_process['message'] = 'No tine acceso a este recurso, actualice la pagina e intente de nuevo o comuniquese con el administrador del sistema';
         }
         //******************************************************************************************************************
-        $this->getResponse()->setContentType('application/json');      
+        $this->getResponse()->setContentType('application/json');
         return $this->renderText(json_encode($response_process));
     }
 
     public function executeSingWsContract()
     {
         try {
-			$response_process = array('httpStatus' => 400, 'message' => 'Error interno del servidor');
-			//**************************************************************************************************************
-			$comenviada_id = trim($this->getRequestParameter('comenviada_id'));
-			$com_enviada = ComEnviadaPeer::retrieveByPk($comenviada_id);
-			$response_process = $com_enviada->singDocumentProcess(true);
+            $response_process = array('httpStatus' => 400, 'message' => 'Error interno del servidor');
             //**************************************************************************************************************
-            if($response_process['httpStatus'] == 200){
+            $comenviada_id = trim($this->getRequestParameter('comenviada_id'));
+            $com_enviada = ComEnviadaPeer::retrieveByPk($comenviada_id);
+            $response_process = $com_enviada->singDocumentProcess(true);
+            //**************************************************************************************************************
+            if ($response_process['httpStatus'] == 200) {
                 $resp_serv = $com_enviada->initServicioProcess();
-                if($resp_serv['isError'] == true){
-                    $response_process['message'] = sprintf("%s => %s",$response_process['message'],$resp_serv['message']);
+                if ($resp_serv['isError'] == true) {
+                    $response_process['message'] = sprintf("%s => %s", $response_process['message'], $resp_serv['message']);
                 }
             }
         } catch (\Exception $th) {
@@ -2168,33 +2146,33 @@ class com_enviadaActions extends sfActions
         } catch (\Exception $th) {
             $response_process = array('httpStatus' => 400, 'message' => $th->getMessage());
         } catch (\Throwable $th) {
-			$response_process = array('httpStatus' => 400, 'message' => $th->getMessage());
-		}
-		//******************************************************************************************************************
-		$this->getResponse()->setContentType('application/json');      
-		return $this->renderText(json_encode($response_process));
+            $response_process = array('httpStatus' => 400, 'message' => $th->getMessage());
+        }
+        //******************************************************************************************************************
+        $this->getResponse()->setContentType('application/json');
+        return $this->renderText(json_encode($response_process));
     }
-  
+
     public function executeTemplatePdf()
     {
         //*****************************SE OBTIENE LA COMUNICACION INTERNA A CONVERTIR **************************************
-        $com_enviada= ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
+        $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
         //***************************************DESTINATARIO***************************************************************
-        $cD=new Criteria();
-        $cD->add(EnviadaDirectorioPeer::COMENVIADA_ID,$com_enviada->getPrimaryKey());
+        $cD = new Criteria();
+        $cD->add(EnviadaDirectorioPeer::COMENVIADA_ID, $com_enviada->getPrimaryKey());
         $cD->add(EnviadaDirectorioPeer::ROLDIRENVIADA_ID, 1);
-        $enviada_usuario_destino= EnviadaDirectorioPeer::doSelectOne($cD);
+        $enviada_usuario_destino = EnviadaDirectorioPeer::doSelectOne($cD);
         //******************************************DIRECTORIO DE LA PLANTILLAS*********************************************
-        $dir_plantilla = sfConfig::get('sf_web_dir')."/plantillas/com_enviada/";
-        $tmp_plantilla = sfConfig::get('sf_web_dir')."/com_html/com_enviada/";
+        $dir_plantilla = sfConfig::get('sf_web_dir') . "/plantillas/com_enviada/";
+        $tmp_plantilla = sfConfig::get('sf_web_dir') . "/com_html/com_enviada/";
         //****************************************NOMBRES DE LAS PLANTILLAS*************************************************
         //$name_plantilla = "com_enviada_template.rtf";
         //$img_plantilla = "Transfer_Letter_Area_Fin_archivos";
         $name_plantilla = "com_enviada_template.rtf";
-        $file_name = $dir_plantilla.$name_plantilla;
-        $aleatorio = rand(1, 10000000);  
-        $hash_is = md5($com_enviada->getPrimaryKey().$aleatorio);
-        $name_plantilla_tmp = $hash_is.".doc";
+        $file_name = $dir_plantilla . $name_plantilla;
+        $aleatorio = rand(1, 10000000);
+        $hash_is = md5($com_enviada->getPrimaryKey() . $aleatorio);
+        $name_plantilla_tmp = $hash_is . ".doc";
         $plantilla_contents = file_get_contents($file_name);
         //**************************************DATOS DE LA COMUNICACION ENVIADA********************************************
         $destinatario = trim($enviada_usuario_destino->getDirectorioExterno()->getNombre());
@@ -2204,36 +2182,70 @@ class com_enviadaActions extends sfActions
         $contenido_carta = $com_enviada->getContenido();
         $radicado_carta = $com_enviada->getRadicado();
         $FechaMensaje = $com_enviada->getFechaCreacion();
-        
-        if($FechaMensaje==""){
-        $FechaMensaje=date("Y-m-d h:m:s");
+
+        if ($FechaMensaje == "") {
+            $FechaMensaje = date("Y-m-d h:m:s");
         }
-        
+
         if (($timestamp = strtotime($FechaMensaje)) == -1) {
             echo "La cadena ($FechaMensaje) no es v&aacute;lida.";
         }
-        
-        $mes=date( "n",$timestamp );
+
+        $mes = date("n", $timestamp);
         $fecha_carta = "";
-        switch($mes)
-        {
-        case 1: {$fecha_carta.= "January"; break;}
-        case 2: {$fecha_carta.= "February"; break;}
-        case 3: {$fecha_carta.= "March"; break;}
-        case 4: {$fecha_carta.= "April"; break;}
-        case 5: {$fecha_carta.= "May"; break;}
-        case 6: {$fecha_carta.= "June"; break;}
-        case 7: {$fecha_carta.= "July"; break;}
-        case 8: {$fecha_carta.= "August"; break;}
-        case 9: {$fecha_carta.= "September"; break;}
-        case 10: {$fecha_carta.= "October"; break;}
-        case 11: {$fecha_carta.= "November"; break;}
-        case 12: {$fecha_carta.= "December"; break;}                       
+        switch ($mes) {
+            case 1: {
+                    $fecha_carta .= "January";
+                    break;
+                }
+            case 2: {
+                    $fecha_carta .= "February";
+                    break;
+                }
+            case 3: {
+                    $fecha_carta .= "March";
+                    break;
+                }
+            case 4: {
+                    $fecha_carta .= "April";
+                    break;
+                }
+            case 5: {
+                    $fecha_carta .= "May";
+                    break;
+                }
+            case 6: {
+                    $fecha_carta .= "June";
+                    break;
+                }
+            case 7: {
+                    $fecha_carta .= "July";
+                    break;
+                }
+            case 8: {
+                    $fecha_carta .= "August";
+                    break;
+                }
+            case 9: {
+                    $fecha_carta .= "September";
+                    break;
+                }
+            case 10: {
+                    $fecha_carta .= "October";
+                    break;
+                }
+            case 11: {
+                    $fecha_carta .= "November";
+                    break;
+                }
+            case 12: {
+                    $fecha_carta .= "December";
+                    break;
+                }
         }
-        $fecha_carta .= " ".date("d",$timestamp).",";
-        $fecha_carta .= date( "Y ",$timestamp );
-        if(empty($radicado_carta))
-        {
+        $fecha_carta .= " " . date("d", $timestamp) . ",";
+        $fecha_carta .= date("Y ", $timestamp);
+        if (empty($radicado_carta)) {
             $radicado_carta = "BORRADOR";
         }
         //**************************************PATRONES PARA REMPLAZAR LOS VALORES***************************************
@@ -2245,7 +2257,7 @@ class com_enviadaActions extends sfActions
         $patrones[4] = '#.#$cuerpo_carta#.#';
         $patrones[5] = '#.#$radicado#.#';
         $patrones[6] = '#.#$fecha_carta#.#';
-        
+
         $sustituciones = array();
         $sustituciones[0] = $destinatario;
         $sustituciones[1] = $direccion_destino;
@@ -2255,85 +2267,88 @@ class com_enviadaActions extends sfActions
         $sustituciones[5] = $radicado_carta;
         $sustituciones[6] = $fecha_carta;
         //**********************************REMPLAZAR DATOS EN LA COMUNICACION ENVIADA**************************************
-        $template_contents = str_replace($patrones,$sustituciones,$plantilla_contents);
+        $template_contents = str_replace($patrones, $sustituciones, $plantilla_contents);
         //********************************************GUARDAR LA PLANTILLA TEMPORAL******************************************    
         // Guarda el RTF generado
-        file_put_contents("$tmp_plantilla$name_plantilla_tmp",$template_contents);
+        file_put_contents("$tmp_plantilla$name_plantilla_tmp", $template_contents);
         /************************************COPIAS LA IMAGENES DE LA PLANTILLA TEMPORAL************************************
         simad_util::createPath($tmp_plantilla.$img_plantilla);
         exec("copy $dir_plantilla$img_plantilla $tmp_plantilla$img_plantilla");
         /*******************************************************************************************************************/
-        $enlace = $tmp_plantilla.$name_plantilla_tmp;
+        $enlace = $tmp_plantilla . $name_plantilla_tmp;
         header("Content-Type: application/force-download");
         header("Content-Type: application/octet-stream");
-        header("Content-Disposition: attachment; filename=".$name_plantilla_tmp);
+        header("Content-Disposition: attachment; filename=" . $name_plantilla_tmp);
         //header ("Content-Length: ".filesize($enlace));  
         readfile($enlace);
     }
-    
+
     public function executeShowPdfByWord()
     {
         $base_path = sfConfig::get('base_simad');
         $com_enviada = ComEnviadaPeer::retrieveByPk(trim($this->getRequestParameter('comenviada_id')));
         //***************************************************************************************************
-        if(!empty($com_enviada->getUrlFileWord())){
-            if(file_exists(trim($com_enviada->getUrlFileWord()))){
+        if (!empty($com_enviada->getUrlFileWord())) {
+            $unc = file_exists(trim($com_enviada->getUrlFileWord()));
+            if (file_exists(trim($com_enviada->getUrlFileWord()))) {
                 //$filegenerate = $com_enviada->readPlantillaWordAndGenPdf(trim($com_enviada->getUrlFileWord()));
                 $filegenerate = $com_enviada->SimadGeneratePdf(trim($com_enviada->getUrlFileWord()));
                 $extension = pathinfo($filegenerate, PATHINFO_EXTENSION);
-                $url_viewer = $base_path.'/tmp/'.$filegenerate;
-                if(strtolower($extension) == 'pdf'){ $url_viewer = $base_path.'/viewerEx.php?fileview='.$filegenerate; }
+                $url_viewer = $base_path . '/tmp/' . $filegenerate;
+                if (strtolower($extension) == 'pdf') {
+                    $url_viewer = $base_path . '/viewerEx.php?fileview=' . $filegenerate;
+                }
                 //*******************************************************************************************
                 $this->redirect($url_viewer);
             }
         }
     }
-	
+
     public function executeShowpdf()
     {
         $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
         $base_path = sfConfig::get('base_simad');
         //*************************************************************************************
-        if($com_enviada->getPlantillascomId()){            
+        if ($com_enviada->getPlantillascomId()) {
             //MARGENES DE IMPRESION
             $params_margin['top'] = "10";
             $params_margin['left'] = "15";
-            $params_margin['buttom'] = "30";
+            $params_margin['buttom'] = "20";
             $params_margin['rigth'] = "18";
             //*********************************************************************************
             $filegenerate = $com_enviada->generateFileInDisk($params_margin);
-        }else{
+        } else {
             //MARGENES DE IMPRESION
             $params_margin['top'] = "10";
             $params_margin['left'] = "15";
-            $params_margin['buttom'] = "30";
+            $params_margin['buttom'] = "20";
             $params_margin['rigth'] = "18";
             //*********************************************************************************
             //$com_enviada->generateFilePdf();
             $filegenerate = $com_enviada->generateFileInDisk($params_margin);
-        }    
+        }
         //*************************************************************************************
-        if(file_exists($filegenerate)){
+        if (file_exists($filegenerate)) {
             $extension = pathinfo($filegenerate, PATHINFO_EXTENSION);
-            $url_viewer = $base_path.'/tmp/'.basename($filegenerate);
-            if(strtolower($extension) == 'pdf'){
-                $url_viewer = $base_path.'/viewerEx.php?fileview='.basename($filegenerate);
-				//*****************************************************************************
-				if(strtolower($extension) == 'pdf'){
-					$url_viewer = $base_path.'/viewerEx.php?fileview='.basename($filegenerate);
-                if($com_enviada->getEstadocomenviadaId() == 4){
-                    $tanulado = "DOCUMENTO ANULADO";
-                    $fanulado = $com_enviada->getFechaDeAnulacion();
-                    $pdfTools = new PdfTools();
-                    $fnewTmp = $pdfTools->setPdfWatherMark($filegenerate,$tanulado,$fanulado);
-                    $url_viewer = $base_path.'/viewerEx.php?fileview='.$fnewTmp;
+            $url_viewer = $base_path . '/tmp/' . basename($filegenerate);
+            if (strtolower($extension) == 'pdf') {
+                $url_viewer = $base_path . '/viewerEx.php?fileview=' . basename($filegenerate);
+                //*****************************************************************************
+                if (strtolower($extension) == 'pdf') {
+                    $url_viewer = $base_path . '/viewerEx.php?fileview=' . basename($filegenerate);
+                    if ($com_enviada->getEstadocomenviadaId() == 4) {
+                        $tanulado = "DOCUMENTO ANULADO";
+                        $fanulado = $com_enviada->getFechaDeAnulacion();
+                        $pdfTools = new PdfTools();
+                        $fnewTmp = $pdfTools->setPdfWatherMark($filegenerate, $tanulado, $fanulado);
+                        $url_viewer = $base_path . '/viewerEx.php?fileview=' . $fnewTmp;
+                    }
                 }
             }
-			}
             //*********************************************************************************
             $this->redirect($url_viewer);
-        }else{
-            $this->redirect($base_path.'/no_file_exists.html');
+        } else {
+            $this->redirect($base_path . '/no_file_exists.html');
         }
         //*************************************************************************************
         //$this->getResponse()->clearHttpHeaders();
@@ -2343,145 +2358,145 @@ class com_enviadaActions extends sfActions
     }
 
     public function executeShowSticker()
-    { 
+    {
         $this->verificaPrilegioCerrar("com_enviada/ShowSticker");
         $this->com_enviada = $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        
+
         $firmante_id = EnviadaUsuarioPeer::getFirstUsurioFirma($this->getRequestParameter('comenviada_id'));
-        if(!$firmante_id)
-        $firmante_id=$this->getUser()->getAttribute('usuario_id','', 'subscriber');    
-        $this->objUsuarioFirma= UsuarioPeer::retrieveByPk($firmante_id);
+        if (!$firmante_id)
+            $firmante_id = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $this->objUsuarioFirma = UsuarioPeer::retrieveByPk($firmante_id);
         //sticker para las copias internas
-        $c=new Criteria();
+        $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
         $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 3);
-        $this->resultCopias = EnviadaUsuarioPeer::doSelect($c); 
-        $c=new Criteria();
+        $this->resultCopias = EnviadaUsuarioPeer::doSelect($c);
+        $c = new Criteria();
         $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
-        $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);        
-        $this->copiasDestinatarios=array();
-        $this->copiasDestinatariosName=array();
-        $i=0;
-        foreach($respo as $res){		
-            if($res->getRoldirenviadaId()==1){
+        $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);
+        $this->copiasDestinatarios = array();
+        $this->copiasDestinatariosName = array();
+        $i = 0;
+        foreach ($respo as $res) {
+            if ($res->getRoldirenviadaId() == 1) {
                 $this->destinatario = $res->getDirectorioexternoId();
                 $entidad_name = $res->getDirectorioExterno()->getNombre();
-                if(trim($com_enviada->getFuncionarioDestino())){            
+                if (trim($com_enviada->getFuncionarioDestino())) {
                     $funcionario_name = $com_enviada->getFuncionarioDestino();
-                }else{
-                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();   
+                } else {
+                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();
                 }
-                $this->destinatarioName = $entidad_name." - ".$funcionario_name;
-            }else{
-                
+                $this->destinatarioName = $entidad_name . " - " . $funcionario_name;
+            } else {
+
                 $this->copiasDestinatarios[$i] = $res->getDirectorioexternoId();
-                $this->copiasDestinatariosName[$i] = $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario();
+                $this->copiasDestinatariosName[$i] = $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario();
                 $i++;
             }
         }
         $this->setLayout(false);
     }
- 
+
     public function executeShowSticker2()
-    { 
+    {
         $this->verificaPrilegioCerrar("com_enviada/ShowSticker");
         $this->com_enviada = $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        
+
         $firmante_id = EnviadaUsuarioPeer::getFirstUsurioFirma($this->getRequestParameter('comenviada_id'));
-        if(!$firmante_id)
-        $firmante_id=$this->getUser()->getAttribute('usuario_id','', 'subscriber');    
-        $this->objUsuarioFirma= UsuarioPeer::retrieveByPk($firmante_id);
+        if (!$firmante_id)
+            $firmante_id = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $this->objUsuarioFirma = UsuarioPeer::retrieveByPk($firmante_id);
         //sticker para las copias internas
-        $c=new Criteria();
+        $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
         $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 3);
-        $this->resultCopias = EnviadaUsuarioPeer::doSelect($c); 
-        $c=new Criteria();
+        $this->resultCopias = EnviadaUsuarioPeer::doSelect($c);
+        $c = new Criteria();
         $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
-        $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);        
-        $this->copiasDestinatarios=array();
-        $this->copiasDestinatariosName=array();
-        $i=0;
-        foreach($respo as $res){		
-            if($res->getRoldirenviadaId()==1){
+        $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);
+        $this->copiasDestinatarios = array();
+        $this->copiasDestinatariosName = array();
+        $i = 0;
+        foreach ($respo as $res) {
+            if ($res->getRoldirenviadaId() == 1) {
                 $this->destinatario = $res->getDirectorioexternoId();
                 $entidad_name = $res->getDirectorioExterno()->getNombre();
-                if(trim($com_enviada->getFuncionarioDestino())){            
+                if (trim($com_enviada->getFuncionarioDestino())) {
                     $funcionario_name = $com_enviada->getFuncionarioDestino();
-                }else{
-                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();   
+                } else {
+                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();
                 }
-                $this->destinatarioName = $entidad_name." - ".$funcionario_name;
-            }else{
-                
-                $this->copiasDestinatarios[$i]= $res->getDirectorioexternoId();
-                $this->copiasDestinatariosName[$i]= $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario();
+                $this->destinatarioName = $entidad_name . " - " . $funcionario_name;
+            } else {
+
+                $this->copiasDestinatarios[$i] = $res->getDirectorioexternoId();
+                $this->copiasDestinatariosName[$i] = $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario();
                 $i++;
             }
         }
         $this->setLayout(false);
     }
- 
+
     public function executeSobre()
-    { 
+    {
         //$this->verificaPrilegioCerrar("com_enviada/ShowSticker");
         $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        
+
         $firmante_id = EnviadaUsuarioPeer::getFirstUsurioFirma($this->getRequestParameter('comenviada_id'));
-        if(!$firmante_id)
-        $firmante_id=$this->getUser()->getAttribute('usuario_id','', 'subscriber');    
-        $this->objUsuarioFirma= UsuarioPeer::retrieveByPk($firmante_id);
+        if (!$firmante_id)
+            $firmante_id = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $this->objUsuarioFirma = UsuarioPeer::retrieveByPk($firmante_id);
         //sticker para las copias internas
-        $c=new Criteria();
+        $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
         $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 3);
-        $this->resultCopias = EnviadaUsuarioPeer::doSelect($c); 
-        $c=new Criteria();
+        $this->resultCopias = EnviadaUsuarioPeer::doSelect($c);
+        $c = new Criteria();
         $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
-        $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);        
-        $this->copiasDestinatarios=array();
+        $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);
+        $this->copiasDestinatarios = array();
         $this->copiasDestinatariosName = array();
         $this->copiasDestinatariosDir = array();
-        $i=0;
-        foreach($respo as $res){		
-            if($res->getRoldirenviadaId()==1){
+        $i = 0;
+        foreach ($respo as $res) {
+            if ($res->getRoldirenviadaId() == 1) {
                 $this->destinatario = $res->getDirectorioexternoId();
-                $this->destinatarioName = $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario();
-                $this->destinatarioDir=$res->getDirectorioExterno()->getDireccion()." - ".$res->getDirectorioExterno()->getCiudad()->getNombre();
-            }else{
-                
+                $this->destinatarioName = $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario();
+                $this->destinatarioDir = $res->getDirectorioExterno()->getDireccion() . " - " . $res->getDirectorioExterno()->getCiudad()->getNombre();
+            } else {
+
                 $this->copiasDestinatarios[$i] = $res->getDirectorioexternoId();
-                $this->copiasDestinatariosName[$i] = $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario();
-                $this->copiasDestinatariosDir[$i] = $res->getDirectorioExterno()->getDireccion()." - ".$res->getDirectorioExterno()->getCiudad()->getNombre();
+                $this->copiasDestinatariosName[$i] = $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario();
+                $this->copiasDestinatariosDir[$i] = $res->getDirectorioExterno()->getDireccion() . " - " . $res->getDirectorioExterno()->getCiudad()->getNombre();
                 $i++;
             }
         }
         $this->setLayout(false);
     }
-  
-  
+
+
     public function executeCreate()
     {
         $this->SetDataCreateOption();
         $this->setTemplate('edit');
     }
-    
+
     public function executeCreateRadicarWord()
     {
         $this->SetDataCreateOption();
     }
-    
+
     public function executeCreatePlantillaWord()
     {
         $this->SetDataCreateOption();
     }
-  
+
     public function executeCreatePlantillaFactura()
     {
         $this->SetDataCreateOption();
-        $this->plantilla_text = file_get_contents(sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'rptfacturas.txt');
+        $this->plantilla_text = file_get_contents(sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'rptfacturas.txt');
     }
-  
+
     public function SetDataCreateOption()
     {
         $this->verificaPrilegio("com_enviada/create");
@@ -2490,11 +2505,11 @@ class com_enviadaActions extends sfActions
         $this->RadicadoComRec = $this->getRequestParameter('radicado');
         $this->permisoFirmaOtroAutorizado = 0;
         $this->com_enviada = new ComEnviada();
-        $this->editando=0;
-        $this->Radicar=" ";
+        $this->editando = 0;
+        $this->Radicar = " ";
         $this->creador = "";
         $this->creador_name = "";
-        $this->firmante = "";    
+        $this->firmante = "";
         $this->firmante_name = "";
         $this->aprobadores = "";
         $this->aprobadores_name = "";
@@ -2512,13 +2527,13 @@ class com_enviadaActions extends sfActions
         $this->viewCheckInters = true;
         $this->expediente_id = null;
         //****************************************************************************************
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
         //****************************************************************************************
-        if(trim($this->idComRecibida)){
+        if (trim($this->idComRecibida)) {
             $this->com_recibida = ComRecibidaPeer::retrieveByPK(trim($this->idComRecibida));
-            if($this->com_recibida){
-                if($this->com_recibida->getDirectorioexternoId()){
+            if ($this->com_recibida) {
+                if ($this->com_recibida->getDirectorioexternoId()) {
                     $this->destinatario = $this->com_recibida->getDirectorioexternoId();
                     $this->destinatarioName = $this->com_recibida->getDirectorioExterno()->getNombre();
                     $this->com_enviada->setPrefijo($this->com_recibida->getDirectorioExterno()->getPrefijo());
@@ -2527,17 +2542,18 @@ class com_enviadaActions extends sfActions
                     $this->com_enviada->setDireccionDestinatario($this->com_recibida->getDirectorioExterno()->getDireccion());
                 }
                 //********************************************************************************
-                $list_inteIds = array();$list_names = array();
+                $list_inteIds = array();
+                $list_names = array();
                 foreach (ComRecibidaPeer::getListIntersadosByComId($this->com_recibida->getPrimaryKey()) as $interesado) {
                     $list_inteIds[] = $interesado->getInteresados()->getPrimaryKey();
-                    $list_names[] = trim($interesado->getInteresados()->getNumeroIdentificacion())." - ".trim($interesado->getInteresados()->getNombre());
+                    $list_names[] = trim($interesado->getInteresados()->getNumeroIdentificacion()) . " - " . trim($interesado->getInteresados()->getNombre());
                 }
                 //********************************************************************************
-                $this->intesadosIds = implode(",",$list_inteIds);
-                $this->intesadosNames = implode(",",$list_names);
+                $this->intesadosIds = implode(",", $list_inteIds);
+                $this->intesadosNames = implode(",", $list_names);
                 $this->viewCheckInters = count($list_inteIds) > 1 ? true : false;
                 //********************************************************************************
-                if($this->com_recibida->getContenidodocId()){
+                if ($this->com_recibida->getContenidodocId()) {
                     $contenido_documental = ContenidoUnidadDocumentalPeer::retrieveByPK($this->com_recibida->getContenidodocId());
                     $this->expediente_id = $contenido_documental->getUnidaddocumentalId();
                     $this->nombre_expediente = $contenido_documental->getUnidadDocumental();
@@ -2545,19 +2561,19 @@ class com_enviadaActions extends sfActions
             }
         }
         //****************************************************************************************
-        $this->es_otra_regional=0;
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)){
-            $this->es_otra_regional=1;		
+        $this->es_otra_regional = 0;
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)) {
+            $this->es_otra_regional = 1;
         }
         //****************************************************************************************  
-        $this->es_otra_dependencia=0;
+        $this->es_otra_dependencia = 0;
         //$this->user_dependencia_id=$usuario->getDependenciaId();		
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)){
-            $this->es_otra_dependencia=1;
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)) {
+            $this->es_otra_dependencia = 1;
         }
         //**************************************************************************************** 
         $currentFormCreadoPor = "CREAR_ENVIADA_OTRO_USUARIO_AUTORIZADO";
-        if($this->getUser()->checkPerm($currentFormCreadoPor, $usuariologuiado)){       
+        if ($this->getUser()->checkPerm($currentFormCreadoPor, $usuariologuiado)) {
             $this->permisoFirmaOtroAutorizado = 1;
         }
         //**************************************************************************************** 
@@ -2566,7 +2582,7 @@ class com_enviadaActions extends sfActions
         $currentFormConMembrete = "CREAR_ENVIADA_CON_MEMBRETE";
         $this->usar_membrete = false;
         $this->permisoCrearConMembrete = 0;
-        if($this->getUser()->checkPerm($currentFormConMembrete, $usuariologuiado)){
+        if ($this->getUser()->checkPerm($currentFormConMembrete, $usuariologuiado)) {
             $this->permisoCrearConMembrete = 1;
             $this->usar_membrete = $usuario->getRegional()->getEntidad()->getUsarMembrete();
         }
@@ -2581,58 +2597,58 @@ class com_enviadaActions extends sfActions
         $this->cargousuarioIdRevisor = "";
         $this->revisor_name = "";
         //****************************************************************************************
-        if(ParametroPeer::retrieveByPk(68)->getValorNumerico() == 1){
+        if (ParametroPeer::retrieveByPk(68)->getValorNumerico() == 1) {
             $this->usuarios_firman[] = $usuario->getPrimaryKey();
-            $this->firmante_name = $usuario->getNombreAll().',';
+            $this->firmante_name = $usuario->getNombreAll() . ',';
             $this->cargousuarioIdFirma = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario->getPrimaryKey());
         }
         //****************************************************************************************
         $this->usuario = $usuario;
     }
-    
+
     public function executeUploadTemplate()
     {
         $comenviada_id = !empty($this->getRequestParameter('comenviada_id')) ? $this->getRequestParameter('comenviada_id') : null;
         //****************************************************************************************
-        if(empty($comenviada_id)){
+        if (empty($comenviada_id)) {
             $this->com_enviada = null;
             $this->file_format = '.pdf,.PDF,application/pdf';
             $this->btntext = 'Cargar Archivo';
             $this->isGenWord = false;
-        }else{
+        } else {
             $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-            if($this->com_enviada->getIsCreateWord() == ResponseDocTypeCom::Word){
+            if ($this->com_enviada->getIsCreateWord() === ResponseDocTypeCom::Word) {
                 $this->file_format = '.docx';
                 $this->btntext = "Cargar Word";
                 $this->isGenWord = true;
-            }else{
+            } else {
                 $this->file_format = '.pdf,.PDF,application/pdf';
                 $this->btntext = 'Cargar Archivo';
                 $this->isGenWord = false;
             }
         }
     }
-	
-	public function executeUploadTemplateEdit()
+
+    public function executeUploadTemplateEdit()
     {
-        $currentForm="COM_ENVIADA_REMPLAZAR_FILE_DIGIT";
+        $currentForm = "COM_ENVIADA_REMPLAZAR_FILE_DIGIT_RADICADO";
         $this->verificaPrilegioCerrar($currentForm);
 
         $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
         $this->setTemplate('uploadTemplate');
     }
-	
+
     public function executeUploadRespuesta()
     {
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');	
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         //***********************************************************************************************
-        if (!empty($_FILES)){
+        if (!empty($_FILES)) {
             $is_error = false;
             $file_vars = pathinfo($_FILES['file']['name']);
             $file_tmp = $_FILES['file']['tmp_name'];
             //*******************************************************************************************
-            if(empty($file_tmp)){
-                $this->getRequest()->setError("attachs",'Debe seleccionar un archivo para cargar');
+            if (empty($file_tmp)) {
+                $this->getRequest()->setError("attachs", 'Debe seleccionar un archivo para cargar');
                 $is_error = true;
             }
             //*******************************************************************************************
@@ -2640,52 +2656,54 @@ class com_enviadaActions extends sfActions
                 $this->forward('com_enviada', 'uploadTemplate');
             }
             //*******************************************************************************************
-            $directorio_tmp = sfConfig::get("sf_web_dir").DIRECTORY_SEPARATOR.'tmp';
+            $directorio_tmp = sfConfig::get("sf_web_dir") . DIRECTORY_SEPARATOR . 'tmp';
             //*******************************************************************************************
             $cons = uniqid();
             $util_simad = new simad_util();
             $new_filename = $util_simad->clean_name_file($file_vars);
-            $fullpath = $directorio_tmp.DIRECTORY_SEPARATOR.$cons.'_'.$new_filename;
-            $replyfile = $cons.'_'.$new_filename;
+            $fullpath = $directorio_tmp . DIRECTORY_SEPARATOR . $cons . '_' . $new_filename;
+            $replyfile = $cons . '_' . $new_filename;
             //*******************************************************************************************
             @move_uploaded_file($file_tmp, $fullpath);
             //*******************************************************************************************
-            $mime_trust = array('application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword','application/pdf', 'application/x-pdf', 'application/x-bzpdf');
-            $file_valid = simad_util::CheckIsValidFormatFile($fullpath,$mime_trust);
-            if(!$file_valid)
-            {   
-                $this->getRequest()->setError("attachs",'El tipo de archivo no es valido');
+            $mime_trust = array('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword', 'application/pdf', 'application/x-pdf', 'application/x-bzpdf');
+            $file_valid = simad_util::CheckIsValidFormatFile($fullpath, $mime_trust);
+            if (!$file_valid) {
+                $this->getRequest()->setError("attachs", 'El tipo de archivo no es valido');
                 $this->forward('com_enviada', 'uploadTemplate');
             }
             //*******************************************************************************************
             if (!file_exists($fullpath)) {
-                $this->getRequest()->setError("attachs",'Ocurrio un error al cargar el archivo');
+                $this->getRequest()->setError("attachs", 'Ocurrio un error al cargar el archivo');
                 $this->forward('com_enviada', 'uploadTemplate');
             }
             //*******************************************************************************************
             $comenviada_id = trim($this->getRequestParameter('comenviada_id')) ? trim($this->getRequestParameter('comenviada_id')) : null;
             $this->com_enviada = null;
-            if(!empty($comenviada_id))
-            {
-                $currentForm="COM_ENVIADA_REMPLAZAR_FILE_DIGIT";
+            if (!empty($comenviada_id)) {
+                $currentForm = "COM_ENVIADA_REMPLAZAR_FILE_DIGIT";
                 $this->verificaPrilegioCerrar($currentForm);
                 $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
                 //****************************************************************************************
-                if(empty($com_enviada->getUrlFileWord()) && !file_exists($com_enviada->getUrlFileWord())){
-                    $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto().'uploads');
-                    $filedir_upload = simad_util::createPath($dir_raiz.DIRECTORY_SEPARATOR.date("Ymd")).DIRECTORY_SEPARATOR.$replyfile;
-                }else{
+                if (empty($com_enviada->getUrlFileWord()) && !file_exists($com_enviada->getUrlFileWord())) {
+                    $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto() . 'uploads');
+                    $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd")) . DIRECTORY_SEPARATOR . $replyfile;
+                } else {
                     $filedir_upload = $com_enviada->getUrlFileWord();
                 }
                 //*****************************************************************************************
-                if(file_exists($fullpath)) 
-                {
-                    if($com_enviada->getIsCreateWord() == ResponseDocTypeCom::Word){
+                if (file_exists($fullpath)) {
+                    if ($com_enviada->getIsCreateWord() === ResponseDocTypeCom::Word) {
                         $com_enviada->setIsCreateWord(ResponseDocTypeCom::Word);
                         //*********************************************************************************
                         $docxProps = simad_util::readCustomPropsFromDocx($fullpath);
                         //*********************************************************************************
-                        $uuid = $com_enviada->getPrimaryKey().'#'.$com_enviada->getPlantillasCom()->getPrimaryKey();
+                        //version original, solo permite documento de la comunicacion
+                        //$uuid = $com_enviada->getPrimaryKey().'#'.$com_enviada->getPlantillasCom()->getPrimaryKey();
+
+                        //version original, permite cualquier documento sin importar que sea de la comunicacion
+                        $uuid = $com_enviada->getPlantillasCom()->getPrimaryKey() . '#' . $com_enviada->getPlantillasCom()->getModuloId();
+
                         $plantillaId = $com_enviada->getPlantillasCom()->getPrimaryKey();
                         $modulo_id = $com_enviada->getPlantillasCom()->getModuloId();
                         $periodoAt = $com_enviada->getPeriodoId();
@@ -2695,18 +2713,16 @@ class com_enviadaActions extends sfActions
                             $this->getRequest()->setError("attachs", 'El documento de word no es el asociado a esta comunicación');
                             $this->forward('com_enviada', 'uploadTemplate');
                         }
-                    }else{
+                    } else {
                         $com_enviada->setIsCreateWord(ResponseDocTypeCom::Pdf);
                     }
                     //*************************************************************************************
-                    if(rename($fullpath,$filedir_upload))
-                    {
+                    if (rename($fullpath, $filedir_upload)) {
                         $com_enviada->setUrlFileWord($filedir_upload);
                         $com_enviada->setContenido(null);
                         $com_enviada->setUseMembrete(0);
                         //*********************************************************************************
-                        if($com_enviada->getFirmadoDigital() == 1)
-                        {
+                        if ($com_enviada->getFirmadoDigital() == 1) {
                             $com_enviada->setFirmadoDigital(0);
                         }
                         //*********************************************************************************
@@ -2714,18 +2730,17 @@ class com_enviadaActions extends sfActions
                         //*********************************************************************************
                         $digitDocFile = $com_enviada->getPathImageDigitByCom();
                         //*********************************************************************************
-                        if(!empty($digitDocFile))
-                        {
+                        if (!empty($digitDocFile)) {
                             unlink($digitDocFile);
                         }
                         //*********************************************************************************
                         $this->com_enviada = $com_enviada;
                     }
                 }
-            }            
+            }
             //*********************************************************************************************
             $this->fileName = basename($fullpath);
-        }  
+        }
     }
 
     public function executeFileTemplate()
@@ -2734,7 +2749,7 @@ class com_enviadaActions extends sfActions
         unset($_SESSION['btn_text']);
         //*********************************************************************************
         $chekedcom = $this->getRequestParameter('chekedcom') ? (bool)$this->getRequestParameter('chekedcom') : false;
-        if(!$chekedcom){
+        if (!$chekedcom) {
             return sfView::NONE;
         }
         //*********************************************************************************
@@ -2749,7 +2764,7 @@ class com_enviadaActions extends sfActions
         unset($_SESSION['btn_text']);
         //*********************************************************************************
         $chekedcom = $this->getRequestParameter('chekedcom') ? (bool)$this->getRequestParameter('chekedcom') : false;
-        if($chekedcom === false){
+        if ($chekedcom === false) {
             return sfView::NONE;
         }
         //*********************************************************************************
@@ -2766,7 +2781,7 @@ class com_enviadaActions extends sfActions
         $plantillascom_id = $this->getRequestParameter('plantillascom_id') ? $this->getRequestParameter('plantillascom_id') : null;
         $comenviada_id = $this->getRequestParameter('comenviada_id') ? $this->getRequestParameter('comenviada_id') : null;
         //*********************************************************************************
-        if(empty($plantillascom_id)){
+        if (empty($plantillascom_id)) {
             $response_data = array('status' => 400, 'message' => 'Acceso denegado, los parametros no son validos');
             $array = json_encode($response_data);
             $this->getResponse()->setContentType('application/json');
@@ -2776,7 +2791,7 @@ class com_enviadaActions extends sfActions
         $plantillas_com = PlantillasComPeer::retrieveByPK($plantillascom_id);
         $com_enviada = ComEnviadaPeer::retrieveByPk($comenviada_id);
         //*********************************************************************************
-        if(empty($plantillas_com) || empty($com_enviada)){
+        if (empty($plantillas_com) || empty($com_enviada)) {
             $response_data = array('status' => 400, 'message' => 'Ocurrio un error, los parametros enviados no son validos');
             $array = json_encode($response_data);
             $this->getResponse()->setContentType('application/json');
@@ -2787,13 +2802,13 @@ class com_enviadaActions extends sfActions
         $params['periodo_id'] = $com_enviada->getPeriodoId();
         $params['use_membrete'] = $com_enviada->getUseMembrete();
         //*********************************************************************************
-        $savePath = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp';
-        $reponse_gen = $plantillas_com->generateWordByPlantilla($savePath,$params);
+        $savePath = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
+        $reponse_gen = $plantillas_com->generateWordByPlantilla($savePath, $params);
         //*********************************************************************************
-        if($reponse_gen['isError'] === true){
+        if ($reponse_gen['isError'] === true) {
             $response_data = array('status' => 400, 'message' => $reponse_gen['message']);
-        }else{
-            $url_download = sfConfig::get('publicUrl').'/'.$reponse_gen['path_plantilla'];
+        } else {
+            $url_download = sfConfig::get('publicUrl') . '/' . $reponse_gen['path_plantilla'];
             $response_data = array('status' => 200, 'message' => $reponse_gen['message'], 'url_download' => $url_download);
         }
         //*********************************************************************************
@@ -2808,9 +2823,9 @@ class com_enviadaActions extends sfActions
         $comenviada_id = $this->getRequestParameter('comenviada_id') ? $this->getRequestParameter('comenviada_id') : null;
         //*********************************************************************************
         $com_enviada = ComEnviadaPeer::retrieveByPk($comenviada_id);
-        $format_file = pathinfo($com_enviada->getUrlFileWord(),PATHINFO_EXTENSION);
+        $format_file = pathinfo($com_enviada->getUrlFileWord(), PATHINFO_EXTENSION);
         //*********************************************************************************
-        if(file_exists($com_enviada->getUrlFileWord()) && $format_file == 'docx'){
+        if (file_exists($com_enviada->getUrlFileWord()) && $format_file == 'docx') {
             header('Content-Description: File Transfer');
             header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
             header('Content-Disposition: attachment; filename="' . basename($com_enviada->getUrlFileWord()) . '"');
@@ -2819,34 +2834,33 @@ class com_enviadaActions extends sfActions
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
             header('Content-Length: ' . filesize($com_enviada->getUrlFileWord()));
-            
+
             // Limpiar buffer de salida
             ob_clean();
             flush();
-            
+
             // Leer y enviar el archivo
             readfile($com_enviada->getUrlFileWord());
             exit;
-        }else{
-            $this->redirect(sfConfig::get('base_simad').'/no_autorizado.html');
+        } else {
+            $this->redirect(sfConfig::get('base_simad') . '/no_autorizado.html');
             exit;
         }
     }
 
     public function executeSaveCreateRadicarWord()
     {
-        if (!$this->getRequestParameter('comenviada_id'))
-        {
-        $com_enviada = new ComEnviada();
-        $estado=1;//estado 1 es borrador
-        }else{
-        $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        $estado=1;//estado 1 es borrador
-        $this->forward404Unless($com_enviada);
+        if (!$this->getRequestParameter('comenviada_id')) {
+            $com_enviada = new ComEnviada();
+            $estado = 1; //estado 1 es borrador
+        } else {
+            $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
+            $estado = 1; //estado 1 es borrador
+            $this->forward404Unless($com_enviada);
         }
         //*********************************************************************************
         $com_enviada_anterior = clone $com_enviada;
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $objUsuarioLoguiado = UsuarioPeer::retrieveByPk($usuariologuiado);
         //$com_enviada->setComenviadaId($this->getRequestParameter('comenviada_id'));
         //*********************************************************************************
@@ -2855,9 +2869,9 @@ class com_enviadaActions extends sfActions
         $com_enviada->setBancoId($directorioBanco->getBancoId());
         }*/
         //*********************************************************************************
-        if($this->getRequestParameter('ciudad_id')!=""){
-            $ciudadId=$this->getRequestParameter('ciudad_id');
-        }else{
+        if ($this->getRequestParameter('ciudad_id') != "") {
+            $ciudadId = $this->getRequestParameter('ciudad_id');
+        } else {
             $ciudadId = $objUsuarioLoguiado->getRegional()->getCiudadId();
         }
         //*********************************************************************************
@@ -2865,7 +2879,7 @@ class com_enviadaActions extends sfActions
         $com_enviada->setCiudadId($ciudadId);
         $com_enviada->setEstadocomenviadaId($estado);
         $com_enviada->setPeriodoId($periodoActual);
-        $com_enviada->setEstadodigitalizacionId(1);//1 es no digitalizada    
+        $com_enviada->setEstadodigitalizacionId(1); //1 es no digitalizada    
         $numeroRadicado = 0;
         $com_enviada->setNumeroRadicacion($numeroRadicado);
         $com_enviada->setRadicado("Sin Radicar");
@@ -2878,12 +2892,12 @@ class com_enviadaActions extends sfActions
         $com_enviada->setFechaCreacion(date("Y-m-d G:i:s"));
         $com_enviada->setGuia($this->getRequestParameter('guia'));
         $com_enviada->setValorGuia($this->getRequestParameter('valor_guia'));
-        $com_enviada->setFechaEnvioGuia($this->getRequestParameter('fecha_envio_guia'));    
+        $com_enviada->setFechaEnvioGuia($this->getRequestParameter('fecha_envio_guia'));
         //*********************************************************************************************
-        if($this->getRequestParameter('regional_id')){
-        $regional_id_actual=$this->getRequestParameter('regional_id');  
-        }else{
-        $regional_id_actual=$objUsuarioLoguiado->getRegionalId();    //crea dep y reg en las del creador	
+        if ($this->getRequestParameter('regional_id')) {
+            $regional_id_actual = $this->getRequestParameter('regional_id');
+        } else {
+            $regional_id_actual = $objUsuarioLoguiado->getRegionalId();    //crea dep y reg en las del creador	
         }
         //*********************************************************************************
         $com_enviada->setRegionalId($regional_id_actual);
@@ -2894,117 +2908,112 @@ class com_enviadaActions extends sfActions
         $com_enviada->setFuncionarioDestino(trim($this->getRequestParameter('funcionario_destino')));
         $com_enviada->setCargoDestinatario(trim($this->getRequestParameter('cargo_destinatario')));
         $com_enviada->setDireccionDestinatario(trim($this->getRequestParameter('direccion_destinatario')));
-        $com_enviada->setEstaentregado(0);    
-        $com_enviada->setFechaDeAnulacion($this->getRequestParameter('fecha_de_anulacion'));   
-        $com_enviada->setObsAnulacion($this->getRequestParameter('obs_anulacion')); 
+        $com_enviada->setEstaentregado(0);
+        $com_enviada->setFechaDeAnulacion($this->getRequestParameter('fecha_de_anulacion'));
+        $com_enviada->setObsAnulacion($this->getRequestParameter('obs_anulacion'));
         //**********************************************************************************
-        if ($this->getRequestParameter('fecha_prorrogra'))
-        {      
-        $com_enviada->setFechaProrrogra($this->getRequestParameter('fecha_prorrogra'));
+        if ($this->getRequestParameter('fecha_prorrogra')) {
+            $com_enviada->setFechaProrrogra($this->getRequestParameter('fecha_prorrogra'));
         }
         //**********************************************************************************
         $str_files = trim($this->getRequestParameter('ruta'));
-        $com_enviada->setRuta(ComEnviadaPeer::SetUrlWordFileModel($str_files,true,$com_enviada->getRuta()));
+        $com_enviada->setRuta(ComEnviadaPeer::SetUrlWordFileModel($str_files, true, $com_enviada->getRuta()));
         //**********************************************************************************
-        if($this->getRequestParameter('url_file_word')!=""){
+        if ($this->getRequestParameter('url_file_word') != "") {
             $template_word_upload = $this->getRequestParameter('url_file_word');
             $folder_compose = $periodoActual . '/' . 'word_template';
-            if(trim($com_enviada->getUrlFileWord())){
-                $com_enviada->setUrlFileWord(ComEnviada::moveFilesWordTempalteCreate($template_word_upload,$folder_compose,($com_enviada->getUrlFileWord())));
-            }else{
-                $com_enviada->setUrlFileWord(ComEnviada::moveFilesWordTempalteCreate($template_word_upload,$folder_compose));
+            if (trim($com_enviada->getUrlFileWord())) {
+                $com_enviada->setUrlFileWord(ComEnviada::moveFilesWordTempalteCreate($template_word_upload, $folder_compose, ($com_enviada->getUrlFileWord())));
+            } else {
+                $com_enviada->setUrlFileWord(ComEnviada::moveFilesWordTempalteCreate($template_word_upload, $folder_compose));
             }
-        }else{    	
+        } else {
             $com_enviada->setUrlFileWord('');
         }
         //**********************************************************************************
-        $com_enviada->save();    
+        $com_enviada->save();
         //****************************APROBACIONES DE CORRESPONDENCIA***********************
         $aprobadoresArray = array();
-        if($this->getRequestParameter('aprobadoresId'))
-        {
-            $aprobadoresArray = preg_split("/[,]+/",$this->getRequestParameter('aprobadoresId'),-1, PREG_SPLIT_NO_EMPTY);
+        if ($this->getRequestParameter('aprobadoresId')) {
+            $aprobadoresArray = preg_split("/[,]+/", $this->getRequestParameter('aprobadoresId'), -1, PREG_SPLIT_NO_EMPTY);
         }
         //**********************************************************************************
         $usuario_creador = $usuariologuiado;
-        $criteria = new Criteria();    
-        $criteria->add(CargoUsuarioPeer::ES_PRINCIPAL,true);    
-        if(in_array($usuariologuiado,$aprobadoresArray)){
-        $usuario_creador = $this->getRequestParameter('creador_id') ? $this->getRequestParameter('creador_id') : $usuariologuiado;
-        $criteria->add(CargoUsuarioPeer::USUARIO_ID,$usuario_creador);
-        }else{
-        $criteria->add(CargoUsuarioPeer::USUARIO_ID,$usuariologuiado); 
+        $criteria = new Criteria();
+        $criteria->add(CargoUsuarioPeer::ES_PRINCIPAL, true);
+        if (in_array($usuariologuiado, $aprobadoresArray)) {
+            $usuario_creador = $this->getRequestParameter('creador_id') ? $this->getRequestParameter('creador_id') : $usuariologuiado;
+            $criteria->add(CargoUsuarioPeer::USUARIO_ID, $usuario_creador);
+        } else {
+            $criteria->add(CargoUsuarioPeer::USUARIO_ID, $usuariologuiado);
         }
         $cargousuarioLogueado = CargoUsuarioPeer::doSelectOne($criteria);
         //**********************************************************************************
         ComEnviadaPeer::borrarEnviadaUsuarios($com_enviada->getPrimaryKey());
-        ComEnviadaPeer::insertaEnviadaUsuarios($usuario_creador,$com_enviada->getPrimaryKey(),1,$cargousuarioLogueado->getCargoUsuarioId());
-        if($this->getRequestParameter('firmanteId')){
-            $usurioFirma=ComEnviadaPeer::insertaEnviadaUsuarios($this->getRequestParameter('firmanteId'),$com_enviada->getPrimaryKey(),2,$this->getRequestParameter('cargousuarioIdFirma'));
-        }else{
-            $usurioFirma=ComEnviadaPeer::insertaEnviadaUsuarios($usuario_creador,$com_enviada->getPrimaryKey(),2,$cargousuarioLogueado->getCargoUsuarioId());
+        ComEnviadaPeer::insertaEnviadaUsuarios($usuario_creador, $com_enviada->getPrimaryKey(), 1, $cargousuarioLogueado->getCargoUsuarioId());
+        if ($this->getRequestParameter('firmanteId')) {
+            $usurioFirma = ComEnviadaPeer::insertaEnviadaUsuarios($this->getRequestParameter('firmanteId'), $com_enviada->getPrimaryKey(), 2, $this->getRequestParameter('cargousuarioIdFirma'));
+        } else {
+            $usurioFirma = ComEnviadaPeer::insertaEnviadaUsuarios($usuario_creador, $com_enviada->getPrimaryKey(), 2, $cargousuarioLogueado->getCargoUsuarioId());
         }
         //**********************************************************************************
-        ComEnviadaPeer::insertaEnviadaUsuarios($this->getRequestParameter('copiaInternaId'),$com_enviada->getPrimaryKey(),3,$this->getRequestParameter('cargousuarioIdCopias'));
+        ComEnviadaPeer::insertaEnviadaUsuarios($this->getRequestParameter('copiaInternaId'), $com_enviada->getPrimaryKey(), 3, $this->getRequestParameter('cargousuarioIdCopias'));
         //**********************************************************************************
         EnviadaDirectorioPeer::borrarEnviadaDirectorios($com_enviada->getPrimaryKey());
-        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('directorioexterno_id'),$com_enviada->getPrimaryKey(),1);
-        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('copiasDirectorioexterno_id'),$com_enviada->getPrimaryKey(),2);	
+        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('directorioexterno_id'), $com_enviada->getPrimaryKey(), 1);
+        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('copiasDirectorioexterno_id'), $com_enviada->getPrimaryKey(), 2);
         //**************************APROBACIONES DE CORRESPONDENCIA**************************
-        if($this->getRequestParameter('aprobadoresId')){
+        if ($this->getRequestParameter('aprobadoresId')) {
             $aprobadores_id = $this->getRequestParameter('aprobadoresId');
             $cargousuarioaprob = $this->getRequestParameter('cargousuarioIdAprob');
-            ComEnviadaPeer::insertaEnviadaUsuarios($aprobadores_id,$com_enviada->getPrimaryKey(),4,$cargousuarioaprob);        
-            $modulo_id = 4;//comunicaciones enviadas
-            $this->AprobadoresAdd($aprobadores_id,$com_enviada->getPrimaryKey(),$modulo_id);
-            if(!$this->getRequestParameter('comenviada_id') || $this->getRequestParameter('sendalertaprob')? 1 : 0){
-                $this->validarEnvioEmailAprob($com_enviada->getPrimaryKey(),$aprobadores_id,$modulo_id);
+            ComEnviadaPeer::insertaEnviadaUsuarios($aprobadores_id, $com_enviada->getPrimaryKey(), 4, $cargousuarioaprob);
+            $modulo_id = 4; //comunicaciones enviadas
+            $this->AprobadoresAdd($aprobadores_id, $com_enviada->getPrimaryKey(), $modulo_id);
+            if (!$this->getRequestParameter('comenviada_id') || $this->getRequestParameter('sendalertaprob') ? 1 : 0) {
+                $this->validarEnvioEmailAprob($com_enviada->getPrimaryKey(), $aprobadores_id, $modulo_id);
             }
         }
         //************************************************************************************
-        if(!$usurioFirma){
-            $usurioFirma=$usuariologuiado;    
-        }  
+        if (!$usurioFirma) {
+            $usurioFirma = $usuariologuiado;
+        }
         //$objUsuarioFirma=ComEnviadaPeer::retrieveByPk($usurioFirma);
-        $objUsuarioFirma=UsuarioPeer::retrieveByPk($usurioFirma);
+        $objUsuarioFirma = UsuarioPeer::retrieveByPk($usurioFirma);
         //************************************************************************************
         //dependencia        
-        if($this->getRequestParameter('dependencia_id'))
-        {
-        $com_enviada->setDependenciaId($this->getRequestParameter('dependencia_id'));
-        }
-        else
-        {
-        $com_enviada->setDependenciaId($objUsuarioFirma->getDependenciaId());
+        if ($this->getRequestParameter('dependencia_id')) {
+            $com_enviada->setDependenciaId($this->getRequestParameter('dependencia_id'));
+        } else {
+            $com_enviada->setDependenciaId($objUsuarioFirma->getDependenciaId());
         }
         //*************************************************************************************
-        if($this->getRequestParameter('regional_id')){
-        $regional_id_actual=$this->getRequestParameter('regional_id');
-        }else{
-        $regional_id_actual=$objUsuarioFirma->getRegionalId();//crea dep y reg en las del creador	
-        } 	
+        if ($this->getRequestParameter('regional_id')) {
+            $regional_id_actual = $this->getRequestParameter('regional_id');
+        } else {
+            $regional_id_actual = $objUsuarioFirma->getRegionalId(); //crea dep y reg en las del creador	
+        }
         //*************************************************************************************
-        $com_enviada->setRegionalId($regional_id_actual); 	    
+        $com_enviada->setRegionalId($regional_id_actual);
         $com_enviada->save();
         //*************************************************************************************
         //guardar en la comunicacion recibida el id dado a la comunicacion enviado en caso que la comunicacion ser respondida
-        if($this->getRequestParameter('recibida_id') != ''){
+        if ($this->getRequestParameter('recibida_id') != '') {
             $recibida   =  ComRecibidaPeer::retrieveByPK($this->getRequestParameter('recibida_id'));
             $recibida->setComenviadaId($com_enviada->getPrimaryKey());
             $recibida->save();
         }
         //*************************************************************************************
-        $this->guardarAuditoria($com_enviada_anterior,$com_enviada);
+        $this->guardarAuditoria($com_enviada_anterior, $com_enviada);
         //*************************************************************************************
         $directorioexterno_id = $this->getRequestParameter('directorioexterno_id');
         $funcionario_destino = $com_enviada->getFuncionarioDestino();
         $cargo_destino = $com_enviada->getCargoDestinatario();
         $direccion_destino = $com_enviada->getDireccionDestinatario();
-        $this->validarDestinatario($directorioexterno_id,$funcionario_destino,$cargo_destino,$direccion_destino);
+        $this->validarDestinatario($directorioexterno_id, $funcionario_destino, $cargo_destino, $direccion_destino);
         //*************************************************************************************
         ///*****para editar 
-        $this->editando=1;
-        $this->Radicar=" ";
+        $this->editando = 1;
+        $this->Radicar = " ";
         $this->creador = "";
         $this->creador_name = "";
         $this->firmante = "";
@@ -3024,86 +3033,84 @@ class com_enviadaActions extends sfActions
         $this->aprobadores = "";
         $this->aprobadores_name = "";
         $this->com_enviada = $com_enviada;
-        $this->arrObjCiudad= CiudadPeer::doSelect(new Criteria());
-        $this->Radicar=" Radicar";
-        
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-        $c=new Criteria();
+        $this->arrObjCiudad = CiudadPeer::doSelect(new Criteria());
+        $this->Radicar = " Radicar";
+
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $com_enviada->getComenviadaId());
-        $respo = $this->objEnviadaUsuario = EnviadaUsuarioPeer::doSelect($c);        
-        foreach($respo as $res){		
-            if($res->getRolusComenviadaId()==1){
+        $respo = $this->objEnviadaUsuario = EnviadaUsuarioPeer::doSelect($c);
+        foreach ($respo as $res) {
+            if ($res->getRolusComenviadaId() == 1) {
                 $this->creador = $res->getUsuarioId();
-                $this->creador_name = $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido();
-            }elseif($res->getRolusComenviadaId()==2){
-                $this->firmante .= $res->getUsuarioId().",";
-                $this->firmante_name .= $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido().",";
-                $this->cargousuarioIdFirma .= $res->getCargousuarioId().",";
-            }elseif($res->getRolusComenviadaId()== 3){
-                $this->copiaInterna .= $res->getUsuarioId().",";
-                $this->copiaInterna_name .= $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido().",";
-                $this->cargousuarioIdCopias .= $res->getCargousuarioId().",";
-            }elseif($res->getRolusComenviadaId()== 4){
-                $this->cargousuarioIdAprob .= $res->getCargousuarioId().",";
+                $this->creador_name = $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido();
+            } elseif ($res->getRolusComenviadaId() == 2) {
+                $this->firmante .= $res->getUsuarioId() . ",";
+                $this->firmante_name .= $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido() . ",";
+                $this->cargousuarioIdFirma .= $res->getCargousuarioId() . ",";
+            } elseif ($res->getRolusComenviadaId() == 3) {
+                $this->copiaInterna .= $res->getUsuarioId() . ",";
+                $this->copiaInterna_name .= $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido() . ",";
+                $this->cargousuarioIdCopias .= $res->getCargousuarioId() . ",";
+            } elseif ($res->getRolusComenviadaId() == 4) {
+                $this->cargousuarioIdAprob .= $res->getCargousuarioId() . ",";
             }
         }
         //*************************************************************************************
         $matriz_data = $this->getAprobadores($com_enviada->getComenviadaId());
-        $this->is_usuario_aprobador = false;    
-        if(count($matriz_data) > 0)
-        {
-            $this->aprobadores = implode(",",$matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",",$matriz_data[1]) . ',';    
-        
-            if(in_array($usuariologuiado,$matriz_data[0]))
-            {
+        $this->is_usuario_aprobador = false;
+        if (count($matriz_data) > 0) {
+            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+
+            if (in_array($usuariologuiado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
             }
         }
         //*************************************************************************************
-        $c=new Criteria();
+        $c = new Criteria();
         $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $com_enviada->getComenviadaId());
         $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);
         $copiasListDest = array();
-        foreach($respo as $res){		
-            if($res->getRoldirenviadaId()==1){
+        foreach ($respo as $res) {
+            if ($res->getRoldirenviadaId() == 1) {
                 $this->destinatario = $res->getDirectorioexternoId();
                 $entidad_name = $res->getDirectorioExterno()->getNombre();
-                if(trim($res->getComEnviada()->getFuncionarioDestino())){            
+                if (trim($res->getComEnviada()->getFuncionarioDestino())) {
                     $funcionario_name = $res->getComEnviada()->getFuncionarioDestino();
-                }else{
-                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();   
+                } else {
+                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();
                 }
-                $this->destinatarioName = $entidad_name." - ".$funcionario_name;
-            }else{
+                $this->destinatarioName = $entidad_name . " - " . $funcionario_name;
+            } else {
                 $copiasListDest[] = $res->getDirectorioexternoId();
-                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario().",";
-            }	    						
+                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario() . ",";
+            }
         }
-        $this->copiasDestinatarios = implode(",",$copiasListDest);
+        $this->copiasDestinatarios = implode(",", $copiasListDest);
         //*************************************************************************************
-        $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);    
-        $this->es_otra_regional=0;
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)){
-                $this->es_otra_regional=1;		
-                $this->otra_regional=$this->getRequestParameter('regional_id');
+        $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
+        $this->es_otra_regional = 0;
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)) {
+            $this->es_otra_regional = 1;
+            $this->otra_regional = $this->getRequestParameter('regional_id');
         }
-        
-            $this->es_otra_dependencia=0;
-            //$this->user_dependencia_id=$usuario->getDependenciaId();		
-            if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)){
-                $this->es_otra_dependencia=1;
+
+        $this->es_otra_dependencia = 0;
+        //$this->user_dependencia_id=$usuario->getDependenciaId();		
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)) {
+            $this->es_otra_dependencia = 1;
         }
         //*************************************************************************************
-        if($this->getUser()->getAttribute('es_banco','','banco_saliente')==1){
-            $this->es_banco=1;
-        }else{
-            $this->es_banco=0;
-        }   
+        if ($this->getUser()->getAttribute('es_banco', '', 'banco_saliente') == 1) {
+            $this->es_banco = 1;
+        } else {
+            $this->es_banco = 0;
+        }
         //*************************************************************************************
         $currentFormCreadoPor = "CREAR_ENVIADA_OTRO_USUARIO_AUTORIZADO";
-        if($this->getUser()->checkPerm($currentFormCreadoPor, $this->firmanteId)){       
-        $this->permisoFirmaOtroAutorizado = 1;
+        if ($this->getUser()->checkPerm($currentFormCreadoPor, $this->firmanteId)) {
+            $this->permisoFirmaOtroAutorizado = 1;
         }
         //*************************************************************************************
         $this->usuario = $usuario;
@@ -3111,42 +3118,41 @@ class com_enviadaActions extends sfActions
         //*************************************************************************************
         $this->setTemplate('createRadicarWord');
     }
-    
+
     public function executeSaveCreatePlantillaWord()
     {
-        if (!$this->getRequestParameter('comenviada_id'))
-        {
-        	$com_enviada = new ComEnviada();
-        	$estado=1;//estado 1 es borrador
-        }else{
-        	$com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        	$estado=1;//estado 1 es borrador
-        	$this->forward404Unless($com_enviada);
-        }    
+        if (!$this->getRequestParameter('comenviada_id')) {
+            $com_enviada = new ComEnviada();
+            $estado = 1; //estado 1 es borrador
+        } else {
+            $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
+            $estado = 1; //estado 1 es borrador
+            $this->forward404Unless($com_enviada);
+        }
         //****************************************************************************************************************
         $com_enviada_anterior = clone $com_enviada;
-        $usuariologuiado=$this->getUser()->getAttribute('usuario_id','', 'subscriber');
-        $objUsuarioLoguiado=UsuarioPeer::retrieveByPk($usuariologuiado);
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $objUsuarioLoguiado = UsuarioPeer::retrieveByPk($usuariologuiado);
         //****************************************************************************************************************
         /*if($this->getUser()->getAttribute('es_banco','','banco_saliente')==1){
         $directorioBanco=DirectorioExternoPeer::retrieveByPk($this->getRequestParameter('directorioexterno_id'));	
         $com_enviada->setBancoId($directorioBanco->getBancoId());
         }*/
         //****************************************************************************************************************
-        if($this->getRequestParameter('ciudad_id')!=""){
-            $ciudadId=$this->getRequestParameter('ciudad_id');
-        }else{
-            $ciudadId=$objUsuarioLoguiado->getRegional()->getCiudadId();
-        }     
-        $com_enviada->setCiudadId($ciudadId);    
+        if ($this->getRequestParameter('ciudad_id') != "") {
+            $ciudadId = $this->getRequestParameter('ciudad_id');
+        } else {
+            $ciudadId = $objUsuarioLoguiado->getRegional()->getCiudadId();
+        }
+        $com_enviada->setCiudadId($ciudadId);
         //estado 1 es borrador
         $com_enviada->setEstadocomenviadaId($estado);
         //****************************************************************************************************************
         //periodo    
         $periodoActual = date("Y");
         $com_enviada->setPeriodoId($periodoActual);
-        $com_enviada->setEstadodigitalizacionId(1);//1 es no digitalizada    
-        $numeroRadicado=0;
+        $com_enviada->setEstadodigitalizacionId(1); //1 es no digitalizada    
+        $numeroRadicado = 0;
         $com_enviada->setNumeroRadicacion($numeroRadicado);
         $radicado = "Sin Radicar";
         $com_enviada->setRadicado($radicado);
@@ -3159,20 +3165,19 @@ class com_enviadaActions extends sfActions
         $com_enviada->setFechaCreacion(date("Y-m-d G:i:s"));
         $com_enviada->setGuia($this->getRequestParameter('guia'));
         $com_enviada->setValorGuia($this->getRequestParameter('valor_guia'));
-        if ($this->getRequestParameter('fecha_envio_guia'))
-        {
+        if ($this->getRequestParameter('fecha_envio_guia')) {
             list($d, $m, $y) = sfI18N::getDateForCulture($this->getRequestParameter('fecha_envio_guia'), $this->getUser()->getCulture());
             $com_enviada->setFechaEnvioGuia("$y-$m-$d");
         }
         //****************************************************************************************************************
-        if($this->getRequestParameter('regional_id')){
-        $regional_id_actual=$this->getRequestParameter('regional_id');  
-        }else{
-        $regional_id_actual=$objUsuarioLoguiado->getRegionalId();    //crea dep y reg en las del creador	
-        } 	
+        if ($this->getRequestParameter('regional_id')) {
+            $regional_id_actual = $this->getRequestParameter('regional_id');
+        } else {
+            $regional_id_actual = $objUsuarioLoguiado->getRegionalId();    //crea dep y reg en las del creador	
+        }
         $com_enviada->setRegionalId($regional_id_actual);
         //dependencia    
-        $com_enviada->setDependenciaId($objUsuarioLoguiado->getDependenciaId());    
+        $com_enviada->setDependenciaId($objUsuarioLoguiado->getDependenciaId());
         //es copia
         $com_enviada->setEsCopia(0);
         $com_enviada->setFolios($this->getRequestParameter('folios'));
@@ -3181,114 +3186,106 @@ class com_enviadaActions extends sfActions
         $com_enviada->setCargoDestinatario(trim($this->getRequestParameter('cargo_destinatario')));
         $com_enviada->setDireccionDestinatario(trim($this->getRequestParameter('direccion_destinatario')));
         //entregado
-        $com_enviada->setEstaentregado(0);    
+        $com_enviada->setEstaentregado(0);
         $contenido = $this->getRequestParameter('contenido');
         $com_enviada->setContenido($contenido);
         //****************************************************************************************************************
-        if ($this->getRequestParameter('fecha_de_anulacion'))
-        {
+        if ($this->getRequestParameter('fecha_de_anulacion')) {
             list($d, $m, $y) = sfI18N::getDateForCulture($this->getRequestParameter('fecha_de_anulacion'), $this->getUser()->getCulture());
             $com_enviada->setFechaDeAnulacion("$y-$m-$d");
         }
         //****************************************************************************************************************
-        if ($this->getRequestParameter('fecha_prorrogra'))
-        {      
-        $com_enviada->setFechaProrrogra($this->getRequestParameter('fecha_prorrogra'));
-        }    
-        $com_enviada->setObsAnulacion($this->getRequestParameter('obs_anulacion'));        
+        if ($this->getRequestParameter('fecha_prorrogra')) {
+            $com_enviada->setFechaProrrogra($this->getRequestParameter('fecha_prorrogra'));
+        }
+        $com_enviada->setObsAnulacion($this->getRequestParameter('obs_anulacion'));
         $usernameloguiado = $this->getUser()->getAttribute('username', '', 'subscriber');
         //******************************************************************************************************
         $str_files = trim($this->getRequestParameter('ruta'));
-        $com_enviada->setRuta(ComEnviadaPeer::SetUrlWordFileModel($str_files,true,$com_enviada->getRuta()));    
+        $com_enviada->setRuta(ComEnviadaPeer::SetUrlWordFileModel($str_files, true, $com_enviada->getRuta()));
         //****************************************************************************************************************
         ///plantilla word
         $com_enviada->setUrlFileWord("PLANTILLA_WORD");
         //****************************************************************************************************************
-        $com_enviada->save();    
+        $com_enviada->save();
         /******************************************APROBACIONES DE CORRESPONDENCIA***************************************/
         $aprobadoresArray = array();
-        if($this->getRequestParameter('aprobadoresId'))
-        {
-            $aprobadoresArray = preg_split("/[,]+/",$this->getRequestParameter('aprobadoresId'),-1, PREG_SPLIT_NO_EMPTY);        
+        if ($this->getRequestParameter('aprobadoresId')) {
+            $aprobadoresArray = preg_split("/[,]+/", $this->getRequestParameter('aprobadoresId'), -1, PREG_SPLIT_NO_EMPTY);
         }
         /****************************************************************************************************************/
         $usuario_creador = $usuariologuiado;
-        $criteria = new Criteria();    
-        $criteria->add(CargoUsuarioPeer::ES_PRINCIPAL,true);    
-        if(in_array($usuariologuiado,$aprobadoresArray)){
-        $usuario_creador = $this->getRequestParameter('creador_id') ? $this->getRequestParameter('creador_id') : $usuariologuiado;
-        $criteria->add(CargoUsuarioPeer::USUARIO_ID,$usuario_creador);
-        }else{
-        $criteria->add(CargoUsuarioPeer::USUARIO_ID,$usuariologuiado); 
+        $criteria = new Criteria();
+        $criteria->add(CargoUsuarioPeer::ES_PRINCIPAL, true);
+        if (in_array($usuariologuiado, $aprobadoresArray)) {
+            $usuario_creador = $this->getRequestParameter('creador_id') ? $this->getRequestParameter('creador_id') : $usuariologuiado;
+            $criteria->add(CargoUsuarioPeer::USUARIO_ID, $usuario_creador);
+        } else {
+            $criteria->add(CargoUsuarioPeer::USUARIO_ID, $usuariologuiado);
         }
         $cargousuarioLogueado = CargoUsuarioPeer::doSelectOne($criteria);
         /****************************************************************************************************************/
         ComEnviadaPeer::borrarEnviadaUsuarios($com_enviada->getPrimaryKey());
-        ComEnviadaPeer::insertaEnviadaUsuarios($usuario_creador,$com_enviada->getPrimaryKey(),1,$cargousuarioLogueado->getCargoUsuarioId());
-        if($this->getRequestParameter('firmanteId'))
-            $usurioFirma=ComEnviadaPeer::insertaEnviadaUsuarios($this->getRequestParameter('firmanteId'),$com_enviada->getPrimaryKey(),2,$this->getRequestParameter('cargousuarioIdFirma'));
+        ComEnviadaPeer::insertaEnviadaUsuarios($usuario_creador, $com_enviada->getPrimaryKey(), 1, $cargousuarioLogueado->getCargoUsuarioId());
+        if ($this->getRequestParameter('firmanteId'))
+            $usurioFirma = ComEnviadaPeer::insertaEnviadaUsuarios($this->getRequestParameter('firmanteId'), $com_enviada->getPrimaryKey(), 2, $this->getRequestParameter('cargousuarioIdFirma'));
         else
-            $usurioFirma=ComEnviadaPeer::insertaEnviadaUsuarios($usuario_creador,$com_enviada->getPrimaryKey(),2,$cargousuarioLogueado->getCargoUsuarioId());
-        ComEnviadaPeer::insertaEnviadaUsuarios($this->getRequestParameter('copiaInternaId'),$com_enviada->getPrimaryKey(),3,$this->getRequestParameter('cargousuarioIdCopias'));
+            $usurioFirma = ComEnviadaPeer::insertaEnviadaUsuarios($usuario_creador, $com_enviada->getPrimaryKey(), 2, $cargousuarioLogueado->getCargoUsuarioId());
+        ComEnviadaPeer::insertaEnviadaUsuarios($this->getRequestParameter('copiaInternaId'), $com_enviada->getPrimaryKey(), 3, $this->getRequestParameter('cargousuarioIdCopias'));
         //inserta los directorios
         EnviadaDirectorioPeer::borrarEnviadaDirectorios($com_enviada->getPrimaryKey());
-        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('directorioexterno_id'),$com_enviada->getPrimaryKey(),1);
-        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('copiasDirectorioexterno_id'),$com_enviada->getPrimaryKey(),2);
+        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('directorioexterno_id'), $com_enviada->getPrimaryKey(), 1);
+        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('copiasDirectorioexterno_id'), $com_enviada->getPrimaryKey(), 2);
         /******************************************APROBACIONES DE CORRESPONDENCIA***************************************/
-        if($this->getRequestParameter('aprobadoresId'))
-        {
+        if ($this->getRequestParameter('aprobadoresId')) {
             $aprobadores_id = $this->getRequestParameter('aprobadoresId');
             $cargousuarioaprob = $this->getRequestParameter('cargousuarioIdAprob');
-            ComEnviadaPeer::insertaEnviadaUsuarios($aprobadores_id,$com_enviada->getPrimaryKey(),4,$cargousuarioaprob);        
-            $modulo_id = 4;//comunicaciones enviadas
-            $this->AprobadoresAdd($aprobadores_id,$com_enviada->getPrimaryKey(),$modulo_id);
-            if(!$this->getRequestParameter('comenviada_id') || $this->getRequestParameter('sendalertaprob')? 1 : 0)
-            {
-                $this->validarEnvioEmailAprob($com_enviada->getPrimaryKey(),$aprobadores_id,$modulo_id);
-            }       
+            ComEnviadaPeer::insertaEnviadaUsuarios($aprobadores_id, $com_enviada->getPrimaryKey(), 4, $cargousuarioaprob);
+            $modulo_id = 4; //comunicaciones enviadas
+            $this->AprobadoresAdd($aprobadores_id, $com_enviada->getPrimaryKey(), $modulo_id);
+            if (!$this->getRequestParameter('comenviada_id') || $this->getRequestParameter('sendalertaprob') ? 1 : 0) {
+                $this->validarEnvioEmailAprob($com_enviada->getPrimaryKey(), $aprobadores_id, $modulo_id);
+            }
         }
         /****************************************************************************************************************/
-        if(!$usurioFirma){
-            $usurioFirma=$usuariologuiado;    
+        if (!$usurioFirma) {
+            $usurioFirma = $usuariologuiado;
         }
-        $objUsuarioFirma=UsuarioPeer::retrieveByPk($usurioFirma);          
+        $objUsuarioFirma = UsuarioPeer::retrieveByPk($usurioFirma);
         //dependencia        
-        if($this->getRequestParameter('dependencia_id'))
-        {
-        $com_enviada->setDependenciaId($this->getRequestParameter('dependencia_id'));
-        }
-        else
-        {
-        $com_enviada->setDependenciaId($objUsuarioFirma->getDependenciaId());
+        if ($this->getRequestParameter('dependencia_id')) {
+            $com_enviada->setDependenciaId($this->getRequestParameter('dependencia_id'));
+        } else {
+            $com_enviada->setDependenciaId($objUsuarioFirma->getDependenciaId());
         }
         //****************************************************************************************************************
-        if($this->getRequestParameter('regional_id')){
-        $regional_id_actual=$this->getRequestParameter('regional_id');
-        }else{
-        $regional_id_actual=$objUsuarioFirma->getRegionalId();    //crea dep y reg en las del creador	
-        } 	
+        if ($this->getRequestParameter('regional_id')) {
+            $regional_id_actual = $this->getRequestParameter('regional_id');
+        } else {
+            $regional_id_actual = $objUsuarioFirma->getRegionalId();    //crea dep y reg en las del creador	
+        }
         //****************************************************************************************************************	
-        $com_enviada->setRegionalId($regional_id_actual); 	    
+        $com_enviada->setRegionalId($regional_id_actual);
         $com_enviada->save();
         //****************************************************************************************************************
         //guardar en la comunicacion recibida el id dado a la comunicacion enviado en caso que la comunicacion ser respondida
-        if($this->getRequestParameter('recibida_id') != ''){
+        if ($this->getRequestParameter('recibida_id') != '') {
             $recibida   =  ComRecibidaPeer::retrieveByPK($this->getRequestParameter('recibida_id'));
             $recibida->setComenviadaId($com_enviada->getPrimaryKey());
             $recibida->save();
         }
         //****************************************************************************************************************
-        $this->guardarAuditoria($com_enviada_anterior,$com_enviada);
+        $this->guardarAuditoria($com_enviada_anterior, $com_enviada);
         //****************************************************************************************************************
         $directorioexterno_id = $this->getRequestParameter('directorioexterno_id');
         $funcionario_destino = $com_enviada->getFuncionarioDestino();
         $cargo_destino = $com_enviada->getCargoDestinatario();
         $direccion_destino = $com_enviada->getDireccionDestinatario();
-        $this->validarDestinatario($directorioexterno_id,$funcionario_destino,$cargo_destino,$direccion_destino);
+        $this->validarDestinatario($directorioexterno_id, $funcionario_destino, $cargo_destino, $direccion_destino);
         //****************************************************************************************************************
         ///*****para editar 
-        $this->editando=1;
-        $this->Radicar=" ";
+        $this->editando = 1;
+        $this->Radicar = " ";
         $this->creador = "";
         $this->creador_name = "";
         $this->firmante = "";
@@ -3308,102 +3305,100 @@ class com_enviadaActions extends sfActions
         $this->aprobadores = "";
         $this->aprobadores_name = "";
         $this->com_enviada = $com_enviada;
-        $this->arrObjCiudad= CiudadPeer::doSelect(new Criteria());
-        $this->Radicar=" Radicar";
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-        $c=new Criteria();
+        $this->arrObjCiudad = CiudadPeer::doSelect(new Criteria());
+        $this->Radicar = " Radicar";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $com_enviada->getComenviadaId());
-        $respo = $this->objEnviadaUsuario = EnviadaUsuarioPeer::doSelect($c);        
-        foreach($respo as $res){		
-            if($res->getRolusComenviadaId()==1){
+        $respo = $this->objEnviadaUsuario = EnviadaUsuarioPeer::doSelect($c);
+        foreach ($respo as $res) {
+            if ($res->getRolusComenviadaId() == 1) {
                 $this->creador = $res->getUsuarioId();
-                $this->creador_name = $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido();
-            }elseif($res->getRolusComenviadaId()==2){
-                $this->firmante .= $res->getUsuarioId().",";
-                $this->firmante_name .= $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido().",";
-                $this->cargousuarioIdFirma .= $res->getCargousuarioId().",";
-            }elseif($res->getRolusComenviadaId()== 3){
-                $this->copiaInterna .= $res->getUsuarioId().",";
-                $this->copiaInterna_name .= $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido().",";
-                $this->cargousuarioIdCopias .= $res->getCargousuarioId().",";
-            }elseif($res->getRolusComenviadaId()== 4){
-                $this->cargousuarioIdAprob .= $res->getCargousuarioId().",";
+                $this->creador_name = $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido();
+            } elseif ($res->getRolusComenviadaId() == 2) {
+                $this->firmante .= $res->getUsuarioId() . ",";
+                $this->firmante_name .= $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido() . ",";
+                $this->cargousuarioIdFirma .= $res->getCargousuarioId() . ",";
+            } elseif ($res->getRolusComenviadaId() == 3) {
+                $this->copiaInterna .= $res->getUsuarioId() . ",";
+                $this->copiaInterna_name .= $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido() . ",";
+                $this->cargousuarioIdCopias .= $res->getCargousuarioId() . ",";
+            } elseif ($res->getRolusComenviadaId() == 4) {
+                $this->cargousuarioIdAprob .= $res->getCargousuarioId() . ",";
             }
         }
         /*********************************************APROBACIONES**********************************************/
         $matriz_data = $this->getAprobadores($com_enviada->getComenviadaId());
-        $this->is_usuario_aprobador = false;    
-        if(count($matriz_data) > 0)
-        {
-            $this->aprobadores = implode(",",$matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",",$matriz_data[1]) . ',';    
-        
-            if(in_array($usuariologuiado,$matriz_data[0]))
-            {
+        $this->is_usuario_aprobador = false;
+        if (count($matriz_data) > 0) {
+            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+
+            if (in_array($usuariologuiado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
             }
         }
         /*******************************************************************************************************/
-        $c=new Criteria();
+        $c = new Criteria();
         $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $com_enviada->getComenviadaId());
         $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);
         $copiasListDest = array();
-        foreach($respo as $res){		
-            if($res->getRoldirenviadaId()==1){
+        foreach ($respo as $res) {
+            if ($res->getRoldirenviadaId() == 1) {
                 $this->destinatario = $res->getDirectorioexternoId();
                 $entidad_name = $res->getDirectorioExterno()->getNombre();
-                if(trim($res->getComEnviada()->getFuncionarioDestino())){            
+                if (trim($res->getComEnviada()->getFuncionarioDestino())) {
                     $funcionario_name = $res->getComEnviada()->getFuncionarioDestino();
-                }else{
-                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();   
+                } else {
+                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();
                 }
-                $this->destinatarioName = $entidad_name." - ".$funcionario_name;
-            }else{
+                $this->destinatarioName = $entidad_name . " - " . $funcionario_name;
+            } else {
                 $copiasListDest[] = $res->getDirectorioexternoId();
-                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario().",";
-            }	    						
+                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario() . ",";
+            }
         }
-        $this->copiasDestinatarios = implode(",",$copiasListDest);
-        /*******************************************************************************************************/    
-        $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);    
-        $this->es_otra_regional=0;
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)){
-                $this->es_otra_regional=1;		
-                $this->otra_regional=$this->getRequestParameter('regional_id');
+        $this->copiasDestinatarios = implode(",", $copiasListDest);
+        /*******************************************************************************************************/
+        $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
+        $this->es_otra_regional = 0;
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)) {
+            $this->es_otra_regional = 1;
+            $this->otra_regional = $this->getRequestParameter('regional_id');
         }
-        
-            $this->es_otra_dependencia=0;
-            //$this->user_dependencia_id=$usuario->getDependenciaId();		
-            if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)){
-                $this->es_otra_dependencia=1;
+
+        $this->es_otra_dependencia = 0;
+        //$this->user_dependencia_id=$usuario->getDependenciaId();		
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)) {
+            $this->es_otra_dependencia = 1;
         }
         /*******************************************************************************************************/
-        if($this->getUser()->getAttribute('es_banco','','banco_saliente')==1){
-            $this->es_banco=1;
-        }else{
-            $this->es_banco=0;
-        }   
+        if ($this->getUser()->getAttribute('es_banco', '', 'banco_saliente') == 1) {
+            $this->es_banco = 1;
+        } else {
+            $this->es_banco = 0;
+        }
         /*******************************************************************************************************/
         $currentFormCreadoPor = "CREAR_ENVIADA_OTRO_USUARIO_AUTORIZADO";
-        if($this->getUser()->checkPerm($currentFormCreadoPor, $this->firmanteId)){       
-        $this->permisoFirmaOtroAutorizado = 1;
+        if ($this->getUser()->checkPerm($currentFormCreadoPor, $this->firmanteId)) {
+            $this->permisoFirmaOtroAutorizado = 1;
         }
         /*******************************************************************************************************/
         $this->usuario = $usuario;
         $this->forward404Unless($this->com_enviada);
-        /*******************************************************************************************************/          
+        /*******************************************************************************************************/
         $this->setTemplate('createPlantillaWord');
     }
-  
+
     public function executeConsulta()
     {
         $this->verificaPrilegio("com_enviada/consulta");
         $this->com_enviada = new ComEnviada();
-        $this->objComrecibidaUsuario=new ComrecibidaUsuario();
+        $this->objComrecibidaUsuario = new ComrecibidaUsuario();
 
-        $this->mostrarUsuario=0;
-        if($this->getRequestParameter('mostrarUsuario')==1){
-            $this->mostrarUsuario=1;
+        $this->mostrarUsuario = 0;
+        if ($this->getRequestParameter('mostrarUsuario') == 1) {
+            $this->mostrarUsuario = 1;
             /*$c = new Criteria();
             $c->addAscendingOrderByColumn(UsuarioPeer::NOMBRE);
             $this->usuarios = UsuarioPeer::doSelect($c);*/
@@ -3411,28 +3406,28 @@ class com_enviadaActions extends sfActions
 
         $r = new Criteria();
         $r->addAscendingOrderByColumn(RegionalPeer::REGIONAL_ID);
-        $r->addAscendingOrderByColumn(RegionalPeer::DESCRIPCION);          
-        $this->regionales = RegionalPeer::doSelect($r);     
+        $r->addAscendingOrderByColumn(RegionalPeer::DESCRIPCION);
+        $this->regionales = RegionalPeer::doSelect($r);
     }
-    
+
     public function executeRejectedLinksOpt()
     {
         $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $comenviada_id = $this->getRequestParameter('comenviada_id') ? $this->getRequestParameter('comenviada_id') : -1;
         $this->com_enviada = ComEnviadaPeer::retrieveByPk($comenviada_id);
-        $this->devoluciones_list = EnviadaUsuarioPeer::getDevolucionesData($comenviada_id,array(2,4,5),array($usuariologuiado));
+        $this->devoluciones_list = EnviadaUsuarioPeer::getDevolucionesData($comenviada_id, array(2, 4, 5), array($usuariologuiado));
     }
 
     public function executeReasignarAct()
     {
         $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $currentForm = "COM_ENVIADA_DEVOLUCIONES_FLUJO";
-        $response_data = array( 'status' => 400, 'message' => 'Error interno, no se realizó la devolución');
+        $response_data = array('status' => 400, 'message' => 'Error interno, no se realizó la devolución');
         //**********************************************************************************************
-        if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
-            $response_data = array( 'status' => 400, 'message' => 'Acceso denegado, no tienes permiso para realizar esta actividad');
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
+            $response_data = array('status' => 400, 'message' => 'Acceso denegado, no tienes permiso para realizar esta actividad');
             $array = json_encode($response_data);
-            $this->getResponse()->setContentType('application/json');      
+            $this->getResponse()->setContentType('application/json');
             return $this->renderText($array);
         }
         //**********************************************************************************************
@@ -3442,7 +3437,7 @@ class com_enviadaActions extends sfActions
         $tipoprocesocom_id = $this->getRequestParameter('tipoprocesocom_id') ? $this->getRequestParameter('tipoprocesocom_id') : 1;
         $cusuario_id = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuariodestino_id);
         //**********************************************************************************************
-        if(!empty($comenviada_id) && !empty($usuariodestino_id) && !empty($rolusuariocom_id)){
+        if (!empty($comenviada_id) && !empty($usuariodestino_id) && !empty($rolusuariocom_id)) {
             $info_com = array();
             $info_com['pkcom_id'] = $comenviada_id;
             $info_com['usuario_id'] = $usuariodestino_id;
@@ -3454,9 +3449,9 @@ class com_enviadaActions extends sfActions
             $ucom_current = EnviadaUsuarioPeer::getCurrentUserAsignado($comenviada_id);
             $nuser_asignado = "";
             //*******************************************************************************************
-            if($rolusuariocom_id == 1){
-                $ucom_enviada = EnviadaUsuarioPeer::getUserAddedInCom($info_com['pkcom_id'],$info_com['usuario_id'],$info_com['rol_id']);
-                if($ucom_enviada != null){
+            if ($rolusuariocom_id == 1) {
+                $ucom_enviada = EnviadaUsuarioPeer::getUserAddedInCom($info_com['pkcom_id'], $info_com['usuario_id'], $info_com['rol_id']);
+                if ($ucom_enviada != null) {
                     $ucom_enviada->setFirmaAprueba(0);
                     $ucom_enviada->setFechaAprueba(null);
                     $ucom_enviada->setEstaAsignada(1);
@@ -3464,30 +3459,30 @@ class com_enviadaActions extends sfActions
                     $ucom_enviada->save();
                     //************************************************************************************
                     $nuser_asignado = $ucom_enviada->getUsuario()->getNombreAll();
-                }else{
-                    $response_data = array( 'status' => 400, 'message' => 'Error interno, no se realizó la devolución');
+                } else {
+                    $response_data = array('status' => 400, 'message' => 'Error interno, no se realizó la devolución');
                     $array = json_encode($response_data);
-                    $this->getResponse()->setContentType('application/json');      
+                    $this->getResponse()->setContentType('application/json');
                     return $this->renderText($array);
                 }
-            }else{
+            } else {
                 $info_com['tipoprocesocom_id'] = $tipoprocesocom_id;
                 $ucom_enviada = EnviadaUsuarioPeer::addUserByCom($info_com);
-                $nuser_asignado = $ucom_enviada!= null ? $ucom_enviada->getUsuario()->getNombreAll() : "";
+                $nuser_asignado = $ucom_enviada != null ? $ucom_enviada->getUsuario()->getNombreAll() : "";
             }
             //*********************************************************************************************
-            if($ucom_current != null){            
+            if ($ucom_current != null) {
                 $ucom_current->setEstaAsignada(0);
                 $ucom_current->save();
             }
             //*********************************************************************************************
-            $response_data = array( 'status' => 200, 'message' => 'Se asignó la comunicación al usuario '.$nuser_asignado.'satisfactoriamente');
-        }else{
-            $response_data = array( 'status' => 400, 'message' => 'La información enviada no es valida o esta incompleta, no se realizó la devolución');
+            $response_data = array('status' => 200, 'message' => 'Se asignó la comunicación al usuario ' . $nuser_asignado . 'satisfactoriamente');
+        } else {
+            $response_data = array('status' => 400, 'message' => 'La información enviada no es valida o esta incompleta, no se realizó la devolución');
         }
         //*************************************************************************************************
         $array = json_encode($response_data);
-        $this->getResponse()->setContentType('application/json');      
+        $this->getResponse()->setContentType('application/json');
         return $this->renderText($array);
     }
 
@@ -3496,38 +3491,40 @@ class com_enviadaActions extends sfActions
         $this->verificaPrilegio("com_enviada/radicar");
         $this->com_enviada = $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
         $com_enviada_anterior = clone $com_enviada;
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         //***************************************************************************************************************
-        if($com_enviada->getFirmaDesatendida() == 0){
+        if ($com_enviada->getFirmaDesatendida() == 0) {
             $usuarios_com = $com_enviada->getUsuariosListComIds();
-            $permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado,$usuarios_com['firmas'],4);
-            if($permisoRadicarFirmaElectronica == 0){
-                return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/edit?comenviada_id='.$com_enviada->getPrimaryKey());
+            $permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, $usuarios_com['firmas'], 4);
+            if ($permisoRadicarFirmaElectronica == 0) {
+                return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/edit?comenviada_id=' . $com_enviada->getPrimaryKey());
             }
         }
         //***************************************************************************************************************
         $firmante_id = EnviadaUsuarioPeer::getFirstUsurioFirma($com_enviada->getPrimaryKey());
-        if(!$firmante_id){ $firmante_id = $this->getUser()->getAttribute('usuario_id','', 'subscriber'); }
+        if (!$firmante_id) {
+            $firmante_id = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        }
         //***************************************************************************************************************
         $objUsuarioFirmante =  UsuarioPeer::retrieveByPk($firmante_id);
-        $regional =$com_enviada->getRegionalId();
+        $regional = $com_enviada->getRegionalId();
         //$usuario = UsuarioPeer::retrieveByPk($usuariologuiado);
         $depen_codigo = "";
         //***************************************************************************************************************
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)){
-            $obj_dependencia = DependenciaPeer::retrieveByPk($com_enviada->getDependenciaId());			 
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)) {
+            $obj_dependencia = DependenciaPeer::retrieveByPk($com_enviada->getDependenciaId());
             $depen_codigo = $obj_dependencia->getCodigo();
             $dependencia = $obj_dependencia->getDependenciaId();
-        }else{
+        } else {
             $depen_codigo = $objUsuarioFirmante->getDependencia()->getCodigo();
             $dependencia = $objUsuarioFirmante->getDependenciaId();
         }
         //***************************************************************************************************************
         $regional_object = RegionalPeer::retrieveByPK($regional);
         $entidad_id = $regional_object->getEntidadId();
-        $radicado = $com_enviada->getRadicadoFormat($entidad_id,$regional,$depen_codigo);
+        $radicado = $com_enviada->getRadicadoFormat($entidad_id, $regional, $depen_codigo);
         //***************************************************************************************************************
-        if($com_enviada->getEstadocomenviadaId() == 1){
+        if ($com_enviada->getEstadocomenviadaId() == 1) {
             $com_enviada->setRadicado($radicado);
         }
         //***************************************************************************************************************
@@ -3535,35 +3532,35 @@ class com_enviadaActions extends sfActions
         $com_enviada->setEstadocomenviadaid($estadocomenviada_id);
         $com_enviada->setFechaCreacion(date("Y-m-d G:i:s"));
         $com_enviada->setRegionalId($regional);
-        $com_enviada->setDependenciaId($dependencia);       
+        $com_enviada->setDependenciaId($dependencia);
         $com_enviada->save();
         //***************************************************************************************************************
         EnviadaUsuarioPeer::updateEstados($com_enviada->getPrimaryKey());
         EnviadaUsuarioPeer::updateAproFirmaAll($com_enviada->getPrimaryKey());
         //***************************************************************************************************************
-        if(!empty($com_enviada->getExpedienteId()) && !empty($com_enviada->getTipoDocumentalCod())){
+        if (!empty($com_enviada->getExpedienteId()) && !empty($com_enviada->getTipoDocumentalCod())) {
             $origentransfer_id = 3;
-            $com_enviada->addNewTransferenciaAndContenido($origentransfer_id,$firmante_id);
+            $com_enviada->addNewTransferenciaAndContenido($origentransfer_id, $firmante_id);
             //FALTA CODIGO PARA CREAR LA TRANSFERENCIA CUANDO SE MARCA RADICADO POR INTERESADO
         }
         //***************************************************************************************************************
-        $this->guardarAuditoria($com_enviada_anterior,$com_enviada);
+        $this->guardarAuditoria($com_enviada_anterior, $com_enviada);
         $list_com = array();
         $list_comdirdestino = EnviadaDirectorioPeer::getListEnviadaDirByRol($com_enviada->getPrimaryKey());
         //***************************************************************************************************************
-        if($com_enviada->getRadicarInteresado()){
-            $response_create = $com_enviada->addComByInteresado($entidad_id,$regional,$depen_codigo);
-            if($response_create['isError'] == false){
+        if ($com_enviada->getRadicarInteresado()) {
+            $response_create = $com_enviada->addComByInteresado($entidad_id, $regional, $depen_codigo);
+            if ($response_create['isError'] == false) {
                 $list_com = $response_create['list_com'];
             }
-        }elseif(count($list_comdirdestino) > 1){
-            $response_create = $com_enviada->addComByDirectorioExt($list_comdirdestino,$firmante_id,$entidad_id,$regional,$depen_codigo);
-            if($response_create['isError'] == false){
+        } elseif (count($list_comdirdestino) > 1) {
+            $response_create = $com_enviada->addComByDirectorioExt($list_comdirdestino, $firmante_id, $entidad_id, $regional, $depen_codigo);
+            if ($response_create['isError'] == false) {
                 $list_com = $response_create['list_com'];
             }
         }
         //***************************************************************************************************************
-        if($com_enviada->getConsecutivoResp()){
+        if ($com_enviada->getConsecutivoResp()) {
             $com_enviada->setResponseComOrigen($firmante_id);
         }
         //***************************************************************************************************************
@@ -3571,16 +3568,16 @@ class com_enviadaActions extends sfActions
         //***************************************************************************************************************
         //Envio email a los usuarios copia de la comunicacion
         $listuser_copias = EnviadaUsuarioPeer::getCopiaUserObjectByCom($com_enviada->getPrimaryKey());
-        foreach($listuser_copias as $user_copia){
-            if($com_enviada != null && $user_copia != null){
-                $this->envioEmail($com_enviada,$user_copia);
+        foreach ($listuser_copias as $user_copia) {
+            if ($com_enviada != null && $user_copia != null) {
+                $this->envioEmail($com_enviada, $user_copia);
             }
         }
         //***************************************************************************************************************
-        if($com_enviada->getRadicarInteresado()){
-            return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/list?porFunciSalida=1&pkcomids='.implode(",",$list_com));
-        }else{
-            return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/show?comenviada_id='.$com_enviada->getPrimaryKey());
+        if ($com_enviada->getRadicarInteresado()) {
+            return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/list?porFunciSalida=1&pkcomids=' . implode(",", $list_com));
+        } else {
+            return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/show?comenviada_id=' . $com_enviada->getPrimaryKey());
         }
     }
 
@@ -3590,114 +3587,114 @@ class com_enviadaActions extends sfActions
         $formato = ParametroPeer::retrieveByPk(31);
         $work_dir = $dirRaiz->getValortexto();
         $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        $fileOrigen = $work_dir.$com_enviada->getRadicado().$formato->getValortexto();
-        
+        $fileOrigen = $work_dir . $com_enviada->getRadicado() . $formato->getValortexto();
+
         $pdf = new merge_pdf();
-        $pdf->getNumeroPaginas($fileOrigen,$work_dir."temp.txt",$work_dir);
-        
-        $vlineas = file($work_dir."temp.txt");
-        
+        $pdf->getNumeroPaginas($fileOrigen, $work_dir . "temp.txt", $work_dir);
+
+        $vlineas = file($work_dir . "temp.txt");
+
         /* Podemos mostrar / trabajar con todas las lÃƒÆ’Ã‑Â­neas:*/
-        foreach ($vlineas as $sLinea){
-        $tempLinea = explode(":",$sLinea);
-            if($tempLinea[0] == "NumberOfPages")
-            $numero_paginas = $tempLinea[1];
-        }     	
+        foreach ($vlineas as $sLinea) {
+            $tempLinea = explode(":", $sLinea);
+            if ($tempLinea[0] == "NumberOfPages")
+                $numero_paginas = $tempLinea[1];
+        }
         /*****************************************************/
-        unlink($work_dir."temp.txt");
-        
-        $this->numero_paginas = $numero_paginas; 
-        $this->com_enviada = $com_enviada; 
-        $this->fileOrigen =$fileOrigen;      
+        unlink($work_dir . "temp.txt");
+
+        $this->numero_paginas = $numero_paginas;
+        $this->com_enviada = $com_enviada;
+        $this->fileOrigen = $fileOrigen;
     }
-  
+
     public function executeUploadMezclarPdf()
-    {  	
-        if($submit_boton = $_REQUEST["boton"] == 'Adjuntar'){//para saber de q boton se envio el submit
-            
-            $dirRaiz = ParametroPeer::retrieveByPk(29)->getValortexto();//directorio donde se guardan las digitalizaciones					
+    {
+        if ($submit_boton = $_REQUEST["boton"] == 'Adjuntar') { //para saber de q boton se envio el submit
+
+            $dirRaiz = ParametroPeer::retrieveByPk(29)->getValortexto(); //directorio donde se guardan las digitalizaciones					
             //Definir la posicion
-            $position = 1;//posicion inicial para la adicion del nuevo pdf
-            
-            if($this->getRequestParameter('posicion')){//verrificar si se adicionara al principio  o al final del pdf
-                $position = $this->getRequestParameter('posicion');//se asigna la seleccion a la variable
-            }elseif($this->getRequestParameter('pagina_posicion')){//para saber si se digito una pagina
-                $position = $this->getRequestParameter('pagina_posicion');//se asigna el numero de la pagina ala variable
-            }	
-                
-            foreach ($this->getRequest()->getFiles() as $file)//se verifica q vengan archivos para subir al servidor  	
-            {    			
+            $position = 1; //posicion inicial para la adicion del nuevo pdf
+
+            if ($this->getRequestParameter('posicion')) { //verrificar si se adicionara al principio  o al final del pdf
+                $position = $this->getRequestParameter('posicion'); //se asigna la seleccion a la variable
+            } elseif ($this->getRequestParameter('pagina_posicion')) { //para saber si se digito una pagina
+                $position = $this->getRequestParameter('pagina_posicion'); //se asigna el numero de la pagina ala variable
+            }
+
+            foreach ($this->getRequest()->getFiles() as $file) //se verifica q vengan archivos para subir al servidor  	
+            {
                 $file_vars = pathinfo($file['name']);
                 $util_simad = new simad_util();
-                $fileName = $util_simad->clean_name_file($file_vars);		
-                $directorio = simad_util::createPath($dirRaiz);//se verifica o se crea el directorio donde se encuentran los adjuntos
-                @move_uploaded_file($file['tmp_name'], $directorio.DIRECTORY_SEPARATOR.$fileName);//se mueve el archivo al directorio del servidor        
-            }  
-            $outputfile = $dirRaiz.$this->getRequestParameter('fileOrigen');//Archivo al cual se le va adicionar		 
-            $uploadFile = $dirRaiz.$fileName;//archivo q se va adicinara
+                $fileName = $util_simad->clean_name_file($file_vars);
+                $directorio = simad_util::createPath($dirRaiz); //se verifica o se crea el directorio donde se encuentran los adjuntos
+                @move_uploaded_file($file['tmp_name'], $directorio . DIRECTORY_SEPARATOR . $fileName); //se mueve el archivo al directorio del servidor        
+            }
+            $outputfile = $dirRaiz . $this->getRequestParameter('fileOrigen'); //Archivo al cual se le va adicionar		 
+            $uploadFile = $dirRaiz . $fileName; //archivo q se va adicinara
             //exit();	
-            $numero_paginas = $this->getRequestParameter('numero_paginas');//se obtiene el numero total de paginas
-                
-            $merge_pdf = new merge_pdf();//se instancia la clase q realzara la adicion de los pdf
-            $file_temp = $merge_pdf->create_command('pdftk',$uploadFile,$outputfile,$position,$numero_paginas);//se hace el llamado a funcion.
-            
+            $numero_paginas = $this->getRequestParameter('numero_paginas'); //se obtiene el numero total de paginas
+
+            $merge_pdf = new merge_pdf(); //se instancia la clase q realzara la adicion de los pdf
+            $file_temp = $merge_pdf->create_command('pdftk', $uploadFile, $outputfile, $position, $numero_paginas); //se hace el llamado a funcion.
+
             $error = '';
-            unlink($uploadFile);//se elimina el archivo q se adiciono
-            if(file_exists($dirRaiz.'temp'.$file_temp.'.pdf')){
-                unlink($outputfile);//se elimina el archivo al cual se le va adicionar
-                rename($dirRaiz.'temp'.$file_temp.'.pdf',$outputfile);//se renombra el archivo temporal con el nombre original
-            }else{
-                unlink($dirRaiz.'temp'.$file_temp.'.pdf');//se elimina el archivo al cual se le va adicionar
+            unlink($uploadFile); //se elimina el archivo q se adiciono
+            if (file_exists($dirRaiz . 'temp' . $file_temp . '.pdf')) {
+                unlink($outputfile); //se elimina el archivo al cual se le va adicionar
+                rename($dirRaiz . 'temp' . $file_temp . '.pdf', $outputfile); //se renombra el archivo temporal con el nombre original
+            } else {
+                unlink($dirRaiz . 'temp' . $file_temp . '.pdf'); //se elimina el archivo al cual se le va adicionar
                 $error = 'Error al tratar De abrir el Archivo';
-            }	
+            }
             //************************************************************************************************
-            $this->fileOrigen = $this->getRequestParameter('fileOrigen');//se envia el nombre del archivo original a la vista
+            $this->fileOrigen = $this->getRequestParameter('fileOrigen'); //se envia el nombre del archivo original a la vista
             $this->error = $error;
-        }elseif($submit_boton = $_REQUEST["boton"] == 'Eliminar'){//if para saber si viene por el eliminar
-            return $this->forward('com_enviada', 'deletePagePdf');//se pasa el control a otra accion de la clase
-        }//fin el else 
-    }//fin de la accion
-  
-  
+        } elseif ($submit_boton = $_REQUEST["boton"] == 'Eliminar') { //if para saber si viene por el eliminar
+            return $this->forward('com_enviada', 'deletePagePdf'); //se pasa el control a otra accion de la clase
+        } //fin el else 
+    } //fin de la accion
+
+
     public function executeDeletePagePdf()
     {
-        $numero_pagina = trim($this->getRequestParameter('pagina_posicion'));	    	
+        $numero_pagina = trim($this->getRequestParameter('pagina_posicion'));
         $total_paginas = trim($this->getRequestParameter('numero_paginas'));
         $msg = '';
-        if($numero_pagina){
+        if ($numero_pagina) {
             $dirRaiz = ParametroPeer::retrieveByPk(17);
             $formato = ParametroPeer::retrieveByPk(31);
             $work_dir = $dirRaiz->getValortexto();
             $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-            $outputfile = $com_enviada->getRadicado().$formato->getValortexto();
+            $outputfile = $com_enviada->getRadicado() . $formato->getValortexto();
             $pdf = new merge_pdf();
-            $file_temp = $pdf->deletePage($work_dir.$outputfile,$numero_pagina,$work_dir,$total_paginas);	   				   
-            unlink($work_dir.$outputfile);
-            rename($dirRaiz->getValortexto().'temp'.$file_temp.'.pdf',$work_dir.$outputfile);
-            $msg = 'Se ha eliminado satisfactoriamente la pagina '.$numero_pagina.' del archivo '.$outputfile;		
-        }else{
+            $file_temp = $pdf->deletePage($work_dir . $outputfile, $numero_pagina, $work_dir, $total_paginas);
+            unlink($work_dir . $outputfile);
+            rename($dirRaiz->getValortexto() . 'temp' . $file_temp . '.pdf', $work_dir . $outputfile);
+            $msg = 'Se ha eliminado satisfactoriamente la pagina ' . $numero_pagina . ' del archivo ' . $outputfile;
+        } else {
             $msg = 'Debe digitar una pagina para eliminar del archivo';
-        }	   				    	
-        
-        $this->msg = $msg;		
-        $this->com_enviada = $com_enviada;       
+        }
+
+        $this->msg = $msg;
+        $this->com_enviada = $com_enviada;
     }
-  
+
     public function handleErrorUploadMezclarPdf()
     {
         $this->forward('com_enviada', 'mezclarPdf');
-    }     
-    
+    }
+
     public function executeGuia()
-    { 
+    {
         $this->verificaPrilegio("com_enviada/guia");
         $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        $this->arrObjCiudad= CiudadPeer::doSelect(new Criteria());
-        $this->Radicar=" ";
+        $this->arrObjCiudad = CiudadPeer::doSelect(new Criteria());
+        $this->Radicar = " ";
         //$this->setLayout(false);    
-        $this->forward404Unless($this->com_enviada);    
+        $this->forward404Unless($this->com_enviada);
     }
-    
+
     /**
      * enviadaActions::executePrintBatchList()
      * Permite descargar el pdf de la comunicacion leyendo un archivo de excel con la lista de radicados para descargar
@@ -3705,8 +3702,8 @@ class com_enviadaActions extends sfActions
      */
     public function executePrintBatchList()
     {
-        $currentForm="IMPRESION_COM_MASIVA";
-		$this->verificaPrilegioCerrar($currentForm);
+        $currentForm = "IMPRESION_COM_MASIVA";
+        $this->verificaPrilegioCerrar($currentForm);
         $this->process_end = $this->getRequestParameter('process_end') ? $this->getRequestParameter('process_end') : 0;;
         $this->sheetData = array();
         $this->cod_msg = $this->getRequestParameter('cod_msg') ? $this->getRequestParameter('cod_msg') : 0;
@@ -3723,42 +3720,44 @@ class com_enviadaActions extends sfActions
     {
         //$upload_dir = sfConfig::get('sf_upload_dir');
         $dirRaiz = ParametroPeer::retrieveByPk(29)->getValortexto();
-	    $dirTmp  = ParametroPeer::retrieveByPk(65)->getValortexto();
-        $upload_dir = $dirRaiz.DIRECTORY_SEPARATOR.$dirTmp;
+        $dirTmp  = ParametroPeer::retrieveByPk(65)->getValortexto();
+        $upload_dir = $dirRaiz . DIRECTORY_SEPARATOR . $dirTmp;
         $directorio = simad_util::createPath($upload_dir);
         //*************************************************************************************************************
         $this->sheetData = array();
         $this->cod_msg = 0;
         $this->msg_error = "";
         $this->process_end = 0;
-		$rows_read = 10000;
+        $rows_read = 10000;
         //*************************************************************************************************************
-        if ($this->getRequest()->hasFiles() && $this->getRequest()->getFileName('file')){    	
-        	$file_vars = pathinfo($this->getRequest()->getFileName('file'));
+        if ($this->getRequest()->hasFiles() && $this->getRequest()->getFileName('file')) {
+            $file_vars = pathinfo($this->getRequest()->getFileName('file'));
             $util_simad = new simad_util();
             $extension_file = $file_vars['extension'];
-            $cleanfilename = $util_simad->clean_name_file($file_vars);//limpiar el nombre del archivo
-            $file_name = simad_util::uniquename($upload_dir,sha1($cleanfilename.time()),".".$extension_file);//validar unique archivo    		
-            $file_name_dir = $directorio.DIRECTORY_SEPARATOR.$file_name;            
-            $this->getRequest()->moveFile('file', $file_name_dir);                    
+            $cleanfilename = $util_simad->clean_name_file($file_vars); //limpiar el nombre del archivo
+            $file_name = simad_util::uniquename($upload_dir, sha1($cleanfilename . time()), "." . $extension_file); //validar unique archivo    		
+            $file_name_dir = $directorio . DIRECTORY_SEPARATOR . $file_name;
+            $this->getRequest()->moveFile('file', $file_name_dir);
             //***********************************************************************************************************
             $inputFileName = $file_name_dir;
             $inputFileType = 'Excel2007';
-            if($extension_file == "xls"){
-                $inputFileType = 'Excel5';  
-            }            
-            $filterSubset = new MyReadFilter(1,$rows_read,range('A','C'));
+            if ($extension_file == "xls") {
+                $inputFileType = 'Excel5';
+            }
+            $filterSubset = new MyReadFilter(1, $rows_read, range('A', 'C'));
             $objReader = PHPExcel_IOFactory::createReader($inputFileType);
             $objReader->setReadDataOnly(true);
             $objReader->setReadFilter($filterSubset);
             $objPHPExcel = $objReader->load($inputFileName);
-            $this->sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+            $this->sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
             $this->sheetDataSerialize = $util_simad->getArrayForSend($this->sheetData);
             //************************************************************************************************************
-            if(file_exists($inputFileName)){ unlink($inputFileName); }
+            if (file_exists($inputFileName)) {
+                unlink($inputFileName);
+            }
             //************************************************************************************************************
             $this->setTemplate('printBatchList');
-        }else{            
+        } else {
             $this->cod_msg = 1;
             $this->msg_error = "Debe seleccionar el archivo que contiene los radicados para descargar";
             $this->setTemplate('printBatchList');
@@ -3773,66 +3772,72 @@ class com_enviadaActions extends sfActions
      */
     public function executeDownloadBatchCom()
     {
-        $currentForm="IMPRESION_COM_MASIVA";
-		$this->verificaPrilegioCerrar($currentForm);
+        $currentForm = "IMPRESION_COM_MASIVA";
+        $this->verificaPrilegioCerrar($currentForm);
         //********************************************************************************************************
         $radicado = 0;
         $remitente = "";
         $util_simad = new simad_util();
         //********************************************************************************************************
-        $dataserialize = trim($this->getRequestParameter('dataserialize')); 
+        $dataserialize = trim($this->getRequestParameter('dataserialize'));
         $dread_list = $util_simad->getArrayUnSerialize($dataserialize);
         $count_loop = 0;
         $this->cod_msg = 2;
         $this->msg_error = "";
         //********************************************************************************************************
         $zip = new ZipArchive();
-        $zipFileName = md5(date("YmdGis")).".zip";
-        $pathzip = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$zipFileName;
-        if(file_exists($pathzip)) { unlink ($pathzip); }
-        if ($zip->open($pathzip, ZIPARCHIVE::CREATE) != TRUE) { die ("Could not open archive"); }
+        $zipFileName = md5(date("YmdGis")) . ".zip";
+        $pathzip = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $zipFileName;
+        if (file_exists($pathzip)) {
+            unlink($pathzip);
+        }
+        if ($zip->open($pathzip, ZIPARCHIVE::CREATE) != TRUE) {
+            die("Could not open archive");
+        }
         //********************************************************************************************************
-        $mimetypes = explode(";",ParametroPeer::retrieveByPK(31)->getValortexto());
+        $mimetypes = explode(";", ParametroPeer::retrieveByPK(31)->getValortexto());
         $dir_raiz = ParametroPeer::retrieveByPk(29)->getValortexto();
         $digit_dir  = ParametroPeer::retrieveByPk(13)->getValortexto();
         $data_update = array();
         //********************************************************************************************************
-        foreach ($dread_list as $data_read){
-            if($count_loop == 0){
-                if(strtoupper($data_read["A"]) == "RADICADO"){
+        foreach ($dread_list as $data_read) {
+            if ($count_loop == 0) {
+                if (strtoupper($data_read["A"]) == "RADICADO") {
                     $count_loop++;
-                    $data_update[] = array('A' => 'Radicado','B' => 'Remitente','C' => 'Asunto', 'D' => 'Status');
-                }else{
+                    $data_update[] = array('A' => 'Radicado', 'B' => 'Remitente', 'C' => 'Asunto', 'D' => 'Status');
+                } else {
                     $this->cod_msg = 1;
                     $this->msg_error = "El archivo no cumple con la estructura necesaria";
                 }
-            }else{
+            } else {
                 $radicado = trim($data_read["A"]);
                 $remitente = trim($data_read["B"]);
                 $asunto = trim($data_read["C"]);
-                
+
                 $com_enviada = ComEnviadaPeer::getObjectComByRadicadoOrId($radicado);
-                if($com_enviada == null){ continue; }
+                if ($com_enviada == null) {
+                    continue;
+                }
 
                 $digitcom_path = !empty($com_enviada->getDirDigit()) ? trim($com_enviada->getDirDigit()) : $dir_raiz;
-                $storage_com = $com_enviada->getBasicUrlDigitCom($digitcom_path,$digit_dir);
+                $storage_com = $com_enviada->getBasicUrlDigitCom($digitcom_path, $digit_dir);
 
                 $filename_digit = null;
                 foreach ($mimetypes as $format) {
-                    $filename = sprintf("%s.%s",trim($com_enviada->getRadicado()),$format);
+                    $filename = sprintf("%s.%s", trim($com_enviada->getRadicado()), $format);
                     $filename_digit = $storage_com['storage_path'] . DIRECTORY_SEPARATOR . $filename;
-                    if(file_exists($filename_digit)){
+                    if (file_exists($filename_digit)) {
                         break;
-                    }else{
+                    } else {
                         $filename_digit = null;
                     }
                 }
                 //************************************************************************************************
-                if($filename_digit != null){
-                    $zip->addFile($filename_digit,basename($filename_digit));
-                    $data_update[] = array('A' => $radicado,'B' => $remitente,'C' => $asunto, 'D' => 'OK');
-                }else{
-                    $data_update[] = array('A' => $radicado,'B' => $remitente,'C' => $asunto, 'D' => 'ERROR');
+                if ($filename_digit != null) {
+                    $zip->addFile($filename_digit, basename($filename_digit));
+                    $data_update[] = array('A' => $radicado, 'B' => $remitente, 'C' => $asunto, 'D' => 'OK');
+                } else {
+                    $data_update[] = array('A' => $radicado, 'B' => $remitente, 'C' => $asunto, 'D' => 'ERROR');
                 }
                 //************************************************************************************************
             }
@@ -3842,21 +3847,21 @@ class com_enviadaActions extends sfActions
         $this->sheetDataSerialize = "";
         $this->process_end = 1;
         //$this->url_download = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]".'/tmp/'.$zipFileName;
-		$this->url_download = '/tmp/'.$zipFileName;
+        $this->url_download = '/tmp/' . $zipFileName;
         //********************************************************************************************************
         $this->setTemplate('printBatchList');
     }
 
     public function executeAdvFieldsComValid()
-	{
+    {
         $comenviada_id = trim($this->getRequestParameter('comenviada_id')) ?: null;
         $numero_resolucion = trim($this->getRequestParameter('numresolucion')) ?: null;
         $idUserInteresados = trim($this->getRequestParameter('idUserInteresados')) ?: null;
-        $interesados_comlist = preg_split("/[,]+/",$idUserInteresados, -1, PREG_SPLIT_NO_EMPTY);
+        $interesados_comlist = preg_split("/[,]+/", $idUserInteresados, -1, PREG_SPLIT_NO_EMPTY);
         //********************************************************************************
-        if(!count($interesados_comlist)){
+        if (!count($interesados_comlist)) {
             $this->getResponse()->setContentType('application/json');
-            return $this->renderText(json_encode(array('status'=>'success'))); 
+            return $this->renderText(json_encode(array('status' => 'success')));
         }
         //********************************************************************************
         $interesados_com = InteresadosPeer::retrieveByPKs($interesados_comlist);
@@ -3865,27 +3870,27 @@ class com_enviadaActions extends sfActions
             $interesados_nuids[] = $item->getNumeroIdentificacion();
         }
         //********************************************************************************
-        $isExistsCom = ComEnviadaPeer::isExistComByNumResolucion($numero_resolucion,$interesados_nuids,$comenviada_id);
+        $isExistsCom = ComEnviadaPeer::isExistComByNumResolucion($numero_resolucion, $interesados_nuids, $comenviada_id);
         $response_info['status'] = $isExistsCom ? 'error' : 'success';
         //********************************************************************************
         $this->getResponse()->setContentType('application/json');
-        return $this->renderText(json_encode($response_info)); 
+        return $this->renderText(json_encode($response_info));
     }
 
     public function executeAdvancedFields()
-	{
+    {
         $comenviada_id = trim($this->getRequestParameter('comenviada_id')) ?: null;
         $plantillascom_id = trim($this->getRequestParameter('plantillascom_id')) ?: null;
         $com_enviada = new ComEnviada();
         //********************************************************************************
-        if($comenviada_id != null){
+        if ($comenviada_id != null) {
             $com_enviada = ComEnviadaPeer::retrieveByPK($comenviada_id);
         }
         //********************************************************************************
-        if(!in_array($plantillascom_id,array(1))){
+        if (!in_array($plantillascom_id, array(1))) {
             $this->getResponse()->setContentType('application/html');
             return $this->renderText("");
-        }else{
+        } else {
             $com_enviada->setPlantillascomId($plantillascom_id);
             $this->com_enviada = $com_enviada;
             $this->setTemplate('customFields');
@@ -3894,26 +3899,26 @@ class com_enviadaActions extends sfActions
 
     public function executeAnular()
     {
-		$this->verificaPrilegio("com_enviada/anular");
-		$this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-		$anullar_all = $this->getUser()->checkPerm("COM_ENVIADA_ANULAR_ALL", $usuariologuiado);
-		//********************************************************************************
-		if(!$anullar_all){
-			if(!$this->getUser()->checkPerm("COM_ENVIADA_ANULAR", $usuariologuiado) && in_array($this->com_enviada->getEstadocomenviadaId(),array(4,6))){
-				return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/show?comenviada_id='.$this->com_enviada->getComenviadaId());
-			}
-		}
-		//********************************************************************************
-        $this->Radicar=" ";
-        $this->forward404Unless($this->com_enviada);    
+        $this->verificaPrilegio("com_enviada/anular");
+        $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $anullar_all = $this->getUser()->checkPerm("COM_ENVIADA_ANULAR_ALL", $usuariologuiado);
+        //********************************************************************************
+        if (!$anullar_all) {
+            if (!$this->getUser()->checkPerm("COM_ENVIADA_ANULAR", $usuariologuiado) && in_array($this->com_enviada->getEstadocomenviadaId(), array(4, 6))) {
+                return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/show?comenviada_id=' . $this->com_enviada->getComenviadaId());
+            }
+        }
+        //********************************************************************************
+        $this->Radicar = " ";
+        $this->forward404Unless($this->com_enviada);
     }
-  
+
     public function executeDuplicar()
-    { 
-        $this->verificaPrilegio("com_enviada/duplicar"); 	
+    {
+        $this->verificaPrilegio("com_enviada/duplicar");
         $this->editando = 1;
-        $this->Radicar=" ";
+        $this->Radicar = " ";
         $this->creador = "";
         $this->creador_name = "";
         $this->firmante = "";
@@ -3925,87 +3930,87 @@ class com_enviadaActions extends sfActions
         $this->copiasDestinatarios = "";
         $this->copiasDestinatariosName = "";
         $this->cargousuarioIdFirma = "";
-        $this->cargousuarioIdCopias = ""; 
+        $this->cargousuarioIdCopias = "";
         $this->permisoFirmaOtroAutorizado = "";
         $this->cargousuarioIdAprob = "";
         $this->aprobadores = "";
-        $this->aprobadores_name = "";    
+        $this->aprobadores_name = "";
         $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        $this->arrObjCiudad= CiudadPeer::doSelect(new Criteria());
-        $this->Radicar=" Radicar";
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');    
-        $c=new Criteria();
+        $this->arrObjCiudad = CiudadPeer::doSelect(new Criteria());
+        $this->Radicar = " Radicar";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
-        $respo = $this->objEnviadaUsuario = EnviadaUsuarioPeer::doSelect($c);        
-        foreach($respo as $res){		
-            if($res->getRolusComenviadaId()==1){
+        $respo = $this->objEnviadaUsuario = EnviadaUsuarioPeer::doSelect($c);
+        foreach ($respo as $res) {
+            if ($res->getRolusComenviadaId() == 1) {
                 $this->creador = $res->getUsuarioId();
-                $this->creador_name = $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido();
-            }elseif($res->getRolusComenviadaId()==2){
-                $this->firmante .= $res->getUsuarioId().",";
-                $this->firmante_name .= $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido().",";
-                $this->cargousuarioIdFirma .= $res->getCargousuarioId().",";
-            }elseif($res->getRolusComenviadaId()== 3){
-                $this->copiaInterna .= $res->getUsuarioId().",";
-                $this->copiaInterna_name .= $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido().",";
-                $this->cargousuarioIdCopias .= $res->getCargousuarioId().",";
-            }elseif($res->getRolusComenviadaId()== 4){
-                $this->cargousuarioIdAprob .= $res->getCargousuarioId().",";
+                $this->creador_name = $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido();
+            } elseif ($res->getRolusComenviadaId() == 2) {
+                $this->firmante .= $res->getUsuarioId() . ",";
+                $this->firmante_name .= $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido() . ",";
+                $this->cargousuarioIdFirma .= $res->getCargousuarioId() . ",";
+            } elseif ($res->getRolusComenviadaId() == 3) {
+                $this->copiaInterna .= $res->getUsuarioId() . ",";
+                $this->copiaInterna_name .= $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido() . ",";
+                $this->cargousuarioIdCopias .= $res->getCargousuarioId() . ",";
+            } elseif ($res->getRolusComenviadaId() == 4) {
+                $this->cargousuarioIdAprob .= $res->getCargousuarioId() . ",";
             }
         }
         /*********************************************APROBACIONES**********************************************/
         $matriz_data = $this->getAprobadores($this->getRequestParameter('comenviada_id'));
-        $this->is_usuario_aprobador = false;    
-        if(count($matriz_data) > 0){
-            $this->aprobadores = implode(",",$matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",",$matriz_data[1]) . ',';
-            if(in_array($usuariologuiado,$matriz_data[0])){
+        $this->is_usuario_aprobador = false;
+        if (count($matriz_data) > 0) {
+            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+            if (in_array($usuariologuiado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
             }
         }
         /*******************************************************************************************************/
-        $c=new Criteria();
+        $c = new Criteria();
         $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
         $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);
         $copiasListDest = array();
-        foreach($respo as $res){		
-            if($res->getRoldirenviadaId()==1){
+        foreach ($respo as $res) {
+            if ($res->getRoldirenviadaId() == 1) {
                 $this->destinatario = $res->getDirectorioexternoId();
                 $entidad_name = $res->getDirectorioExterno()->getNombre();
-                if(trim($res->getComEnviada()->getFuncionarioDestino())){            
+                if (trim($res->getComEnviada()->getFuncionarioDestino())) {
                     $funcionario_name = $res->getComEnviada()->getFuncionarioDestino();
-                }else{
-                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();   
+                } else {
+                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();
                 }
-                $this->destinatarioName = $entidad_name." - ".$funcionario_name;
-            }else{
+                $this->destinatarioName = $entidad_name . " - " . $funcionario_name;
+            } else {
                 $copiasListDest[] = $res->getDirectorioexternoId();
-                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario().",";
+                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario() . ",";
             }
         }
-        $this->copiasDestinatarios = implode(",",$copiasListDest);
+        $this->copiasDestinatarios = implode(",", $copiasListDest);
         //*******************************************************************************************************/    
-        $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);    
-        $this->es_otra_regional=0;
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)){
-                $this->es_otra_regional=1;		
-                $this->otra_regional=$this->getRequestParameter('regional_id');
+        $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
+        $this->es_otra_regional = 0;
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)) {
+            $this->es_otra_regional = 1;
+            $this->otra_regional = $this->getRequestParameter('regional_id');
         }
         //********************************************************************************************************
-        $this->es_otra_dependencia=0;
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)){
-        $this->es_otra_dependencia=1;
+        $this->es_otra_dependencia = 0;
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)) {
+            $this->es_otra_dependencia = 1;
         }
         //********************************************************************************************************
         $currentFormCreadoPor = "CREAR_ENVIADA_OTRO_USUARIO_AUTORIZADO";
-        if($this->getUser()->checkPerm($currentFormCreadoPor, $this->creador)){       
-        $this->permisoFirmaOtroAutorizado = 1;
+        if ($this->getUser()->checkPerm($currentFormCreadoPor, $this->creador)) {
+            $this->permisoFirmaOtroAutorizado = 1;
         }
         //********************************************************************************************************
         $currentFormConMembrete = "CREAR_ENVIADA_CON_MEMBRETE";
         $this->usar_membrete = false;
         $this->permisoCrearConMembrete = 0;
-        if($this->getUser()->checkPerm($currentFormConMembrete, $usuariologuiado)){
+        if ($this->getUser()->checkPerm($currentFormConMembrete, $usuariologuiado)) {
             $this->permisoCrearConMembrete = 1;
             $this->usar_membrete = $usuario->getRegional()->getEntidad()->getUsarMembrete();
         }
@@ -4014,13 +4019,13 @@ class com_enviadaActions extends sfActions
         $this->forward404Unless($this->com_enviada);
         //*******************************************************************************************************/
     }
-  
+
     public function executeEdit()
-    { 
+    {
         $this->verificaPrilegio("com_enviada/edit");
         //******************************************************************************************************
-        $this->editando=1;
-        $this->Radicar=" ";
+        $this->editando = 1;
+        $this->Radicar = " ";
         $this->creador = "";
         $this->creador_name = "";
         $this->firmante = "";
@@ -4055,21 +4060,21 @@ class com_enviadaActions extends sfActions
         $this->nombre_expediente = null;
         //******************************************************************************************************
         $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        $this->arrObjCiudad= CiudadPeer::doSelect(new Criteria());
-        $this->Radicar=" Radicar";
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $this->arrObjCiudad = CiudadPeer::doSelect(new Criteria());
+        $this->Radicar = " Radicar";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
         //******************************************************************************************************
-        if(trim($this->com_enviada->getConsecutivoResp())){
+        if (trim($this->com_enviada->getConsecutivoResp())) {
             $this->com_recibida = ComRecibidaPeer::retrieveByPK($this->com_enviada->getConsecutivoResp());
             $this->idComRecibida = $this->com_enviada->getConsecutivoResp();
             //**********************************************************************************************
-			if($this->com_recibida->getContenidodocId()){
-				$contenido_documental = ContenidoUnidadDocumentalPeer::retrieveByPK($this->com_recibida->getContenidodocId());
+            if ($this->com_recibida->getContenidodocId()) {
+                $contenido_documental = ContenidoUnidadDocumentalPeer::retrieveByPK($this->com_recibida->getContenidodocId());
                 $this->expediente_id = $contenido_documental->getUnidaddocumentalId();
                 $this->nombre_expediente = $contenido_documental->getUnidadDocumental();
-			}
-        }elseif(!empty($this->com_enviada->getExpedienteId())){
+            }
+        } elseif (!empty($this->com_enviada->getExpedienteId())) {
             $unidad_documental = UnidadDocumentalPeer::retrieveByPK($this->com_enviada->getExpedienteId());
             $this->expediente_id = $unidad_documental->getPrimaryKey();
             $this->nombre_expediente = $unidad_documental->getCodigoTitulo();
@@ -4077,78 +4082,86 @@ class com_enviadaActions extends sfActions
             $this->tipodocumental_id = $this->com_enviada->getTipoDocumentalCod();
         }
         //******************************************************************************************************
-        $user_firman = array();$usuario_asigando = array();$firmas_aprobacion = array();$firmas_desatendida = true;
+        $user_firman = array();
+        $usuario_asigando = array();
+        $firmas_aprobacion = array();
+        $firmas_desatendida = true;
         $object_asignado = null;
         //******************************************************************************************************
-        $c=new Criteria();
+        $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $this->com_enviada->getPrimaryKey());
-        $respo = $this->objEnviadaUsuario = EnviadaUsuarioPeer::doSelect($c);        
-        foreach($respo as $res){
-            if($res->getRolusComenviadaId()==1){
+        $respo = $this->objEnviadaUsuario = EnviadaUsuarioPeer::doSelect($c);
+        foreach ($respo as $res) {
+            if ($res->getRolusComenviadaId() == 1) {
                 $this->creador = $res->getUsuarioId();
                 $this->creador_name = $res->getUsuario()->getFullNombre();
-            }elseif($res->getRolusComenviadaId()==2){//firmas
-                $this->firmante .= $res->getUsuarioId().",";
-                $this->firmante_name .= $res->getUsuario()->getFullNombre().",";
-                $this->cargousuarioIdFirma .= $res->getCargousuarioId().",";
+            } elseif ($res->getRolusComenviadaId() == 2) { //firmas
+                $this->firmante .= $res->getUsuarioId() . ",";
+                $this->firmante_name .= $res->getUsuario()->getFullNombre() . ",";
+                $this->cargousuarioIdFirma .= $res->getCargousuarioId() . ",";
                 $user_firman[] = $res->getUsuarioId();
-                if($res->getFirmaAprueba() == 0){
-                    if(!$res->getUsuario()->getFirmaDesatendida()){
+                if ($res->getFirmaAprueba() == 0) {
+                    if (!$res->getUsuario()->getFirmaDesatendida()) {
                         $firmas_aprobacion[] = $res->getUsuarioId();
-                        if(!empty($this->com_enviada->getPlantillascomId())){
-                            if($this->com_enviada->getPlantillasCom()->getDependenciaId() == $res->getUsuario()->getDependenciaId()){
+                        if (!empty($this->com_enviada->getPlantillascomId())) {
+                            if ($this->com_enviada->getPlantillasCom()->getDependenciaId() == $res->getUsuario()->getDependenciaId()) {
                                 $firmas_desatendida = $this->com_enviada->getPlantillasCom()->getFirmaDesatendida() ? true : false;
-                            }else{
+                            } else {
                                 $firmas_desatendida = false;
                             }
-                        }else{
+                        } else {
                             $firmas_desatendida = false;
                         }
                     }
                 }
-            }elseif($res->getRolusComenviadaId()== 3){//copias
-                $this->copiaInterna .= $res->getUsuarioId().",";
-                $this->copiaInterna_name .= $res->getUsuario()->getFullNombre().",";
-                $this->cargousuarioIdCopias .= $res->getCargousuarioId().",";
-            }elseif($res->getRolusComenviadaId()== 4){//revisor
-                $this->revisorUserId .= $res->getUsuarioId().",";
-                $this->revisor_name .= $res->getUsuario()->getFullNombre().",";
-                $this->cargousuarioIdRevisor .= $res->getCargousuarioId().",";
-                if($res->getFirmaAprueba() == 0){  $firmas_aprobacion[] = $res->getUsuarioId(); }
-            }elseif($res->getRolusComenviadaId()== 5){//gestor
-                $this->gestorUserId .= $res->getUsuarioId().",";
-                $this->gestor_name .= $res->getUsuario()->getFullNombre().",";
-                $this->cargousuarioIdGestor .= $res->getCargousuarioId().",";
-                if($res->getFirmaAprueba() == 0){  $firmas_aprobacion[] = $res->getUsuarioId(); }
+            } elseif ($res->getRolusComenviadaId() == 3) { //copias
+                $this->copiaInterna .= $res->getUsuarioId() . ",";
+                $this->copiaInterna_name .= $res->getUsuario()->getFullNombre() . ",";
+                $this->cargousuarioIdCopias .= $res->getCargousuarioId() . ",";
+            } elseif ($res->getRolusComenviadaId() == 4) { //revisor
+                $this->revisorUserId .= $res->getUsuarioId() . ",";
+                $this->revisor_name .= $res->getUsuario()->getFullNombre() . ",";
+                $this->cargousuarioIdRevisor .= $res->getCargousuarioId() . ",";
+                if ($res->getFirmaAprueba() == 0) {
+                    $firmas_aprobacion[] = $res->getUsuarioId();
+                }
+            } elseif ($res->getRolusComenviadaId() == 5) { //gestor
+                $this->gestorUserId .= $res->getUsuarioId() . ",";
+                $this->gestor_name .= $res->getUsuario()->getFullNombre() . ",";
+                $this->cargousuarioIdGestor .= $res->getCargousuarioId() . ",";
+                if ($res->getFirmaAprueba() == 0) {
+                    $firmas_aprobacion[] = $res->getUsuarioId();
+                }
             }
             //********************************************************************************
-            if($res->getEstaAsignada() == 1){
+            if ($res->getEstaAsignada() == 1) {
                 $usuario_asigando[] = $res->getUsuarioId();
                 $object_asignado = $res;
             }
         }
         //************************************************************************************
-        if(!in_array($usuariologuiado, $usuario_asigando)){
-            $userIsCom = EnviadaUsuarioPeer::getUserAddedInCom($this->com_enviada->getPrimaryKey(),$usuariologuiado);
-            if(count($userIsCom) == 0)
-                $this->redirect(sfConfig::get('base_simad').'/no_autorizado.html');
+        if (!in_array($usuariologuiado, $usuario_asigando)) {
+            $userIsCom = EnviadaUsuarioPeer::getUserAddedInCom($this->com_enviada->getPrimaryKey(), $usuariologuiado);
+            if (count($userIsCom) == 0)
+                $this->redirect(sfConfig::get('base_simad') . '/no_autorizado.html');
         }
         //************************************************************************************
-        $list_inteIds = array();$list_names = array();
+        $list_inteIds = array();
+        $list_names = array();
         foreach (ComEnviadaPeer::getListIntersadosByComId($this->com_enviada->getPrimaryKey()) as $interesado) {
             $list_inteIds[] = $interesado->getInteresados()->getPrimaryKey();
-            $list_names[] = trim($interesado->getInteresados()->getNumeroIdentificacion())." - ".trim($interesado->getInteresados()->getNombre());
+            $list_names[] = trim($interesado->getInteresados()->getNumeroIdentificacion()) . " - " . trim($interesado->getInteresados()->getNombre());
         }
         //************************************************************************************
-        $aprob_urlist = $firmas_desatendida ? EnviadaUsuarioPeer::getListUncheckApro($this->com_enviada->getPrimaryKey(),0,array(4,5)) : 
-                            EnviadaUsuarioPeer::getListUncheckApro($this->com_enviada->getPrimaryKey());
+        $aprob_urlist = $firmas_desatendida ? EnviadaUsuarioPeer::getListUncheckApro($this->com_enviada->getPrimaryKey(), 0, array(4, 5)) :
+            EnviadaUsuarioPeer::getListUncheckApro($this->com_enviada->getPrimaryKey());
         //************************************************************************************
         if (($clave = array_search($usuariologuiado, $aprob_urlist)) !== false) {
             unset($aprob_urlist[$clave]);
         }
         //************************************************************************************
-        $this->intesadosIds = implode(",",$list_inteIds);
-        $this->intesadosNames = implode(",",$list_names);
+        $this->intesadosIds = implode(",", $list_inteIds);
+        $this->intesadosNames = implode(",", $list_names);
         $this->viewCheckInters = count($list_inteIds) > 1 ? true : false;
         $this->users_aprueban = $firmas_aprobacion;
         $this->users_asignado = $usuario_asigando;
@@ -4158,84 +4171,83 @@ class com_enviadaActions extends sfActions
         $this->aprobacion_ulist = $aprob_urlist;
         //*******************************************************************************************************
         $matriz_data = $this->getAprobadores($this->com_enviada->getPrimaryKey());
-        $this->is_usuario_aprobador = false;    
-        if(count($matriz_data) > 0){
-            $this->aprobadores = implode(",",$matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",",$matriz_data[1]) . ',';    
-        
-            if(in_array($usuariologuiado,$matriz_data[0]))
-            {
+        $this->is_usuario_aprobador = false;
+        if (count($matriz_data) > 0) {
+            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+
+            if (in_array($usuariologuiado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
             }
         }
         //*******************************************************************************************************
-        $c=new Criteria();
+        $c = new Criteria();
         $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $this->com_enviada->getPrimaryKey());
         $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);
         $copiasListDest = array();
-        foreach($respo as $res){		
-            if($res->getRoldirenviadaId()==1){
+        foreach ($respo as $res) {
+            if ($res->getRoldirenviadaId() == 1) {
                 $destinatario_id = $res->getDirectorioexternoId();
                 $entidad_name = $res->getDirectorioExterno()->getNombre();
-                if(trim($res->getComEnviada()->getFuncionarioDestino())){            
+                if (trim($res->getComEnviada()->getFuncionarioDestino())) {
                     $funcionario_name = $res->getComEnviada()->getFuncionarioDestino();
-                }else{
-                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();   
+                } else {
+                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();
                 }
                 //***********************************************************************************************
                 $ldirectorio_destino['directoriocom_id'][] = $destinatario_id;
-                $ldirectorio_destino['directoriocom_text'][] = $entidad_name." - ".$funcionario_name;
-            }else{
+                $ldirectorio_destino['directoriocom_text'][] = $entidad_name . " - " . $funcionario_name;
+            } else {
                 $copiasListDest[] = $res->getDirectorioexternoId();
-                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario().",";
-            }	    						
+                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario() . ",";
+            }
         }
         //*******************************************************************************************************
-        $this->destinatarioName = implode(",",$ldirectorio_destino['directoriocom_text']);
-        $this->destinatario = implode(",",$ldirectorio_destino['directoriocom_id']);
-        $this->copiasDestinatarios = implode(",",$copiasListDest);
+        $this->destinatarioName = implode(",", $ldirectorio_destino['directoriocom_text']);
+        $this->destinatario = implode(",", $ldirectorio_destino['directoriocom_id']);
+        $this->copiasDestinatarios = implode(",", $copiasListDest);
         //*******************************************************************************************************
-        $this->es_otra_regional=0;
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)){
-            $this->es_otra_regional = 1;		
+        $this->es_otra_regional = 0;
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)) {
+            $this->es_otra_regional = 1;
             $this->otra_regional = $this->getRequestParameter('regional_id');
         }
         //*******************************************************************************************************
-        $this->es_otra_dependencia = 0;	
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)){
+        $this->es_otra_dependencia = 0;
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)) {
             $this->es_otra_dependencia = 1;
         }
         //*******************************************************************************************************
         //verificar permiso firma electronica(la misma firma mecanica) para radicar
-        if($this->com_enviada->getFirmaDesatendida()){
+        if ($this->com_enviada->getFirmaDesatendida()) {
             $this->permisoRadicarFirmaElectronica = 1;
-        }else{
-            $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado,implode(",",$user_firman),4);
+        } else {
+            $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, implode(",", $user_firman), 4);
         }
         /*******************************************************************************************************/
         $currentFormCreadoPor = "CREAR_ENVIADA_OTRO_USUARIO_AUTORIZADO";
-        if($this->getUser()->checkPerm($currentFormCreadoPor, $usuariologuiado)){       
+        if ($this->getUser()->checkPerm($currentFormCreadoPor, $usuariologuiado)) {
             $this->permisoFirmaOtroAutorizado = 1;
         }
         /*******************************************************************************************************/
         $currentFormConMembrete = "CREAR_ENVIADA_CON_MEMBRETE";
         $this->usar_membrete = false;
         $this->permisoCrearConMembrete = 0;
-        if($this->getUser()->checkPerm($currentFormConMembrete, $usuariologuiado)){
+        if ($this->getUser()->checkPerm($currentFormConMembrete, $usuariologuiado)) {
             $this->permisoCrearConMembrete = 1;
             $this->usar_membrete = $usuario->getRegional()->getEntidad()->getUsarMembrete();
-        }    
+        }
         /*******************************************************************************************************/
         $this->usuario = $usuario;
         $this->forward404Unless($this->com_enviada);
     }
-  
-  
+
+
     public function executeEditSinCR()
-    { 
-        $this->verificaPrilegio("com_enviada/edit");  	
-        $this->editando=1;
-        $this->Radicar=" ";
+    {
+        $this->verificaPrilegio("com_enviada/edit");
+        $this->editando = 1;
+        $this->Radicar = " ";
         $this->creador = "";
         $this->creador_name = "";
         $this->firmante = "";
@@ -4254,31 +4266,31 @@ class com_enviadaActions extends sfActions
         $this->permisoFirmaOtroAutorizado = "";
         $this->cargousuarioIdAprob = "";
         $this->aprobadores = "";
-        $this->aprobadores_name = "";  	
+        $this->aprobadores_name = "";
         $this->com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-        $this->arrObjCiudad= CiudadPeer::doSelect(new Criteria());
-        $this->Radicar=" Radicar";
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-        
-        $c=new Criteria();
+        $this->arrObjCiudad = CiudadPeer::doSelect(new Criteria());
+        $this->Radicar = " Radicar";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+
+        $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
-        $respo = $this->objEnviadaUsuario = EnviadaUsuarioPeer::doSelect($c);        
-        foreach($respo as $res){		
-            if($res->getRolusComenviadaId()==1){
+        $respo = $this->objEnviadaUsuario = EnviadaUsuarioPeer::doSelect($c);
+        foreach ($respo as $res) {
+            if ($res->getRolusComenviadaId() == 1) {
                 $this->creador = $res->getUsuarioId();
-                $this->creador_name = $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido();
-                $this->enviadausuario_id .= $res->getEnviadausuarioId().",";
+                $this->creador_name = $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido();
+                $this->enviadausuario_id .= $res->getEnviadausuarioId() . ",";
                 $this->radicadorEnviadaId = $res->getUsuarioId();
-            }elseif($res->getRolusComenviadaId()==2){
-                $this->firmante .= $res->getUsuarioId().",";
-                $this->firmante_name .= $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido().",";
-                $this->cargousuarioIdFirma .= $res->getCargousuarioId().",";
-                $this->enviadausuario_id .= $res->getEnviadausuarioId().",";
-            }elseif($res->getRolusComenviadaId()== 3){
-                $this->copiaInterna .= $res->getUsuarioId().",";
-                $this->copiaInterna_name .= $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido().",";
-                $this->cargousuarioIdCopias .= $res->getCargousuarioId().",";
-                $this->enviadausuario_id .= $res->getEnviadausuarioId().",";
+            } elseif ($res->getRolusComenviadaId() == 2) {
+                $this->firmante .= $res->getUsuarioId() . ",";
+                $this->firmante_name .= $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido() . ",";
+                $this->cargousuarioIdFirma .= $res->getCargousuarioId() . ",";
+                $this->enviadausuario_id .= $res->getEnviadausuarioId() . ",";
+            } elseif ($res->getRolusComenviadaId() == 3) {
+                $this->copiaInterna .= $res->getUsuarioId() . ",";
+                $this->copiaInterna_name .= $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido() . ",";
+                $this->cargousuarioIdCopias .= $res->getCargousuarioId() . ",";
+                $this->enviadausuario_id .= $res->getEnviadausuarioId() . ",";
             }
         }
         /*******************************************************************************************************/
@@ -4286,42 +4298,42 @@ class com_enviadaActions extends sfActions
         $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $this->getRequestParameter('comenviada_id'));
         $respo = $this->objEnviadaDirectorio = EnviadaDirectorioPeer::doSelect($c);
         $copiasListDest = array();
-        foreach($respo as $res){		
-            if($res->getRoldirenviadaId()==1){
+        foreach ($respo as $res) {
+            if ($res->getRoldirenviadaId() == 1) {
                 $this->destinatario = $res->getDirectorioexternoId();
                 $entidad_name = $res->getDirectorioExterno()->getNombre();
-                if(trim($res->getComEnviada()->getFuncionarioDestino())){
+                if (trim($res->getComEnviada()->getFuncionarioDestino())) {
                     $funcionario_name = $res->getComEnviada()->getFuncionarioDestino();
-                }else{
+                } else {
                     $funcionario_name = $res->getDirectorioExterno()->getFuncionario();
                 }
-                $this->destinatarioName = $entidad_name." - ".$funcionario_name;
-            }else{
+                $this->destinatarioName = $entidad_name . " - " . $funcionario_name;
+            } else {
                 $copiasListDest[] = $res->getDirectorioexternoId();
-                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre()." - ".$res->getDirectorioExterno()->getFuncionario().",";
+                $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario() . ",";
             }
         }
-        $this->copiasDestinatarios = implode(",",$copiasListDest);
+        $this->copiasDestinatarios = implode(",", $copiasListDest);
         /*******************************************************************************************************/
-        $this->es_otra_regional=0;
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)){
-            $this->es_otra_regional=1;		
+        $this->es_otra_regional = 0;
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)) {
+            $this->es_otra_regional = 1;
         }
         /*******************************************************************************************************/
-        $this->es_otra_dependencia=0;
+        $this->es_otra_dependencia = 0;
         //$this->user_dependencia_id=$usuario->getDependenciaId();		
-        if($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)){
-            $this->es_otra_dependencia=1;
+        if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_DEPENDENCIA", $usuariologuiado)) {
+            $this->es_otra_dependencia = 1;
         }
-        
+
         $currentFormCreadoPor = "CREAR_ENVIADA_OTRO_USUARIO_AUTORIZADO";
-        if($this->getUser()->checkPerm($currentFormCreadoPor, $this->creador)){       
-        $this->permisoFirmaOtroAutorizado = 1;
+        if ($this->getUser()->checkPerm($currentFormCreadoPor, $this->creador)) {
+            $this->permisoFirmaOtroAutorizado = 1;
         }
-        
-        $this->forward404Unless($this->com_enviada);    
+
+        $this->forward404Unless($this->com_enviada);
     }
-    
+
     /**
      * com_enviadaActions::executeRadicarMasivas()
      * accion para funcionalidad de actualizar las guias masivamente, obteniendo los datos
@@ -4330,8 +4342,8 @@ class com_enviadaActions extends sfActions
      */
     public function executeRadicarMasivas()
     {
-        $currentForm="COM_ENVIADA_RADICACION_MASIVA";
-		$this->verificaPrilegioCerrar($currentForm);
+        $currentForm = "COM_ENVIADA_RADICACION_MASIVA";
+        $this->verificaPrilegioCerrar($currentForm);
         $this->process_end = $this->getRequestParameter('process_end') ? $this->getRequestParameter('process_end') : 0;
         $this->sheetData = array();
         $this->cod_msg = $this->getRequestParameter('cod_msg') ? $this->getRequestParameter('cod_msg') : 0;
@@ -4346,44 +4358,42 @@ class com_enviadaActions extends sfActions
      */
     public function executeFileDocsRadMasiva()
     {
-        $currentForm="COM_ENVIADA_RADICACION_MASIVA";
-		$usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-        if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
+        $currentForm = "COM_ENVIADA_RADICACION_MASIVA";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
             $status = 400;
             $message = "Esta funcionalidad no esta permitida";
         }
         //*******************************************************************************************
-        $upload_dir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp';
+        //$upload_dir = sfConfig::get('sf_shared_tmp_dir').DIRECTORY_SEPARATOR.'tmp';
+        $upload_dir = ParametroPeer::retrieveByPK(64)->getValortexto();
         $directorio = simad_util::createPath($upload_dir);
         $util_simad = new simad_util();
         $file_name = "";
         //*******************************************************************************************
-        if ($this->getRequest()->hasFiles() && $this->getRequest()->getFileName('filedocs'))  	  	
-        {    	
+        if ($this->getRequest()->hasFiles() && $this->getRequest()->getFileName('filedocs')) {
             $info_file = new SplFileInfo($this->getRequest()->getFileName('filedocs'));
-			$tempFile = $_FILES['filedocs']['tmp_name'];
+            $tempFile = $_FILES['filedocs']['tmp_name'];
             //***************************************************************************************
-            $cleanfilename = $util_simad->clean_name_fileinfo($info_file);//limpiar el nombre del archivo
-            $file_name = simad_util::uniquename($upload_dir,sha1($cleanfilename.time()),".zip");//validar uniquename    		
-            $inputFileName = $directorio.DIRECTORY_SEPARATOR.$file_name;            
+            $cleanfilename = $util_simad->clean_name_fileinfo($info_file); //limpiar el nombre del archivo
+            $file_name = simad_util::uniquename($upload_dir, sha1($cleanfilename . time()), ".zip"); //validar uniquename    		
+            $inputFileName = $directorio . DIRECTORY_SEPARATOR . $file_name;
             $this->getRequest()->moveFile('filedocs', $inputFileName);
             //***************************************************************************************
             $mime_trust = array('application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed');
-			$file_valid = simad_util::CheckIsValidFormatFile($inputFileName,$mime_trust);
-			if(!$file_valid){
+            $file_valid = simad_util::CheckIsValidFormatFile($inputFileName, $mime_trust);
+            if (!$file_valid) {
                 unlink($inputFileName);
                 $status = 400;
                 $message = "El formato del archivo no esta permitido";
-            }else{
+            } else {
                 $this->inputFileName = basename($inputFileName);
                 $status = 200;
                 $message = "El archivo se cargo correctamente";
             }
             //***************************************************************************************
             $file_name = $this->inputFileName;
-        }
-        else
-        {            
+        } else {
             $status = 400;
             $message = "Debe enviar un archivo comprimido con todos los documentos para radicar";
         }
@@ -4400,9 +4410,9 @@ class com_enviadaActions extends sfActions
      */
     public function executeUpdateComBatch()
     {
-        $currentForm="COM_ENVIADA_RADICACION_MASIVA";
-		$usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-        if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
+        $currentForm = "COM_ENVIADA_RADICACION_MASIVA";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
             $status = 400;
             $message = "Esta funcionalidad no esta permitida";
             //***************************************************************************************
@@ -4419,7 +4429,7 @@ class com_enviadaActions extends sfActions
         //*******************************************************************************************
         $max_time = ini_get("max_execution_time");
         ini_set('max_execution_time', 900);
-        $response_info = ComMigmasivoPeer::addNewComByComLote($parameters,ModulesEnable::ComEnviada);
+        $response_info = ComMigmasivoPeer::addNewComByComLote($parameters, ModulesEnable::ComEnviada);
         ini_set('max_execution_time', $max_time);
         //*******************************************************************************************
         $this->getResponse()->setContentType('application/json');
@@ -4430,13 +4440,13 @@ class com_enviadaActions extends sfActions
      * com_enviadaActions::executeGetMigrationsByLote()
      * Obtiene una lista de registros asociados a un lote de radicacion masiva
      * @return
-    */
+     */
     public function executeGetMigrationsByLote()
     {
-        $currentForm="COM_ENVIADA_RADICACION_MASIVA";
-		$usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $currentForm = "COM_ENVIADA_RADICACION_MASIVA";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         //*******************************************************************************************
-        if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
             $status = 400;
             $message = "Esta funcionalidad no esta permitida";
             //***************************************************************************************
@@ -4448,23 +4458,23 @@ class com_enviadaActions extends sfActions
         $comIdLote = trim($this->getRequestParameter('comIdLote')) ?: null;
         $comfirma_digital = trim($this->getRequestParameter('firma_digital')) ?: false;
         $dataufiledocs = trim($this->getRequestParameter('dataufiledocs')) ?: null;
-        $upload_dir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
+        $upload_dir = ParametroPeer::retrieveByPK(64)->getValortexto();
+        //$upload_dir = sfConfig::get('sf_shared_tmp_dir') . DIRECTORY_SEPARATOR . 'tmp';
         //*******************************************************************************************
-        if (!empty($comIdLote) && !empty($dataufiledocs))
-        {
-            $filedocsupload = $upload_dir.DIRECTORY_SEPARATOR.$dataufiledocs;
+        if (!empty($comIdLote) && !empty($dataufiledocs)) {
+            $filedocsupload = $upload_dir . DIRECTORY_SEPARATOR . $dataufiledocs;
             $zipfile_extract = null;
-            if(file_exists($filedocsupload)){
+            if (file_exists($filedocsupload)) {
                 $dirRaiz    = ParametroPeer::retrieveByPk(27)->getValortexto();
                 $dirTmp     = ParametroPeer::retrieveByPk(65)->getValortexto();
-                $base_path  = $dirRaiz.$dirTmp;
+                $base_path  = $dirRaiz . $dirTmp;
                 //***********************************************************************************
-                $outfile_zip = $base_path.DIRECTORY_SEPARATOR.md5(date("YmdGisu"));
-                $zipfile_extract = simad_util::extractFileCompress($filedocsupload,$outfile_zip);
-                if(!$zipfile_extract){
+                $outfile_zip = $base_path . DIRECTORY_SEPARATOR . md5(date("YmdGisu"));
+                $zipfile_extract = simad_util::extractFileCompress($filedocsupload, $outfile_zip);
+                if (!$zipfile_extract) {
                     return array('status' => 400, 'message' => 'Ocurrio un error al descomprimir el archivo de documentos');
                 }
-            }else{
+            } else {
                 $this->getResponse()->setContentType('application/json');
                 $response_info = array('status' => 400, 'message' => 'Error, el archivo de documentos no existe en el servidor, intente de nuevo');
                 return $this->renderText(json_encode($response_info));
@@ -4472,25 +4482,25 @@ class com_enviadaActions extends sfActions
             //***************************************************************************************
             $migrations_list = ComMigmasivoPeer::getListComByComLote($comIdLote);
             //***************************************************************************************
-            if(empty($migrations_list) || count($migrations_list) <= 0)
-            {
-                    return array('status' => 400, 'message' => 'Error, el listado de registros esta vacío, intente de nuevo');
+            if (empty($migrations_list) || count($migrations_list) <= 0) {
+                return array('status' => 400, 'message' => 'Error, el listado de registros esta vacío, intente de nuevo');
             }
             //***************************************************************************************
-            $migmasiva_array = []; 
-            foreach($migrations_list as $migmasiva)
-            {
-                $migmasiva_array[] = array('pkobject_id' => $migmasiva->getCommigmasivoId(),'comIdLote' => $migmasiva->getComloteId(),
-                                        'comfirma_digital' => $comfirma_digital, 'docs_source' => SED::encryption($outfile_zip));
+            $migmasiva_array = [];
+            foreach ($migrations_list as $migmasiva) {
+                $migmasiva_array[] = array(
+                    'pkobject_id' => $migmasiva->getCommigmasivoId(),
+                    'comIdLote' => $migmasiva->getComloteId(),
+                    'comfirma_digital' => $comfirma_digital,
+                    'docs_source' => SED::encryption($outfile_zip)
+                );
             }
             //***************************************************************************************
             $message = "Lista de registros para radicación generado corretamente";
             $json_data = array('status' => 200, 'message' => $message, 'batchs_ilist' => $migmasiva_array);
             $this->getResponse()->setContentType('application/json');
             return $this->renderText(json_encode($json_data));
-        }
-        else
-        {
+        } else {
             $status = 400;
             $message = "Error la información del lote de radicación no es valida, intente de nuevo";
             //***************************************************************************************
@@ -4504,17 +4514,17 @@ class com_enviadaActions extends sfActions
      * com_enviadaActions::executeRadicarMigMasivoByOne()
      * accion para funcionalidad leer datos del archivo de excel
      * @return array('status' => $status, 'message' => $message)
-    */
+     */
     public function executeRadicarMigMasivoByOne()
     {
-        $currentForm="COM_ENVIADA_RADICACION_MASIVA";
-		$usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-        if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
+        $currentForm = "COM_ENVIADA_RADICACION_MASIVA";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
             $status = 400;
             $message = "Esta funcionalidad no esta permitida";
             //***************************************************************************************
             $this->getResponse()->setContentType('application/json');
-            $response_info = array('status' => $status, 'message' => $message); 
+            $response_info = array('status' => $status, 'message' => $message);
             return $this->renderText(json_encode($response_info));
         }
         //*******************************************************************************************
@@ -4523,16 +4533,16 @@ class com_enviadaActions extends sfActions
         $migmasiva_id = trim($this->getRequestParameter('idmigmasivo')) ?: null;
         $docs_source = trim($this->getRequestParameter('docs_source')) ?: null;
         //*******************************************************************************************
-        if(empty($comIdLote) || empty($migmasiva_id) || empty($docs_source)){
+        if (empty($comIdLote) || empty($migmasiva_id) || empty($docs_source)) {
             $this->getResponse()->setContentType('application/json');
             $response_info = array('status' => 400, 'message' => 'Error el lote de migración no es valido');
             return $this->renderText(json_encode($response_info));
         }
         //*******************************************************************************************
         $docs_source = SED::decryption(trim($this->getRequestParameter('docs_source')));
-        $response_ajax = ComMigmasivoPeer::addNewComByOneComAsync($migmasiva_id, ModulesEnable::ComEnviada, $comIdLote, $firma_digital,$docs_source);
+        $response_ajax = ComMigmasivoPeer::addNewComByOneComAsync($migmasiva_id, ModulesEnable::ComEnviada, $comIdLote, $firma_digital, $docs_source);
         //*******************************************************************************************
-        $row_update = md5($migmasiva_id.$comIdLote);
+        $row_update = md5($migmasiva_id . $comIdLote);
         $response_info = array('status' => $response_ajax['status'], 'message' => $response_ajax['message'], 'row_update' => $row_update);
         //$response_info = array('status' => 200, 'message' => 'Radicado generado exitosamente', 'row_update' => $row_update);
         //*******************************************************************************************
@@ -4547,29 +4557,29 @@ class com_enviadaActions extends sfActions
      */
     public function executeReadFileRadMasiva()
     {
-        $currentForm="COM_ENVIADA_RADICACION_MASIVA";
-		$usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-        if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
+        $currentForm = "COM_ENVIADA_RADICACION_MASIVA";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
             $this->cod_msg = 1;
             $this->msg_error = "Esta funcionalidad no esta permitida";
         }
         //*******************************************************************************************
-        $upload_dir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp';
+        $upload_dir = ParametroPeer::retrieveByPK(64)->getValortexto();
+        //$upload_dir = sfConfig::get('sf_shared_tmp_dir').DIRECTORY_SEPARATOR.'tmp';
         $directorio = simad_util::createPath($upload_dir);
         //*******************************************************************************************
-        if ($this->getRequest()->hasFiles() && $this->getRequest()->getFileName('file'))
-		{    	
-        	$file_vars = pathinfo($this->getRequest()->getFileName('file'));
+        if ($this->getRequest()->hasFiles() && $this->getRequest()->getFileName('file')) {
+            $file_vars = pathinfo($this->getRequest()->getFileName('file'));
             $util_simad = new simad_util();
             $extension_file = $file_vars['extension'];
             //***************************************************************************************
             $info_file = new SplFileInfo($this->getRequest()->getFileName('file'));
-            $cleanfilename = $util_simad->clean_name_fileinfo($info_file);//limpiar el nombre del archivo
-            $file_name = simad_util::uniquename($upload_dir,sha1($cleanfilename.time()),".".$extension_file);//validar uniquename    		
-            $inputFileName = $directorio.DIRECTORY_SEPARATOR.$file_name;            
+            $cleanfilename = $util_simad->clean_name_fileinfo($info_file); //limpiar el nombre del archivo
+            $file_name = simad_util::uniquename($upload_dir, sha1($cleanfilename . time()), "." . $extension_file); //validar uniquename    		
+            $inputFileName = $directorio . DIRECTORY_SEPARATOR . $file_name;
             $this->getRequest()->moveFile('file', $inputFileName);
             //***************************************************************************************
-            $listVars = ComEnviadaPeer::readFileComCombined($inputFileName);            
+            $listVars = ComEnviadaPeer::readFileComCombined($inputFileName);
             //***************************************************************************************
             $this->inputFileName = basename($inputFileName);
             $this->headerList = $listVars['headerList'];
@@ -4577,9 +4587,7 @@ class com_enviadaActions extends sfActions
             $this->sheetDataSerialize = $listVars['sheetDataSerialize'];
             $this->cod_msg = $listVars['cod_msg'];
             $this->msg_error = $listVars['msg_error'];
-        }
-        else
-        {
+        } else {
             $this->cod_msg = 1;
             $this->msg_error = "Debe seleccionar el archivo que contiene las registros para radicar";
         }
@@ -4592,9 +4600,9 @@ class com_enviadaActions extends sfActions
      */
     public function executeVerifyComBatchData()
     {
-        $currentForm="COM_ENVIADA_RADICACION_MASIVA";
-		$usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-        if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
+        $currentForm = "COM_ENVIADA_RADICACION_MASIVA";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
             $status = 400;
             $message = "Esta funcionalidad no esta permitida";
             //***************************************************************************************
@@ -4603,7 +4611,7 @@ class com_enviadaActions extends sfActions
             return $this->renderText(json_encode($response_info));
         }
         //*******************************************************************************************
-        $upload_dir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp';
+        $upload_dir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
         $fileuploadtmp = trim($this->getRequestParameter('fileuploadtmp')) ?: 0;
         $sheetData = trim($this->getRequestParameter('sheetData')) ?: 0;
         $simad_util = new simad_util();
@@ -4611,9 +4619,10 @@ class com_enviadaActions extends sfActions
         $modulo_id = ModulesEnable::ComEnviada;
         //*******************************************************************************************
         $data = $simad_util->getArrayUnSerialize($sheetData);
-        $idLote = md5(uniqid().rand(9999,100000).date('YmdGisu'));$list_nrow = array();
+        $idLote = md5(uniqid() . rand(9999, 100000) . date('YmdGisu'));
+        $list_nrow = array();
         //*******************************************************************************************
-        if(empty($data) || $data == null){
+        if (empty($data) || $data == null) {
             $status = 400;
             $message = "Error al leer los datos del archivo, intente de nuevo o consulte con el administrador del sistema";
             //***************************************************************************************
@@ -4622,8 +4631,7 @@ class com_enviadaActions extends sfActions
             return $this->renderText(json_encode($response_info));
         }
         //*******************************************************************************************
-        foreach($data as $row)
-        {
+        foreach ($data as $row) {
             $dataRow = array();
             $dataRow['COMLOTE_ID'] = $idLote;
             $dataRow['MODULO_ID'] = $modulo_id;
@@ -4656,7 +4664,7 @@ class com_enviadaActions extends sfActions
             $list_nrow[] = ComMigmasivoPeer::addNewRow($dataRow);
         }
         //*******************************************************************************************
-        $elist_msg = ComMigmasivoPeer::getIsValidByIdBatch($idLote,$modulo_id);
+        $elist_msg = ComMigmasivoPeer::getIsValidByIdBatch($idLote, $modulo_id);
         //*******************************************************************************************
         $this->getResponse()->setContentType('application/json');
         $response_info = array('status' => (count($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'comIdLote' => $idLote);
@@ -4670,36 +4678,11 @@ class com_enviadaActions extends sfActions
      */
     public function executeLoadListBatchMig()
     {
-        $currentForm="COM_ENVIADA_RADICACION_MASIVA";
-		$usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $currentForm = "COM_ENVIADA_RADICACION_MASIVA";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $comIdLote = trim($this->getRequestParameter('comIdLote')) ?: null;
         //*******************************************************************************************
-        if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
-            $status = 400;
-            $message = "Esta funcionalidad no esta permitida";
-            //***************************************************************************************
-            $this->getResponse()->setContentType('application/json');
-            $response_info = array('status' => $status, 'message' => $message);
-            return $this->renderText(json_encode($response_info));
-        }
-        //*******************************************************************************************
-        $this->blotes = ComMigmasivoPeer::getListComByComLote($comIdLote);
-		$this->comIdLote = $comIdLote;
-    }
-
-    /**
-     * com_enviadaActions::executeExportarBatchList()
-     * accion para exportar los resultados de la radicacion masiva filtrado por un comIdLote
-     * @return
-     */
-    public function executeExportarBatchList()
-    {
-        $this->setLayout(false);
-        $currentForm="COM_ENVIADA_RADICACION_MASIVA";
-		$usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-        $comIdLote = trim($this->getRequestParameter('idComBatch')) ?: null;
-        //*******************************************************************************************
-        if(!$this->getUser()->checkPerm($currentForm, $usuariologuiado)){
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
             $status = 400;
             $message = "Esta funcionalidad no esta permitida";
             //***************************************************************************************
@@ -4711,65 +4694,90 @@ class com_enviadaActions extends sfActions
         $this->blotes = ComMigmasivoPeer::getListComByComLote($comIdLote);
         $this->comIdLote = $comIdLote;
     }
-    
+
+    /**
+     * com_enviadaActions::executeExportarBatchList()
+     * accion para exportar los resultados de la radicacion masiva filtrado por un comIdLote
+     * @return
+     */
+    public function executeExportarBatchList()
+    {
+        $this->setLayout(false);
+        $currentForm = "COM_ENVIADA_RADICACION_MASIVA";
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $comIdLote = trim($this->getRequestParameter('idComBatch')) ?: null;
+        //*******************************************************************************************
+        if (!$this->getUser()->checkPerm($currentForm, $usuariologuiado)) {
+            $status = 400;
+            $message = "Esta funcionalidad no esta permitida";
+            //***************************************************************************************
+            $this->getResponse()->setContentType('application/json');
+            $response_info = array('status' => $status, 'message' => $message);
+            return $this->renderText(json_encode($response_info));
+        }
+        //*******************************************************************************************
+        $this->blotes = ComMigmasivoPeer::getListComByComLote($comIdLote);
+        $this->comIdLote = $comIdLote;
+    }
+
     public function executeUpdateAnular()
-    {    
-        $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));    
+    {
+        $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
         $this->forward404Unless($com_enviada);
         $com_enviada_anterior = clone $com_enviada;
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
-		$anullar_all = $this->getUser()->checkPerm("COM_ENVIADA_ANULAR_ALL", $usuariologuiado);
-		//********************************************************************************
-		if(!$anullar_all){
-			if(!$this->getUser()->checkPerm("COM_ENVIADA_ANULAR", $usuariologuiado) && in_array($com_enviada->getEstadocomenviadaId(),array(4,6))){
-				return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/show?comenviada_id='.$com_enviada->getPrimaryKey());
-			}
-		}
-		//********************************************************************************    
-        foreach($com_enviada->getEnviadaUsuarios() as $uenviada){					
-            $uenviada->setEstadocomenviadaId(4);  
-            $uenviada->save();	  	  	  
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+        $anullar_all = $this->getUser()->checkPerm("COM_ENVIADA_ANULAR_ALL", $usuariologuiado);
+        //********************************************************************************
+        if (!$anullar_all) {
+            if (!$this->getUser()->checkPerm("COM_ENVIADA_ANULAR", $usuariologuiado) && in_array($com_enviada->getEstadocomenviadaId(), array(4, 6))) {
+                return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/show?comenviada_id=' . $com_enviada->getPrimaryKey());
+            }
         }
-		//********************************************************************************
+        //********************************************************************************    
+        foreach ($com_enviada->getEnviadaUsuarios() as $uenviada) {
+            $uenviada->setEstadocomenviadaId(4);
+            $uenviada->save();
+        }
+        //********************************************************************************
         $com_enviada->setFechaDeAnulacion($this->getRequestParameter('fecha_de_anulacion'));
         $com_enviada->setObsAnulacion($this->getRequestParameter('obs_anulacion'));
         $com_enviada->setEstadocomenviadaId(4);
         $com_enviada->save();
-		//********************************************************************************
-        $this->guardarAuditoria($com_enviada_anterior,$com_enviada);
-		//********************************************************************************
-        return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/show?comenviada_id='.$com_enviada->getPrimaryKey());
+        //********************************************************************************
+        $this->guardarAuditoria($com_enviada_anterior, $com_enviada);
+        //********************************************************************************
+        return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/show?comenviada_id=' . $com_enviada->getPrimaryKey());
     }
-   
+
     public function executeUpdateGuia()
-    {  
-        $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));    
+    {
+        $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
         $this->forward404Unless($com_enviada);
         $com_enviada_anterior = clone $com_enviada;
-		//********************************************************************************
-        $com_enviada->setGuia($this->getRequestParameter('guia')); 
+        //********************************************************************************
+        $com_enviada->setGuia($this->getRequestParameter('guia'));
         $com_enviada->setEmpresaMensajeriaId($this->getRequestParameter('empresa_mensajeria_id'));
         $com_enviada->setValorGuia($this->getRequestParameter('valor_guia'));
         //$com_enviada->setEmpresaMensajeriaId($this->getRequestParameter('empresa_mensajeria_id'));
         $com_enviada->setFechaEnvioGuia($this->getRequestParameter('fecha_envio_guia'));
         $com_enviada->save();
         //********************************************************************************
-        $this->guardarAuditoria($com_enviada_anterior,$com_enviada);
-        return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/show?comenviada_id='.$com_enviada->getComenviadaId());
+        $this->guardarAuditoria($com_enviada_anterior, $com_enviada);
+        return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/show?comenviada_id=' . $com_enviada->getComenviadaId());
     }
-  
-    public function guardarAuditoria($anterior,$nueva)
+
+    public function guardarAuditoria($anterior, $nueva)
     {
         $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         //*************************************************************************************************
-        AuditLogPeer::guardarAuditoriaLite("ComEnviada",$anterior,$nueva,4,$nueva->getRadicado(),$usuariologuiado);
+        AuditLogPeer::guardarAuditoriaLite("ComEnviada", $anterior, $nueva, 4, $nueva->getRadicado(), $usuariologuiado);
     }
-  
+
     public function executeUpdate()
     {
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $perm_cambiar_radicador = 0;
-        $estado = 1;//estado 1 es borrador
+        $estado = 1; //estado 1 es borrador
         $isNewCom = false;
         //*********************************************************************************************************
         $qoperation = !empty($this->getRequestParameter('qoper')) ? trim($this->getRequestParameter('qoper')) : null;
@@ -4780,19 +4788,18 @@ class com_enviadaActions extends sfActions
             }
         }*/
         //*********************************************************************************************************
-        if (!$this->getRequestParameter('comenviada_id'))
-        {
+        if (!$this->getRequestParameter('comenviada_id')) {
             $com_enviada = new ComEnviada();
             $com_enviada->setNumeroRadicacion(0);
             $com_enviada->setRadicado(null);
             $com_enviada->setAsunto(null);
             $com_enviada->setComenviadaId(null);
             $isNewCom = true;
-        }else{
+        } else {
             $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
             //*****************************************************************************************************
-            if($com_enviada->getEstadocomenviadaId() != $estado){
-                $this->redirect($this->getRequest()->getScriptName().'/com_enviada/show?comenviada_id='.$com_enviada->getPrimaryKey());
+            if ($com_enviada->getEstadocomenviadaId() != $estado) {
+                $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/show?comenviada_id=' . $com_enviada->getPrimaryKey());
             }
             //*****************************************************************************************************
             $perm_cambiar_radicador = $this->getUser()->checkPerm("COM_ENVIADA_NO_CAMBIAR_RADICADOR", $usuariologuiado);
@@ -4803,21 +4810,21 @@ class com_enviadaActions extends sfActions
         $objUsuarioLoguiado = UsuarioPeer::retrieveByPk($usuariologuiado);
         $membrete_default = $objUsuarioLoguiado->getRegional()->getEntidad()->getUsarMembrete() ? 1 : 0;
         //*********************************************************************************************************
-        if($this->getRequestParameter('ciudad_id')!=""){
-            $ciudadId=$this->getRequestParameter('ciudad_id');
-        }else{
-            $ciudadId=$objUsuarioLoguiado->getRegional()->getCiudadId();
+        if ($this->getRequestParameter('ciudad_id') != "") {
+            $ciudadId = $this->getRequestParameter('ciudad_id');
+        } else {
+            $ciudadId = $objUsuarioLoguiado->getRegional()->getCiudadId();
         }
         //*********************************************************************************************************
         //periodo    
-        $periodoActual = date("Y");       
-        $numeroRadicado = 0;    
+        $periodoActual = date("Y");
+        $numeroRadicado = 0;
         $radicado = "Sin Radicar";
         //*********************************************************************************************************
-        if($this->getRequestParameter('regional_id')){
-            $regional_id_actual=$this->getRequestParameter('regional_id');
-        }else{
-            $regional_id_actual = $objUsuarioLoguiado->getRegionalId();//crea dep y reg en las del creador        
+        if ($this->getRequestParameter('regional_id')) {
+            $regional_id_actual = $this->getRequestParameter('regional_id');
+        } else {
+            $regional_id_actual = $objUsuarioLoguiado->getRegionalId(); //crea dep y reg en las del creador        
         }
         //********************************************************************************************************* 
         $regional_selected = RegionalPeer::retrieveByPk($regional_id_actual);
@@ -4838,7 +4845,7 @@ class com_enviadaActions extends sfActions
         $com_enviada->setCiudadId($ciudadId);
         $com_enviada->setEstadocomenviadaId($estado);
         $com_enviada->setPeriodoId($periodoActual);
-        $com_enviada->setEstadodigitalizacionId(1);//1 es no digitalizada 
+        $com_enviada->setEstadodigitalizacionId(1); //1 es no digitalizada 
         $com_enviada->setNumeroRadicacion($numeroRadicado);
         $com_enviada->setRadicado($radicado);
         $com_enviada->setAsunto($this->getRequestParameter('asunto'));
@@ -4847,9 +4854,9 @@ class com_enviadaActions extends sfActions
         $com_enviada->setPrioridadcomId(trim($this->getRequestParameter('prioridadcom_id')) ?: null);
         $com_enviada->setFechaCreacion(date("Y-m-d G:i:s"));
         $com_enviada->setGuia($this->getRequestParameter('guia'));
-        $com_enviada->setValorGuia($this->getRequestParameter('valor_guia')); 	
+        $com_enviada->setValorGuia($this->getRequestParameter('valor_guia'));
         $com_enviada->setRegionalId($regional_id_actual);
-        $com_enviada->setDependenciaId($objUsuarioLoguiado->getDependenciaId());    
+        $com_enviada->setDependenciaId($objUsuarioLoguiado->getDependenciaId());
         $com_enviada->setEsCopia(0);
         $com_enviada->setFolios($this->getRequestParameter('folios'));
         $com_enviada->setAnexos(trim($this->getRequestParameter('anexos')) != "" ? trim($this->getRequestParameter('anexos')) : null);
@@ -4865,34 +4872,34 @@ class com_enviadaActions extends sfActions
         $com_enviada->setNumeroResolucion(trim($this->getRequestParameter('numero_resolucion')) ? trim($this->getRequestParameter('numero_resolucion')) : null);
         $com_enviada->setFechaResolucion(trim($this->getRequestParameter('fecha_resolucion')) ? trim($this->getRequestParameter('fecha_resolucion')) : null);
         //*********************************************************************************************************
-        if($this->getUser()->checkPerm("CREAR_ENVIADA_CON_MEMBRETE", $usuariologuiado)){
+        if ($this->getUser()->checkPerm("CREAR_ENVIADA_CON_MEMBRETE", $usuariologuiado)) {
             $com_enviada->setUseMembrete($this->getRequestParameter('use_membrete') ? 1 : 0);
-        }else{
+        } else {
             $com_enviada->setUseMembrete($membrete_default);
         }
         //*********************************************************************************************************
         //firma digital
-        if($this->getUser()->checkPerm("COM_ENVIADA_CREAR_FIRMA_DIGITAL", $usuariologuiado)){
+        if ($this->getUser()->checkPerm("COM_ENVIADA_CREAR_FIRMA_DIGITAL", $usuariologuiado)) {
             $setisefirma = $this->getRequestParameter(md5('singActDigtal')) ? 0 : 4;
             $com_enviada->setFirmadoDigital($setisefirma);
         }
         //*********************************************************************************************************
-        if (!$com_enviada->isNew()){
+        if (!$com_enviada->isNew()) {
             //firma desatendida
-            if($this->getUser()->checkPerm("COM_ENVIADA_CREAR_FIRMA_DESATENDIDA", $usuariologuiado)){
+            if ($this->getUser()->checkPerm("COM_ENVIADA_CREAR_FIRMA_DESATENDIDA", $usuariologuiado)) {
                 $setisautofirma = 0;
-                if(UsuarioPeer::countValidateFirmaDesatenida($list_users['str_firmausers'])){
+                if (UsuarioPeer::countValidateFirmaDesatenida($list_users['str_firmausers'])) {
                     $setisautofirma = $this->getRequestParameter(md5('singIsDesatendida')) ? 1 : 0;
                 }
                 $com_enviada->setFirmaDesatendida($setisautofirma);
             }
-        }elseif(!empty($com_enviada->getPlantillascomId())){
-            if(empty($com_enviada->getPlantillasCom()->getFirmaDesatendida())){
+        } elseif (!empty($com_enviada->getPlantillascomId())) {
+            if (empty($com_enviada->getPlantillasCom()->getFirmaDesatendida())) {
                 $com_enviada->setFirmaDesatendida(0);
-            }else{
+            } else {
                 $com_enviada->setFirmaDesatendida(1);
             }
-        }else{
+        } else {
             $setisautofirma = UsuarioPeer::countValidateFirmaDesatenida($list_users['str_firmausers']);
             $com_enviada->setFirmaDesatendida($setisautofirma);
         }
@@ -4900,35 +4907,35 @@ class com_enviadaActions extends sfActions
         $contenido = trim($this->getRequestParameter('contenido'));
         $com_enviada->setContenido($contenido);
         //*********************************************************************************************************
-        if ($this->getRequestParameter('fecha_prorrogra')){      
+        if ($this->getRequestParameter('fecha_prorrogra')) {
             $com_enviada->setFechaProrrogra($this->getRequestParameter('fecha_prorrogra'));
         }
         //*********************************************************************************************************    
         $com_enviada->save();
         //*********************************************************************************************************
-        if(trim($this->getRequestParameter('ruta')) != ""){
-            if (!$this->getRequestParameter('comenviada_id')){
+        if (trim($this->getRequestParameter('ruta')) != "") {
+            if (!$this->getRequestParameter('comenviada_id')) {
                 $ruta = $com_enviada->getRutaAdjuntos($this->getRequestParameter('ruta'), false);
-            }else{
-                $ruta = $com_enviada->getRutaAdjuntos($this->getRequestParameter('ruta'), true,$com_enviada->getRuta());
+            } else {
+                $ruta = $com_enviada->getRutaAdjuntos($this->getRequestParameter('ruta'), true, $com_enviada->getRuta());
             }
             $com_enviada->setRuta($ruta);
-        }else{
+        } else {
             $com_enviada->setRuta("");
         }
         //*********************************************************************************************************
-        $directorioexterno_id = preg_split("/[,]+/",trim($this->getRequestParameter('directorioexterno_id')),-1, PREG_SPLIT_NO_EMPTY);
+        $directorioexterno_id = preg_split("/[,]+/", trim($this->getRequestParameter('directorioexterno_id')), -1, PREG_SPLIT_NO_EMPTY);
         $replyfile = trim($this->getRequestParameter('replyfile'));
-        if(!empty($replyfile) && count($directorioexterno_id) <= 1){
-            $filedir_tmp = sfConfig::get("sf_web_dir").DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.$replyfile;
-			$dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(53)->getValortexto().'uploads');
-			$filedir_upload = simad_util::createPath($dir_raiz.DIRECTORY_SEPARATOR.date("Ymd")).DIRECTORY_SEPARATOR.$replyfile;
-			//*****************************************************************************************************
-            if(file_exists($filedir_tmp)){
+        if (!empty($replyfile) && count($directorioexterno_id) <= 1) {
+            $filedir_tmp = sfConfig::get("sf_web_dir") . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $replyfile;
+            $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(53)->getValortexto() . 'uploads');
+            $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd")) . DIRECTORY_SEPARATOR . $replyfile;
+            //*****************************************************************************************************
+            if (file_exists($filedir_tmp)) {
                 $fileinfo = new SplFileInfo($filedir_tmp);
                 //*********************************************************************************************
-                if($fileinfo->getExtension() == "pdf"){
-                    if(rename($filedir_tmp,$filedir_upload)){
+                if ($fileinfo->getExtension() == "pdf") {
+                    if (rename($filedir_tmp, $filedir_upload)) {
                         $com_enviada->setUrlFileWord($filedir_upload);
                         $com_enviada->setIsCreateWord(1);
                         $com_enviada->setContenido(null);
@@ -4937,7 +4944,7 @@ class com_enviadaActions extends sfActions
                     }
                 }
             }
-        }else if($this->getRequestParameter(md5('radComByWord')) && !empty($com_enviada->getPlantillascomId())){
+        } else if ($this->getRequestParameter(md5('radComByWord')) && !empty($com_enviada->getPlantillascomId())) {
             $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto() . 'uploads');
             $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
             //*****************************************************************************************************
@@ -4945,9 +4952,9 @@ class com_enviadaActions extends sfActions
             $params['membrete_com'] = $com_enviada->getRegional()->getImageMembrete();
             $params['comobject_id'] = $com_enviada->getPrimaryKey();
             $params['periodo_id'] = $com_enviada->getPeriodoId();
-            $response_tpl = $com_enviada->getPlantillasCom()->generateWordByPlantilla($filedir_upload,$params);
+            $response_tpl = $com_enviada->getPlantillasCom()->generateWordByPlantilla($filedir_upload, $params);
             //*****************************************************************************************************
-            if($response_tpl['isError'] == false){
+            if ($response_tpl['isError'] == false) {
                 $com_enviada->setUrlFileWord($response_tpl['path_plantilla']);
                 $com_enviada->setIsCreateWord(2);
                 $com_enviada->setContenido(null);
@@ -4960,73 +4967,78 @@ class com_enviadaActions extends sfActions
         $com_enviada->setFirmaElectronica(UsuarioPeer::countValidateTipoFirma($list_users['str_firmausers']));
         //*********************************************************************************************************
         $snext_user = $this->getRequestParameter('save') ? false : true;
-        $usuario_creador = EnviadaUsuarioPeer::getUserComByRol($com_enviada->getPrimaryKey(),1);
+        $usuario_creador = EnviadaUsuarioPeer::getUserComByRol($com_enviada->getPrimaryKey(), 1);
         $usuariocreador_id = $usuario_creador != null ? $usuario_creador->getUsuarioId() : $usuariologuiado;
-        EnviadaUsuarioPeer::initUserByCom($com_enviada->getPrimaryKey(),$list_users,$usuariocreador_id,$estado,$snext_user);
+        EnviadaUsuarioPeer::initUserByCom($com_enviada->getPrimaryKey(), $list_users, $usuariocreador_id, $estado, $snext_user);
         //*********************************************************************************************************
-        if($snext_user && $isNewCom){
+        if ($snext_user && $isNewCom) {
             $ucom_current = EnviadaUsuarioPeer::setNextUserProceso($com_enviada->getPrimaryKey());
-        }else{
+        } else {
             $ucom_current = EnviadaUsuarioPeer::getCurrentUserAsignado($com_enviada->getPrimaryKey());
         }
         //*********************************************************************************************************
-        if($ucom_current == null){
+        if ($ucom_current == null) {
             $usuario_creador = EnviadaUsuarioPeer::setNextUserProceso($com_enviada->getPrimaryKey());
         }
         //*********************************************************************************************************
         //inserta los directorios
-        $directorioexterno_copias = preg_split("/[,]+/",trim($this->getRequestParameter('copiasDirectorioexterno_id')),-1, PREG_SPLIT_NO_EMPTY);
-        if(count($directorioexterno_id) || count($directorioexterno_copias)){
+        $directorioexterno_copias = preg_split("/[,]+/", trim($this->getRequestParameter('copiasDirectorioexterno_id')), -1, PREG_SPLIT_NO_EMPTY);
+        if (count($directorioexterno_id) || count($directorioexterno_copias)) {
             EnviadaDirectorioPeer::borrarEnviadaDirectorios($com_enviada->getPrimaryKey());
-            EnviadaDirectorioPeer::insertaEnviadaDirectorios($directorioexterno_id,$com_enviada->getPrimaryKey(),1);
-            EnviadaDirectorioPeer::insertaEnviadaDirectorios($directorioexterno_copias,$com_enviada->getPrimaryKey(),2);
-        }else{
+            EnviadaDirectorioPeer::insertaEnviadaDirectorios($directorioexterno_id, $com_enviada->getPrimaryKey(), 1);
+            EnviadaDirectorioPeer::insertaEnviadaDirectorios($directorioexterno_copias, $com_enviada->getPrimaryKey(), 2);
+        } else {
             EnviadaDirectorioPeer::borrarEnviadaDirectorios($com_enviada->getPrimaryKey());
         }
         //*********************************************************************************************************
         $list_interesado = preg_split("/[,]+/", trim($this->getRequestParameter('idUserInteresados')), -1, PREG_SPLIT_NO_EMPTY);
         $interesados_nuids = array();
-        for($index=0; $index < count($list_interesado); $index++) {
-            $isAddInteresado = EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(),$list_interesado[$index]);
+        for ($index = 0; $index < count($list_interesado); $index++) {
+            $isAddInteresado = EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(), $list_interesado[$index]);
         }
-        if(count($list_interesado)){ $isDeleteNotIn = EnviadaInteresadosPeer::deleteByComIdNotExist($com_enviada->getPrimaryKey(),$list_interesado); }
-        else { $isDeleteNotIn = EnviadaInteresadosPeer::deleteAllInteresadosByComId($com_enviada->getPrimaryKey()); }
+        if (count($list_interesado)) {
+            $isDeleteNotIn = EnviadaInteresadosPeer::deleteByComIdNotExist($com_enviada->getPrimaryKey(), $list_interesado);
+        } else {
+            $isDeleteNotIn = EnviadaInteresadosPeer::deleteAllInteresadosByComId($com_enviada->getPrimaryKey());
+        }
         //******************************************APROBACIONES DE CORRESPONDENCIA********************************
-        if(!empty($list_users['str_aprobadorusers'])){
-            ComEnviadaPeer::insertaEnviadaUsuarios($list_users['str_aprobadorusers'],$com_enviada->getPrimaryKey(),4,$list_users['str_ucargosaprobador']);        
-            $modulo_id = 4;//comunicaciones enviadas
-            $this->AprobadoresAdd($list_users['str_aprobadorusers'],$com_enviada->getPrimaryKey(),$modulo_id);
-            if(!$this->getRequestParameter('comenviada_id') || $this->getRequestParameter('sendalertaprob') ? 1 : 0){
-                $this->validarEnvioEmailAprob($com_enviada->getPrimaryKey(),$list_users['str_aprobadorusers'],$modulo_id);
+        if (!empty($list_users['str_aprobadorusers'])) {
+            ComEnviadaPeer::insertaEnviadaUsuarios($list_users['str_aprobadorusers'], $com_enviada->getPrimaryKey(), 4, $list_users['str_ucargosaprobador']);
+            $modulo_id = 4; //comunicaciones enviadas
+            $this->AprobadoresAdd($list_users['str_aprobadorusers'], $com_enviada->getPrimaryKey(), $modulo_id);
+            if (!$this->getRequestParameter('comenviada_id') || $this->getRequestParameter('sendalertaprob') ? 1 : 0) {
+                $this->validarEnvioEmailAprob($com_enviada->getPrimaryKey(), $list_users['str_aprobadorusers'], $modulo_id);
             }
         }
         //*********************************************************************************************************
         $objUsuarioFirma = EnviadaUsuarioPeer::getFirstUsurioFirmaObject($com_enviada->getPrimaryKey());
-        if($objUsuarioFirma == null){ $objUsuarioFirma = $objUsuarioLoguiado; }
+        if ($objUsuarioFirma == null) {
+            $objUsuarioFirma = $objUsuarioLoguiado;
+        }
         //*********************************************************************************************************
         //dependencia        
-        if($this->getRequestParameter('dependencia_id')){
+        if ($this->getRequestParameter('dependencia_id')) {
             $com_enviada->setDependenciaId($this->getRequestParameter('dependencia_id'));
-        }else{
+        } else {
             $com_enviada->setDependenciaId($objUsuarioFirma->getDependenciaId());
         }
         //*********************************************************************************************************
-        if ($this->getRequestParameter('comenviada_id')){
-            if(!empty($com_enviada->getPlantillascomId()) && $com_enviada->getPlantillasCom()->getFirmaDesatendida()){
+        if ($this->getRequestParameter('comenviada_id')) {
+            if (!empty($com_enviada->getPlantillascomId()) && $com_enviada->getPlantillasCom()->getFirmaDesatendida()) {
                 foreach ($com_enviada->getEnviadaUsuarios() as $uobject) {
-                    if($uobject->getRoluscomenviadaId() == 2 && $uobject->getUsuario()->getDependenciaId() == $com_enviada->getPlantillasCom()->getDependenciaId()){
+                    if ($uobject->getRoluscomenviadaId() == 2 && $uobject->getUsuario()->getDependenciaId() == $com_enviada->getPlantillasCom()->getDependenciaId()) {
                         $com_enviada->setFirmaDesatendida(1);
-                    }else if($uobject->getRoluscomenviadaId() == 2 && $uobject->getUsuario()->getFirmaDesatendida()){
+                    } else if ($uobject->getRoluscomenviadaId() == 2 && $uobject->getUsuario()->getFirmaDesatendida()) {
                         $com_enviada->setFirmaDesatendida(1);
                     }
                 }
             }
         }
         //*********************************************************************************************************
-        if($this->getRequestParameter('regional_id')){
+        if ($this->getRequestParameter('regional_id')) {
             $regional_id_actual = $this->getRequestParameter('regional_id');
-        }else{
-            $regional_id_actual = $objUsuarioFirma->getRegionalId();//crea dep y reg en las del creador	
+        } else {
+            $regional_id_actual = $objUsuarioFirma->getRegionalId(); //crea dep y reg en las del creador	
         }
         //*********************************************************************************************************
         $IsResolByInte = $com_enviada->comNumResByIntIsCreate($list_interesado);
@@ -5035,50 +5047,50 @@ class com_enviadaActions extends sfActions
         $com_enviada->save();
         //*********************************************************************************************************
         //guardar en la comunicacion recibida el id dado a la comunicacion enviado en caso que la comunicacion se responda
-        if($this->getRequestParameter('comrecibida_id') != ''){
+        if ($this->getRequestParameter('comrecibida_id') != '') {
             $recibida   =  ComRecibidaPeer::retrieveByPK($this->getRequestParameter('comrecibida_id'));
             $recibida->setComenviadaId($com_enviada->getPrimaryKey());
             $recibida->save();
         }
         //*********************************************************************************************************
-        $this->guardarAuditoria($com_enviada_anterior,$com_enviada);
+        $this->guardarAuditoria($com_enviada_anterior, $com_enviada);
         //*********************************************************************************************************
         $directorioexterno_id = $this->getRequestParameter('directorioexterno_id');
         $funcionario_destino = $com_enviada->getFuncionarioDestino();
         $cargo_destino = $com_enviada->getCargoDestinatario();
         $direccion_destino = $com_enviada->getDireccionDestinatario();
-        $this->validarDestinatario($directorioexterno_id,$funcionario_destino,$cargo_destino,$direccion_destino);
+        $this->validarDestinatario($directorioexterno_id, $funcionario_destino, $cargo_destino, $direccion_destino);
         //*********************************************************************************************************
-        $url_redidrect = $this->getRequest()->getScriptName().'/com_enviada/edit?comenviada_id='.$com_enviada->getComenviadaId();
+        $url_redidrect = $this->getRequest()->getScriptName() . '/com_enviada/edit?comenviada_id=' . $com_enviada->getComenviadaId();
         $snext_user = $this->getRequestParameter('save') ? false : true;
         $qoperation = !empty($this->getRequestParameter('save_and_send')) ? trim($this->getRequestParameter('save_and_send')) : null;
-        if($snext_user){
-            if(md5('save_and_send'.$usuariologuiado) == $qoperation){
+        if ($snext_user) {
+            if (md5('save_and_send' . $usuariologuiado) == $qoperation) {
                 $this->getResponse()->setContentType('application/json');
                 $response_info = array('status' => 200, 'message' => 'La comunicación se envio satisfactoriamente');
-                return $this->renderText(json_encode($response_info));            
+                return $this->renderText(json_encode($response_info));
             }
         }
         return $this->redirect($url_redidrect);
     }
-  
-  
+
+
     public function executeUpdateSinCR()
-    {   
-        $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));        
+    {
+        $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
         $com_enviada_anterior = clone $com_enviada;
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $objUsuarioLoguiado = UsuarioPeer::retrieveByPk($usuariologuiado);
-    
-        if($this->getRequestParameter('ciudad_id')!="")
-            $ciudadId=$this->getRequestParameter('ciudad_id');
-        else{
-                $ciudadId=$objUsuarioLoguiado->getRegional()->getCiudadId();
+
+        if ($this->getRequestParameter('ciudad_id') != "")
+            $ciudadId = $this->getRequestParameter('ciudad_id');
+        else {
+            $ciudadId = $objUsuarioLoguiado->getRegional()->getCiudadId();
         }
-        $com_enviada->setCiudadId($ciudadId);    
+        $com_enviada->setCiudadId($ciudadId);
         $com_enviada->setAsunto($this->getRequestParameter('asunto'));
         $com_enviada->setPrefijo(trim($this->getRequestParameter('prefijo')));
-        $com_enviada->setFechaCreacion($this->getRequestParameter('fecha_creacion'));   
+        $com_enviada->setFechaCreacion($this->getRequestParameter('fecha_creacion'));
         $com_enviada->setFolios($this->getRequestParameter('folios'));
         $com_enviada->setAnexos(trim($this->getRequestParameter('anexos')) != "" ? trim($this->getRequestParameter('anexos')) : null);
         $com_enviada->setIdiomaId($this->getRequestParameter('idioma_id'));
@@ -5089,136 +5101,132 @@ class com_enviadaActions extends sfActions
         $com_enviada->setObservacionesEnvio(trim($this->getRequestParameter('observaciones_envio')));
         //$com_enviada->setContenido($this->getRequestParameter('contenido'));    
         $contenido = $this->getRequestParameter('contenido');
-        $com_enviada->setContenido($this->cleanStringTable($contenido));    
+        $com_enviada->setContenido($this->cleanStringTable($contenido));
         //*********************************************************************************************************
-        if($this->getRequestParameter('regional_id')){
-        $regional_id_actual=$this->getRequestParameter('regional_id');  
-        }else{
-        $regional_id_actual=$objUsuarioLoguiado->getRegionalId();//establece la regional del creador	
+        if ($this->getRequestParameter('regional_id')) {
+            $regional_id_actual = $this->getRequestParameter('regional_id');
+        } else {
+            $regional_id_actual = $objUsuarioLoguiado->getRegionalId(); //establece la regional del creador	
         }
         //*********************************************************************************************************
         $com_enviada->setRegionalId($regional_id_actual);
         $com_enviada->setDependenciaId($objUsuarioLoguiado->getDependenciaId());
         //*********************************************************************************************************
-        if(trim($this->getRequestParameter('ruta')) != ""){
-            if (!$this->getRequestParameter('comenviada_id')){
+        if (trim($this->getRequestParameter('ruta')) != "") {
+            if (!$this->getRequestParameter('comenviada_id')) {
                 $ruta = $com_enviada->getRutaAdjuntos($this->getRequestParameter('ruta'), false);
-            }else{
-                $ruta = $com_enviada->getRutaAdjuntos($this->getRequestParameter('ruta'), true,$com_enviada->getRuta());
+            } else {
+                $ruta = $com_enviada->getRutaAdjuntos($this->getRequestParameter('ruta'), true, $com_enviada->getRuta());
             }
             $com_enviada->setRuta($ruta);
-        }else{
+        } else {
             $com_enviada->setRuta("");
         }
         //*********************************************************************************************************        
         $com_enviada->save();
         //*********************************************************************************************************
         $criteria = new Criteria();
-        $criteria->add(CargoUsuarioPeer::USUARIO_ID,$usuariologuiado);
-        $criteria->add(CargoUsuarioPeer::ES_PRINCIPAL,true);
+        $criteria->add(CargoUsuarioPeer::USUARIO_ID, $usuariologuiado);
+        $criteria->add(CargoUsuarioPeer::ES_PRINCIPAL, true);
         $cargousuarioLogueado = CargoUsuarioPeer::doSelectOne($criteria);
         $usuariosIn = "";
-        $userRadicador= $this->getRequestParameter('radicadorEnviadaId');
+        $userRadicador = $this->getRequestParameter('radicadorEnviadaId');
         /*****************************************************************************************/
         $currentFormRadicador = "COM_ENVIADA_NO_CAMBIAR_RADICADOR";
-        if(!$this->getUser()->checkPerm($currentFormRadicador, $usuariologuiado)){
-            $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($usuariologuiado,$com_enviada->getPrimaryKey(),1,$cargousuarioLogueado->getCargoUsuarioId(),$this->getRequestParameter('enviadausuario_id'));
-        }else{
-            if($userRadicador != ""){	       	   
-                $c2=new Criteria();
-                $c2->add(CargoUsuarioPeer::USUARIO_ID,$userRadicador);
-                $c2->add(CargoUsuarioPeer::ES_PRINCIPAL,true);
-                $cargoUsuario= CargoUsuarioPeer::doSelectOne($c2);
-                $cargoradicadorActual=$cargoUsuario->getCargousuarioId();
-                $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($userRadicador,$com_enviada->getPrimaryKey(),1,$cargoradicadorActual,$this->getRequestParameter('enviadausuario_id'));
-            }else{
-                $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($usuariologuiado,$com_enviada->getPrimaryKey(),1,$cargousuarioLogueado->getCargoUsuarioId(),$this->getRequestParameter('enviadausuario_id'));
-            }       
+        if (!$this->getUser()->checkPerm($currentFormRadicador, $usuariologuiado)) {
+            $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($usuariologuiado, $com_enviada->getPrimaryKey(), 1, $cargousuarioLogueado->getCargoUsuarioId(), $this->getRequestParameter('enviadausuario_id'));
+        } else {
+            if ($userRadicador != "") {
+                $c2 = new Criteria();
+                $c2->add(CargoUsuarioPeer::USUARIO_ID, $userRadicador);
+                $c2->add(CargoUsuarioPeer::ES_PRINCIPAL, true);
+                $cargoUsuario = CargoUsuarioPeer::doSelectOne($c2);
+                $cargoradicadorActual = $cargoUsuario->getCargousuarioId();
+                $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($userRadicador, $com_enviada->getPrimaryKey(), 1, $cargoradicadorActual, $this->getRequestParameter('enviadausuario_id'));
+            } else {
+                $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($usuariologuiado, $com_enviada->getPrimaryKey(), 1, $cargousuarioLogueado->getCargoUsuarioId(), $this->getRequestParameter('enviadausuario_id'));
+            }
         }
         /*****************************************************************************************/
         //ComEnviadaPeer::borrarEnviadaUsuarios($com_enviada->getPrimaryKey());
         //ComEnviadaPeer::insertaEnviadaUsuariosEdit($usuariologuiado,$com_enviada->getPrimaryKey(),1,$cargousuarioLogueado->getCargoUsuarioId(),$this->getRequestParameter('enviadausuario_id'));
         $usuarioFirma = $usuariologuiado;
-        if($this->getRequestParameter('firmanteId')){                  
-            $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($this->getRequestParameter('firmanteId'),$com_enviada->getPrimaryKey(),2,$this->getRequestParameter('cargousuarioIdFirma'),$this->getRequestParameter('enviadausuario_id'));
+        if ($this->getRequestParameter('firmanteId')) {
+            $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($this->getRequestParameter('firmanteId'), $com_enviada->getPrimaryKey(), 2, $this->getRequestParameter('cargousuarioIdFirma'), $this->getRequestParameter('enviadausuario_id'));
             $usuariosIn .= $this->getRequestParameter('firmanteId');
             $usuarioFirma = $this->getRequestParameter('firmanteId');
-        }else{
-            $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($usuariologuiado,$com_enviada->getPrimaryKey(),2,$cargousuarioLogueado->getCargoUsuarioId(),$this->getRequestParameter('enviadausuario_id'));
-            $usuarioFirma = $usuariologuiado;          
+        } else {
+            $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($usuariologuiado, $com_enviada->getPrimaryKey(), 2, $cargousuarioLogueado->getCargoUsuarioId(), $this->getRequestParameter('enviadausuario_id'));
+            $usuarioFirma = $usuariologuiado;
         }
-        if($this->getRequestParameter('copiaInternaId')){      
-                $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($this->getRequestParameter('copiaInternaId'),$com_enviada->getPrimaryKey(),3,$this->getRequestParameter('cargousuarioIdCopias'),$this->getRequestParameter('enviadausuario_id'));            
+        if ($this->getRequestParameter('copiaInternaId')) {
+            $usuariosIn .= ComEnviadaPeer::insertaEnviadaUsuariosEdit($this->getRequestParameter('copiaInternaId'), $com_enviada->getPrimaryKey(), 3, $this->getRequestParameter('cargousuarioIdCopias'), $this->getRequestParameter('enviadausuario_id'));
         }
         //*********************************************************************************************************
         //barrar los que nos estan             
-        ComEnviadaPeer::borrarEnviadaUsuariosEdit($com_enviada->getPrimaryKey(),$usuariosIn);      
+        ComEnviadaPeer::borrarEnviadaUsuariosEdit($com_enviada->getPrimaryKey(), $usuariosIn);
         //inserta los directorios
         EnviadaDirectorioPeer::borrarEnviadaDirectorios($com_enviada->getPrimaryKey());
-        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('directorioexterno_id'),$com_enviada->getPrimaryKey(),1);
-        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('copiasDirectorioexterno_id'),$com_enviada->getPrimaryKey(),2);      
+        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('directorioexterno_id'), $com_enviada->getPrimaryKey(), 1);
+        EnviadaDirectorioPeer::insertaEnviadaDirectorios($this->getRequestParameter('copiasDirectorioexterno_id'), $com_enviada->getPrimaryKey(), 2);
         $objUsuarioFirma = UsuarioPeer::retrieveByPk($usuarioFirma);
         //*********************************************************************************************************
         //dependencia        
-        if($this->getRequestParameter('dependencia_id'))
-        {
+        if ($this->getRequestParameter('dependencia_id')) {
             $com_enviada->setDependenciaId($this->getRequestParameter('dependencia_id'));
-        }
-        else
-        {
+        } else {
             $com_enviada->setDependenciaId($objUsuarioFirma->getDependenciaId());
         }
         //*********************************************************************************************************
-        if($this->getRequestParameter('regional_id'))
-        {
+        if ($this->getRequestParameter('regional_id')) {
             $com_enviada->setRegionalId($this->getRequestParameter('regional_id'));
-        }
-        else
-        {
+        } else {
             //crea dep y reg en las del creador
-            $com_enviada->setRegionalId($objUsuarioFirma->getRegionalId());	
+            $com_enviada->setRegionalId($objUsuarioFirma->getRegionalId());
         }
         //*********************************************************************************************************
         $com_enviada->save();
         //*********************************************************************************************************
-        $this->guardarAuditoria($com_enviada_anterior,$com_enviada);
-        return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/show?comenviada_id='.$com_enviada->getComenviadaId());
+        $this->guardarAuditoria($com_enviada_anterior, $com_enviada);
+        return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/show?comenviada_id=' . $com_enviada->getComenviadaId());
     }
 
     public function executeUpdateDestinos()
     {
-        $loguiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+        $loguiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
-		$com_enviada_anterior = clone $com_enviada;
+        $com_enviada_anterior = clone $com_enviada;
         //*********************************************************************************************************
         $c  = new Criteria();
-        $c->add(EnviadaDirectorioPeer::COMENVIADA_ID,$com_enviada->getComenviadaId());
-        $c->add(EnviadaDirectorioPeer::ROLDIRENVIADA_ID,2);
+        $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $com_enviada->getComenviadaId());
+        $c->add(EnviadaDirectorioPeer::ROLDIRENVIADA_ID, 2);
         $entidades = EnviadaDirectorioPeer::doSelect($c);
         //*********************************************************************************************************
         $b = new Criteria();
-        $b->add(EnviadaUsuarioPeer::COMENVIADA_ID,$com_enviada->getComenviadaId());	 
+        $b->add(EnviadaUsuarioPeer::COMENVIADA_ID, $com_enviada->getComenviadaId());
         $user_enviada = EnviadaUsuarioPeer::doSelect($b);
         //*********************************************************************************************************
         $str_destinos  = trim($this->getRequestParameter('copiasDirectorioexterno_id'));
-        $cadDestinos = preg_split("/[,]+/",$str_destinos, -1, PREG_SPLIT_NO_EMPTY);
+        $cadDestinos = preg_split("/[,]+/", $str_destinos, -1, PREG_SPLIT_NO_EMPTY);
         $iterador = (count($cadDestinos)) - 1;
         //*********************************************************************************************************
-        for($i = 0; $i <= $iterador; $i++){
+        for ($i = 0; $i <= $iterador; $i++) {
             $copia_enviada = $com_enviada->copy();
             $firmante = EnviadaUsuarioPeer::getFirstUsurioFirma($com_enviada->getPrimaryKey());
             //******************************************************************************************************
-            if(!$firmante){
-            $firmante = $this->getUser()->getAttribute('usuario_id','', 'subscriber');	
-            }   		     
+            if (!$firmante) {
+                $firmante = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+            }
             //******************************************************************************************************
-            $objUsuarioFirmante = UsuarioPeer::retrieveByPk($firmante);		
+            $objUsuarioFirmante = UsuarioPeer::retrieveByPk($firmante);
             $regional_id = $objUsuarioFirmante->getRegionalId();
             $dependencia_id = $objUsuarioFirmante->getDependenciaId();
             $depen_codigo = $objUsuarioFirmante->getDependencia()->getCodigo();
             //******************************************************************************************************
-            $max = $this->getNumeroRadicacion($regional_id,$dependencia_id);
-            if(!trim($max)){ $max=0; }
+            $max = $this->getNumeroRadicacion($regional_id, $dependencia_id);
+            if (!trim($max)) {
+                $max = 0;
+            }
             //******************************************************************************************************
             $regional_object = RegionalPeer::retrieveByPK($regional_id);
             $entidad_id = $regional_object->getEntidadId();
@@ -5229,12 +5237,12 @@ class com_enviadaActions extends sfActions
             $copia_enviada->setDireccionDestinatario(null);
             $copia_enviada->setFechaCreacion(date("Y-m-d G:i:s"));
             //******************************************************************************************************
-            $copia_enviada-> save();
+            $copia_enviada->save();
             //******************************************************************************************************
-            $radicado = $copia_enviada->getRadicadoFormat($entidad_id,$regional_id,$depen_codigo);
+            $radicado = $copia_enviada->getRadicadoFormat($entidad_id, $regional_id, $depen_codigo);
             $copia_enviada->setRadicado($radicado);
             //$copia_enviada->setNumeroradicacion($max);
-            $copia_enviada-> save();
+            $copia_enviada->save();
             //******************************************************************************************************
             ///////////////////////////////////////inserta los directorios//////////////////////////////////////////
             $dir  = new EnviadaDirectorio();
@@ -5243,60 +5251,57 @@ class com_enviadaActions extends sfActions
             $dir->setRoldirenviadaId(1);
             $dir->save();
             //******************************************************************************************************
-            foreach($entidades as $tmpEntidad){															
+            foreach ($entidades as $tmpEntidad) {
                 $enviada_dir  = new EnviadaDirectorio();
                 $enviada_dir->setDirectorioexternoId($tmpEntidad->getDirectorioexternoId());
                 $enviada_dir->setComenviadaId($copia_enviada->getComenviadaId());
-                $enviada_dir->setRoldirenviadaId(2);			
+                $enviada_dir->setRoldirenviadaId(2);
                 $enviada_dir->save();
             }
             //////////////////////////////////////////////inserta los USUARIOS///////////////////////////////////////
-            foreach($user_enviada as $tmpUser){	
+            foreach ($user_enviada as $tmpUser) {
                 $rolCopia = new EnviadaUsuario();
                 $rolCopia->setUsuarioId($tmpUser->getUsuarioId());
                 $rolCopia->setEstadocomenviadaId(2);
                 $rolCopia->setComenviadaId($copia_enviada->getComenviadaId());
                 $rolCopia->setCargousuarioId($tmpUser->getCargousuarioId());
-                $rolCopia->setRoluscomenviadaId($tmpUser->getRoluscomenviadaId());			
+                $rolCopia->setRoluscomenviadaId($tmpUser->getRoluscomenviadaId());
                 $rolCopia->save();
             }
             //*****************************************************************************************************
-			$this->guardarAuditoria($com_enviada_anterior,$com_enviada);
-			//*****************************************************************************************************
+            $this->guardarAuditoria($com_enviada_anterior, $com_enviada);
+            //*****************************************************************************************************
             $com_enviada->initUserNotifications();
             //*****************************************************************************************************
             $copia_enviada = $copia_enviada->copy();
-			$com_enviada_anterior = clone $copia_enviada;
+            $com_enviada_anterior = clone $copia_enviada;
         }
-        return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/list');
+        return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/list');
     }
 
     public function executeDestinoChanged()
     {
         $value = $this->getRequestParameter('value_id');
-        $this->option = $this->getRequestParameter('option');    
-        if($value > 0)
-        {
-            if($this->option){
+        $this->option = $this->getRequestParameter('option');
+        if ($value > 0) {
+            if ($this->option) {
                 $this->directorio_select = DirectorioExtendedPeer::retrieveByPK($value);
-            }else{
+            } else {
                 $this->directorio_select = DirectorioExternoPeer::retrieveByPK($value);
             }
         }
-    }       
-  
-    public function validarDestinatario($directorioexterno_id="",$funcionario="",$cargo="",$direccion="")  
+    }
+
+    public function validarDestinatario($directorioexterno_id = "", $funcionario = "", $cargo = "", $direccion = "")
     {
-        if(!empty($directorioexterno_id) && !empty($funcionario) && !empty($cargo) && !empty($direccion))
-        {
+        if (!empty($directorioexterno_id) && !empty($funcionario) && !empty($cargo) && !empty($direccion)) {
             $c = new Criteria();
-            $c->add(DirectorioExtendedPeer::DIRECTORIOEXTERNO_ID,$directorioexterno_id);
-            $c->add(DirectorioExtendedPeer::FUNCIONARIO,$funcionario);
-            $c->add(DirectorioExtendedPeer::CARGO,$cargo);
-            $c->add(DirectorioExtendedPeer::DIRECCION,$direccion);        
+            $c->add(DirectorioExtendedPeer::DIRECTORIOEXTERNO_ID, $directorioexterno_id);
+            $c->add(DirectorioExtendedPeer::FUNCIONARIO, $funcionario);
+            $c->add(DirectorioExtendedPeer::CARGO, $cargo);
+            $c->add(DirectorioExtendedPeer::DIRECCION, $direccion);
             $count_reg = DirectorioExtendedPeer::doCount($c);
-            if(!$count_reg)
-            {
+            if (!$count_reg) {
                 $directorio_extended = new DirectorioExtended();
                 $directorio_extended->setDirectorioexternoId($directorioexterno_id);
                 $directorio_extended->setFuncionario($funcionario);
@@ -5307,239 +5312,237 @@ class com_enviadaActions extends sfActions
         }
     }
 
-    public function validarEnvioEmailAprob($comenviada_id,$aprobadores_id,$modulo_id)
+    public function validarEnvioEmailAprob($comenviada_id, $aprobadores_id, $modulo_id)
     {
         $aprobadores_arr = preg_split("/[,]+/", $aprobadores_id, -1, PREG_SPLIT_NO_EMPTY);
         $c = new Criteria();
-        $c->add(ComAprobacionPeer::CONSECUTIVO_ID,$comenviada_id);
-        $c->add(ComAprobacionPeer::MODULO_ID,$modulo_id);
-        $c->add(ComAprobacionPeer::USUARIO_ID,$aprobadores_arr,Criteria::IN);
-        $c->add(ComAprobacionPeer::ESTADOCOMAPROBACION_ID,1);
+        $c->add(ComAprobacionPeer::CONSECUTIVO_ID, $comenviada_id);
+        $c->add(ComAprobacionPeer::MODULO_ID, $modulo_id);
+        $c->add(ComAprobacionPeer::USUARIO_ID, $aprobadores_arr, Criteria::IN);
+        $c->add(ComAprobacionPeer::ESTADOCOMAPROBACION_ID, 1);
         //********************************************************************************
-        $c->clearSelectColumns();   
-        $c->addSelectColumn(ComAprobacionPeer::USUARIO_ID);    
+        $c->clearSelectColumns();
+        $c->addSelectColumn(ComAprobacionPeer::USUARIO_ID);
         $resultset = ComAprobacionPeer::doSelectStmt($c);
         //********************************************************************************
-        while($object = $resultset->fetch()){
-            if(!empty($comenviada_id)){
+        while ($object = $resultset->fetch()) {
+            if (!empty($comenviada_id)) {
                 $comunicacion_mail = ComEnviadaPeer::retrieveByPK($comenviada_id);
                 $usuario = UsuarioPeer::retrieveByPK($object[0]);
-                $this->sendMailAprob($comenviada_id,$usuario);
+                $this->sendMailAprob($comenviada_id, $usuario);
             }
         }
     }
-  
+
     public function getFirstUsurioFirmaName($com_enviadaId)
-    { 
+    {
         // consultar firmante inicial
-        $c=new Criteria();
+        $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $com_enviadaId);
         $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 2);
-        $result = EnviadaUsuarioPeer::doSelect($c);    
-        $cont=0;
-        foreach($result as $res){
-            if($cont==0)		
-                $firmante = $res->getUsuario()->getNombre()." ".$res->getUsuario()->getApellido();
-        $cont=1;					
+        $result = EnviadaUsuarioPeer::doSelect($c);
+        $cont = 0;
+        foreach ($result as $res) {
+            if ($cont == 0)
+                $firmante = $res->getUsuario()->getNombre() . " " . $res->getUsuario()->getApellido();
+            $cont = 1;
         }
         return $firmante;
-        
     }
 
     public function getDestinoComunicacion($comenviadaId)
-    { 
-        $c=new Criteria();
+    {
+        $c = new Criteria();
         $c->add(EnviadaDirectorioPeer::COMENVIADA_ID, $comenviadaId);
         $respo = EnviadaDirectorioPeer::doSelect($c);
-        $destino_name = "";	         
-        foreach($respo as $res)
-        {		
-        if($res->getRoldirenviadaId() == 1)
-        {
-            $entidad_name = $res->getDirectorioExterno()->getNombre();
-            if(trim($res->getComEnviada()->getFuncionarioDestino())){            
-                $funcionario_name = $res->getComEnviada()->getFuncionarioDestino();
-            }else{
-                $funcionario_name = $res->getDirectorioExterno()->getFuncionario();   
+        $destino_name = "";
+        foreach ($respo as $res) {
+            if ($res->getRoldirenviadaId() == 1) {
+                $entidad_name = $res->getDirectorioExterno()->getNombre();
+                if (trim($res->getComEnviada()->getFuncionarioDestino())) {
+                    $funcionario_name = $res->getComEnviada()->getFuncionarioDestino();
+                } else {
+                    $funcionario_name = $res->getDirectorioExterno()->getFuncionario();
+                }
+                $destino_name = $entidad_name . " - " . $funcionario_name;
             }
-                $destino_name = $entidad_name." - ".$funcionario_name;
         }
-        }
-        return $destino_name;  	
+        return $destino_name;
     }
 
     public function getCopiaIdComEnviadaInternos($comenviadaId)
     {
-        $c=new Criteria();
+        $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $comenviadaId);
         $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 3);
         $result = EnviadaUsuarioPeer::doSelectJoinUsuario($c);
         //*****************************************************************************
         $userCopia = array();
-        foreach($result as $res){				
-            $userCopia[] = $res->getUsuarioId();	  					
+        foreach ($result as $res) {
+            $userCopia[] = $res->getUsuarioId();
         }
-        return $userCopia;	
+        return $userCopia;
     }
 
-    public function AprobadoresAdd($aprobadores_id,$comenviada_id,$modulo_id)
+    public function AprobadoresAdd($aprobadores_id, $comenviada_id, $modulo_id)
     {
-        if(!empty($aprobadores_id) && !empty($modulo_id))
-        {
+        if (!empty($aprobadores_id) && !empty($modulo_id)) {
             $aprobadores_arr = preg_split("/[,]+/", $aprobadores_id, -1, PREG_SPLIT_NO_EMPTY);
-            $usuarios_actuales = $this->AprobadoresExists($comenviada_id,$modulo_id,$aprobadores_id);
-            $this->AprobadoresDelete($comenviada_id,$modulo_id,$aprobadores_arr);        
-            foreach($aprobadores_arr as $aprobador)
-            {
-                if(!in_array($aprobador,$usuarios_actuales,true))
-                {
+            $usuarios_actuales = $this->AprobadoresExists($comenviada_id, $modulo_id, $aprobadores_id);
+            $this->AprobadoresDelete($comenviada_id, $modulo_id, $aprobadores_arr);
+            foreach ($aprobadores_arr as $aprobador) {
+                if (!in_array($aprobador, $usuarios_actuales, true)) {
                     $obj_insert = new ComAprobacion();
                     $obj_insert->setEstadocomaprobacionId(1);
                     $obj_insert->setUsuarioId($aprobador);
                     $obj_insert->setModuloId($modulo_id);
                     $obj_insert->setConsecutivoId($comenviada_id);
                     $obj_insert->setFechaCreacion(date("Y-m-d G:i:s"));
-                    $obj_insert->save();   
-                }            
+                    $obj_insert->save();
+                }
             }
         }
     }
 
-    public function AprobadoresDelete($comenviada_id,$modulo_id,$usuarios_id)
+    public function AprobadoresDelete($comenviada_id, $modulo_id, $usuarios_id)
     {
-        if($usuarios_id)
-        {
+        if ($usuarios_id) {
             $conexion = Propel::getConnection();
-            $consulta = " DELETE FROM %s WHERE %s =".$comenviada_id." AND %s =".$modulo_id." AND USUARIO_ID NOT IN(".implode(",",$usuarios_id).");";    
-            $sql      = sprintf($consulta,ComAprobacionPeer::TABLE_NAME,ComAprobacionPeer::CONSECUTIVO_ID,ComAprobacionPeer::MODULO_ID);
+            $consulta = " DELETE FROM %s WHERE %s =" . $comenviada_id . " AND %s =" . $modulo_id . " AND USUARIO_ID NOT IN(" . implode(",", $usuarios_id) . ");";
+            $sql      = sprintf($consulta, ComAprobacionPeer::TABLE_NAME, ComAprobacionPeer::CONSECUTIVO_ID, ComAprobacionPeer::MODULO_ID);
             $sentencia = $conexion->prepare($sql);
             $sentencia->execute();
         }
     }
-  
-    public function AprobadoresExists($comenviada_id,$modulo_id,$usuarios_id)
-    { 
+
+    public function AprobadoresExists($comenviada_id, $modulo_id, $usuarios_id)
+    {
         $arr_reg = array();
         $c = new Criteria();
-        $c->add(ComAprobacionPeer::CONSECUTIVO_ID,$comenviada_id);
-        $c->add(ComAprobacionPeer::MODULO_ID,$modulo_id);
+        $c->add(ComAprobacionPeer::CONSECUTIVO_ID, $comenviada_id);
+        $c->add(ComAprobacionPeer::MODULO_ID, $modulo_id);
         //$c->add(ComAprobacionPeer::USUARIO_ID,$usuarios_id,Criteria::IN);
         //*********************************************************************************
         $c->clearSelectColumns();
-        $c->addSelectColumn(ComAprobacionPeer::USUARIO_ID);    
+        $c->addSelectColumn(ComAprobacionPeer::USUARIO_ID);
         $resultset = ComAprobacionPeer::doSelectStmt($c);
         //*********************************************************************************
-        while($object = $resultset->fetch())
-        {
+        while ($object = $resultset->fetch()) {
             $arr_reg[] = $object[0];
         }
         return $arr_reg;
     }
 
-    public function cleanStringTable($content){
+    public function cleanStringTable($content)
+    {
         $clean_string = str_replace('nowrap="nowrap"', ' ', $content);
         return $clean_string;
     }
-  
+
     public function executeDelete()
-    {  $this->verificaPrilegio("com_enviada/delete");
+    {
+        $this->verificaPrilegio("com_enviada/delete");
         $com_enviada = ComEnviadaPeer::retrieveByPk($this->getRequestParameter('comenviada_id'));
 
         $this->forward404Unless($com_enviada);
 
         $com_enviada->delete();
 
-        return $this->redirect($this->getRequest()->getScriptName().'/com_enviada/list');
-    }    
+        return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/list');
+    }
 }
 
-class MYPDF extends TCPDF {
+class MYPDF extends TCPDF
+{
     protected $nombreinforme = 1;
     protected $headercells = 1;
-    private $pdf;  
+    private $pdf;
 
 
-    public function setHeaderCells($type_header){
-        $this->headercells = $type_header; 
+    public function setHeaderCells($type_header)
+    {
+        $this->headercells = $type_header;
     }
 
-    public function setNombreInforme($value){
-        $this->nombreinforme = $value; 
+    public function setNombreInforme($value)
+    {
+        $this->nombreinforme = $value;
     }
 
     //Page header
-    public function Header() {
-            $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');	    
+    public function Header()
+    {
+        $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $usuario_genera = UsuarioPeer::retrieveByPK($usuariologuiado);
         //*******************************************************************************************************
         //directorio de las imagenes de los encabezados
         $img_contenedor = "images/encabezado_carta/logos_carnet/";
-        $img_logo = trim($usuario_genera->getRegional()->getEntidad()->getLogoCorporativo()) ? 
-                                $usuario_genera->getRegional()->getEntidad()->getLogoCorporativo() : "default.jpg";
+        $img_logo = trim($usuario_genera->getRegional()->getEntidad()->getLogoCorporativo()) ?
+            $usuario_genera->getRegional()->getEntidad()->getLogoCorporativo() : "default.jpg";
         //*******************************************************************************************************
         $html_encabezado = "";
-        $color_background = "";//"#B8CCE4;";        
+        $color_background = ""; //"#B8CCE4;";        
 
         $html_encabezado .=
-        '<table border="1" width="100%" valign="middle" cellspacing="0"  cellpadding="0">
+            '<table border="1" width="100%" valign="middle" cellspacing="0"  cellpadding="0">
         <tr>
-        <td colspan="2" rowspan="2" align="center" valign="middle" ><div align="center"><img height="70" align="abs" src="'.$img_contenedor.$img_logo.'" /></div></td>
+        <td colspan="2" rowspan="2" align="center" valign="middle" ><div align="center"><img height="70" align="abs" src="' . $img_contenedor . $img_logo . '" /></div></td>
         <td width="475" colspan="6" height="45px" align="center" valign="middle"><div id="div1" >&nbsp;</div><div id="div5">&nbsp;</div><div id="div2"><b>SISTEMA DE GESTI&Oacute;N DE LA CALIDAD Y SISTEMA DE CONTROL INTERNO</b></div></td>
         <td colspan="3" valign="middle" align="center"><div id="div3">&nbsp;</div><div id="div4">Versi&oacute;n: 1.0</div></td>
         </tr>
         <tr>
-        <td width="475" colspan="6" valign="middle" align="center" ><div id="div1">&nbsp;</div><div id="div2" ><b>'.utf8_encode($this->nombreinforme).'</b></div></td>
+        <td width="475" colspan="6" valign="middle" align="center" ><div id="div1">&nbsp;</div><div id="div2" ><b>' . utf8_encode($this->nombreinforme) . '</b></div></td>
         <td colspan="3" valign="middle" align="center"><div id="div3">&nbsp;</div><div id="div4">&nbsp;</div></td>
         </tr>
         <tr>        
         <td colspan="2" align="center" valign="middle"><font size="7"><b>&nbsp;</b></font></td>
-        <td width="475" colspan="6" align="center" style="background-color: '.$color_background.'"><font size="7"><b>GESTION ADMINISTRATIVA</b></font></td>
-        <td colspan="3" align="center" style="background-color: '.$color_background.'"><font size="7"><b>GESTI&Oacute;N DOCUMENTAL, ARCHIVO Y CORRESPONDENCIA</b></font></td>        
+        <td width="475" colspan="6" align="center" style="background-color: ' . $color_background . '"><font size="7"><b>GESTION ADMINISTRATIVA</b></font></td>
+        <td colspan="3" align="center" style="background-color: ' . $color_background . '"><font size="7"><b>GESTI&Oacute;N DOCUMENTAL, ARCHIVO Y CORRESPONDENCIA</b></font></td>        
         </tr>
         <tr>        
         <td colspan="2" align="center" ><font size="7"><b>Macroproceso</b></font></td>
-        <td width="475" colspan="6" align="center" style="background-color: '.$color_background.'"><font size="7"><b>Proceso</b></font></td>        
-        <td colspan="3" align="center" style="background-color: '.$color_background.'"><font size="7"><b>&nbsp;</b></font></td>        
+        <td width="475" colspan="6" align="center" style="background-color: ' . $color_background . '"><font size="7"><b>Proceso</b></font></td>        
+        <td colspan="3" align="center" style="background-color: ' . $color_background . '"><font size="7"><b>&nbsp;</b></font></td>        
         </tr><tr><td width="828">&nbsp;</td></tr>';
-        if($this->headercells == 1)
-        {
-            $html_encabezado .='
+        if ($this->headercells == 1) {
+            $html_encabezado .= '
             <tr>
-            <th height="20" width="100" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Fecha y Hora de recibido</b></font></th>
-            <th width="150" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Empresa y Numero de Gu&iacute;a</b></font></th>
-            <th width="200" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Destinatario</b></font></th>
-            <th width="150" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Radicado</b></font></th>
-            <th width="78" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Ciudad</b></font></th>
-            <th width="150" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Recibido</b></font></th>
+            <th height="20" width="100" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Fecha y Hora de recibido</b></font></th>
+            <th width="150" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Empresa y Numero de Gu&iacute;a</b></font></th>
+            <th width="200" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Destinatario</b></font></th>
+            <th width="150" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Radicado</b></font></th>
+            <th width="78" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Ciudad</b></font></th>
+            <th width="150" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Recibido</b></font></th>
             </tr>';
-        }elseif($this->headercells == 2){
-            $html_encabezado .='
+        } elseif ($this->headercells == 2) {
+            $html_encabezado .= '
             <tr>
-            <th height="20" width="100" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Fecha y Hora de recibido</b></font></th>
-            <th width="150" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Empresa y Numero de Gu&iacute;a</b></font></th>
-            <th width="200" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Destinatario</b></font></th>
-            <th width="150" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Radicado</b></font></th>
-            <th width="78" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Ciudad</b></font></th>
-            <th width="150" align="center" style="background-color: '.$color_background.'"><font size="8"><b>Recibido</b></font></th>
+            <th height="20" width="100" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Fecha y Hora de recibido</b></font></th>
+            <th width="150" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Empresa y Numero de Gu&iacute;a</b></font></th>
+            <th width="200" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Destinatario</b></font></th>
+            <th width="150" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Radicado</b></font></th>
+            <th width="78" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Ciudad</b></font></th>
+            <th width="150" align="center" style="background-color: ' . $color_background . '"><font size="8"><b>Recibido</b></font></th>
             </tr>';
         }
         //close element html
         $html_encabezado .= '</table>';
         //set margin header
-        $this->setHeaderMargin(2);         
-            //set font
+        $this->setHeaderMargin(2);
+        //set font
         $this->SetFont('dejavusans', '', 10);
-            // Title
-        $this->writeHTML($html_encabezado, true, false, true, false,'');
+        // Title
+        $this->writeHTML($html_encabezado, true, false, true, false, '');
     }
 
     // Page footer
-    public function Footer() {
+    public function Footer()
+    {
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font
         $this->SetFont('helvetica', 'I', 8);
         // Page number
-        $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
-    }    		
+        $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+    }
 }

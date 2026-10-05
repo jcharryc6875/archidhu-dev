@@ -29,14 +29,6 @@ class securityActions extends sfActions
 		  $server_vars['HTTP_CLIENT_IP'] = $_SERVER['REMOTE_ADDR'];
 		}
 		securityActions::$aFuncVars = array_merge(securityActions::$aFuncVars, $server_vars);
-		/*$output = implode(', ', array_map(
-		  function ($v, $k) { return sprintf("%s => '%s'", $k, $v); },
-		  $server_vars,
-		  array_keys($server_vars)
-		));*/
-
-		//$logfilename = sfConfig::get("sf_log_dir"). DIRECTORY_SEPARATOR ."access_app.log";
-		//simad_util::writetolog($logfilename,$output);
 	}
 	
 	public function handleErrorRecuperar()
@@ -116,7 +108,19 @@ class securityActions extends sfActions
 	{
 		$this->setLayout(false);
 		$this->postbackurl = $this->getRequestParameter('postbackurl');
+		//***********************************************************************************************
+		$idmessage = isset($_SESSION['cambioPass']) ? trim($_SESSION['cambioPass']) : null;
+		//*****************************************************************************
+		if(!empty($idmessage)){
+			$this->message_info = $idmessage;
+			unset($_SESSION['cambioPass']);
+		}
+		//***********************************************************************************************
 		if ($this->getRequest()->getMethod() != sfRequest::POST){
+			if ($this->getUser()->isAuthenticated()) {
+				return $this->redirect(sfConfig::get('base_simad') . '/backend.php/resumen');
+			}
+			//*******************************************************************************************
 			// display the form
 			$this->getRequest()->setAttribute('referer', $this->getRequest()->getReferer());
 			$this->msgError = $this->getRequestParameter('msgError');
@@ -167,9 +171,7 @@ class securityActions extends sfActions
 				return $this->renderText(json_encode($resp));
 			}
 			//********************************************************************************************
-			// Verificacion con active directory por tabla parametros
-			//$activeDirectory = ParametroPeer::retrieveByPK(47);
-			//********************************************************************************************
+			// Verificacion con active directory
 			if($user->getTipoautenticacionId() === UserAuthType::LdapNativo){
 				$response_ldap = $user->ldapNativoAuth($post_pass);
 				//****************************************************************************************
@@ -183,7 +185,7 @@ class securityActions extends sfActions
 					if(in_array($response_ldap['code'], array("USER_LDAP_ERROR_DISABLED","USER_LDAP_ERROR_EXPIRED"))){
 						UsuarioPendientesChecker::inactivarPorDirectorioActivo($user);
 						//********************************************************************************
-						$resp['error_mensaje'] = "Acceso denegado, error de credenciales8";
+						$resp['error_mensaje'] = "Acceso denegado, error de credenciales";
 					}
 					//************************************************************************************
 					return $this->renderText(json_encode($resp));
@@ -290,9 +292,9 @@ class securityActions extends sfActions
 							//***************************************************************************************************
 							$url_redirect = '/backend.php/resumen';
 							//***************************************************************************************************
-							securityActions::$aFuncVars['LOGIN_STATUS'] = "SUCCESS";
-							//***************************************************************************************************
 							SessionManager::startUniqueSession($user->getUsuarioId());
+							//***************************************************************************************************
+							securityActions::$aFuncVars['LOGIN_STATUS'] = "SUCCESS";
 							//***************************************************************************************************
 							$resp['login_status'] = "success";
 							$resp['redirect_url'] = $url_redirect;
@@ -635,6 +637,13 @@ class securityActions extends sfActions
 
 	public function executeLogout()
 	{
+		$idCode = isset($_SESSION['idCode']) ? SED::decryption(trim($_SESSION['idCode'])) : null;
+		//*****************************************************************************
+		if($idCode == 'RSD501'){
+			unset($_SESSION['idCode']);
+			$_SESSION['cambioPass'] = 'Sus credenciales de acceso fueron actualizadas';
+		}
+		//*****************************************************************************
 		$nickname = $this->getUser()->getAttribute('username', '', 'subscriber');
 		securityActions::$aFuncVars['USER_NAME'] = $nickname;
 		securityActions::$aFuncVars['LOGIN_STATUS'] = "USER_LOGOUT";
@@ -645,9 +654,9 @@ class securityActions extends sfActions
 		$this->getUser()->clearCredentials();
 		$this->getUser()->getAttributeHolder()->removeNamespace('subscriber');
 		//*****************************************************************************
-		AccesoLogPeer::addAuditAccess( securityActions::$aFuncVars);
+		if(!empty($nickname)){ AccesoLogPeer::addAuditAccess( securityActions::$aFuncVars); }
 		//*****************************************************************************
-		$this->redirect('security/login');
+		return $this->redirect($this->getRequest()->getScriptName() . '/security/login');
 	}
 
 	public function handleErrorLogin()

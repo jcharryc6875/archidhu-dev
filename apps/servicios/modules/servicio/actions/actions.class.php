@@ -49,14 +49,6 @@ class servicioActions extends sfActions
     */       
     public function executeIndex()
     {
-        //$com_enviada = ComEnviadaPeer::retrieveByPK(735841);
-        //$com_enviada->initServicioProcess();
-
-        /*$servicio = ServicioPeer::retrieveByPK(15566);
-        $params['coll_interesados'] = null;
-        $params['dependencia_origen'] = $servicio->getUsuario()->getDependenciaId();
-        $resp_integra = $servicio->initIntegraciones($params);*/
-
         return $this->forward('servicio', 'consulta');
     }
     
@@ -544,9 +536,9 @@ class servicioActions extends sfActions
 	   if ($this->getRequestParameter('asignado')) {     
 			$c->addJoin(ServicioPeer::SERVICIO_ID,AsignarServicioPeer::SERVICIO_ID);
 	        $c->addJoin(AsignarServicioPeer::ASIGNARSERVICIO_ID,UsuarioAsignadoSolicitudPeer::ASIGNARSERVICIO_ID);       
-	        $c->add(UsuarioAsignadoSolicitudPeer::USUARIO_ID, $this->getRequestParameter('asignado'));	        
+	        $c->add(UsuarioAsignadoSolicitudPeer::USUARIO_ID, trim($this->getRequestParameter('asignado')));
 	        $c->add(UsuarioAsignadoSolicitudPeer::ESTA_ASIGNADO,1);	        
-	        $this->parametros .= "&usuario_id=" . $this->getRequestParameter('usuario_id');
+	        $this->parametros .= "&asignado=" . trim($this->getRequestParameter('asignado'));
 	        
 	    }
 	    //***************************************************************************************
@@ -600,11 +592,6 @@ class servicioActions extends sfActions
         $this->forward404Unless($this->servicio);
     }
 	    
-  /**
-   * servicioActions::executeShow()
-   *
-   * @return
-   */
     /**
      * Replica, para un registro puntual, la misma jerarquia de permisos que executeList()
      * aplica a la lista (VER_TODOS_LOS_SERVICIOS > VER_SERVICIOS_ENTIDAD > VER_SERVICIOS_REGIONAL
@@ -634,7 +621,12 @@ class servicioActions extends sfActions
 
         return ServicioPeer::doCount($c) > 0;
     }
-
+	
+	/**
+   * servicioActions::executeShow()
+   *
+   * @return
+   */
     public function executeShow()
     {
     	$currentForm="servicio/show";
@@ -679,10 +671,11 @@ class servicioActions extends sfActions
 	{
         $currentForm = "servicio/create";
         $this->verificaPrilegio($currentForm);
+		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         //************************************************************************************
 	    $idModulo = !empty($this->getRequestParameter('modulo_id')) ? trim($this->getRequestParameter('modulo_id')) : null;//modulo genera el servicio
     	$idCom    = !empty($this->getRequestParameter('com_id')) ? trim($this->getRequestParameter('com_id')) : null;//id de la comunicacion
-		$dirId    = !empty($this->getRequestParameter('idEntidad')) ? trim($this->getRequestParameter('idEntidad')) : null;//id de la entidad destino
+		$dirId    = !empty(trim($this->getRequestParameter('idEntidad'))) ? trim($this->getRequestParameter('idEntidad')) : null;//id de la entidad destino
         //**************************************************************************************
         $usuarioservicio_id = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         if(trim($this->getRequestParameter('idUser'))){
@@ -779,8 +772,9 @@ class servicioActions extends sfActions
                 $servicio->setModuloId($modulo_id);
                 $servicio->save();
                 //***********************************************************************************
+				$dependencia_id = 0;
                 if(!empty($consecutivocompk) && !empty($modulo_id)){
-                    switch($idModulo){
+                    switch($modulo_id){
                         case 2: //interna
                             $com_interna = ComInternaPeer::retrieveByPK($consecutivocompk);
                             $dependencia_id = $com_interna->getDependenciaId();
@@ -906,6 +900,7 @@ class servicioActions extends sfActions
 		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
 		$reg = $this->getRegionalFirma($usuariologuiado);
 		$servicio   = ServicioPeer::retrieveByPk($this->getRequestParameter('servicio_id'));					
+		$servicio_anterior = clone $servicio;
 		//*******************************************************************************
         $arrDes = preg_split("/[,]+/",trim($this->getRequestParameter('idEntidad')),-1, PREG_SPLIT_NO_EMPTY); 
 		$iterador = count($arrDes) - 1;
@@ -922,6 +917,9 @@ class servicioActions extends sfActions
             $serv->setNumeroRadicacion($numero_radicado);
             $serv->save();
             //****************************************************************************
+			$this->guardarAuditoria($servicio_anterior,$serv);
+			$servicio_anterior = clone $serv;
+			//****************************************************************************
 	        ServicioPeer::asignarServicio($reg, $serv->getServicioId());
 		}				
 		//********************************************************************************
@@ -1000,7 +998,7 @@ class servicioActions extends sfActions
                 $this->cadId = "";
                 $this->cadDir = "";                
                 $this->email_destino  = $dir != null ? (trim($dir->getEmail()) == "" ? "" : trim($dir->getEmail())) : "";
-				$this->obs = 'Solicitud servicio de comunicaci&oacute;n interna con radicado: '.$servicio->getRadicado();;
+				$this->obs = 'Solicitud servicio de comunicaci&oacute;n interna con radicado '.$servicio->getRadicado();
 				//**********************************************************************************
                 $this->funcionario_dir  = "";
                 $this->cargo_dir  = "";
@@ -1014,7 +1012,7 @@ class servicioActions extends sfActions
                 //***********************************************************************************
 				break;
 			case 3://RECIBIDA
-				$this->servicio = $servicio = ComRecibidaPeer::retrieveByPK($idCom);
+				$servicio = ComRecibidaPeer::retrieveByPK($idCom);
 				//***********************************************************************************
                 $this->cadDir = $servicio->getDirectorioexternoId() ? $servicio->getDirectorioexterno()->getNombre() : null;
 				$this->cadId  = $servicio->getDirectorioexternoId() ? $servicio->getDirectorioexternoId() : 0;
@@ -1025,7 +1023,7 @@ class servicioActions extends sfActions
                 $this->prefijo_dir  = $servicio->getDirectorioexternoId() ? (trim($servicio->getDirectorioexterno()->getPrefijo()) == "" ? "" : trim($servicio->getDirectorioexterno()->getPrefijo())) : null;
                 //***********************************************************************************
 				$this->servicio = $servicio;
-				$this->obs = 'Solicitud Servicio de comunicaci&oacute;n recibida con radicado: '.$servicio->getRadicado();
+				$this->obs = 'Solicitud Servicio de comunicaci&oacute;n recibida con radicado '.$servicio->getRadicado();
                 //***********************************************************************************
                 $list_inteIds = array();$list_names = array();
                 foreach (ComRecibidaPeer::getListIntersadosByComId($servicio->getPrimaryKey()) as $interesado) {
@@ -1056,7 +1054,7 @@ class servicioActions extends sfActions
                     $this->prefijo_dir  = $result->getDirectorioexternoId() ? (trim($result->getDirectorioExterno()->getPrefijo()) == "" ? "" : trim($result->getDirectorioExterno()->getPrefijo())) : null;
 				}
                 //*************************************************************************************
-				$this->obs = 'Solicitud servicio de comunicaci&oacute;n enviada con radicado: '.$com_enviada->getRadicado();
+				$this->obs = 'Solicitud servicio de comunicaci&oacute;n enviada con radicado '.$com_enviada->getRadicado();
                 //*************************************************************************************
                 $list_inteIds = array();$list_names = array();
                 foreach (ComEnviadaPeer::getListIntersadosByComId($com_enviada->getPrimaryKey()) as $interesado) {
@@ -1082,7 +1080,7 @@ class servicioActions extends sfActions
             case 17://ACTOS ADMINISTRATIVOS
                 $acto_administrativo = ActoAdministrativoPeer::retrieveByPK($idCom);
                 //*************************************************************************************
-                $this->obs = 'Solicitud servicio de acto administrativo con numero de resolución: '.$acto_administrativo->getRadicadoCompuesto();
+                $this->obs = 'Solicitud servicio de acto administrativo con numero de resolución '.$acto_administrativo->getRadicadoCompuesto();
                 //*************************************************************************************
                 $list_inteIds = array();$list_names = array();
                 foreach ($acto_administrativo->getActoadministraInteresados() as $interesado) {
@@ -1122,10 +1120,12 @@ class servicioActions extends sfActions
     public function executeAnular()
     {
         $servicio = ServicioPeer::retrieveByPk($this->getRequestParameter('servicio_id'));
-        $servicio_anterior=$servicio->copy();     	
+       	$servicio_anterior = clone $servicio;
+		//*****************************************************************************************   	
         $this->forward404Unless($servicio);
         $servicio->setServicioestadoId(5);
         $servicio->save();
+		//*****************************************************************************************
      	$this->guardarAuditoria($servicio_anterior,$servicio);		     	 	        	        	        	
 		return $this->redirect($this->getRequest()->getScriptName().'/servicio/show?servicio_id='.$servicio->getServicioId());
     }
@@ -1225,17 +1225,17 @@ class servicioActions extends sfActions
     public function executeUpdateGuia()
     {        
 		$servicio = ServicioPeer::retrieveByPk($this->getRequestParameter('servicio_id'));
-		$servicio_anterior = $servicio->copy();
-        $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-        //***************************************************************************************
+		$servicio_anterior = clone $servicio;
+		//*****************************************************************************************
 	    $servicio->setGuia($this->getRequestParameter('numGuia'));
-	    $servicio->setFechaEnvioGuia($this->getRequestParameter('fecha_envio_guia'));
+	    $fechaEnvioGuia = cambiarFormatoFecha($this->getRequestParameter('fecha_envio_guia'));
+	    $servicio->setFechaEnvioGuia($fechaEnvioGuia);	
+	    //$servicio->setFechaEnvioGuia($this->getRequestParameter('fecha_envio_guia'));
 	    $servicio->setValorGuia($this->getRequestParameter('valor_guia'));
 	    $servicio->setEmpresaMensajeriaId($this->getRequestParameter('empresa_mensajeria_id'));
 	    $servicio->save();
-        //***************************************************************************************
-        AuditLogPeer::guardarAuditoriaLite(ServicioPeer::getOMClass(),$servicio_anterior,$servicio,ModulesEnable::Servicios,$servicio->getRadicado(),$usuariologuiado);
-        //***************************************************************************************
+		//*****************************************************************************************		
+     	$this->guardarAuditoria($servicio_anterior,$servicio);		     	 	        	        	        	  				
         return $this->redirect($this->getRequest()->getScriptName().'/servicio/show?servicio_id='.$this->getRequestParameter('servicio_id'));
     }
     
@@ -1249,7 +1249,8 @@ class servicioActions extends sfActions
         $servicio  = ServicioPeer::retrieveByPk($this->getRequestParameter('servicio_id'));
         $servicio->setValorGuia(trim($this->getRequestParameter('valor_guia')));
         //**********************************************************************************************
-        $servicio_anterior = $servicio->copy();
+        $servicio_anterior = clone $servicio;
+		//**********************************************************************************************
       	$idAsignar = AsignarServicioPeer::getLlaveAsignar($servicio->getPrimaryKey());
 		$idUser = ServicioPeer::getIdReasignar($idAsignar);
 		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
@@ -1330,7 +1331,7 @@ class servicioActions extends sfActions
         //**********************************************************************************************
         $servicio  = ServicioPeer::retrieveByPk($this->getRequestParameter('servicio_id'));
         //**********************************************************************************************
-        $servicio_anterior = $servicio->copy();
+        $servicio_anterior = clone $servicio;
 		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $obs_bitacora = "Cierra servicio";
 		//**********************************************************************************************
@@ -1395,7 +1396,7 @@ class servicioActions extends sfActions
 			$util_simad = new simad_util();
 			$file_name = $util_simad->clean_name_file($file_vars);
 			$directorio = simad_util::createPath($path_data['full_path']);
-			$alias_web = ParametroPeer::retrieveByPk(12)->getValortexto();
+			$alias_web = isset($path_data['alias_web']) ? $path_data['alias_web'] : ParametroPeer::retrieveByPk(74)->getValortexto();
 			$alias_dir = $alias_web.$path_data['basic_path'];
 			//*****************************************************************************************
 			$cons  = $this->getNewConsecutivo();
@@ -1488,6 +1489,12 @@ class servicioActions extends sfActions
         if($tipo_servicio->getInitIntegracion()){
             $estadoservicio_id = 8;
             $receptor_id = $usuarioservicio_id; 
+		}elseif($tipo_servicio->getTipoEnvio() == 2){
+            $estadoservicio_id = 2;
+            $receptor_id = $usuarioservicio_id;
+        }elseif($tipo_servicio->getTipoEnvio() == 5){
+            $estadoservicio_id = 2;
+            $receptor_id = $usuarioservicio_id;
         }else{
             $receptor_id = ServicioPeer::validarReceptor($reg,$dependencia_id,$tiposervicio_id);
         }
@@ -1539,7 +1546,7 @@ class servicioActions extends sfActions
                 }
                 //**************************************************************************************
                 $this->guardarAuditoria($servicio_anterior,$servicio);
-                //***********************************************************************************
+                //**************************************************************************************
                 $params['coll_interesados'] = $list_interesado;
                 $params['dependencia_origen'] = $dependencia_id;
                 $resp_integra = $servicio->initIntegraciones($params);
@@ -1549,33 +1556,6 @@ class servicioActions extends sfActions
                 }else{
                     $this->getUser()->setFlash('error_usnotified', "Por favor, revisa la Bítacaora del servicio, para verificar el proceso de integracion realizado, <br>".$resp_integra['message']); 
                 }
-                //**************************************************************************************
-                /*if($tipo_servicio->getTipoEnvio() == 3 && (count($list_interesado) > 0 || !empty($servicio->getDirectorioexternoId()))){
-                    $response_crtnnal = $servicio->apiSipostSvc(); 
-                    //**********************************************************************************
-                    $messages_success = null;
-                    $messages_error = null;
-                    foreach ($response_crtnnal as $response_item) 
-                    {
-                        $tservicio_desc = $servicio->getTipoServicio()->getDescripcion();
-                        if($response_item['statusHttp'] == 200)
-                        {
-                            $messages_success .= sprintf("<ul><li><strong>%s</strong></li></ul>",$tservicio_desc.' => '.$response_item['message']);
-                        }else
-                        {
-                            $messages_error .= sprintf("<ul><li><strong>%s</strong></li></ul>",'Error '.$tservicio_desc.' => '.$response_item['message']);
-                        }
-                    }
-                    //**********************************************************************************
-                    if(!empty($messages_success))
-                    { 
-                        $this->getUser()->setFlash('success_usnotified', $messages_success); 
-                    }
-                    if(!empty($messages_error))
-                    { 
-                        $this->getUser()->setFlash('error_usnotified', $messages_error); 
-                    }
-                }*/
                 //**************************************************************************************
                 return $this->redirect($this->getRequest()->getScriptName().'/servicio/show?servicio_id='.$servicio->getPrimaryKey());
             }
@@ -1736,8 +1716,7 @@ class servicioActions extends sfActions
 	        $c->addJoin(AsignarServicioPeer::ASIGNARSERVICIO_ID,UsuarioAsignadoSolicitudPeer::ASIGNARSERVICIO_ID);       
 	        $c->add(UsuarioAsignadoSolicitudPeer::USUARIO_ID, $this->getRequestParameter('asignado'));	        
 	        $c->add(UsuarioAsignadoSolicitudPeer::ESTA_ASIGNADO,1);	        
-	        $this->parametros .= "&usuario_id=" . $this->getRequestParameter('usuario_id');
-	        
+	        $this->parametros .= "&asignado=" . trim($this->getRequestParameter('asignado'));
 	    }
         /**************************************************************************************/
         $expaddjoin_interesado = false;
@@ -1828,13 +1807,14 @@ class servicioActions extends sfActions
         $c->addSelectColumn(ServicioPeer::FOLIOS);//8
         $c->addSelectColumn(DirectorioExternoPeer::DIRECCION);//9
         $c->addSelectColumn(ServicioPeer::DETALLE);//10
+		$c->addSelectColumn(TipoServicioPeer::DESCRIPCION);//11
         //*************************************************************************************************
         //adicionamos los joins
-        $c->addJoin(ServicioPeer::DIRECTORIOEXTERNO_ID, DirectorioExternoPeer::DIRECTORIOEXTERNO_ID);
+        $c->addJoin(ServicioPeer::DIRECTORIOEXTERNO_ID, DirectorioExternoPeer::DIRECTORIOEXTERNO_ID,Criteria::LEFT_JOIN);
         $c->addJoin(ServicioPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID);
         $c->addJoin(ServicioPeer::SERVICIOESTADO_ID, ServicioEstadoPeer::SERVICIOESTADO_ID);        
+		$c->addJoin(ServicioPeer::TIPOSERVICIO_ID, TipoServicioPeer::TIPOSERVICIO_ID);
         $this->resultset = ServicioPeer::doSelectStmt($c);
-		//*************************************************************************************************
     }
 
     /**

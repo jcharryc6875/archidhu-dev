@@ -149,25 +149,9 @@ use_helper('jQuery');
                          
                          <td class="text-center">                    	  
                         	  <?php
-                              //******************************************************************************/
-                        	  $entidad_folder = $com_interna->getRegional()->getEntidad()->getDirectorioName();
-                        	  $regional_folder = $com_interna->getRegional()->getDirectorioName();
-                        	  $entidad = $entidad_folder.'/'.$regional_folder;
-                        	  $periodo = $com_interna->getPeriodoId();
-                        	  $directorio_entidad = $directorio_raiz.$entidad."/";
-                        	  $directorio_com = $directorio_adj."/".$periodo."/";
-                        	  $directorio_final = $directorio_entidad.$directorio_com;
-                        	  $alias_image = $directorio_alias.$entidad."/".$directorio_com;
-                        	  $file_name = $com_interna->getRadicado();
-                        	  //*******************************************************************************/
-                        	  $existe_file = false;
-                              foreach($format_digit_img as $format){
-                            	  if(file_exists($directorio_final.$file_name.".".$format)){
-                            	  	$existe_file = true;
-                            	  	$file_name .= ".".$format;
-                                    break;
-                            	  }
-                              }
+                              $fullpath = $com_interna->getPathImageDigitByCom();
+                              $digit_fdocu = $fullpath;
+                              $existe_file = !empty($fullpath) ? true : false;
                         	  //********************************************************************************
                               if($com_interna->getEstadodigitalizacionId() == 1){                
                                 if($existe_file){

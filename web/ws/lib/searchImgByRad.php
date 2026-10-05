@@ -697,7 +697,6 @@ function getMedioConservacionList($EntSecurity = array())
 	}
 
 	$unidades_conservadoras = UnidadConservadoraPeer::getAllConservadoras();
-	//var_dump($unidades_conservadoras); exit; 
 	//*********************************************************************************************************************
 	$list_object = array();
 	foreach ($unidades_conservadoras as $object) {
@@ -1394,6 +1393,7 @@ function AddRadicadoEntradaPublic($EntSecurity = array(), $EntComRecibida = arra
 {
 	//file_put_contents("c:/temp/outputfile.txt", file_get_contents("php://input"));
 	$infoxml = file_get_contents("php://input");
+	$util_simad = new simad_util();
 	//*******************************************************************************************************************
 	try {
 		$logname = sfConfig::get("sf_log_dir") . DIRECTORY_SEPARATOR . 'wsentrada_public.log';
@@ -1711,9 +1711,8 @@ function AddRadicadoSalidaEnt($EntSecurity = array(), $EntComEnviada = array(), 
 	$response_data = array();
 	$fecha_transaccion = date('Y-m-d G:i:s');
 	//*********************************************************************************************************************
-	//file_put_contents("c:/temp/outputfile.txt", file_get_contents("php://input"));
 	$infoxml = file_get_contents("php://input");
-	file_put_contents(sfConfig::get("sf_log_dir") . DIRECTORY_SEPARATOR . date("Ymd") . "_AddRadicadoSalidaOferta.log", $infoxml);
+	//file_put_contents(sfConfig::get("sf_log_dir") . DIRECTORY_SEPARATOR . date("Ymd") . "_AddRadicadoSalidaOferta.log", $infoxml);
 	$util_simad = new simad_util();
 	//*******************************************************************************************************************
 	try {
@@ -1999,6 +1998,7 @@ function AddRadicadoSalidaEnt($EntSecurity = array(), $EntComEnviada = array(), 
 			}
 		}
 		//***************************************************************************************************************
+		//validacion de existencia de otro comunicado externo con el mismo numero de resolucion y para el mismo interesado
 		if (!empty($params['numero_resolucion'])) {
 			$existsComByResol = ComEnviadaPeer::isExistComByNumResolucion($params['numero_resolucion'], $interesados_nuids, null, false);
 			if ($existsComByResol || !empty($existsComByResol)) {
@@ -2556,7 +2556,6 @@ function AddActoAdministrativo($EntSecurity = array(), $EntActoAdministrativo = 
 	//*******************************************************************************************************************
 	$infoxml = file_get_contents("php://input");
 	$util_simad = new simad_util();
-
 	//*******************************************************************************************************************
 	try {
 		$dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto() . 'uploads');
@@ -3013,6 +3012,10 @@ function AddActoAdministrativo($EntSecurity = array(), $EntActoAdministrativo = 
 		}
 		//***************************************************************************************************************
 		if ($acto_administrativo->getEstadoactoadministrativoId() !== 6 && $radicar_automativo) {
+			//1. elimina usuarios del acto administrativo
+			//2. elimina interesados del acto administrativo
+			//3. elimina servicios del acto administrativo(falta revisar, hay tablas relacionas al servicio)
+			//4. elimina el acto administrativo
 			ActoAdministrativoPeer::deleteCascada($acto_administrativo->getPrimaryKey());
 			return responseErrorData('Error al generar el acto administrativo');
 		}

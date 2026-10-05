@@ -119,26 +119,9 @@ use_helper('jQuery');
                         </td>
                         <td class="text-center">
                           <?php
-                            echo "&nbsp;";
-                            //*******************************************************************************
-                            $entidad_folder = $com_enviada->getRegional()->getEntidad()->getDirectorioName();
-                            $regional_folder = $com_enviada->getRegional()->getDirectorioName();
-                            $entidad = $entidad_folder.'/'.$regional_folder;
-                            $periodo = $com_enviada->getPeriodoId();
-                            $directorio_entidad = $directorio_raiz.$entidad."/";
-                            $directorio_com = $directorio_adj."/".$periodo."/";
-                            $directorio_final = $directorio_entidad.$directorio_com;
-                            $alias_image = $directorio_alias.$entidad."/".$directorio_com;
-                            $file_name = $com_enviada->getRadicado();
-                            //*******************************************************************************
-                            $existe_file = false;
-                            foreach($format_digit_img as $format){
-                              if(file_exists($directorio_final.$file_name.".".$format)){
-                                $existe_file = true;
-                                $file_name .= ".".$format;
-                                  break;
-                              }
-                            }
+                            $fullpath = $com_enviada->getPathImageDigitByCom();
+                      		$digit_fdocu = $fullpath;
+                      		$existe_file = !empty($fullpath) ? true : false;
                             //*******************************************************************************
                             if($com_enviada->getEstadodigitalizacionId() == 1){//VALIAR OTRA FORMA DE ACTUALIZAR(ASINCRONO) ESTA DEMORANDO LA LISTA DE RESULTADOS
                               if($existe_file){
@@ -202,6 +185,20 @@ use_helper('jQuery');
                         </a>
                     <?php } ?>
 
+					<?php
+	                if ($sf_user->checkPerm("COM_ENVIADA_FIRMA_LOTE", $currentUser) && $sf_user->checkPerm("FIRMA_DIGITAL_RELANZAR", $currentUser)) {
+	                  echo jq_link_to_remote(
+	                    image_tag('simad/ico_asignar_user.png', array('id' => "feeduncheck", 'width' => "25")) . 'Enviar Firma Digital',
+	                    array(
+	                      'update'    => null,
+	                      'url'     => 'com_enviada/batchFirmaDigital',
+	                      'loading' => "javascript:jQuery.LoadingStructData();",
+	                      'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); if(response_value.httpStatus == 200){ toastr.success(response_value.message);setTimeout(function(){ document.location.reload(); }, 5000); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
+	                    ),
+	                    array('class' => 'btn btn-white btn-sm tooltip-primary', 'data-toggle' => 'tooltip', 'data-original-title' => 'Enviar todas las comunicaciones marcadas a firma digital, solo se enviaran a firma digital las comunicaciones que generaron error en el primer intento')
+	                  );
+	                }
+	                ?>
                     <?php if($marcarEntrega == 1){ ?>
                       <a class="btn btn-white btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Marcar como entregados" href="#" onclick="javascript:jQuery.OpenModalSIMAD('<?php echo $base_path; ?>/enviada.php/com_enviada/marcarEntregados','640','400'); return false;">
                           <img src="<?php echo $base_path; ?>/images/simad/ico_entregado.png" width="25" align="middle" />Marcar entrega
