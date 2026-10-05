@@ -4616,16 +4616,19 @@ function CreateNewExpedienteArch($EntSecurity = array(), $ArcAddExpediente = arr
 			$medio_conservacion = 1;
 		}
 		//**************************************************************************************************************************
+		$dependecia_expediente = null;
 		$codigo_dependencia = isset($ArcAddExpediente['CODIGO_DEPENDENCIA']) ? trim($ArcAddExpediente['CODIGO_DEPENDENCIA']) : null;
 		$nombre_dependencia = isset($ArcAddExpediente['NOMBRE_DEPENDENCIA']) ? trim($ArcAddExpediente['NOMBRE_DEPENDENCIA']) : null;
 		if (empty($codigo_dependencia)) {
 			return responseErrorDataExp('El campo CODIGO_DEPENDENCIA es obligatorio');
 		}
 		//**************************************************************************************************************************
-		if (!empty($codigo_dependencia) && !empty($nombre_dependencia))
+		if (!empty($codigo_dependencia) && !empty($nombre_dependencia)) {
 			$dependecia_expediente = DependenciaPeer::getDependenciaByNombreAndCodigo($codigo_dependencia, $nombre_dependencia);
-		elseif (!empty($codigo_dependencia))
-			$dependecia_expediente = DependenciaPeer::getDependenciaByCodigo($codigo_dependencia);
+			if ($dependecia_expediente == null || empty($dependecia_expediente)) {
+				$dependecia_expediente = DependenciaPeer::getDependenciaByCodigo($codigo_dependencia);
+			}
+		}
 
 		if (empty($dependecia_expediente)) {
 			return responseErrorDataExp('La dependencia con codigo ' . $codigo_dependencia . ' no existe en el SGDEA');
