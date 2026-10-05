@@ -1,4 +1,4 @@
-<?php 
+<?php
 $path_theme = sfConfig::get('theme_simad');
 $base_path = sfConfig::get('base_simad');
 
@@ -53,7 +53,7 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
             <?php
             if ($sf_user->checkPerm("COM_INTERNA_REMPLAZAR_FILE_DIGIT", $currentUser) && $com_interna->getIsCreateWord()) { ?>
                 <li>
-                    <a data-toggle="tooltip" data-original-title="Reemplaza el archivo digitalizado actual" onclick="javascript:jQuery.OpenModalSIMAD('<?php print url_for('com_interna/uploadTemplateEdit?cominterna_id='.$com_interna->getPrimaryKey()); ?>', 800, 400);" href="#">
+                    <a data-toggle="tooltip" data-original-title="Reemplaza el archivo digitalizado actual" onclick="javascript:jQuery.OpenModalSIMAD('<?php print url_for('com_interna/uploadTemplateEdit?cominterna_id=' . $com_interna->getPrimaryKey()); ?>', 800, 400);" href="#">
                         <i class="entypo-arrows-ccw"></i>
                         <span class="title">Actualizar Documento</span>
                     </a>
@@ -104,6 +104,24 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
                 </li>
             <?php
             } ?>
+
+            <?php if (($com_interna->getFirmadoDigital() == 3) && ($sf_user->checkPerm("FIRMA_DIGITAL_RELANZAR", $currentUser) || in_array($currentUser, $usuarios_firman))) { ?>
+                <li>
+                    <?php
+                    echo jq_link_to_remote(
+                        '<i class="fa fa-edit"></i> <span class="title">Enviar Firma</span>',
+                        array(
+                            'update'    => null,
+                            'url'     => 'com_interna/singWsContract',
+                            'with'    => " 'cominterna_id=" . $com_interna->getPrimaryKey() . "'",
+                            'loading' => "javascript:jQuery.LoadingStructData();",
+                            'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); if(response_value.httpStatus == 200){ toastr.success(response_value.message);setTimeout(function(){ document.location.reload(); }, 5000); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
+                        ),
+                        array('data-toggle' => 'tooltip', 'data-original-title' => 'Enviar la comunicacion a firma digital, parece que ocurrio un error al enviar para firma en el primer intento')
+                    );
+                    ?>
+                </li>
+            <?php } ?>
 
             <?php
             if (!in_array($estadocominterna_id, array(4, 6))) { ?>
@@ -159,14 +177,14 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
                     <?php if (($currentUser == $usuario_asignado)) { ?>
                         <?php if ($aprobacion_count <= 1 && in_array($currentUser, $usuarios_firman) || ($com_interna->getFirmaDesatendida() == 1 && count($aprobacion_ulist) == 0)) { ?>
                             <li>
-                                <a data-toggle="tooltip" class="confirm-link" data-method-type = "href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'radicar', 'vshow' => md5($com_interna->getCominternaId()), 'cominterna_id' => $com_interna->getCominternaId())); ?>" href="#">
+                                <a data-toggle="tooltip" class="confirm-link" data-method-type="href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'radicar', 'vshow' => md5($com_interna->getCominternaId()), 'cominterna_id' => $com_interna->getCominternaId())); ?>" href="#">
                                     <i class="fa fa-save"></i>
                                     <span class="title">Firmar y Radicar</span>
                                 </a>
                             </li>
                         <?php } elseif (in_array($currentUser, $users_aprueban) || ($currentUser == $usuario_asignado)) { ?>
                             <li>
-                                <a data-toggle="tooltip" class="confirm-link" data-method-type = "ajax" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'singComCheck', 'cominterna_id' => $com_interna->getPrimaryKey())); ?>" href="#">
+                                <a data-toggle="tooltip" class="confirm-link" data-method-type="ajax" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'singComCheck', 'cominterna_id' => $com_interna->getPrimaryKey())); ?>" href="#">
                                     <i class="fa fa-check"></i>
                                     <span class="title">Aprobar y Enviar</span>
                                 </a>
@@ -174,7 +192,7 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
                         <?php } ?>
                     <?php } elseif ((count($users_aprueban) == 0 && $currentUser == $usuario_asignado)) { ?>
                         <li>
-                            <a data-toggle="tooltip" class="confirm-link" data-method-type = "href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'radicar', 'vshow' => md5($com_interna->getCominternaId()), 'cominterna_id' => $com_interna->getCominternaId())); ?>" href="#">
+                            <a data-toggle="tooltip" class="confirm-link" data-method-type="href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'radicar', 'vshow' => md5($com_interna->getCominternaId()), 'cominterna_id' => $com_interna->getCominternaId())); ?>" href="#">
                                 <i class="fa fa-edit"></i>
                                 <span class="title">Firmar y Radicar</span>
                             </a>
@@ -183,24 +201,22 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
                 <?php } ?>
             <?php } elseif ($currentUser == $usuario_asignado) { ?>
                 <li>
-                    <a data-toggle="tooltip" class="confirm-link" data-method-type = "ajax" data-original-title="Aprobar y Enviar" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'singComCheck', 'cominterna_id' => $com_interna->getPrimaryKey())); ?>" href="#">
+                    <a data-toggle="tooltip" class="confirm-link" data-method-type="ajax" data-original-title="Aprobar y Enviar" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'singComCheck', 'cominterna_id' => $com_interna->getPrimaryKey())); ?>" href="#">
                         <i class="fa fa-check"></i>
                         <span class="title">Aprobar y Enviar</span>
                     </a>
                 </li>
             <?php } ?>
 
-            <?php if($sf_user->checkPerm("COM_INTERNA_DEVOLUCIONES_FLUJO", $currentUser)){ ?>
-                <?php if(($currentUser == $usuario_asignado) || ($sf_user->checkPerm("COM_INTERNA_DEVOLVER_DOCUMENTO_TODAS", $currentUser))){ ?>
-                    <li>											
+            <?php if ($sf_user->checkPerm("COM_INTERNA_DEVOLUCIONES_FLUJO", $currentUser)) { ?>
+                <?php if (($currentUser == $usuario_asignado) || ($sf_user->checkPerm("COM_INTERNA_DEVOLVER_DOCUMENTO_TODAS", $currentUser))) { ?>
+                    <li>
                         <a href="#" class="dropdown processreject" style="cursor: pointer;">
                             <i class="entypo-back dropdown-toggle" data-toggle="dropdown"></i>
                             <span class="title processreject">Devolver Documento</span>
-                        </a>											
+                        </a>
                         <ul class="dropdown-menu dropdown-green" role="menu"></ul>
                     </li>
-
-                    
                 <?php } ?>
             <?php } ?>
         <?php } ?>
@@ -245,7 +261,7 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
         if ($estadocominterna_id != 1 && $com_interna->getRadicado() != 'Sin Radicar') { ?>
 
             <li>
-                <a data-toggle="tooltip" data-original-title="Vincular comunicaci&oacute;n a un expediente de archivo" href="#" onclick="javascript:jQuery.OpenModalSIMAD('<?php echo $base_path; ?>/archivo.php/transferencia/create?origen_transferencia=1&cominterna_id=<?php echo $com_interna->getPrimaryKey(); ?>','960','600')">
+                <a data-toggle="tooltip" data-original-title="Archivar esta comunicaci&oacute;n en un expediente de archivo" href="#" onclick="javascript:jQuery.OpenModalSIMAD('<?php echo $base_path; ?>/archivo.php/transferencia/create?origen_transferencia=1&cominterna_id=<?php echo $com_interna->getPrimaryKey(); ?>','960','600')">
                     <i class="entypo-archive"></i>
                     <span class="title">Archivar Documento</span>
                 </a>
@@ -365,22 +381,14 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
 
         <?php
         if ($com_interna->getGuia() != "") { ?>
-
             <li>
                 <a data-toggle="tooltip" data-original-title="Num. Guia=<?php echo $com_interna->getGuia() ?>" href="<?php echo $com_interna->getEmpresaMensajeria()->getUrl() . $com_interna->getGuia() ?>" target="_blank">
                     <i class="entypo-newspaper"></i>
                     <span class="title">Seguimiento Guia</span>
                 </a>
             </li>
-
-
-
         <?php
         } ?>
     <?php
     } ?>
-
-
-
-
 </ul>

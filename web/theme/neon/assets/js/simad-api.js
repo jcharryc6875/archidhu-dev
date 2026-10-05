@@ -1057,7 +1057,7 @@ jQuery(document).ready(function ($) {
 			let controller = $(element).data("endpoint");
 			let method = $(element).data("method-type");
 			let submit_time = $(element).data("submit_time");
-			let customMessage = jQuery(this).data('message') || 'Sin embargo, puedes cancelarla si no estas seguro, tienes ' + submit_time + ' segundos.';
+			let customMessage = jQuery(element).data('message') || 'Sin embargo, puedes cancelarla si no estas seguro, tienes ' + submit_time + ' segundos.';
 
 			const confirmado = await $.mostrarConfirmacion(submit_time, customMessage);
 
@@ -2518,7 +2518,7 @@ jQuery(document).ready(function ($) {
 		} finally {
 			$.CloseLoadingStructData();
 		}
-	});	
+	});
 
 	// Funcion para abrir Modal Fancybox
 	// Parametros URL, Ancho, Alto

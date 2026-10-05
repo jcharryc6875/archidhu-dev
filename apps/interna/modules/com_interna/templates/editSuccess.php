@@ -96,11 +96,11 @@ use_helper('Object', 'jQuery', 'UserComponent');
         </div>
 
         <?php
-        echo component_user_multiple("paraUser","destinatarioId","cargousuarioId",array('url'=>'usuario_firma/selectUserSearching','coldivwidth' => 'col-sm-10', 'caption'=>'Destinatario<span class="ctrlreq">(*)</span>', 'buttontitle'=>'Buscar Destinatario','class'=>'form-control input-sm required strdestcom','values'=>$destinatarioId,'values_text'=>$destinatarioName,'values_cuid'=>$cargousuarioId,'option'=>1,'maximumSelectionSize'=>-1));
+        echo component_user_multiple("paraUser", "destinatarioId", "cargousuarioId", array('url' => 'usuario_firma/selectUserSearching', 'coldivwidth' => 'col-sm-10', 'caption' => 'Destinatario<span class="ctrlreq">(*)</span>', 'buttontitle' => 'Buscar Destinatario', 'class' => 'form-control input-sm required strdestcom', 'values' => $destinatarioId, 'values_text' => $destinatarioName, 'values_cuid' => $cargousuarioId, 'option' => 1, 'maximumSelectionSize' => -1));
         ?>
 
         <?php
-        echo component_user_multiple('copiaUser',"copiaInternaId","cargousuarioIdCopias",array('url'=>'usuario_firma/selectUserSearching','coldivwidth' => 'col-sm-10','caption'=>'Copias', 'buttontitle'=>'Asignar Copias','values'=>$copiaInternaId,'values_text'=>$copiaInternaName,'values_cuid'=>$cargousuarioIdCopias,'option'=>1,'maximumSelectionSize'=>-1));
+        echo component_user_multiple('copiaUser', "copiaInternaId", "cargousuarioIdCopias", array('url' => 'usuario_firma/selectUserSearching', 'coldivwidth' => 'col-sm-10', 'caption' => 'Copias', 'buttontitle' => 'Asignar Copias', 'values' => $copiaInternaId, 'values_text' => $copiaInternaName, 'values_cuid' => $cargousuarioIdCopias, 'option' => 1, 'maximumSelectionSize' => -1));
         ?>
 
         <div class="form-group">
@@ -388,11 +388,15 @@ use_helper('Object', 'jQuery', 'UserComponent');
                       echo input_hidden_tag('save_and_send', md5('save_and_send' . $currentUser));
                       echo submit_tag('Guardar Comunicaci&oacute;n', array('name' => 'save', 'value' => 'Guardar Comunicaci&oacute;n', 'class' => 'btn btn-success'));
                       echo "&nbsp;";
-						echo jq_submit_to_remote('save_and_send','Guardar y Enviar', array(
+                      echo jq_submit_to_remote(
+                        'save_and_send',
+                        'Guardar y Enviar',
+                        array(
                           'url'      => 'com_interna/update',
                           'loading'  => "javascript:jQuery.LoadingStructData();",
                           'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); if(response_value.status == 200){ toastr.success(response_value.message);setTimeout(function(){ document.location.reload(); }, 3000); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
-                        ),array('class'=>'btn btn-primary tooltip-primary','data-toggle'=>'tooltip', 'data-original-title'=>'Guardar los cambios de la comunicaci&oacute;n y enviar al siguiente usuario')
+                        ),
+                        array('class' => 'btn btn-primary tooltip-primary', 'data-toggle' => 'tooltip', 'data-original-title' => 'Guardar los cambios de la comunicaci&oacute;n y enviar al siguiente usuario')
                       );
                     }
                     ?>
@@ -402,15 +406,19 @@ use_helper('Object', 'jQuery', 'UserComponent');
                 echo input_hidden_tag('save_and_send', md5('save_and_send' . $currentUser));
                 echo submit_tag('Guardar Comunicaci&oacute;n', array('name' => 'save', 'value' => 'Guardar Comunicaci&oacute;n', 'class' => 'btn btn-success'));
                 echo "&nbsp;";
-				echo jq_submit_to_remote('save_and_send','Guardar y Enviar', array(
-                      'url'      => 'com_interna/update',
-                      //'with'     => "'qoper=".md5('savesend'.$currentUser.$com_interna->getPrimaryKey())."'",
-                      'loading'  => "javascript:jQuery.LoadingStructData();",
-                      'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); if(response_value.status == 200){ toastr.success(response_value.message);setTimeout(function(){ document.location.reload(); }, 3000); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
-                    ),array('class'=>'btn btn-primary tooltip-primary','data-toggle'=>'tooltip', 'data-original-title'=>'Guardar los cambios de la comunicaci&oacute;n y enviar al siguiente usuario')
-                  );
-                }
-			  ?>
+                echo jq_submit_to_remote(
+                  'save_and_send',
+                  'Guardar y Enviar',
+                  array(
+                    'url'      => 'com_interna/update',
+                    //'with'     => "'qoper=".md5('savesend'.$currentUser.$com_interna->getPrimaryKey())."'",
+                    'loading'  => "javascript:jQuery.LoadingStructData();",
+                    'complete' => 'try{ var response_value = JSON.parse(XMLHttpRequest.responseText);javascript:jQuery.CloseLoadingStructData(); if(response_value.status == 200){ toastr.success(response_value.message);setTimeout(function(){ document.location.reload(); }, 3000); }else{ toastr.error(response_value.message); } }catch(err) { javascript:jQuery.CloseLoadingStructData(); toastr.error(err.message); }',
+                  ),
+                  array('class' => 'btn btn-primary tooltip-primary', 'data-toggle' => 'tooltip', 'data-original-title' => 'Guardar los cambios de la comunicaci&oacute;n y enviar al siguiente usuario')
+                );
+              }
+              ?>
               <?php if ($user_asignado) { ?>
                 <div class="btn-group processreject dropdown">
                   <button type="button" class="btn btn-danger tooltip-primary dropdown-toggle" data-toggle="dropdown">
@@ -475,10 +483,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
       url: "<?php echo url_for('com_interna/dzFileUpload') ?>",
       // The configuration we've talked about above
       autoProcessQueue: true,
-      //uploadMultiple: true,
       addRemoveLinks: true,
-      //thumbnailWidth: 50,
-      //thumbnailHeight: 50,
       parallelUploads: 100,
       maxFiles: 100,
       timeout: 0,
