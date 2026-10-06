@@ -3229,6 +3229,15 @@ jQuery(document).ready(function ($) {
 		actualizarReqRespuesta(jQuery(this));
 	});
 
+	// Vista de detalle sin permiso: cierra la modal (fancybox) que la contiene o, si no esta en una, vuelve atras.
+	jQuery('body').on('click', '.sin-permiso-cerrar', function () {
+		if (window.parent && window.parent !== window && window.parent.jQuery && window.parent.jQuery.fancybox) {
+			window.parent.jQuery.fancybox.close();
+		} else {
+			window.history.back();
+		}
+	});
+
 	if (jQuery('#actoadminEtapaSortable').length && jQuery.fn.sortable) {
 		jQuery('#actoadminEtapaSortable').sortable({
 			items: 'tr',
