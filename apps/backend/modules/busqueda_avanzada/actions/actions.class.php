@@ -253,6 +253,7 @@ class busqueda_avanzadaActions extends sfActions
 			// Se consulta antes de abrir el cursor del reporte: con MARS desactivado la conexión
 			// no admite otra consulta mientras se leen las filas.
 			$dir_tmp = ParametroPeer::retrieveByPK(65)->getValortexto();
+			$publicUrl = sfConfig::get('publicUrl');
 			//*******************************************************************************************************
 			$filename = 'reporte_' . uniqid() . '_' . date('YmdGis') . '.xlsx';
 			$base_tmp = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . $dir_tmp;

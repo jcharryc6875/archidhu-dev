@@ -1884,7 +1884,7 @@ class ComInterna extends BaseComInterna
                 $soffice_cli = simad_util::libreOfficeCliPath();
                 //*******************************************************************************************************
                 $command = sprintf(
-                    '"' . $soffice_cli . '" --headless --convert-to pdf --outdir %s %s',
+                    '"' . $soffice_cli . '" --headless --convert-to pdf --outdir %s %s 2>&1',
                     escapeshellarg(dirname($pathToSave)),
                     escapeshellarg($docxSalida)
                 );
