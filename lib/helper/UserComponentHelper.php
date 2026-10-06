@@ -19,18 +19,18 @@
  * 'values_cuid'        cargo usuario id for default values select
  * 'url'                solo url interna eje: usuario_firma/list
  */
- 
-function component_user_multiple($element_id, $idhidenuser,$idhiddencargo,$options = array())
-{   $path_theme = sfConfig::get('theme_simad');
+
+function component_user_multiple($element_id, $idhidenuser, $idhiddencargo, $options = array())
+{
+    $path_theme = sfConfig::get('theme_simad');
     $base_path = sfConfig::get('base_simad');
-	$mod_comun = "/comun.php";
-	$base_url = $base_path.$mod_comun;
+    $mod_comun = "/comun.php";
+    $base_url = $base_path . $mod_comun;
     //***************************************************************************************
-    if (!is_array($options)){
-       $options = array($options);
+    if (!is_array($options)) {
+        $options = array($options);
     }
     //***************************************************************************************
-    //echo count(preg_split("/[,]+/",$options['values_cuid'], null, PREG_SPLIT_NO_EMPTY));
     $caption = isset($options['caption']) ? $options['caption'] : 'Copia';
     $placeholder = isset($options['placeholder']) ? $options['placeholder'] : 'Digite nombre usuario';
     $class = isset($options['class']) ? $options['class'] : 'form-control input-sm sl';
@@ -38,83 +38,73 @@ function component_user_multiple($element_id, $idhidenuser,$idhiddencargo,$optio
     $buttontitle = isset($options['buttontitle']) ? $options['buttontitle'] : "Buscar";
     $maximumSelectionSize = isset($options['maximumSelectionSize']) ? $options['maximumSelectionSize'] : -1;
     $ismultiple = isset($options['ismultiple']) ? $options['ismultiple'] : 1;
-    $values_uid = isset($options['values']) ? preg_split("/[,]+/",$options['values'], -1, PREG_SPLIT_NO_EMPTY) : array();
-    $values_text = isset($options['values_text']) ? preg_split("/[,]+/",$options['values_text'], -1, PREG_SPLIT_NO_EMPTY) : array();
-    $values_cuid = isset($options['values_cuid']) ? preg_split("/[,]+/",$options['values_cuid'], -1, PREG_SPLIT_NO_EMPTY) : array();
-    //$values = isset($options['values']) ? preg_split("/[,]+/",$options['values'], -1, PREG_SPLIT_NO_EMPTY) : array();
-    $full_url = isset($options['url']) ? $base_url.'/'.$options['url'].'?opcion='.$option : $base_url.'/usuario_firma/selectUserActive?opcion='.$option;
+    $values_uid = isset($options['values']) ? preg_split("/[,]+/", $options['values'], -1, PREG_SPLIT_NO_EMPTY) : array();
+    $values_text = isset($options['values_text']) ? preg_split("/[,]+/", $options['values_text'], -1, PREG_SPLIT_NO_EMPTY) : array();
+    $values_cuid = isset($options['values_cuid']) ? preg_split("/[,]+/", $options['values_cuid'], -1, PREG_SPLIT_NO_EMPTY) : array();
+    $full_url = isset($options['url']) ? $base_url . '/' . $options['url'] . '?opcion=' . $option : $base_url . '/usuario_firma/selectUserActive?opcion=' . $option;
     $coldivwidth = isset($options['coldivwidth']) ? $options['coldivwidth'] : "col-sm-8";
-	$toptext = isset($options['toptext']) ? $options['toptext'] : 0;
-    $autfirma = isset($options['autfirma']) ? '&autfirma='.$options['autfirma'] : '&autfirma=0';
-    $modulo_id = isset($options['modulo_id']) ? '&modulo_id='.$options['modulo_id'] : '&modulo_id=0';
-    //$full_url = isset($options['addquery']) ? $full_url.'&'.$options['addquery'] : $full_url;
-    $addquery = isset($options['addquery']) ? '&'.$options['addquery'] : "";
+    $toptext = isset($options['toptext']) ? $options['toptext'] : 0;
+    $autfirma = isset($options['autfirma']) ? '&autfirma=' . $options['autfirma'] : '&autfirma=0';
+    $modulo_id = isset($options['modulo_id']) ? '&modulo_id=' . $options['modulo_id'] : '&modulo_id=0';
+    $addquery = isset($options['addquery']) ? '&' . $options['addquery'] : "";
     $form_group = isset($options['formgroup']) ? $options['formgroup'] : true;
-    //$full_url = isset($options['bytipoprocesocom']) ? $full_url.'&bytipoprocesocom='.trim($options['bytipoprocesocom']) : $full_url;
-    $bytipoprocesocom = isset($options['bytipoprocesocom']) ? '&bytipoprocesocom='.trim($options['bytipoprocesocom']) : "";
-    $byfilterdep = isset($options['byfilterdep']) ? '&byfilterdep='.trim($options['byfilterdep']) : "";
-    $advquery = $addquery.$bytipoprocesocom.$byfilterdep.$autfirma.$modulo_id;
-    $full_url = isset($advquery) ? $full_url.$advquery : $full_url;
-    //***************************************************************************************
-    /*$serach_filter = sfContext::getInstance()->getUser()->getAttribute('form_option');
-    if(md5('frmsearch1') == $serach_filter){
-        $full_url = $full_url.'&'.base64_encode('frmsearch1').'='.$serach_filter;
-        sfContext::getInstance()->getUser()->setAttribute('form_option',md5('none'));
-    }*/
+    $bytipoprocesocom = isset($options['bytipoprocesocom']) ? '&bytipoprocesocom=' . trim($options['bytipoprocesocom']) : "";
+    $byfilterdep = isset($options['byfilterdep']) ? '&byfilterdep=' . trim($options['byfilterdep']) : "";
+    $byallusers = isset($options[trim(SED::encryption('alluser'))]) ? '&' . SED::encryption('alluser') . '=true' : "";
+    $advquery = $addquery . $bytipoprocesocom . $byfilterdep . $autfirma . $modulo_id . $byallusers;
+    $full_url = isset($advquery) ? $full_url . $advquery : $full_url;
     //***************************************************************************************
     $term_list = null;
-    for($i=0; $i < count($values_uid); $i++)
-    {
-        //$cargo_usuario = UsuarioPeer::getUserAndCargoById($values_cuid[$i]);
+    for ($i = 0; $i < count($values_uid); $i++) {
         $cargo_usuario = CargoUsuarioPeer::retrieveByPK($values_cuid[$i]);
-        $cargo_text = trim($cargo_usuario) ? " - ".(trim($cargo_usuario->getCargo())) : "";
-        
-        if(!empty($cargo_usuario)){
-			$img = sfConfig::get('base_simad').$cargo_usuario->getUsuario()->getRutaFoto() ? $cargo_usuario->getUsuario()->getRutaFoto() : sfConfig::get('base_simad').'/images/simad/ico_logo_users.png';
-		}else{
-			$img = sfConfig::get('base_simad').'/images/simad/ico_logo_users.png';
-		}
+        $cargo_text = trim($cargo_usuario) ? " - " . (trim($cargo_usuario->getCargo())) : "";
 
-        if(trim($values_uid[$i])){
-            $term_list[] = array("id" => $values_uid[$i], "text" => ($values_text[$i]).$cargo_text, "cid" => (count($values_cuid) ? trim($values_cuid[$i]) : null), "img" => $img);
+        if (!empty($cargo_usuario)) {
+            $img = sfConfig::get('base_simad') . $cargo_usuario->getUsuario()->getRutaFoto() ? $cargo_usuario->getUsuario()->getRutaFoto() : sfConfig::get('base_simad') . '/images/simad/ico_logo_users.png';
+        } else {
+            $img = sfConfig::get('base_simad') . '/images/simad/ico_logo_users.png';
+        }
+
+        if (trim($values_uid[$i])) {
+            $term_list[] = array("id" => $values_uid[$i], "text" => ($values_text[$i]) . $cargo_text, "cid" => (count($values_cuid) ? trim($values_cuid[$i]) : null), "img" => $img);
         }
     }
     $data_json = json_encode($term_list);
     //***************************************************************************************
-	if($toptext){
-		$html = '  
+    if ($toptext) {
+        $html = '  
 		<div class="row">
-			<div class="'.$coldivwidth.'">
+			<div class="' . $coldivwidth . '">
 				<div class="form-group">
-					<label for="lb'.$element_id.'" class="control-label">'.$caption.':</label>
+					<label for="lb' . $element_id . '" class="control-label">' . $caption . ':</label>
 					<div class="input-group">
 						<span class="input-group-addon"><i class="entypo-user"></i></span>
-						<input type="hidden" name="'.$element_id.'" id="'.$element_id.'" class="'.$class.'" placeholder="'.$placeholder.'" style="width: 100%;" />
+						<input type="hidden" name="' . $element_id . '" id="' . $element_id . '" class="' . $class . '" placeholder="' . $placeholder . '" style="width: 100%;" />
 						<div class="input-group-btn">
-							<button type="button" name="e2_cl'.$element_id.'" id="e2_cl'.$element_id.'" class="btn btn-primary btn-sm">'.$buttontitle.'</button>
-							<button id="e8_cl'.$element_id.'" name="e8_cl'.$element_id.'" type="button" class="btn btn-default btn-sm"><i class="entypo-cancel-circled"></i></button>              
+							<button type="button" name="e2_cl' . $element_id . '" id="e2_cl' . $element_id . '" class="btn btn-primary btn-sm">' . $buttontitle . '</button>
+							<button id="e8_cl' . $element_id . '" name="e8_cl' . $element_id . '" type="button" class="btn btn-default btn-sm"><i class="entypo-cancel-circled"></i></button>              
                         </div>
 					</div>
 				</div>
 			</div>
 		</div>';
-	}else{
-		$html = $form_group ? '<div class="form-group">' : '';
-		$html .= '
-		  <label for="lb'.$element_id.'" class="col-sm-1 control-label">'.$caption.':</label>
-		  <div class="'.$coldivwidth.'">
+    } else {
+        $html = $form_group ? '<div class="form-group">' : '';
+        $html .= '
+		  <label for="lb' . $element_id . '" class="col-sm-1 control-label">' . $caption . ':</label>
+		  <div class="' . $coldivwidth . '">
 			<div class="input-group">
 				<span class="input-group-addon"><i class="entypo-user"></i></span>
-				<input type="hidden" name="'.$element_id.'" id="'.$element_id.'" class="'.$class.'" placeholder="'.$placeholder.'" style="width: 100%;" />
+				<input type="hidden" name="' . $element_id . '" id="' . $element_id . '" class="' . $class . '" placeholder="' . $placeholder . '" style="width: 100%;" />
 				<div class="input-group-btn">
-				  <button type="button" name="e2_cl'.$element_id.'" id="e2_cl'.$element_id.'" class="btn btn-primary btn-sm">'.$buttontitle.'</button>
-				  <button id="e8_cl'.$element_id.'" name="e8_cl'.$element_id.'" type="button" class="btn btn-default btn-sm"><i class="entypo-cancel-circled"></i></button>              
+				  <button type="button" name="e2_cl' . $element_id . '" id="e2_cl' . $element_id . '" class="btn btn-primary btn-sm">' . $buttontitle . '</button>
+				  <button id="e8_cl' . $element_id . '" name="e8_cl' . $element_id . '" type="button" class="btn btn-default btn-sm"><i class="entypo-cancel-circled"></i></button>              
 				</div>
 			</div>
 		  </div>';
         $html .= $form_group ? '</div>' : '';
     }
-	
+
     $result = <<<EOM
         jQuery(document).ready(function(){
             jQuery("#$element_id").select2('data', $data_json).trigger("change");
@@ -213,23 +203,24 @@ EOM;
  * 'dictResponseError'  dictResponseError
  * 'acceptedFiles'      acceptedFiles
  */
- 
+
 function component_upload_file($options = array(), $values_text = "", $stored_input = "ruta", $element_id = "myDrop")
-{   $path_theme = sfConfig::get('theme_simad');
+{
+    $path_theme = sfConfig::get('theme_simad');
     $base_path = sfConfig::get('base_simad');
-    $app_config = sfConfig::get('sf_config_dir').DIRECTORY_SEPARATOR."app.ini";
+    $app_config = sfConfig::get('sf_config_dir') . DIRECTORY_SEPARATOR . "app.ini";
     //***************************************************************************************
     $acceptedFiles = null;
-    if(file_exists($app_config)){
+    if (file_exists($app_config)) {
         $ini_array = parse_ini_file($app_config);
         $acceptedFiles = $ini_array['mtypes'];
     }
     //***************************************************************************************
-    if (!is_array($options)){
-       $options = array($options);
+    if (!is_array($options)) {
+        $options = array($options);
     }
     //***************************************************************************************    
-    $values_text = isset($options['values_text']) ? preg_split("/[,]+/",$options['values_text'], -1, PREG_SPLIT_NO_EMPTY) : array();
+    $values_text = isset($options['values_text']) ? preg_split("/[,]+/", $options['values_text'], -1, PREG_SPLIT_NO_EMPTY) : array();
     $url_upload = isset($options['url']) ? url_for(trim($options['url'])) : "";
     $autoProcessQueue = isset($options['autoProcessQueue']) ? $options['autoProcessQueue'] : "true";
     $uploadMultiple = isset($options['uploadMultiple']) ? $options['uploadMultiple'] : "false";
@@ -247,13 +238,13 @@ function component_upload_file($options = array(), $values_text = "", $stored_in
     $int_maxupload = preg_replace('/[^0-9]/', '', $max_upload);
     //***************************************************************************************
     $html = '
-    <input type="hidden" id="'.$stored_input.'" name="'.$stored_input.'" value="'.implode(",",$values_text).'" />
-    <div class="dropzone dz-clickable dz-default dz-file-preview" id="'.$element_id.'" multiple="multiple" >
+    <input type="hidden" id="' . $stored_input . '" name="' . $stored_input . '" value="' . implode(",", $values_text) . '" />
+    <div class="dropzone dz-clickable dz-default dz-file-preview" id="' . $element_id . '" multiple="multiple" >
         <div class="dz-message">
-            <h2><i class="glyphicon glyphicon-cloud-upload"></i><br/>Arrastre archivos aqui!</h2>o haga clic para seleccionar ('.$max_upload.')
+            <h2><i class="glyphicon glyphicon-cloud-upload"></i><br/>Arrastre archivos aqui!</h2>o haga clic para seleccionar (' . $max_upload . ')
         </div>
     </div>';
-    
+
     $result = <<<EOM
         jQuery(document).ready(function(){
             Dropzone.options.myAwesomeDropzone = false;
@@ -307,4 +298,3 @@ EOM;
     $html .= javascript_tag($result);
     return $html;
 }
-?>

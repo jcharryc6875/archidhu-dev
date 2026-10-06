@@ -15,11 +15,11 @@
 class usuario_firmaActions extends sfActions
 {
   public function preExecute()
-  {    
+  {
     $isAuthenticated = $this->getUser()->isAuthenticated();
     $base_path = sfConfig::get('base_simad');
-    if(!$isAuthenticated){
-      $this->redirect($base_path."/backend.php/security/login");
+    if (!$isAuthenticated) {
+      $this->redirect($base_path . "/backend.php/security/login");
     }
   }
 
@@ -27,32 +27,32 @@ class usuario_firmaActions extends sfActions
   {
     return $this->forward('usuario_firma', 'list');
   }
-  
+
   public function executeList()
-  {    
+  {
     $pager = new sfPropelPager('CargoUsuario', 10);
     //$pager->setPeerMethod('doSelectJoinUsuario');
-    $pager->setCriteria($this->getCriteriaBasic());        
+    $pager->setCriteria($this->getCriteriaBasic());
     $pager->setPage($this->getRequestParameter('page', 1));
     $pager->init();
-    $this->pager = $pager;              
+    $this->pager = $pager;
   }
-  
+
   public function executeSelectAllUser()
   {
     $c = new Criteria();
-	  $c->setLimit(50);
+    $c->setLimit(50);
     $c = $this->getCriteriaBasic();
     //************************************************************************************************/
-	  $c->addJoin(CargoUsuarioPeer::CARGO_ID,CargoPeer::CARGO_ID,Criteria::INNER_JOIN);
-	  //************************************************************************************************/
+    $c->addJoin(CargoUsuarioPeer::CARGO_ID, CargoPeer::CARGO_ID, Criteria::INNER_JOIN);
+    //************************************************************************************************/
     $c->clearSelectColumns();
-    $c->addSelectColumn(CargoUsuarioPeer::USUARIO_ID);//1
-    $c->addSelectColumn(CargoUsuarioPeer::CARGOUSUARIO_ID);//2
-    $c->addSelectColumn(UsuarioPeer::NOMBRE);//3
-    $c->addSelectColumn(UsuarioPeer::APELLIDO);//4
-    $c->addSelectColumn(UsuarioPeer::RUTA_FOTO);//5
-    $c->addSelectColumn(CargoPeer::DESCRIPCION);//6
+    $c->addSelectColumn(CargoUsuarioPeer::USUARIO_ID); //1
+    $c->addSelectColumn(CargoUsuarioPeer::CARGOUSUARIO_ID); //2
+    $c->addSelectColumn(UsuarioPeer::NOMBRE); //3
+    $c->addSelectColumn(UsuarioPeer::APELLIDO); //4
+    $c->addSelectColumn(UsuarioPeer::RUTA_FOTO); //5
+    $c->addSelectColumn(CargoPeer::DESCRIPCION); //6
     //************************************************************************************************/
     $resultset = CargoUsuarioPeer::doSelectStmt($c);
     //************************************************************************************************/
@@ -62,25 +62,25 @@ class usuario_firmaActions extends sfActions
     $main_data = array();
     $term_list = array();
     //************************************************************************************************/
-	  while($list_data = $resultset->fetch()){
-      $cargo_text = " - ".utf8_encode($list_data[5]);
+    while ($list_data = $resultset->fetch()) {
+      $cargo_text = " - " . utf8_encode($list_data[5]);
       $users_ids[] =  $list_data[0];
       $cusers_ids[] =  $list_data[1];
-      $nombre_cargo = ($list_data[2]." ".$list_data[3]).$cargo_text;
+      $nombre_cargo = ($list_data[2] . " " . $list_data[3]) . $cargo_text;
       $users_text[] = utf8_encode($nombre_cargo);
-      $img = sfConfig::get('base_simad').$list_data[4] ? $list_data[4] : sfConfig::get('base_simad').'/images/simad/ico_logo_users.png';
-      $term_list[] = array("cid" => $list_data[1],"id" => $list_data[0], "text" => utf8_encode($nombre_cargo), "img" => $img);
+      $img = sfConfig::get('base_simad') . $list_data[4] ? $list_data[4] : sfConfig::get('base_simad') . '/images/simad/ico_logo_users.png';
+      $term_list[] = array("cid" => $list_data[1], "id" => $list_data[0], "text" => utf8_encode($nombre_cargo), "img" => $img);
     }
     //************************************************************************************************/
-    $main_data['id'] = implode(",",$users_ids);
-    $main_data['cid'] = implode(",",$cusers_ids);
-    $main_data['utext'] = implode(",",$users_text);
+    $main_data['id'] = implode(",", $users_ids);
+    $main_data['cid'] = implode(",", $cusers_ids);
+    $main_data['utext'] = implode(",", $users_text);
     $data_json = json_encode($term_list);
     //************************************************************************************************/
-    $this->getResponse()->setContentType('application/json');      
+    $this->getResponse()->setContentType('application/json');
     return $this->renderText($data_json);
   }
-  
+
   public function executeSelectUserActive()
   {
     $usuario_conectado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
@@ -93,59 +93,58 @@ class usuario_firmaActions extends sfActions
     $isAuthenticated = $this->getUser()->isAuthenticated();
     //**********************************************************************************************        
     $this->parametros = '';
-    $this->parametros .= "&campoText=" .$this->campoText=$this->getRequestParameter('campoText');
-    $this->parametros .= "&campoId=" .$this->campoId=$this->getRequestParameter('campoId');
-    $this->parametros .= "&opcion=" .$this->opcion = $this->getRequestParameter('opcion');
-    $this->parametros .= "&bydependencia=" .$this->opcion = $this->getRequestParameter('bydependencia');
-    $this->parametros .= "&bytipoprocesocom=" .$this->bytipoprocesocom = trim($this->getRequestParameter('bytipoprocesocom'));
+    $this->parametros .= "&campoText=" . $this->campoText = $this->getRequestParameter('campoText');
+    $this->parametros .= "&campoId=" . $this->campoId = $this->getRequestParameter('campoId');
+    $this->parametros .= "&opcion=" . $this->opcion = $this->getRequestParameter('opcion');
+    $this->parametros .= "&bydependencia=" . $this->opcion = $this->getRequestParameter('bydependencia');
+    $this->parametros .= "&bytipoprocesocom=" . $this->bytipoprocesocom = trim($this->getRequestParameter('bytipoprocesocom'));
     $modulo_id = $this->getRequestParameter('modulo_id');
     //**********************************************************************************************
-    if($this->getRequestParameter('cargoId')){
-      $this->parametros .= "&cargoId=" .$this->cargoId = $this->getRequestParameter('cargoId');
+    if ($this->getRequestParameter('cargoId')) {
+      $this->parametros .= "&cargoId=" . $this->cargoId = $this->getRequestParameter('cargoId');
     }
     //**********************************************************************************************
     $c = new Criteria();
     $c->setDistinct();
-	  $c->setLimit(50);
+    $c->setLimit(50);
     //**********************************************************************************************
     $query = $_GET['q'];
-    if (trim($query))
-    {
-        //$query = str_replace(" ",'%',$query);
-        $c1 = $c->getNewCriterion(UsuarioPeer::NOMBRE,'%'.$query.'%',Criteria::LIKE);
-        $c2 = $c->getNewCriterion(UsuarioPeer::APELLIDO,'%'.$query.'%',Criteria::LIKE);
-        $c1->addOr($c2);
-        $c->add($c1);        
-        $this->parametros .= "&nombre=" . $query;
+    if (trim($query)) {
+      //$query = str_replace(" ",'%',$query);
+      $c1 = $c->getNewCriterion(UsuarioPeer::NOMBRE, '%' . $query . '%', Criteria::LIKE);
+      $c2 = $c->getNewCriterion(UsuarioPeer::APELLIDO, '%' . $query . '%', Criteria::LIKE);
+      $c1->addOr($c2);
+      $c->add($c1);
+      $this->parametros .= "&nombre=" . $query;
     }
     //**********************************************************************************************
-    if(!$listuserxent){//si no puede listar en los selects usuarios de todas las regionales
-        if($listuserxreg){
-            $c->addJoin(UsuarioPeer::REGIONAL_ID, RegionalPeer::REGIONAL_ID);
-            $c->add(RegionalPeer::ENTIDAD_ID,$entidad_conectado);  
-        }else{
-            $c->add(UsuarioPeer::REGIONAL_ID,$regional_conectado);
-        }
+    if (!$listuserxent) { //si no puede listar en los selects usuarios de todas las regionales
+      if ($listuserxreg) {
+        $c->addJoin(UsuarioPeer::REGIONAL_ID, RegionalPeer::REGIONAL_ID);
+        $c->add(RegionalPeer::ENTIDAD_ID, $entidad_conectado);
+      } else {
+        $c->add(UsuarioPeer::REGIONAL_ID, $regional_conectado);
+      }
     }
     //**********************************************************************************************
-    $c->add(CargoUsuarioPeer::ES_ACTUAL,1);
+    $c->add(CargoUsuarioPeer::ES_ACTUAL, 1);
     //**********************************************************************************************
-    if(!trim($this->getRequestParameter(md5('alluser')))) { 
-      $c->add(UsuarioPeer::ESTADOUSUARIO_ID,array(1,3),Criteria::IN);
+    if (!trim($this->getRequestParameter(md5('alluser')))) {
+      $c->add(UsuarioPeer::ESTADOUSUARIO_ID, array(1, 3), Criteria::IN);
     }
     //**********************************************************************************************
     $c->addAscendingOrderByColumn(UsuarioPeer::NOMBRE);
     //**********************************************************************************************
-    $c->addJoin(CargoUsuarioPeer::USUARIO_ID,UsuarioPeer::USUARIO_ID);
-    $c->addJoin(CargoUsuarioPeer::CARGO_ID,CargoPeer::CARGO_ID);
+    $c->addJoin(CargoUsuarioPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID);
+    $c->addJoin(CargoUsuarioPeer::CARGO_ID, CargoPeer::CARGO_ID);
     //**********************************************************************************************
     $c->clearSelectColumns();
-    $c->addSelectColumn(CargoUsuarioPeer::USUARIO_ID);//0
-    $c->addSelectColumn(CargoUsuarioPeer::CARGOUSUARIO_ID);//1
-    $c->addSelectColumn(UsuarioPeer::NOMBRE);//2
-    $c->addSelectColumn(UsuarioPeer::APELLIDO);//3
-    $c->addSelectColumn(CargoPeer::DESCRIPCION);//4
-    $c->addSelectColumn(UsuarioPeer::RUTA_FOTO);//5
+    $c->addSelectColumn(CargoUsuarioPeer::USUARIO_ID); //0
+    $c->addSelectColumn(CargoUsuarioPeer::CARGOUSUARIO_ID); //1
+    $c->addSelectColumn(UsuarioPeer::NOMBRE); //2
+    $c->addSelectColumn(UsuarioPeer::APELLIDO); //3
+    $c->addSelectColumn(CargoPeer::DESCRIPCION); //4
+    $c->addSelectColumn(UsuarioPeer::RUTA_FOTO); //5
     //**********************************************************************************************
     $resultset = CargoUsuarioPeer::doSelectStmt($c);
     //**********************************************************************************************
@@ -155,20 +154,20 @@ class usuario_firmaActions extends sfActions
     $main_data = array();
     $term_list = array();
     //**********************************************************************************************
-    while($list_data = $resultset->fetch()){
-        $cargo_text = " - ".$list_data[4];
-        $text_name = ($list_data[2]." ".$list_data[3]).$cargo_text;
-        $cuserid = $list_data[1];
-        $img = sfConfig::get('base_simad').$list_data[5] ? $list_data[5] : sfConfig::get('base_simad').'/images/simad/ico_logo_users.png';
-        $term_list[] = array("id" => $list_data[0], "text" => utf8_encode($text_name), "cid" => $cuserid, "img" => $img);
+    while ($list_data = $resultset->fetch()) {
+      $cargo_text = " - " . $list_data[4];
+      $text_name = ($list_data[2] . " " . $list_data[3]) . $cargo_text;
+      $cuserid = $list_data[1];
+      $img = sfConfig::get('base_simad') . $list_data[5] ? $list_data[5] : sfConfig::get('base_simad') . '/images/simad/ico_logo_users.png';
+      $term_list[] = array("id" => $list_data[0], "text" => utf8_encode($text_name), "cid" => $cuserid, "img" => $img);
     }
     //**********************************************************************************************
     $data_json = json_encode($term_list);
     //**********************************************************************************************
-    $this->getResponse()->setContentType('application/json');      
+    $this->getResponse()->setContentType('application/json');
     return $this->renderText($data_json);
   }
-  
+
   public function executeSelectUserSearching()
   {
     $usuario_conectado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
@@ -179,87 +178,86 @@ class usuario_firmaActions extends sfActions
     $listuserxent = $this->getUser()->checkPerm('SELECT_USUARIOS_TODAS_ENTIDADES', $usuario_conectado);
     //**********************************************************************************************
     $isAuthenticated = $this->getUser()->isAuthenticated();
-    if(!$isAuthenticated){ return null; }
+    if (!$isAuthenticated) {
+      return null;
+    }
     //**********************************************************************************************        
     $this->parametros = '';
-    $this->parametros .= "&campoText=" .$this->campoText=$this->getRequestParameter('campoText');
-    $this->parametros .= "&campoId=" .$this->campoId=$this->getRequestParameter('campoId');
-    $this->parametros .= "&opcion=" .$this->opcion = $this->getRequestParameter('opcion');
-    $this->parametros .= "&bydependencia=" .$this->opcion = $this->getRequestParameter('bydependencia');
-    $this->parametros .= "&bytipoprocesocom=" .$this->bytipoprocesocom = trim($this->getRequestParameter('bytipoprocesocom'));
-    $this->parametros .= "&byfilterdep=" .$this->byfilterdep = trim($this->getRequestParameter('byfilterdep'));
+    $this->parametros .= "&campoText=" . $this->campoText = $this->getRequestParameter('campoText');
+    $this->parametros .= "&campoId=" . $this->campoId = $this->getRequestParameter('campoId');
+    $this->parametros .= "&opcion=" . $this->opcion = $this->getRequestParameter('opcion');
+    $this->parametros .= "&bydependencia=" . $this->opcion = $this->getRequestParameter('bydependencia');
+    $this->parametros .= "&bytipoprocesocom=" . $this->bytipoprocesocom = trim($this->getRequestParameter('bytipoprocesocom'));
+    $this->parametros .= "&byfilterdep=" . $this->byfilterdep = trim($this->getRequestParameter('byfilterdep'));
     $modulo_id = $this->getRequestParameter('modulo_id');
     //**********************************************************************************************
-    if($this->getRequestParameter('cargoId')){
-      $this->parametros .= "&cargoId=" .$this->cargoId = $this->getRequestParameter('cargoId');
+    if ($this->getRequestParameter('cargoId')) {
+      $this->parametros .= "&cargoId=" . $this->cargoId = $this->getRequestParameter('cargoId');
     }
     //**********************************************************************************************
     $c = new Criteria();
     $c->setDistinct();
     $c->setLimit(50);
     //**********************************************************************************************
-    $c->addJoin(CargoUsuarioPeer::USUARIO_ID,UsuarioPeer::USUARIO_ID);
-    $c->addJoin(CargoUsuarioPeer::CARGO_ID,CargoPeer::CARGO_ID);
+    $c->addJoin(CargoUsuarioPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID);
+    $c->addJoin(CargoUsuarioPeer::CARGO_ID, CargoPeer::CARGO_ID);
     //**********************************************************************************************
-    if($this->bytipoprocesocom){
-      $c->addJoin(UsuarioPeer::USUARIO_ID,UsuarioProcesocomPeer::USUARIO_ID);
-      $c->add(UsuarioProcesocomPeer::TIPOPROCESOCOM_ID,$this->bytipoprocesocom);
+    if ($this->bytipoprocesocom) {
+      $c->addJoin(UsuarioPeer::USUARIO_ID, UsuarioProcesocomPeer::USUARIO_ID);
+      $c->add(UsuarioProcesocomPeer::TIPOPROCESOCOM_ID, $this->bytipoprocesocom);
     }
     //**********************************************************************************************
-    if($this->byfilterdep){
+    if ($this->byfilterdep) {
       $dependencia_origen = SED::decryption($this->byfilterdep);
-      $c->add(UsuarioPeer::DEPENDENCIA_ID,$dependencia_origen);
+      $c->add(UsuarioPeer::DEPENDENCIA_ID, $dependencia_origen);
     }
     //**********************************************************************************************
     $query = $_GET['q'];
     $bydependencia = isset($_GET['bydependencia']) ? ($_GET['bydependencia'] == md5('searchbydep') ? 1 : 0) : 0;
-    if (trim($query)){
-      if(!$bydependencia){
-        $c1 = $c->getNewCriterion(UsuarioPeer::NOMBRE,'%'.$query.'%',Criteria::LIKE);
-        $c2 = $c->getNewCriterion(UsuarioPeer::APELLIDO,'%'.$query.'%',Criteria::LIKE);
+    if (trim($query)) {
+      if (!$bydependencia) {
+        $c1 = $c->getNewCriterion(UsuarioPeer::NOMBRE, '%' . $query . '%', Criteria::LIKE);
+        $c2 = $c->getNewCriterion(UsuarioPeer::APELLIDO, '%' . $query . '%', Criteria::LIKE);
         $c1->addOr($c2);
         $c->add($c1);
-      }else{
-        $c->addJoin(UsuarioPeer::DEPENDENCIA_ID,DependenciaPeer::DEPENDENCIA_ID);
-        $c1 = $c->getNewCriterion(DependenciaPeer::NOMBRE,'%'.$query.'%',Criteria::LIKE);
-        $c2 = $c->getNewCriterion(DependenciaPeer::CODIGO,'%'.$query.'%',Criteria::LIKE);
+      } else {
+        $c->addJoin(UsuarioPeer::DEPENDENCIA_ID, DependenciaPeer::DEPENDENCIA_ID);
+        $c1 = $c->getNewCriterion(DependenciaPeer::NOMBRE, '%' . $query . '%', Criteria::LIKE);
+        $c2 = $c->getNewCriterion(DependenciaPeer::CODIGO, '%' . $query . '%', Criteria::LIKE);
         $c1->addOr($c2);
         $c->add($c1);
       }
       $this->parametros .= "&nombre=" . $query;
     }
     //**********************************************************************************************
-    if(!$listuserxent){//si no puede listar en los selects usuarios de todas las regionales
-      if($listuserxreg){
+    if (!$listuserxent) { //si no puede listar en los selects usuarios de todas las regionales
+      if ($listuserxreg) {
         $c->addJoin(UsuarioPeer::REGIONAL_ID, RegionalPeer::REGIONAL_ID);
-        $c->add(RegionalPeer::ENTIDAD_ID,$entidad_conectado);
-      }else{
-        $c->add(UsuarioPeer::REGIONAL_ID,$regional_conectado);
+        $c->add(RegionalPeer::ENTIDAD_ID, $entidad_conectado);
+      } else {
+        $c->add(UsuarioPeer::REGIONAL_ID, $regional_conectado);
       }
     }
     //**********************************************************************************************
-    $serach_filter = $this->getUser()->getAttribute('form_option');
-    //**********************************************************************************************
-    if(md5('frmsearch1') == $serach_filter){
-      $c->add(UsuarioPeer::ESTADOUSUARIO_ID,null,Criteria::ISNOTNULL);
-    }else{
-      $c->add(UsuarioPeer::ESTADOUSUARIO_ID,array(1,3),Criteria::IN);
+    $c->add(CargoUsuarioPeer::ES_ACTUAL, 1);
+    if (!trim($this->getRequestParameter(SED::encryption('alluser')))) {
+      $c->add(UsuarioPeer::ESTADOUSUARIO_ID, array(1, 3), Criteria::IN);
     }
     //**********************************************************************************************
-    $c->add(CargoUsuarioPeer::ES_ACTUAL,1);
+    $c->add(CargoUsuarioPeer::ES_ACTUAL, 1);
     $c->addAscendingOrderByColumn(UsuarioPeer::NOMBRE);
     //**********************************************************************************************
     $c->clearSelectColumns();
-    $c->addSelectColumn(CargoUsuarioPeer::USUARIO_ID);//0
-    $c->addSelectColumn(CargoUsuarioPeer::CARGOUSUARIO_ID);//1
-    $c->addSelectColumn(UsuarioPeer::NOMBRE);//2
-    $c->addSelectColumn(UsuarioPeer::APELLIDO);//3
-    $c->addSelectColumn(CargoPeer::DESCRIPCION);//4
-    $c->addSelectColumn(UsuarioPeer::RUTA_FOTO);//5
+    $c->addSelectColumn(CargoUsuarioPeer::USUARIO_ID); //0
+    $c->addSelectColumn(CargoUsuarioPeer::CARGOUSUARIO_ID); //1
+    $c->addSelectColumn(UsuarioPeer::NOMBRE); //2
+    $c->addSelectColumn(UsuarioPeer::APELLIDO); //3
+    $c->addSelectColumn(CargoPeer::DESCRIPCION); //4
+    $c->addSelectColumn(UsuarioPeer::RUTA_FOTO); //5
     //**********************************************************************************************
-    if($bydependencia){
-      $c->addSelectColumn(DependenciaPeer::CODIGO);//6
-      $c->addSelectColumn(DependenciaPeer::NOMBRE);//7
+    if ($bydependencia) {
+      $c->addSelectColumn(DependenciaPeer::CODIGO); //6
+      $c->addSelectColumn(DependenciaPeer::NOMBRE); //7
     }
     //**********************************************************************************************
     $resultset = CargoUsuarioPeer::doSelectStmt($c);
@@ -270,103 +268,107 @@ class usuario_firmaActions extends sfActions
     $main_data = array();
     $term_list = array();
     //**********************************************************************************************
-	  while($list_data = $resultset->fetch()){
-        if(!$bydependencia){
-          $cargo_text = " - ".($list_data[4]);
-          $text_name = ($list_data[2]." ".$list_data[3]).$cargo_text;
-        }else{
-          $text_name = ($list_data[6]." - ".$list_data[7]);
-        }
-        //******************************************************************************************
-        $cuserid = $list_data[1];
-        $avatar =  sfConfig::get('base_simad').$list_data[5] ? $list_data[5] : sfConfig::get('base_simad').'/images/simad/ico_logo_users.png';
-        $term_list[] = array("id" => $list_data[0], "text" => htmlentities($text_name), "cid" => $cuserid,"img" => $avatar);
+    while ($list_data = $resultset->fetch()) {
+      if (!$bydependencia) {
+        $cargo_text = " - " . ($list_data[4]);
+        $text_name = ($list_data[2] . " " . $list_data[3]) . $cargo_text;
+      } else {
+        $text_name = ($list_data[6] . " - " . $list_data[7]);
+      }
+      //******************************************************************************************
+      $cuserid = $list_data[1];
+      $avatar =  sfConfig::get('base_simad') . $list_data[5] ? $list_data[5] : sfConfig::get('base_simad') . '/images/simad/ico_logo_users.png';
+      $term_list[] = array("id" => $list_data[0], "text" => htmlentities($text_name), "cid" => $cuserid, "img" => $avatar);
     }
     //**********************************************************************************************
     $data_json = json_encode($term_list);
     //**********************************************************************************************
-    $this->getResponse()->setContentType('application/json');      
+    $this->getResponse()->setContentType('application/json');
     return $this->renderText($data_json);
   }
-  
+
   private function getCriteriaBasic()
   {
-    $usuariologuiado = $this->getUser()->getAttribute('usuario_id','', 'subscriber');
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
     $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
     //************************************************************************************************
     $filters = array();
-    if(!empty($this->getRequestParameter('campoText'))) { $filters['campoText'] = trim($this->getRequestParameter('campoText')); }
-    if(!empty($this->getRequestParameter('campoId'))) { $filters['campoId'] = trim($this->getRequestParameter('campoId')); }
+    if (!empty($this->getRequestParameter('campoText'))) {
+      $filters['campoText'] = trim($this->getRequestParameter('campoText'));
+    }
+    if (!empty($this->getRequestParameter('campoId'))) {
+      $filters['campoId'] = trim($this->getRequestParameter('campoId'));
+    }
     $filters['opcion'] = trim($this->getRequestParameter('opcion')) ? trim($this->getRequestParameter('opcion')) : 0;
-    if(!empty($this->getRequestParameter('modulo_id'))) { $filters['modulo_id'] = trim($this->getRequestParameter('modulo_id')); }
-    if(!empty($this->getRequestParameter('bydependencia'))) { $filters['bydependencia'] = trim($this->getRequestParameter('bydependencia')); }
-    if(!empty($this->getRequestParameter('bytipoprocesocom'))) { $filters['bytipoprocesocom'] = trim($this->getRequestParameter('bytipoprocesocom')); }
-    if(!empty($this->getRequestParameter('byfilterdep'))) { $filters['byfilterdep'] = trim($this->getRequestParameter('byfilterdep')); }
-    if(!empty($this->getRequestParameter('cargoId'))) { $filters['cargoId'] = trim($this->getRequestParameter('cargoId')); }
+    if (!empty($this->getRequestParameter('modulo_id'))) {
+      $filters['modulo_id'] = trim($this->getRequestParameter('modulo_id'));
+    }
+    if (!empty($this->getRequestParameter('bydependencia'))) {
+      $filters['bydependencia'] = trim($this->getRequestParameter('bydependencia'));
+    }
+    if (!empty($this->getRequestParameter('bytipoprocesocom'))) {
+      $filters['bytipoprocesocom'] = trim($this->getRequestParameter('bytipoprocesocom'));
+    }
+    if (!empty($this->getRequestParameter('byfilterdep'))) {
+      $filters['byfilterdep'] = trim($this->getRequestParameter('byfilterdep'));
+    }
+    if (!empty($this->getRequestParameter('cargoId'))) {
+      $filters['cargoId'] = trim($this->getRequestParameter('cargoId'));
+    }
+    if (!empty(trim($this->getRequestParameter(SED::encryption('alluser'))))) {
+      $filters[SED::encryption('alluser')] = trim($this->getRequestParameter(SED::encryption('alluser')));
+    }
     //************************************************************************************************
     $this->parametros = '';
-    /*$this->parametros .= "&campoText=" .$this->campoText = trim($this->getRequestParameter('campoText'));
-    $this->parametros .= "&campoId=" .$this->campoId = trim($this->getRequestParameter('campoId'));
-    $this->parametros .= "&opcion=" .$this->opcion = trim($this->getRequestParameter('opcion'));
-    $this->parametros .= "&bydependencia=" .$this->bydependencia = trim($this->getRequestParameter('bydependencia'));
-    $this->parametros .= "&bytipoprocesocom=" .$this->bytipoprocesocom = trim($this->getRequestParameter('bytipoprocesocom'));
-    $this->parametros .= "&byfilterdep=" .$this->byfilterdep = trim($this->getRequestParameter('byfilterdep'));
-    */    
     //************************************************************************************************
-	$modulo_id = isset($filters['modulo_id']) ? $filters['modulo_id'] : 0;
+    $modulo_id = isset($filters['modulo_id']) ? $filters['modulo_id'] : 0;
     $cargoId = isset($filters['cargoId']) ? $filters['cargoId'] : 0;
-    if($cargoId){
-      $this->parametros .= "&cargoId=" .$this->cargoId = $cargoId;
+    if ($cargoId) {
+      $this->parametros .= "&cargoId=" . $this->cargoId = $cargoId;
     }
     //************************************************************************************************
     $c = new Criteria();
     //$c->setDistinct();
-    $c->addJoin(CargoUsuarioPeer::USUARIO_ID,UsuarioPeer::USUARIO_ID,Criteria::INNER_JOIN);
+    $c->addJoin(CargoUsuarioPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID, Criteria::INNER_JOIN);
     //************************************************************************************************
-    if (trim($this->getRequestParameter('userName')))
-    {
-        $c->add(UsuarioPeer::USER_NAME,'%'.trim($this->getRequestParameter('userName')).'%',Criteria::LIKE);
-        //$this->parametros .= "&userName=" . $this->getRequestParameter('userName');
-        $filters['userName'] = trim($this->getRequestParameter('userName'));
+    if (trim($this->getRequestParameter('userName'))) {
+      $c->add(UsuarioPeer::USER_NAME, '%' . trim($this->getRequestParameter('userName')) . '%', Criteria::LIKE);
+      //$this->parametros .= "&userName=" . $this->getRequestParameter('userName');
+      $filters['userName'] = trim($this->getRequestParameter('userName'));
     }
     //************************************************************************************************
-    if (trim($this->getRequestParameter('nombre')))
-    {
-        $c->add(UsuarioPeer::NOMBRE,'%'.trim($this->getRequestParameter('nombre')).'%',Criteria::LIKE);
-        //$this->parametros .= "&nombre=" . $this->getRequestParameter('nombre');
-        $filters['nombre'] = trim($this->getRequestParameter('nombre'));
+    if (trim($this->getRequestParameter('nombre'))) {
+      $c->add(UsuarioPeer::NOMBRE, '%' . trim($this->getRequestParameter('nombre')) . '%', Criteria::LIKE);
+      //$this->parametros .= "&nombre=" . $this->getRequestParameter('nombre');
+      $filters['nombre'] = trim($this->getRequestParameter('nombre'));
     }
     //************************************************************************************************
-    if (trim($this->getRequestParameter('grupousuari_id')))
-    {
-        $c->addJoin(UsuarioPeer::USUARIO_ID,UsuarioPorGrupoPeer::USUARIO_ID,Criteria::INNER_JOIN);                   
-        $c->add(UsuarioPorGrupoPeer::GRUPOUSUARI_ID,trim($this->getRequestParameter('grupousuari_id')));
-        //$this->parametros .= "&grupousuari_id=" . $this->getRequestParameter('grupousuari_id');
-        $filters['grupousuari_id'] = trim($this->getRequestParameter('grupousuari_id'));
+    if (trim($this->getRequestParameter('grupousuari_id'))) {
+      $c->addJoin(UsuarioPeer::USUARIO_ID, UsuarioPorGrupoPeer::USUARIO_ID, Criteria::INNER_JOIN);
+      $c->add(UsuarioPorGrupoPeer::GRUPOUSUARI_ID, trim($this->getRequestParameter('grupousuari_id')));
+      //$this->parametros .= "&grupousuari_id=" . $this->getRequestParameter('grupousuari_id');
+      $filters['grupousuari_id'] = trim($this->getRequestParameter('grupousuari_id'));
     }
     //************************************************************************************************
-    if (trim($this->getRequestParameter('apellido')))
-    {
-        $c->add(UsuarioPeer::APELLIDO,'%'.trim($this->getRequestParameter('apellido')).'%',Criteria::LIKE);
-        //$this->parametros .= "&apellido=" . $this->getRequestParameter('apellido');
-        $filters['apellido'] = trim($this->getRequestParameter('apellido'));
+    if (trim($this->getRequestParameter('apellido'))) {
+      $c->add(UsuarioPeer::APELLIDO, '%' . trim($this->getRequestParameter('apellido')) . '%', Criteria::LIKE);
+      //$this->parametros .= "&apellido=" . $this->getRequestParameter('apellido');
+      $filters['apellido'] = trim($this->getRequestParameter('apellido'));
     }
     //************************************************************************************************
-    if (trim($this->getRequestParameter('dependencia_id')))
-    {
-        $c->addJoin(UsuarioPeer::DEPENDENCIA_ID,DependenciaPeer::DEPENDENCIA_ID,Criteria::INNER_JOIN);
-        $c->add(DependenciaPeer::DEPENDENCIA_ID,trim($this->getRequestParameter('dependencia_id')));            
-        //$this->parametros .= "&dependencia_id=" . $this->getRequestParameter('dependencia_id');
-        $filters['dependencia_id'] = trim($this->getRequestParameter('dependencia_id'));
+    if (trim($this->getRequestParameter('dependencia_id'))) {
+      $c->addJoin(UsuarioPeer::DEPENDENCIA_ID, DependenciaPeer::DEPENDENCIA_ID, Criteria::INNER_JOIN);
+      $c->add(DependenciaPeer::DEPENDENCIA_ID, trim($this->getRequestParameter('dependencia_id')));
+      //$this->parametros .= "&dependencia_id=" . $this->getRequestParameter('dependencia_id');
+      $filters['dependencia_id'] = trim($this->getRequestParameter('dependencia_id'));
     }
     //************************************************************************************************
-    if (trim($this->getRequestParameter('regional_id')))
-    {
-        $c->addJoin(UsuarioPeer::REGIONAL_ID,RegionalPeer::REGIONAL_ID,Criteria::INNER_JOIN);
-        $c->add(RegionalPeer::REGIONAL_ID,trim($this->getRequestParameter('regional_id')));            
-        //$this->parametros .= "&regional_id=" . $this->getRequestParameter('regional_id');
-        $filters['regional_id'] = trim($this->getRequestParameter('regional_id'));
+    if (trim($this->getRequestParameter('regional_id'))) {
+      $c->addJoin(UsuarioPeer::REGIONAL_ID, RegionalPeer::REGIONAL_ID, Criteria::INNER_JOIN);
+      $c->add(RegionalPeer::REGIONAL_ID, trim($this->getRequestParameter('regional_id')));
+      //$this->parametros .= "&regional_id=" . $this->getRequestParameter('regional_id');
+      $filters['regional_id'] = trim($this->getRequestParameter('regional_id'));
     }
     //************************************************************************************************
     /*if($this->getRequestParameter('ordenar')){        
@@ -374,30 +376,30 @@ class usuario_firmaActions extends sfActions
         $this->parametros.="&ordenar=".$this->getRequestParameter('ordenar');               
      }
      else{*/
-        $c->addAscendingOrderByColumn(UsuarioPeer::NOMBRE);
+    $c->addAscendingOrderByColumn(UsuarioPeer::NOMBRE);
     //}
     //**************VALIDA PERMISOS DE FIRMA DE CORRESPONDENCIA **************************************        
     $perm_autfirma = $this->getUser()->checkPerm('USUARIO_FIRMA_LISTAR_TODOS', $usuariologuiado);
-    if(!$perm_autfirma && $modulo_id){
-        $c->add(CargoUsuarioPeer::USUARIO_ID,$this->getUserFirmaAut($modulo_id),Criteria::IN);
+    if (!$perm_autfirma && $modulo_id) {
+      $c->add(CargoUsuarioPeer::USUARIO_ID, $this->getUserFirmaAut($modulo_id), Criteria::IN);
     }
     //************************************************************************************************
-    $c->add(CargoUsuarioPeer::ES_ACTUAL,1);
-	//************************************************************************************************
-    if(!trim($this->getRequestParameter(md5('alluser')))) { 
-		$c->add(UsuarioPeer::ESTADOUSUARIO_ID,array(1,3),Criteria::IN);
-	}
+    $c->add(CargoUsuarioPeer::ES_ACTUAL, 1);
     //************************************************************************************************
-    if (isset($filters['bytipoprocesocom'])){
-      if($filters['bytipoprocesocom']){
-        $c->addJoin(UsuarioPeer::USUARIO_ID,UsuarioProcesocomPeer::USUARIO_ID);
-        $c->add(UsuarioProcesocomPeer::TIPOPROCESOCOM_ID,$filters['bytipoprocesocom']);
+    if (!trim($this->getRequestParameter(SED::encryption('alluser')))) {
+      $c->add(UsuarioPeer::ESTADOUSUARIO_ID, array(1, 3), Criteria::IN);
+    }
+    //************************************************************************************************
+    if (isset($filters['bytipoprocesocom'])) {
+      if ($filters['bytipoprocesocom']) {
+        $c->addJoin(UsuarioPeer::USUARIO_ID, UsuarioProcesocomPeer::USUARIO_ID);
+        $c->add(UsuarioProcesocomPeer::TIPOPROCESOCOM_ID, $filters['bytipoprocesocom']);
       }
     }
     //************************************************************************************************
-    if (isset($filters['byfilterdep']) && !empty($filters['byfilterdep'])){
+    if (isset($filters['byfilterdep']) && !empty($filters['byfilterdep'])) {
       $dependencia_origen = SED::decryption($filters['byfilterdep']);
-      $c->add(UsuarioPeer::DEPENDENCIA_ID,$dependencia_origen);
+      $c->add(UsuarioPeer::DEPENDENCIA_ID, $dependencia_origen);
     }
     //************************************************************************************************
     /*$query = $_GET['q'];
@@ -419,9 +421,9 @@ class usuario_firmaActions extends sfActions
     }*/
     //************************************************************************************************
     $listallentidad = sfContext::getInstance()->getUser()->checkPerm('SELECT_USUARIOS_TODAS_ENTIDADES', $usuariologuiado);
-    if(!$listallentidad){
-      $c->addJoin(UsuarioPeer::REGIONAL_ID,RegionalPeer::REGIONAL_ID,Criteria::INNER_JOIN);
-      $c->add(RegionalPeer::ENTIDAD_ID,$entidad_conectado);
+    if (!$listallentidad) {
+      $c->addJoin(UsuarioPeer::REGIONAL_ID, RegionalPeer::REGIONAL_ID, Criteria::INNER_JOIN);
+      $c->add(RegionalPeer::ENTIDAD_ID, $entidad_conectado);
     }
     //************************************************************************************************
     $this->filters = $filters;
@@ -429,88 +431,87 @@ class usuario_firmaActions extends sfActions
     //************************************************************************************************
     foreach ($filters as $key => $value) {
       //if(!empty($value)){ $this->query_filter .= sprintf('&%s=%s',$key,$value); }
-	  $this->query_filter .= sprintf('&%s=%s',$key,$value);
+      $this->query_filter .= sprintf('&%s=%s', $key, $value);
     }
     //************************************************************************************************
     return $c;
   }
 
-  
+
   public function executeDataList()
   {
-    $usuariologuiado=$this->getUser()->getAttribute('usuario_id','', 'subscriber');
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     $this->parametros = '';
-    $this->parametros .= "&campoText=" .$this->campoText = trim($this->getRequestParameter('campoText'));
-    $this->parametros .= "&campoId=" .$this->campoId = trim($this->getRequestParameter('campoId'));
-    $this->parametros .= "&opcion=" .$this->opcion = trim($this->getRequestParameter('opcion'));
-    $this->parametros .= "&bydependencia=" .$this->opcion = trim($this->getRequestParameter('bydependencia'));
-    $this->parametros .= "&bytipoprocesocom=" .$this->bytipoprocesocom = trim($this->getRequestParameter('bytipoprocesocom'));
+    $this->parametros .= "&campoText=" . $this->campoText = trim($this->getRequestParameter('campoText'));
+    $this->parametros .= "&campoId=" . $this->campoId = trim($this->getRequestParameter('campoId'));
+    $this->parametros .= "&opcion=" . $this->opcion = trim($this->getRequestParameter('opcion'));
+    $this->parametros .= "&bydependencia=" . $this->opcion = trim($this->getRequestParameter('bydependencia'));
+    $this->parametros .= "&bytipoprocesocom=" . $this->bytipoprocesocom = trim($this->getRequestParameter('bytipoprocesocom'));
     $modulo_id = $this->getRequestParameter('modulo_id');
     /*************************************************************************************************/
-    if($this->getRequestParameter('cargoId')){
-      $this->parametros .= "&cargoId=" .$this->cargoId = $this->getRequestParameter('cargoId');
+    if ($this->getRequestParameter('cargoId')) {
+      $this->parametros .= "&cargoId=" . $this->cargoId = $this->getRequestParameter('cargoId');
     }
     /*************************************************************************************************/
     $c = new Criteria();
     $c->setDistinct();
     $c->setLimit(50);
-    $c->addJoin(CargoUsuarioPeer::USUARIO_ID,UsuarioPeer::USUARIO_ID);      
+    $c->addJoin(CargoUsuarioPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID);
     /************************************************************************************************/
     $query = $_GET['q'];
-    if (trim($query))
-    {
-        //$query = str_replace(" ",'%',$query);
-        $c1 = $c->getNewCriterion(UsuarioPeer::NOMBRE,'%'.$query.'%',Criteria::LIKE);
-        $c2 = $c->getNewCriterion(UsuarioPeer::APELLIDO,'%'.$query.'%',Criteria::LIKE);
-        $c1->addOr($c2);
-        $c->add($c1);        
-        $this->parametros .= "&nombre=" . $query;
-    }    
+    if (trim($query)) {
+      //$query = str_replace(" ",'%',$query);
+      $c1 = $c->getNewCriterion(UsuarioPeer::NOMBRE, '%' . $query . '%', Criteria::LIKE);
+      $c2 = $c->getNewCriterion(UsuarioPeer::APELLIDO, '%' . $query . '%', Criteria::LIKE);
+      $c1->addOr($c2);
+      $c->add($c1);
+      $this->parametros .= "&nombre=" . $query;
+    }
     $c->addAscendingOrderByColumn(UsuarioPeer::NOMBRE);
-    /*************VALIDA PERMISOS DE FIRMA DE CORRESPONDENCIA *************************************/        
+    /*************VALIDA PERMISOS DE FIRMA DE CORRESPONDENCIA *************************************/
     $perm_autfirma = $this->getUser()->checkPerm('USUARIO_FIRMA_LISTAR_TODOS', $usuariologuiado);
-    if(!$perm_autfirma && $modulo_id)
-    {
-        $c->add(CargoUsuarioPeer::USUARIO_ID,$this->getUserFirmaAut($modulo_id),Criteria::IN);
+    if (!$perm_autfirma && $modulo_id) {
+      $c->add(CargoUsuarioPeer::USUARIO_ID, $this->getUserFirmaAut($modulo_id), Criteria::IN);
     }
     /************************************************************************************************/
-    $c->add(CargoUsuarioPeer::ES_ACTUAL,1);
-    $c->add(UsuarioPeer::ESTADOUSUARIO_ID,2,Criteria::NOT_EQUAL);
+    $c->add(CargoUsuarioPeer::ES_ACTUAL, 1);
+    $c->add(UsuarioPeer::ESTADOUSUARIO_ID, 2, Criteria::NOT_EQUAL);
     /************************************************************************************************/
-    $c->addJoin(CargoUsuarioPeer::USUARIO_ID,UsuarioPeer::USUARIO_ID);
-    $c->addJoin(CargoUsuarioPeer::CARGO_ID,CargoPeer::CARGO_ID);    
+    $c->addJoin(CargoUsuarioPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID);
+    $c->addJoin(CargoUsuarioPeer::CARGO_ID, CargoPeer::CARGO_ID);
     /************************************************************************************************/
-	  $c->clearSelectColumns();
-	  $c->addSelectColumn(CargoUsuarioPeer::CARGOUSUARIO_ID);//0
-    $c->addSelectColumn(CargoUsuarioPeer::USUARIO_ID);//1
-    $c->addSelectColumn(UsuarioPeer::NOMBRE);//2
-    $c->addSelectColumn(UsuarioPeer::APELLIDO);//3
-    $c->addSelectColumn(CargoPeer::DESCRIPCION);//4
+    $c->clearSelectColumns();
+    $c->addSelectColumn(CargoUsuarioPeer::CARGOUSUARIO_ID); //0
+    $c->addSelectColumn(CargoUsuarioPeer::USUARIO_ID); //1
+    $c->addSelectColumn(UsuarioPeer::NOMBRE); //2
+    $c->addSelectColumn(UsuarioPeer::APELLIDO); //3
+    $c->addSelectColumn(CargoPeer::DESCRIPCION); //4
     $c->addSelectColumn(UsuarioPeer::RUTA_FOTO);//5
     /************************************************************************************************/
     $resultset = CargoUsuarioPeer::doSelectStmt($c);
     /************************************************************************************************/
-	  $data_array = array();
-    while($list_users = $resultset->fetch()){
-        $data_array[] = array(
-        	"value" => ucfirst(utf8_encode($list_users[2].' '.$list_users[3])),
-          "cargousuario_id" => ($list_users[0]),
-          "usuario_id" => ($list_users[1]),
-        	//"img" => $this->UR_exists(sfConfig::get('base_simad').$list_users->getString(6)) ? $list_users->getString(6) : sfConfig::get('base_simad').'/images/simad/ico_logo_users.png',
-          "img" => sfConfig::get('base_simad').$list_users[5] ? $list_users[5] : sfConfig::get('base_simad').'/images/simad/ico_logo_users.png',
-        	"desc" => ucfirst(utf8_encode($list_users[4])),
-        	"tokens" => array($query, str_shuffle($query))
-        );
+    $data_array = array();
+    while ($list_users = $resultset->fetch()) {
+      $data_array[] = array(
+        "value" => ucfirst(utf8_encode($list_users[2] . ' ' . $list_users[3])),
+        "cargousuario_id" => ($list_users[0]),
+        "usuario_id" => ($list_users[1]),
+        //"img" => $this->UR_exists(sfConfig::get('base_simad').$list_users->getString(6)) ? $list_users->getString(6) : sfConfig::get('base_simad').'/images/simad/ico_logo_users.png',
+        "img" => sfConfig::get('base_simad') . $list_users[5] ? $list_users[5] : sfConfig::get('base_simad') . '/images/simad/ico_logo_users.png',
+        "desc" => ucfirst(utf8_encode($list_users[4])),
+        "tokens" => array($query, str_shuffle($query))
+      );
     }
     //************************************************************************************************
     $this->getResponse()->setContentType('application/json');
     $data_json = json_encode($data_array);
     return $this->renderText($data_json);
   }
-  
-  function UR_exists($url){
-    $headers=get_headers($url);
-    return stripos($headers[0],"200 OK") ? true : false;
+
+  function UR_exists($url)
+  {
+    $headers = get_headers($url);
+    return stripos($headers[0], "200 OK") ? true : false;
   }
 
   public function executeConsulta()
@@ -523,17 +524,19 @@ class usuario_firmaActions extends sfActions
     $filters['bydependencia'] = trim($this->getRequestParameter('bydependencia'));
     $filters['bytipoprocesocom'] = trim($this->getRequestParameter('bytipoprocesocom'));
     $filters['byfilterdep'] = trim($this->getRequestParameter('byfilterdep'));
+    if (trim($this->getRequestParameter(SED::encryption('alluser')))) {
+      $filters[SED::encryption('alluser')] = trim($this->getRequestParameter(SED::encryption('alluser')));
+    }
     //************************************************************************************************
-    if($this->getRequestParameter('cargoId')){
-      //$this->cargoId = $this->getRequestParameter('cargoId');
+    if ($this->getRequestParameter('cargoId')) {
       $filters['cargoId'] = $this->getRequestParameter('cargoId');
-    }else{
+    } else {
       $this->cargoId = 0;
     }
     //************************************************************************************************
     $this->regional    = new Regional();
     $this->dependencia = new Dependencia();
-    $this->grupos      = new GrupoUsuario();  
+    $this->grupos      = new GrupoUsuario();
     $this->filters     = $filters;
   }
 
@@ -542,44 +545,42 @@ class usuario_firmaActions extends sfActions
     $this->usuario = UsuarioPeer::retrieveByPk($this->getRequestParameter('usuario_id'));
     $this->forward404Unless($this->usuario);
   }
-  
+
   private function getUserFirmaAut($modulo_id)
   {
     /*************************************************************************************************/
-    $usuariologuiado=$this->getUser()->getAttribute('usuario_id','', 'subscriber');
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     $usuariosAutFirma[] = $usuariologuiado;
     /*************************************************************************************************/
-    if($modulo_id)
-    {
-        $a = new Criteria();
-        $a->addJoin(AutorizacionFirmaPeer::USUARIO_ID,UsuarioPeer::USUARIO_ID);
-        $a->addJoin(AutorizacionFirmaPeer::AUTORIZACIONFIRMA_ID,AutFirmaUsuarioPeer::AUTORIZACIONFIRMA_ID);
-        $a->add(AutFirmaUsuarioPeer::USUARIO_ID,$usuariologuiado);
-        $a->add(AutorizacionFirmaPeer::ESTADOFIRMAAUTO_ID,1);
-        $a->add(AutorizacionFirmaPeer::MODULO_ID,$modulo_id);
-        $user_autorizacion =  AutorizacionFirmaPeer::doSelect($a);
-        foreach($user_autorizacion as $useraut)
-        {
-            $usuariosAutFirma[] =  $useraut->getUsuario()->getUsuarioId();
-        }
+    if ($modulo_id) {
+      $a = new Criteria();
+      $a->addJoin(AutorizacionFirmaPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID);
+      $a->addJoin(AutorizacionFirmaPeer::AUTORIZACIONFIRMA_ID, AutFirmaUsuarioPeer::AUTORIZACIONFIRMA_ID);
+      $a->add(AutFirmaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+      $a->add(AutorizacionFirmaPeer::ESTADOFIRMAAUTO_ID, 1);
+      $a->add(AutorizacionFirmaPeer::MODULO_ID, $modulo_id);
+      $user_autorizacion =  AutorizacionFirmaPeer::doSelect($a);
+      foreach ($user_autorizacion as $useraut) {
+        $usuariosAutFirma[] =  $useraut->getUsuario()->getUsuarioId();
+      }
     }
     return $usuariosAutFirma;
     /*************************************************************************************************/
   }
-  
+
   public function getCargos()
   {
     $nombCargo   = array();
-    $temp =0;
+    $temp = 0;
     $c    = new Criteria();
-    $c->add(CargoUsuarioPeer::FECHA_INICIO,date("2008-01-01"),Criteria::GREATER_THAN);
-    $c->add(CargoUsuarioPeer::FECHA_FIN,date("Y-m-d"),Criteria::GREATER_THAN);
+    $c->add(CargoUsuarioPeer::FECHA_INICIO, date("2008-01-01"), Criteria::GREATER_THAN);
+    $c->add(CargoUsuarioPeer::FECHA_FIN, date("Y-m-d"), Criteria::GREATER_THAN);
     $resp  = CargoUsuarioPeer::doSelect($c);
-    foreach($resp as $result){
-        $nombCargo[$temp] = $result->getCargo()->getDescripcion();
-        $temp++;
-    }   
-    
+    foreach ($resp as $result) {
+      $nombCargo[$temp] = $result->getCargo()->getDescripcion();
+      $temp++;
+    }
+
     return $nombCargo;
   }
 }
