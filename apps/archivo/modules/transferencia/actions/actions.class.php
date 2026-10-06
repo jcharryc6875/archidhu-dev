@@ -240,8 +240,9 @@ class transferenciaActions extends sfActions
     }
     //*********************************************************************
     $param_trd = ParametroPeer::retrieveByPK(61)->getValornumerico();
-    $this->form_tag = 1;//si es consulta=1 o creacion=2, en este caso debe ser consulta
+    $this->form_tag = 2;//si es consulta=2 o creacion=1, en este caso debe ser consulta
     $this->permiso = 2;//valida tipo de archivo 1=central 2=gestion
+	$_SESSION['searcharch_vincular'] = "search";//formulario de consulta, para cargar unicamente metadatos de consulta
     //*********************************************************************
     $this->dependencias = DependenciaPeer::getDependenciaPorArchivo($this->permiso, $this->form_tag, $param_trd);
   }
@@ -284,7 +285,7 @@ class transferenciaActions extends sfActions
     //CONSULTA CODIGO BARRAS
     $codigo_barras = trim($this->getRequestParameter('codigo_barras'));
     if ($codigo_barras) {
-      $c->add(UnidadDocumentalPeer::CODIGO_BARRAS, '%' . $codigo_barras . '%', Criteria::LIKE);
+      $c->add(UnidadDocumentalPeer::CODIGO_BARRAS, $codigo_barras . '%', Criteria::LIKE);
       //$c->add(UnidadDocumentalPeer::CODIGO_BARRAS, $codigo_barras);
       $parametros_consulta .= "&codigo_barras=" . $codigo_barras;
     }

@@ -800,6 +800,8 @@ class unidad_documentalActions extends sfActions
 							$c->add($c3);
 						}
 						//********************************************************************************************
+						$this->trestrictfrm = isset($_SESSION['searcharch_vincular']) ? $_SESSION['searcharch_vincular'] : "create";
+						//********************************************************************************************						if ($this->form_tag != 1) {
 						if ($this->form_tag != 1) {
 							$c->add(SubseriePeer::ES_VISIBLE, 1);
 						}
@@ -807,11 +809,13 @@ class unidad_documentalActions extends sfActions
 						$c->add(SubseriePeer::SERIE_ID, $id_seleccion);
 						$c->addAscendingOrderByColumn(SubseriePeer::DESCRIPCION);
 						$this->subseries = SubseriePeer::doSelect($c);
+						//********************************************************************************************
+						unset($_SESSION['searcharch_vincular']);
 						break;
 					}
 			}
 		}
-		//**********************************************************************************************************
+		//************************************************************************************************************
 		$this->id_permiso = $id_permiso;
 	}
 
@@ -1744,8 +1748,6 @@ class unidad_documentalActions extends sfActions
 			$this->name_original = "Historico";
 			$this->permiso = 1;
 		}
-		//*********************************************************************************************    
-		$this->UserUniDoc = UsuarioPeer::getAllUser();
 		//********************************************************************************************/
 		$this->udr_creador = 0;
 		$this->creador = 0;
@@ -2402,6 +2404,231 @@ class unidad_documentalActions extends sfActions
 		}
 	}
 
+	public function executeGenFuidBulk()
+	{
+		set_time_limit(0);
+		ini_set('memory_limit', '1024M');
+		session_write_close();
+		//*******************************************************************************************************
+		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+		$dataUser  = UsuarioPeer::retrieveByPK($usuariologuiado);
+		$base_path = sfConfig::get('base_simad');
+		$this->setLayout(false);
+		//*******************************************************************************************************
+		$localizacionunidaddoc_id = $this->getRequestParameter('localizacionunidaddocumental_id');
+		$dependencia_id = trim($this->getRequestParameter('dependencia_id')) ? trim($this->getRequestParameter('dependencia_id')) : $dataUser->getDependenciaId();
+		$dependencia = DependenciaPeer::retrieveByPK($dependencia_id);
+		//*******************************************************************************************************
+		if ($localizacionunidaddoc_id == 1) {
+			$modulo = "GESTION";
+		} elseif ($localizacionunidaddoc_id == 2) {
+			$modulo = "CENTRAL";
+		} elseif ($localizacionunidaddoc_id == 3) {
+			$modulo = "HISTORICO";
+		} else {
+			$modulo = "NONE";
+		}
+		//*******************************************************************************************************
+		if (!$this->tienePrilegio("ARCHIVO_" . $modulo . "_GENERAR_FUID")) {
+			$this->redirect($base_path . '/no_autorizado.html');
+		}
+		//************************MANEJO PARA CREACION DIRECTORIO Y ARCHIVO A CONVERTIR**************************
+		$dir_tmp = sfConfig::get('sf_shared_tmp_dir') . DIRECTORY_SEPARATOR . "com_html" . DIRECTORY_SEPARATOR . "archivo" . DIRECTORY_SEPARATOR;
+		if (!is_dir($dir_tmp)) {
+			simad_util::createPath($dir_tmp, 0766);
+		}
+		$aleatorio = rand(1, 10000000);
+		$hash_is = md5(date('YmdGis') . $aleatorio);
+		$nomb_file_html = simad_util::uniquename($dir_tmp, $hash_is);
+		if (file_exists($dir_tmp . $nomb_file_html)) {
+			unlink($dir_tmp . $nomb_file_html);
+		}
+		$pt = fopen($dir_tmp . $nomb_file_html, 'w');
+		//******************************************************************************************************
+		$path_logo = sfConfig::get('localUrl') . "/images/encabezado_carta/";
+		$default_logo = "logo_planilla.png";
+		$path_logo .= trim($dataUser->getRegional()->getEntidad()->getLogoCorporativo()) ?
+			'logos_carnet/' . trim($dataUser->getRegional()->getEntidad()->getLogoCorporativo()) : $default_logo;
+		$dir_plantilla = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR;
+		$name_plantilla = "rptfuidv4.txt";
+		$file_name = $dir_plantilla . $name_plantilla;
+		$plantilla_contents = file_get_contents($file_name);
+		//******************************************************************************************************
+		$marcador_body = '#.#body_content#.#';
+		$partes_plantilla = explode($marcador_body, $plantilla_contents);
+		$plantilla_header = $partes_plantilla[0];
+		$plantilla_footer = isset($partes_plantilla[1]) ? $partes_plantilla[1] : '';
+		//******************************************************************************************************
+		$patrones = array(
+			'#.#$logo_entidad#.#',
+			'#.#$unidad_administrativa#.#',
+			'#.#$oficina_productora#.#',
+			'#.#$fecha_anio#.#',
+			'#.#$fecha_mes#.#',
+			'#.#$fecha_dia#.#',
+			'#.#$codigo_unidadadministrativa#.#',
+			'#.#$codigo_oficinaproductora#.#',
+		);
+		//******************************************************************************************************
+		$sustituciones = array(
+			$path_logo,
+			mb_convert_encoding($dependencia->getOficinaProductora(), 'UTF-8'),
+			mb_convert_encoding($dependencia->getNombreCustom(), 'UTF-8'),
+			date("Y"),
+			date("m"),
+			date("d"),
+			mb_convert_encoding($dependencia->getOficinaProductora()->getCodigo(), 'UTF-8'),
+			mb_convert_encoding($dependencia->getCodigo(), 'UTF-8'),
+		);
+		//******************************************************************************************************
+		fputs($pt, str_replace($patrones, $sustituciones, $plantilla_header));
+		//******************************************************************************************************
+		$cCount = $this->getBasicCriteria();
+		$total_expedientes = UnidadDocumentalPeer::doCount($cCount);
+		//******************************************************************************************************
+		$BATCH_SIZE = 1000;
+		$item = 0;
+		for ($offset = 0; $offset < $total_expedientes; $offset += $BATCH_SIZE) {
+			$cBatch = $this->getBasicCriteria();
+			$cBatch->setOffset($offset);
+			$cBatch->setLimit($BATCH_SIZE);
+
+			if (!$cBatch->getOrderByColumns()) {
+				$cBatch->addAscendingOrderByColumn(UnidadDocumentalPeer::UNIDADCONSERVADORA_ID);
+			}
+
+			$lote_expedientes = UnidadDocumentalPeer::doSelect($cBatch);
+			if (empty($lote_expedientes)) {
+				break;
+			}
+
+			// --- 3) Precalentamos el instance pool para Subserie -> Serie -> Dependencia -------------
+			$subserie_ids = array();
+			foreach ($lote_expedientes as $exp) {
+				$subserie_ids[$exp->getSubserieId()] = true;
+			}
+			$subserie_ids = array_keys($subserie_ids);
+
+			if ($subserie_ids) {
+				$cSub = new Criteria();
+				$cSub->add(SubseriePeer::SUBSERIE_ID, $subserie_ids, Criteria::IN);
+				$subseries = SubseriePeer::doSelect($cSub); // puebla instance pool de Subserie
+
+				$serie_ids = array();
+				foreach ($subseries as $sub) {
+					$serie_ids[$sub->getSerieId()] = true;
+				}
+				$serie_ids = array_keys($serie_ids);
+
+				if ($serie_ids) {
+					$cSer = new Criteria();
+					$cSer->add(SeriePeer::SERIE_ID, $serie_ids, Criteria::IN);
+					$series = SeriePeer::doSelect($cSer); // puebla instance pool de Serie
+
+					$dep_ids = array();
+					foreach ($series as $ser) {
+						$dep_ids[$ser->getDependenciaId()] = true;
+					}
+					$dep_ids = array_keys($dep_ids);
+
+					if ($dep_ids) {
+						$cDep = new Criteria();
+						$cDep->add(DependenciaPeer::DEPENDENCIA_ID, $dep_ids, Criteria::IN);
+						DependenciaPeer::doSelect($cDep); // puebla instance pool de Dependencia
+					}
+				}
+			}
+
+			$exp_ids = array();
+			foreach ($lote_expedientes as $exp) {
+				$exp_ids[] = $exp->getPrimaryKey();
+			}
+			$conteos_por_exp = UnidadDocumentalPeer::getCountDocsByExpDocBulk($exp_ids);
+			$pesos_por_exp   = UnidadDocumentalPeer::getSumFileSizeByExpDocBulk($exp_ids);
+
+			$html_lote = '';
+			foreach ($lote_expedientes as $expediente) {
+				$codigo_depserie = trim($expediente->getSubserie()->getSerie()->getDependencia()->getCodigo()) . '.' . trim($expediente->getSubserie()->getSerie()->getCodigo()) . '.';
+				$fullcod_subserie = trim($expediente->getSubserie()->getCodigo());
+				$custom_code = str_replace($codigo_depserie, '', $fullcod_subserie);
+
+				$html_lote .= '
+				<tr style="height:10px;">
+                <td align="center" style="width: 44.5px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-right:none;">' . ++$item . '</td>
+                <td align="center" style="width: 30px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:.5pt solid black;">' . ($expediente->getSubserie()->getSerie()->getDependencia()->getCodigo() ?: "&nbsp;") . '</td>
+                <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getSubserie()->getSerie()->getCodigo() ?: "&nbsp;") . '</td>
+                <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;border-right:none;">' . $custom_code . '</td>
+                <td style="width: 120px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:.5pt solid black;">' . $expediente->getSubserie()->getSerie()->getDescripcion() . '</td>
+                <td style="width: 120px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . $expediente->getSubserie()->getDescripcion() . '</td>
+                <td style="width: 341px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getTitulo() ?: "&nbsp;") . '</td>';
+
+				$tipo_expediente = strtoupper($expediente->getSoporteUnidadDocumental());
+				if ($tipo_expediente == "FISICO" || $tipo_expediente == "FÍSICO") {
+					$html_lote .= '
+                <td align="center" style="width: 9.6px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">X</td>
+                <td align="center" style="width: 10px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">&nbsp;</td>
+                <td align="center" style="width: 10px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">&nbsp;</td>';
+				} elseif ($tipo_expediente == "HIBRIDO") {
+					$html_lote .= '
+                <td align="center" style="width: 9.6px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">&nbsp;</td>
+                <td align="center" style="width: 10px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">&nbsp;</td>
+                <td align="center" style="width: 10px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">X</td>';
+				} elseif (($tipo_expediente == "ELECTRONICO" || $tipo_expediente == "ELECTRÓNICO") || $tipo_expediente == "DIGITAL") {
+					$html_lote .= '
+                <td align="center" style="width: 9.6px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">&nbsp;</td>
+                <td align="center" style="width: 10px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">X</td>
+                <td align="center" style="width: 10px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">&nbsp;</td>';
+				} else {
+					$html_lote .= '
+                <td align="center" style="width: 9.6px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">&nbsp;</td>
+                <td align="center" style="width: 10px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">X</td>
+                <td align="center" style="width: 10px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">&nbsp;</td>';
+				}
+
+				$fecha_cierre = $expediente->getFechaCierre('Y-m-d');
+
+				$html_lote .= '
+            <td align="center" style="width: 21px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getFechaApertura('Y-m-d') ? $expediente->getFechaApertura('Y-m-d') : "&nbsp;") . '</td>
+            <td align="center" style="width: 21px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . (!empty($fecha_cierre) ? $fecha_cierre : "&nbsp;") . '</td>
+            <td align="center" style="width: 15px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getNumeroCaja() ? $expediente->getNumeroCaja() : "&nbsp;") . '</td>
+            <td align="center" style="width: 15px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getNumeroCarpeta() ? $expediente->getNumeroCarpeta() : "&nbsp;") . '</td>
+            <td align="center" style="width: 15px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getCodigoBarras() ? $expediente->getCodigoBarras() : "&nbsp;") . '</td>
+            <td align="center" style="width: 15px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">&nbsp;</td>
+            <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">1</td>
+            <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getFolios() ? $expediente->getFolios() : "&nbsp;") . '</td>
+            <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . trim($expediente->getRepositorioOrigen()) . '</td>
+            <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . (isset($conteos_por_exp[$expediente->getPrimaryKey()]) ? $conteos_por_exp[$expediente->getPrimaryKey()] : 0) . '</td>
+            <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . simad_util::formatBytes(isset($pesos_por_exp[$expediente->getPrimaryKey()]) ? $pesos_por_exp[$expediente->getPrimaryKey()] : 0) . '</td>
+            <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">&nbsp;</td>
+            <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getGeoBodega() ?? "&nbsp;") . '</td>
+            <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getGeoCuerpo() ?? "&nbsp;") . '</td>
+            <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getGeoTorre() ?? "&nbsp;") . '</td>
+            <td align="center" style="width: 20px;height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getGeoPiso() ?? "&nbsp;") . '</td>
+            <td style="height:10px;font-size:3.0pt;border:.5pt solid black;border-top:none;border-left:none;">' . ($expediente->getNotas() ?: "&nbsp;") . '</td>
+        </tr>';
+			}
+
+			fputs($pt, $html_lote);
+			unset($html_lote, $lote_expedientes, $conteos_por_exp, $pesos_por_exp);
+
+			// evitar que la memoria crezca sin control hasta matar el proceso.
+			UnidadDocumentalPeer::clearInstancePool();
+			SubseriePeer::clearInstancePool();
+			SeriePeer::clearInstancePool();
+			DependenciaPeer::clearInstancePool();
+
+			// Mantiene viva la conexión frente a proxies/IIS con timeout de inactividad.
+			@ob_flush();
+			@flush();
+		}
+		//******************************************************************************************************
+		fputs($pt, str_replace($patrones, $sustituciones, $plantilla_footer));
+		fclose($pt);
+		//******************************************************************************************************
+		$this->redirect($base_path . '/generatepdf.php?savefile=1&formato_inventario_id=' . $nomb_file_html);
+		//******************************************************************************************************
+	}
+
 	public function executeGenFuid()
 	{
 		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
@@ -2568,7 +2795,7 @@ class unidad_documentalActions extends sfActions
 		fputs($pt, $template_contents);
 		//Cierra el archivo y envia para generar el pdf    
 		fclose($pt);
-		//**************************************************************************************************
+		//******************************************************************************************************
 		$this->redirect($base_path . '/generatepdf.php?savefile=1&formato_inventario_id=' . $nomb_file_html);
 		$this->forward404Unless($this->unidad_documental);
 	}
@@ -4176,7 +4403,7 @@ class unidad_documentalActions extends sfActions
 		}
 		//**********************************************************************************************
 		// CONSULTA TITULO
-		$titulo = $this->getRequestParameter('titulo');
+		$titulo = preg_replace('/[\x00-\x1F\x7F]/', '', trim($this->getRequestParameter('titulo')));
 		if ($titulo != "") {
 			$cad_titulo = str_replace('|', '%', $titulo);
 			$c->add(UnidadDocumentalPeer::TITULO, '%' . $cad_titulo . '%', Criteria::LIKE);
@@ -4184,18 +4411,17 @@ class unidad_documentalActions extends sfActions
 		}
 		//**********************************************************************************************
 		// CONSULTA POR ASUNTO BUSQUEDA AVANZADA
-		$asunto = trim($this->getRequestParameter('asunto'));
-		$titulo = trim($this->getRequestParameter('titulo'));
+		$asunto = preg_replace('/[\x00-\x1F\x7F]/', '', trim($this->getRequestParameter('asunto')));
 		if (!empty($asunto)) {
 			$cad_titulo = str_replace('|', '%', $asunto);
 			$titulo_mb = iconv(mb_detect_encoding($cad_titulo, mb_detect_order(), true), "UTF-8//IGNORE", $cad_titulo);
 			$c->add(UnidadDocumentalPeer::TITULO, '%' . $titulo_mb . '%', Criteria::LIKE);
-			$parametros_consulta .= "&asunto=" . $cad_titulo;
+			$parametros_consulta .= "&asunto=" . str_replace('%', '|', $asunto);
 		} elseif (!empty($titulo)) {
 			$cad_titulo = str_replace('|', '%', $titulo);
 			$titulo_mb = iconv(mb_detect_encoding($cad_titulo, mb_detect_order(), true), "UTF-8//IGNORE", $cad_titulo);
-			$c->add(UnidadDocumentalPeer::TITULO, '%' . $titulo_mb . '%', Criteria::LIKE);
-			$parametros_consulta .= "&titulo=" . $cad_titulo;
+			$c->add(UnidadDocumentalPeer::TITULO, $titulo_mb . '%', Criteria::LIKE);
+			$parametros_consulta .= "&titulo=" . str_replace('%', '|', $titulo);
 		}
 		//**********************************************************************************************
 		// CONSULTA CONTENIDO
