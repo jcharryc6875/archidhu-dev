@@ -32,9 +32,11 @@ use_helper('Object','jQuery');
         <div class="row">
             <div class="col-md-6">
                 <button class="btn btn-default btn-info" id="expExcel">Exportar</button>
+                <button type="button" class="btn btn-default" id="expCsv">Exportar CSV</button>
                 <a data-toggle="tooltip" href="#" class="btn btn-success" id="expReporte">
                     Preparar Reporte
                 </a>
+                <span class="help-block">Para consultas con muchos registros (más de 200.000) use Exportar CSV: es mucho más rápido y se abre en Excel.</span>
             </div>
             <div class="col-md-6">
                 <label for="lbEstado" class="col-sm-3 control-label">Escoger Reporte:</label>

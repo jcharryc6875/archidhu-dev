@@ -246,191 +246,27 @@ class busqueda_avanzadaActions extends sfActions
 		$this->setLayout(false);
 		//**********************************************************************************************************
 		$response_process = array('status' => 400, 'message' => 'Error interno del servidor');
-		$clasename_main = null;
-		$el_criteria = null;
-		$elModulo = null;
-		$params_search = array();
 		//**********************************************************************************************************
 		try {
-			$checkSelected = $this->getRequest()->getPostParameters();
-			if (empty($checkSelected['duallistbox_demo1'])) {
-				$this->getUser()->setFlash('error', 'Debe seleccionar al menos un campo para exportar.');
-				$this->redirect($_SERVER['HTTP_REFERER']);
-			}
+			$export = ReporteDinamicoExporter::prepareExport($this->getRequest()->getPostParameter('duallistbox_demo1'));
 			//*******************************************************************************************************
-			// RECOGEMOS LA VARIABLE DE SESION
-			if (isset($_SESSION['rptdinamic_search'])) {
-				$rptdinamic_search = $_SESSION['rptdinamic_search'];
-				if (isset($rptdinamic_search['sess_maintablename'])) {
-					$clasename_main = $rptdinamic_search['sess_maintablename'];
-				}
-
-				if (isset($rptdinamic_search['params_search'])) {
-					$params_search = unserialize(base64_decode($rptdinamic_search['params_search']));
-				}
-
-				if (isset($rptdinamic_search['sess_modulo'])) {
-					$elModulo = $rptdinamic_search['sess_modulo'];
-				}
-			} else {
-				$response_process['message'] = 'Error relacionado con la sesión del usuario';
-				$this->getResponse()->setContentType('application/json');
-				return $this->renderText(json_encode($response_process));
-			}
-			//*******************************************************************************************************
-			if (empty($params_search)) {
-				$response_process['message'] = 'Error con los filtros de consulta';
-				$this->getResponse()->setContentType('application/json');
-				return $this->renderText(json_encode($response_process));
-			}
-			//*******************************************************************************************************
-			switch ($elModulo) {
-				case ModulesEnable::Archivo:
-					$data = UnidadDocumentalPeer::getReporteUnidadDocumental($params_search, false);
-					$el_criteria = $data['criteria'];
-					break;
-				case ModulesEnable::ComEnviada:  //2 comenviada			
-					$el_criteria = ComEnviadaPeer::getReporteComEnviada($params_search);
-					break;
-				case ModulesEnable::ComRecibida: //3 comrecibida
-					$data = ComRecibidaPeer::getReporteComRecibida($params_search, true);
-					$el_criteria = $data['criteria'];
-					break;
-				case ModulesEnable::ComInterna:  //4 cominterna
-					$el_criteria = ComInternaPeer::getReporteComInterna($params_search);
-					break;
-				default:
-					$this->redirect(sfConfig::get('base_simad') . '/no_autorizado.html');
-					break;
-			}
-			//*******************************************************************************************************
-			$peername_main = sprintf("%sPeer", $clasename_main);
-			//*******************************************************************************************************
-			$dbMap = Propel::getDatabaseMap($el_criteria->getDbName());
-			//*******************************************************************************************************
-			$tableMapMain = $peername_main::getTableMap();
-			$fks_table = $tableMapMain->getForeignKeys();
-			//*******************************************************************************************************
-			$criteria = clone $el_criteria;
-			$criteria->clearSelectColumns();
-			$criteria->clearOrderByColumns();
-			$criteria->setLimit(null);
-			//*******************************************************************************************************
-			$last_peer = null;
-			$listphpnames = null;
-			$listcolnames = null;
-			$headers_cols = array();
-			//******************************************************************************************************* 
-			foreach ($checkSelected['duallistbox_demo1'] as $key => $value) // $checkSelected['searchable'] 
-			{
-				$partes = explode("_", str_replace('.', '_', $value));
-				$className = $partes[1];
-				$peer_name = sprintf("%sPeer", $className);
-				$tableMap = $peer_name::getTableMap();
-				$colsTable = $tableMap->getColumns();
-
-				if ($peer_name !== $last_peer || (empty($listphpnames) || empty($listcolnames))) {
-					$listphpnames = $peer_name::getFieldNames(BasePeer::TYPE_PHPNAME);
-					$listcolnames = $peer_name::getFieldNames(BasePeer::TYPE_COLNAME);
-				}
-				//***************************************************************************************************
-				$isNotNull = null;
-				$relationTable = null;
-				$relationColumn = null;
-				$peerTableRealtion = null;
-				foreach ($fks_table as $fk_row) {
-					$relationColumn1 = $fk_row->getRelatedColumnName();
-					$isFkRelated = $colsTable[$fk_row->getRelatedColumnName()];
-					//***********************************************************************************************
-					if ($isFkRelated != null) {
-						if (!empty($isFkRelated->getRelatedColumnName())) {
-							continue;
-						}
-					}
-					//***********************************************************************************************
-					$isExistCol = $colsTable[$fk_row->getRelatedColumnName()];
-					if ($isExistCol) {
-						$isNotNull = $fk_row->isNotNull();
-						$relationTable = $fk_row->getRelatedTableName();
-						$relationColumn = $fk_row->getRelatedColumnName();
-						//$peerTableRealtion = sprintf("%sPeer",ucwords($relationTable));
-						break;
-					}
-				}
-				//***************************************************************************************************
-				for ($i = 0; $i < count($listphpnames); $i++) {
-					if ($listphpnames[$i] == $partes[2]) //si hay coincidencia, lo guarda en un array de cabeceras excel
-					{
-						if (!empty($relationTable)) {
-							$colUniqueName = sprintf("%s", strtoupper(str_replace(".", "_", $listcolnames[$i])));
-
-							if (!empty($isNotNull)) {
-								if ($isNotNull)
-									$criteria->addJoin(sprintf("%s.%s", $tableMapMain->getName(), $relationColumn), sprintf("%s.%s", $relationTable, $relationColumn), Criteria::INNER_JOIN);
-								else
-									$criteria->addJoin(sprintf("%s.%s", $tableMapMain->getName(), $relationColumn), sprintf("%s.%s", $relationTable, $relationColumn), Criteria::LEFT_JOIN);
-								//***********************************************************************************
-								$criteria->addAsColumn($colUniqueName, $listcolnames[$i]);
-							}
-						} else {
-							$colUniqueName = sprintf("%s", strtoupper(str_replace(".", "_", $listcolnames[$i])));
-							$criteria->addAsColumn($colUniqueName, $listcolnames[$i]);
-						}
-						//*******************************************************************************************
-						if (!in_array($colUniqueName, $headers_cols)) {
-							$headers_cols[] =  $colUniqueName;
-						}
-						break;
-					}
-				}
-				//***************************************************************************************************
-				$last_peer = sprintf("%sPeer", $className);
-			}
-			//*******************************************************************************************************
-			$results = $peername_main::doSelectStmt($criteria)->fetchAll(PDO::FETCH_ASSOC);
-			//*******************************************************************************************************
-			$writer = WriterEntityFactory::createXLSXWriter();
-			//*******************************************************************************************************
+			// Se consulta antes de abrir el cursor del reporte: con MARS desactivado la conexión
+			// no admite otra consulta mientras se leen las filas.
 			$dir_tmp = ParametroPeer::retrieveByPK(65)->getValortexto();
-			$publicUrl = sfConfig::get('publicUrl');
 			//*******************************************************************************************************
 			$filename = 'reporte_' . uniqid() . '_' . date('YmdGis') . '.xlsx';
 			$base_tmp = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . $dir_tmp;
 			$tempPath = $base_tmp . DIRECTORY_SEPARATOR . $filename;
 			//*******************************************************************************************************
+			// Los volúmenes grandes superan el tiempo por defecto de PHP; el archivo se termina
+			// aunque el usuario cierre la ventana antes de recibir la respuesta.
+			set_time_limit(0);
+			ignore_user_abort(true);
+			//*******************************************************************************************************
+			$writer = WriterEntityFactory::createXLSXWriter();
+			$writer->setDefaultRowStyle(ReporteDinamicoExporter::buildDataStyle());
 			$writer->openToFile($tempPath);
-			//*******************************************************************************************************
-			$headerStyle = (new StyleBuilder())
-				->setFontBold()
-				->setBackgroundColor(Color::LIGHT_BLUE)
-				->build();
-			//*******************************************************************************************************
-			$dataStyle = (new StyleBuilder())
-				->setFontSize(10)
-				->build();
-			//*******************************************************************************************************
-			// Encabezados
-			$headerRow = WriterEntityFactory::createRowFromArray($headers_cols, $headerStyle);
-			$writer->addRow($headerRow);
-			//*******************************************************************************************************
-			$batchRows = [];
-			$count = 0;
-			//*******************************************************************************************************
-			// Data rows 
-			foreach ($results as $rowData) {
-				$batchRows[] = WriterEntityFactory::createRowFromArray($rowData, $dataStyle);
-				$count++;
-				if ($count % 1000 == 0) {
-					$writer->addRows($batchRows);
-					unset($batchRows);
-					$batchRows = [];
-				}
-			}
-			//*******************************************************************************************************
-			if (!empty($batchRows)) {
-				$writer->addRows($batchRows);
-			}
-			//*******************************************************************************************************
+			ReporteDinamicoExporter::writeRows($writer, $export);
 			$writer->close();
 			//*******************************************************************************************************
 			// Verificar que el archivo se creó correctamente
@@ -456,16 +292,97 @@ class busqueda_avanzadaActions extends sfActions
 			$response_process['message'] = 'El reporte se genero correctamente';
 			$response_process['status'] = 200;
 			$response_process['url_download'] = $publicUrl . $dir_tmp . "/" . $filename;
+		} catch (InvalidArgumentException $e) {
+			$response_process['message'] = $e->getMessage();
 		} catch (PropelException $e) {
+			$this->logMessage('Exportacion reporte dinamico (XLSX): ' . $e->getMessage(), 'err');
 			$response_process['message'] = 'Ocurrio un error genrando los datos para el excel';
 		} catch (\Exception $e) {
+			$this->logMessage('Exportacion reporte dinamico (XLSX): ' . $e->getMessage(), 'err');
 			$response_process['message'] = 'Ocurrio un error interno en la aplicacion';
 		} catch (\Throwable $e) {
+			$this->logMessage('Exportacion reporte dinamico (XLSX): ' . $e->getMessage(), 'err');
 			$response_process['message'] = 'Ocurrio un error interno en el servidor';
 		}
 		//***********************************************************************************************************
 		$this->getResponse()->setContentType('application/json');
 		return $this->renderText(json_encode($response_process));
+	}
+
+	/**
+	 * Valida los campos elegidos para la exportación CSV y los deja en sesión para la descarga.
+	 * Se separa de la descarga porque esta se hace en streaming y ya no puede responder JSON.
+	 */
+	public function executePrepararCsv()
+	{
+		$this->verificaPrilegio("BUSQUEDA_AVANZADA_REPORTAR_DINAMICO");
+		$this->setLayout(false);
+		//**********************************************************************************************************
+		$response_process = array('status' => 400, 'message' => 'Error interno del servidor');
+		$fields = $this->getRequest()->getPostParameter('duallistbox_demo1');
+		//**********************************************************************************************************
+		try {
+			ReporteDinamicoExporter::prepareExport($fields);
+			$this->getUser()->setAttribute('rptdinamic_csv_fields', $fields, 'subscriber');
+			//*******************************************************************************************************
+			$response_process['status'] = 200;
+			$response_process['message'] = 'La descarga del CSV iniciará en unos segundos. Con muchos registros puede tardar varios minutos.';
+			$response_process['url_download'] = $this->getController()->genUrl('busqueda_avanzada/exportarCsv');
+		} catch (InvalidArgumentException $e) {
+			$response_process['message'] = $e->getMessage();
+		} catch (\Exception $e) {
+			$this->logMessage('Exportacion reporte dinamico (CSV): ' . $e->getMessage(), 'err');
+			$response_process['message'] = 'Ocurrio un error interno en la aplicacion';
+		}
+		//**********************************************************************************************************
+		$this->getResponse()->setContentType('application/json');
+		return $this->renderText(json_encode($response_process));
+	}
+
+	/**
+	 * Descarga el reporte en CSV escribiendo cada fila directamente al navegador, sin archivo
+	 * intermedio: la descarga empieza de inmediato y la memoria no crece con el volumen.
+	 */
+	public function executeExportarCsv()
+	{
+		$this->verificaPrilegio("BUSQUEDA_AVANZADA_REPORTAR_DINAMICO");
+		//**********************************************************************************************************
+		try {
+			$export = ReporteDinamicoExporter::prepareExport($this->getUser()->getAttribute('rptdinamic_csv_fields', null, 'subscriber'));
+		} catch (InvalidArgumentException $e) {
+			$this->getResponse()->setStatusCode(400);
+			return $this->renderText($e->getMessage());
+		}
+		//**********************************************************************************************************
+		set_time_limit(0);
+		//**********************************************************************************************************
+		// Excel en configuración regional es-CO usa ";" como separador de lista; el BOM UTF-8
+		// (activo por defecto en Spout) hace que muestre bien tildes y eñes.
+		$writer = WriterEntityFactory::createCSVWriter();
+		$writer->setFieldDelimiter(';');
+		//**********************************************************************************************************
+		// Cualquier buffer abierto retendría el archivo completo en memoria antes de enviarlo.
+		while (ob_get_level() > 0) {
+			ob_end_clean();
+		}
+		$writer->openToBrowser('reporte_' . date('YmdHis') . '.csv');
+		//**********************************************************************************************************
+		try {
+			ReporteDinamicoExporter::writeRows($writer, $export);
+			$writer->close();
+		} catch (\Throwable $e) {
+			$this->logMessage('Exportacion reporte dinamico (CSV): ' . $e->getMessage(), 'err');
+			// Las cabeceras ya se enviaron: se deja constancia dentro del archivo de que quedó incompleto.
+			// Si el fallo fue la conexión con el navegador, tampoco se puede escribir el aviso.
+			try {
+				$writer->addRow(WriterEntityFactory::createRowFromArray(array('*** EXPORTACION INCOMPLETA: ocurrio un error generando el reporte ***')));
+				$writer->close();
+			} catch (\Throwable $ignored) {
+			}
+		}
+		//**********************************************************************************************************
+		// La salida ya se envió completa; se detiene la acción para que Symfony no agregue cabeceras ni contenido.
+		throw new sfStopException();
 	}
 
 	public function executeFormGenerarReporte()

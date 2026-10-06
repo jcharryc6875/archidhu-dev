@@ -2463,6 +2463,41 @@ jQuery(document).ready(function ($) {
 		});
 	});
 
+	// desde exportarExcelSuccess.php: el CSV se descarga en streaming desde un iframe oculto
+	// para que la ventana actual no navegue y la descarga arranque en cuanto llegan las primeras filas.
+	jQuery('body').on('click', '#expCsv', function (event) {
+		event.preventDefault();
+		$.ajax({
+			type: 'POST',
+			url: '/backend.php/busqueda_avanzada/prepararCsv',
+			data: jQuery(this.form.elements).serialize(),
+			dataType: 'json',
+			cache: false,
+			beforeSend: function () {
+				$.LoadingStructData();
+			},
+			success: function (data) {
+				if (data.status == 200) {
+					var $frame = jQuery('#rptdinamic_csv_frame');
+					if ($frame.length === 0) {
+						$frame = jQuery('<iframe id="rptdinamic_csv_frame" class="hidden"></iframe>').appendTo('body');
+					}
+					$frame.attr('src', data.url_download + '?t=' + new Date().getTime());
+					toastr.success(data.message);
+				}
+				else {
+					toastr.warning(data.message);
+				}
+			},
+			error: function () {
+				toastr.error('Error Interno del Servidor!');
+			},
+			complete: function () {
+				$.CloseLoadingStructData();
+			}
+		});
+	});
+
 	//para escoger el reporte y cargarlo a la parte derecha.
 	jQuery('body').on('change', '.reportuserlist', async function (event) {
 		var usuarioReporteId = jQuery(this).val();
@@ -3081,7 +3116,7 @@ jQuery(document).ready(function ($) {
 				<div id="confirmationModal" class="modal-overlay">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h2 class="modal-title">⚠️ Comunicaci&oacute;n Enviada</h2>
+							<h2 class="modal-title">⚠️ Radicando Comunicaci&oacute;n</h2>
 							<p class="modal-message" id="modalMessage">
 								${message}.
 							</p>
