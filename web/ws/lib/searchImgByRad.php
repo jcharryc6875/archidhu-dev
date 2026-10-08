@@ -4003,7 +4003,7 @@ function CreateNewDocExpediente($EntSecurity = array(), $ArcAddDocumento = array
 			//***************************************************************************************************************
 			$extension = strtolower(pathinfo($archivo_nombre, PATHINFO_EXTENSION));
 			if (empty($extension)) {
-				return responseErrorDataExp('Error, el nombre del archivo no es valido');
+				return responseErrorDataExp('Error, el nombre del archivo no es valido, la extensión no se encuentra definida');
 			}
 			//***************************************************************************************************************
 			$file_vars = pathinfo($filedir_target . $archivo_nombre);
@@ -4892,7 +4892,7 @@ function SearchExpedienteList($EntSecurity = array(), $TermSearchExpediente = ar
 		$params_search = [];
 		$params_search['numero_expediente'] = $numero_expediente;
 		$params_search['codigo_dependencia'] = $codigo_dependencia;
-		$params_search['subserie_id'] = $subserie;
+		$params_search['subserie_id'] = $subserie->getPrimaryKey();
 		$params_search['fase_archivo'] = $int_fase_archivo;
 		$params_search['identificacion_interesado'] = $identificacion_interesado;
 		$params_search['pnombre_interesado'] = $pnombre_interesado;

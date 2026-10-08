@@ -1223,6 +1223,9 @@ class com_enviadaActions extends sfActions
             $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
             $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, $this->getRequestParameter('estadocomenviada_id'));
             $this->parametros .= "&estadocomenviada_id=" . $this->getRequestParameter('estadocomenviada_id');
+            if ($this->estado_com_enviada == 1) {
+                $this->isBorradorCom = true;
+            }
         }
         //*************************************************************************************************
         if ($this->getRequestParameter('estadodigitalizacion_id')) {

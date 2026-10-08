@@ -498,7 +498,7 @@ class com_recibidaActions extends sfActions
       //************************************************************************************************
       if ($comrecibida_id) {
         $simadSoap = new WsSimadUariv();
-        $response_data = $simadSoap->loadWsInfoRadicadoEntrada($comrecibida_id,false);
+        $response_data = $simadSoap->loadWsInfoRadicadoEntrada($comrecibida_id, false);
       } else {
         return "";
         $response_data = array('status' => $status, 'message' => 'Error la informaci&oacute; no es valida');
@@ -623,7 +623,7 @@ class com_recibidaActions extends sfActions
     $this->mensajeListaVacia = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
     if ($pager->getNbResults() == 0) {
       if (trim($this->getRequestParameter('radicado'))) {
-        $countSinPermiso = ComRecibidaPeer::doCount((new Criteria())->add(ComRecibidaPeer::RADICADO, '%' . trim($this->getRequestParameter('radicado')) . '%', Criteria::LIKE));
+        $countSinPermiso = ComRecibidaPeer::doCount((new Criteria())->add(ComRecibidaPeer::RADICADO, trim($this->getRequestParameter('radicado')) . '%', Criteria::LIKE));
       } else {
         $countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('ComrecibidaInteresadosPeer', ComrecibidaInteresadosPeer::INTERESADO_ID);
       }
@@ -2611,11 +2611,11 @@ class com_recibidaActions extends sfActions
     //*********************************************************************************************
     $path = "{$pathzip}/{$zipFileName}";
     $stream = fopen($path, 'w');
-	//*********************************************************************************************
+    //*********************************************************************************************
     $zip = new ZipStream($zipFileName, array(
       ZipStream::OPTION_OUTPUT_STREAM => $stream
     ));
-	//*********************************************************************************************
+    //*********************************************************************************************
     $zip->opt['ContentType'] = 'application/octet-stream';
     //*********************************************************************************************
     try {
@@ -4050,7 +4050,7 @@ class com_recibidaActions extends sfActions
     $nuid_interesado = trim($this->getRequestParameter('nuid_interesado'));
     if (!empty($nuid_interesado)) {
       $expaddjoin_interesado = true;
-      $c->add(InteresadosPeer::NUMERO_IDENTIFICACION, '%' . $nuid_interesado . '%', Criteria::LIKE);
+      $c->add(InteresadosPeer::NUMERO_IDENTIFICACION, $nuid_interesado . '%', Criteria::LIKE);
       $this->parametros .= "&nuid_interesado=" . $nuid_interesado;
     }
     /**************************************************************************************/
@@ -4306,7 +4306,7 @@ class com_recibidaActions extends sfActions
       }
       $c->add(ComRecibidaPeer::PERIODO_ID, $periodo_id);
       $c->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA, 1);
-	  $c->add(ComrecibidaUsuarioPeer::ESTADOCOMRECIBIDA_ID, array(5, 13, 14), Criteria::NOT_IN);
+      $c->add(ComrecibidaUsuarioPeer::ESTADOCOMRECIBIDA_ID, array(5, 13, 14), Criteria::NOT_IN);
       $this->parametros .= "&porProcesoCom=" . trim($this->getRequestParameter('porProcesoCom'));
       $consulta_buzones = true;
       $consulta_usuarios = true;
