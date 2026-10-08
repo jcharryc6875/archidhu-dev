@@ -1005,7 +1005,7 @@ class contenido_documentalActions extends sfActions
 			$addfile = null;
 			//$file_digit = null;
 			$ruta_file = $object['RUTA'];
-			if (empty($ruta_file) || empty($object['PATH_ABSOLUTE'])) {
+			if (empty($ruta_file) || (empty($object['PATH_ABSOLUTE']) && empty($object['VINCULO_REGISTRO']))) {
 				continue;
 			}
 
