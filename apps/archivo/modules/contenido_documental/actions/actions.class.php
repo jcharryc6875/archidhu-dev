@@ -965,10 +965,10 @@ class contenido_documentalActions extends sfActions
 		//********************************************************************************
 		$nro_expediente = simad_util::sanitizeNameBySaveFile(trim($unidad_documental->getCodigoBarras()));
 		$nombre_expediente = simad_util::sanitizeNameBySaveFile(trim($unidad_documental->getTitulo()));
-		$folder_bzip_raw = sprintf("%s_%s",$nro_expediente,$nombre_expediente);
+		$folder_bzip_raw = sprintf("%s_%s", $nro_expediente, $nombre_expediente);
 		//********************************************************************************
 		$MAX_FOLDER_LENGTH = 80;
-		if(strlen($folder_bzip_raw) > $MAX_FOLDER_LENGTH){
+		if (strlen($folder_bzip_raw) > $MAX_FOLDER_LENGTH) {
 			$folder_bzip = substr($folder_bzip_raw, 0, $MAX_FOLDER_LENGTH);
 			// Asegurar que no quede cortado en medio de un underscore
 			$folder_bzip = rtrim($folder_bzip, '_- ');
@@ -984,27 +984,30 @@ class contenido_documentalActions extends sfActions
 		$list_docs = ContenidoUnidadDocumentalPeer::getListDocsDownload($unidaddocumental_id);
 		//********************************************************************************
 		$zip = new ZipArchive();
-		$zipFileName = $nro_expediente.' - '.md5(date("YmdGis")).".zip";
+		$zipFileName = $nro_expediente . ' - ' . md5(date("YmdGis")) . ".zip";
 		//$zipFileName = md5(date("YmdGis")).".zip";
 		//********************************************************************************
-		$base_zpath = sfConfig::get('sf_shared_tmp_dir').DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.'dwasync';
+		$base_zpath = sfConfig::get('sf_shared_tmp_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . 'dwasync';
 		simad_util::createPath($base_zpath);
-		$pathzip = $base_zpath.DIRECTORY_SEPARATOR.$zipFileName;
+		$pathzip = $base_zpath . DIRECTORY_SEPARATOR . $zipFileName;
 		//********************************************************************************
-		if(file_exists($pathzip)) { unlink ($pathzip); }
-		if ($zip->open($pathzip, ZIPARCHIVE::CREATE) != TRUE) { die ("Could not open archive"); }
+		if (file_exists($pathzip)) {
+			unlink($pathzip);
+		}
+		if ($zip->open($pathzip, ZIPARCHIVE::CREATE) != TRUE) {
+			die("Could not open archive");
+		}
 		//********************************************************************************
 		set_time_limit(0);
 		ini_set('max_execution_time', '1800');
 		//********************************************************************************
-		while($object = $list_docs->fetch())
-		{
+		while ($object = $list_docs->fetch()) {
 			$addfile = null;
 			//$file_digit = null;
 			$ruta_file = $object['RUTA'];
-			if(empty($ruta_file) || empty($object['PATH_ABSOLUTE'])){
+			if (empty($ruta_file) || empty($object['PATH_ABSOLUTE'])) {
 				continue;
-			}			
+			}
 
 			if ($object['VINCULO_REGISTRO'] == 1) {
 				if (strpos($ruta_file, 'cominterna_id')) {
@@ -1043,19 +1046,19 @@ class contenido_documentalActions extends sfActions
 				$path_relative = trim($object['PATH_RELATIVE'], '/\\');
 				$ruta_file_encoded = mb_convert_encoding($ruta_file, 'UTF-8');
 				$source_path = $path_absolute . DIRECTORY_SEPARATOR . $path_relative . DIRECTORY_SEPARATOR . $ruta_file_encoded;
-				
-				if(file_exists($source_path)){ 
-					$addfile = $source_path; 
+
+				if (file_exists($source_path)) {
+					$addfile = $source_path;
 				} else {
 					// Fallback sin encoding
 					$ruta_file_raw = trim($ruta_file);
 					$source_path_raw = $path_absolute . DIRECTORY_SEPARATOR . $path_relative . DIRECTORY_SEPARATOR . $ruta_file_raw;
-					if(file_exists($source_path_raw)){
+					if (file_exists($source_path_raw)) {
 						$addfile = $source_path_raw;
 					} else {
 						file_put_contents(
-							sfConfig::get('sf_log_dir').DIRECTORY_SEPARATOR.$unidaddocumental_id.'_AsyncDownloadDocs.log', 
-							"NO ENCONTRADO: " . $source_path . PHP_EOL, 
+							sfConfig::get('sf_log_dir') . DIRECTORY_SEPARATOR . $unidaddocumental_id . '_AsyncDownloadDocs.log',
+							"NO ENCONTRADO: " . $source_path . PHP_EOL,
 							FILE_APPEND
 						);
 						continue;
@@ -1063,10 +1066,10 @@ class contenido_documentalActions extends sfActions
 				}
 			}
 			//****************************************************************************
-			if(empty($addfile) || !file_exists($addfile)){
+			if (empty($addfile) || !file_exists($addfile)) {
 				file_put_contents(
-					sfConfig::get('sf_log_dir').DIRECTORY_SEPARATOR.$unidaddocumental_id.'_AsyncDownloadDocs.log', 
-					"ADDFILE INVALIDO: ".($addfile ?? 'null').PHP_EOL, 
+					sfConfig::get('sf_log_dir') . DIRECTORY_SEPARATOR . $unidaddocumental_id . '_AsyncDownloadDocs.log',
+					"ADDFILE INVALIDO: " . ($addfile ?? 'null') . PHP_EOL,
 					FILE_APPEND
 				);
 				continue;
@@ -1090,10 +1093,10 @@ class contenido_documentalActions extends sfActions
 		}
 		//********************************************************************************
 		$close_result = $zip->close();
-		if(!$close_result){
+		if (!$close_result) {
 			file_put_contents(
-				sfConfig::get('sf_log_dir').DIRECTORY_SEPARATOR.$unidaddocumental_id.'_AsyncDownloadDocs.log',
-				"ERROR: zip->close() falló".PHP_EOL, 
+				sfConfig::get('sf_log_dir') . DIRECTORY_SEPARATOR . $unidaddocumental_id . '_AsyncDownloadDocs.log',
+				"ERROR: zip->close() falló" . PHP_EOL,
 				FILE_APPEND
 			);
 		}
@@ -1848,20 +1851,20 @@ class contenido_documentalActions extends sfActions
 						$absolute_path = $contenido_unidad_documental->getPathAbsolute();
 						$relative_path = $contenido_unidad_documental->getPathRelative();
 						//Normalizar separadores al construir la ruta
-					$absolute_path = rtrim($absolute_path, '/\\');
-					$relative_path = trim($relative_path, '/\\');
-					$basename_file = mb_convert_encoding(basename($urlfile[0]), 'UTF-8');
-					//**************************************************************************************
-					//$fullpath = iconv('utf-8', 'cp1252',$absolute_path.DIRECTORY_SEPARATOR.$relative_path.DIRECTORY_SEPARATOR.basename($urlfile[0]));
-					$fullpath = $absolute_path.DIRECTORY_SEPARATOR.$relative_path.DIRECTORY_SEPARATOR.$basename_file;
-					$file_source = simad_util::NormalizePath($fullpath);
-					$file_source_extended = simad_util::toExtendedPath($file_source);
+						$absolute_path = rtrim($absolute_path, '/\\');
+						$relative_path = trim($relative_path, '/\\');
+						$basename_file = mb_convert_encoding(basename($urlfile[0]), 'UTF-8');
+						//**************************************************************************************
+						//$fullpath = iconv('utf-8', 'cp1252',$absolute_path.DIRECTORY_SEPARATOR.$relative_path.DIRECTORY_SEPARATOR.basename($urlfile[0]));
+						$fullpath = $absolute_path . DIRECTORY_SEPARATOR . $relative_path . DIRECTORY_SEPARATOR . $basename_file;
+						$file_source = simad_util::NormalizePath($fullpath);
+						$file_source_extended = simad_util::toExtendedPath($file_source);
 						$file_source = simad_util::NormalizePath($fullpath);
 						$extension = pathinfo($file_source, PATHINFO_EXTENSION);
 						//**************************************************************************************
 						//este bloque es necesario, porq hay nombres de archivo que utilizan el caracter coma(,)
 						//esto hace que el bloque anterior falle al hacer el split
-						if(!file_exists($file_source) && !file_exists($file_source_extended)){
+						if (!file_exists($file_source) && !file_exists($file_source_extended)) {
 							$urlfile = trim($contenido_unidad_documental->getRuta());
 							$fullpath = iconv('utf-8', 'cp1252', $absolute_path . DIRECTORY_SEPARATOR . $relative_path . DIRECTORY_SEPARATOR . basename($urlfile));
 							$file_source = simad_util::NormalizePath($fullpath);
@@ -1874,12 +1877,14 @@ class contenido_documentalActions extends sfActions
 						//Intentar con ruta extendida primero, luego ruta normal
 						$file_to_use = simad_util::fileExistsLongPath($file_source);
 						//**************************************************************************************
-						if(!empty($file_to_use)){
-						if(!simad_util::copyLongPath($file_to_use, $tmpfile_path)){
-							if($nlog){ simad_util::writetolog($logfile,"Ocurrio un error con el archivo o este no existe en el servidor: ".$file_to_use. ' ContenidoDoc: '.$contenido_unidad_documental->getPrimaryKey()); }
+						if (!empty($file_to_use)) {
+							if (!simad_util::copyLongPath($file_to_use, $tmpfile_path)) {
+								if ($nlog) {
+									simad_util::writetolog($logfile, "Ocurrio un error con el archivo o este no existe en el servidor: " . $file_to_use . ' ContenidoDoc: ' . $contenido_unidad_documental->getPrimaryKey());
+								}
 								$response_process['message'] = 'Ocurrio un error con el archivo o este no existe en el servidor, error al acceder a los archivos de visualización';
 							} else {
-								$url_viewer = $base_web . '/tmp/' . $filename
+								$url_viewer = $base_web . '/tmp/' . $filename;
 								if (strtolower($extension) == 'pdf') {
 									$url_viewer = $base_web . '/viewerEx.php?fileview=' . $filename;
 								}
@@ -2190,6 +2195,7 @@ class contenido_documentalActions extends sfActions
 				$modulo_com = null;
 				$comunicacion_pk = null;
 				if (!empty($contenido_unidad_documental->getModuloId()) && !empty($contenido_unidad_documental->getConsecutivoId())) {
+					$comunicacion_pk = $contenido_unidad_documental->getConsecutivoId();
 					if ($contenido_unidad_documental->getModuloId() == ModulesEnable::ComRecibida) {
 						$modulo_com = 'com_recibida';
 					} elseif ($contenido_unidad_documental->getModuloId() == ModulesEnable::ComEnviada) {
