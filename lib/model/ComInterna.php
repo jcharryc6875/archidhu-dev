@@ -161,13 +161,23 @@ class ComInterna extends BaseComInterna
                     $copias_list[] = $usobject;
                 } elseif ($usuario_com->getRolusuariocominternaId() == 4) //destinatario
                 {
-                    $list_users['nombre_destino'] = $usuario_com->getUsuario()->getNombreAll();
-                    $list_users['cargo_udestino'] = $usuario_com->getCargoUsuario()->getCargo()->getDescripcion();
-                    $list_users['area_udestino'] = $usuario_com->getUsuario()->getDependencia()->getNombre();
-                    $list_users['regional_udestino'] = $usuario_com->getUsuario()->getRegional()->getDescripcion();
-                    $list_users['prefijo_udestino'] = $usuario_com->getUsuario()->getPrefijo();
-                    $list_users['email_udestino'] = $usuario_com->getUsuario()->getEmail();
-                    $list_users['nuid_udestino'] = $usuario_com->getUsuario()->getCedula();
+                    if ($usuario_com->getEstaAsignada()) {
+                        $list_users['nombre_destino'] = $usuario_com->getUsuario()->getNombreAll();
+                        $list_users['cargo_udestino'] = $usuario_com->getCargoUsuario()->getCargo()->getDescripcion();
+                        $list_users['area_udestino'] = $usuario_com->getUsuario()->getDependencia()->getNombre();
+                        $list_users['regional_udestino'] = $usuario_com->getUsuario()->getRegional()->getDescripcion();
+                        $list_users['prefijo_udestino'] = $usuario_com->getUsuario()->getPrefijo();
+                        $list_users['email_udestino'] = $usuario_com->getUsuario()->getEmail();
+                        $list_users['nuid_udestino'] = $usuario_com->getUsuario()->getCedula();
+                    } elseif (empty($list_users['nuid_udestino'])) {
+                        $list_users['nombre_destino'] = $usuario_com->getUsuario()->getNombreAll();
+                        $list_users['cargo_udestino'] = $usuario_com->getCargoUsuario()->getCargo()->getDescripcion();
+                        $list_users['area_udestino'] = $usuario_com->getUsuario()->getDependencia()->getNombre();
+                        $list_users['regional_udestino'] = $usuario_com->getUsuario()->getRegional()->getDescripcion();
+                        $list_users['prefijo_udestino'] = $usuario_com->getUsuario()->getPrefijo();
+                        $list_users['email_udestino'] = $usuario_com->getUsuario()->getEmail();
+                        $list_users['nuid_udestino'] = $usuario_com->getUsuario()->getCedula();
+                    }
                 } elseif ($usuario_com->getRolusuariocominternaId() == 5) //revisores
                 {
                     $usobject = array();

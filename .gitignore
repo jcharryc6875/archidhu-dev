@@ -56,3 +56,4 @@ CLAUDE.md
 *.gz
 *.rar
 *.7z
+graphify-out/
