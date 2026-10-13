@@ -477,7 +477,7 @@ class com_internaActions extends sfActions
                 if ($this->getRequestParameter('revisorUserId')) {
                     $revisorUserId = $this->getRequestParameter('revisorUserId');
                     $cargousuarioIdRevisor = $this->getRequestParameter('cargousuarioIdRevisor');
-                    $usurioFirma = ComEnviadaPeer::insertaEnviadaUsuarios($revisorUserId, $com_interna->getPrimaryKey(), 4, $cargousuarioIdRevisor, 1, 4, $esta_asignada);
+                    $this->insertaCominternaUsuario($revisorUserId, $com_interna->getPrimaryKey(), 5, $cargousuarioIdRevisor, 1);
                     $esta_asignada = 0;
                 }
                 //****************************************************************************************
