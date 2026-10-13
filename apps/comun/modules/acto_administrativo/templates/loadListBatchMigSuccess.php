@@ -31,6 +31,7 @@ use_helper('jQuery');
                                 <th class="text-center">Asunto</th>
                                 <th class="text-center" style="width: 15;">Fecha Creaci&oacute;n</th>
                                 <th class="text-center" style="width: 15;">Estado</th>
+                                <th class="text-center">Observaci&oacute;n</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,6 +42,7 @@ use_helper('jQuery');
                                     <td><?php echo $item->getAsuntoCom(); ?></td>
                                     <td class="text-center"><?php echo $item->getFechaCreacion();; ?></td>
                                     <td class="text-center"><?php echo $item->getEstadoMigracion();; ?></td>
+                                    <td><?php echo $item->getMensajeInfo(); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

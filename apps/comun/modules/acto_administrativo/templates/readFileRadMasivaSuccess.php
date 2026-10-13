@@ -22,7 +22,7 @@ $count_header = 0;
 			</div>
 
 			<div class="panel-body">
-				<div class="alert alert-default"><strong>No existen Registros</strong>, Intente cargar el archivo nuevamente.</div>
+				<div class="alert alert-default"><strong>No existen Registros</strong>, Intente cargar el archivo nuevamente. <?php echo $msg_error; ?></div>
 			</div>
 		</div>
 	<?php else: ?>

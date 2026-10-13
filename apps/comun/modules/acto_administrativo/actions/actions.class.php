@@ -1040,7 +1040,14 @@ class acto_administrativoActions extends sfActions
     if ($this->getRequest()->hasFiles() && $this->getRequest()->getFileName('file')) {
       $file_vars = pathinfo($this->getRequest()->getFileName('file'));
       $util_simad = new simad_util();
-      $extension_file = $file_vars['extension'];
+      $extension_file = isset($file_vars['extension']) ? $file_vars['extension'] : '';
+      //***************************************************************************************
+      if (strtolower($extension_file) !== 'xlsx') {
+        $this->inputFileName = '';
+        $this->cod_msg = 1;
+        $this->msg_error = "El archivo de datos debe ser un Excel (.xlsx). Verifique que no seleccionó el archivo comprimido de documentos.";
+        return;
+      }
       //***************************************************************************************
       $info_file = new SplFileInfo($this->getRequest()->getFileName('file'));
       $cleanfilename = $util_simad->clean_name_fileinfo($info_file); //limpiar el nombre del archivo
@@ -1060,6 +1067,39 @@ class acto_administrativoActions extends sfActions
       $this->cod_msg = 1;
       $this->msg_error = "Debe seleccionar el archivo que contiene los registros para radicar";
     }
+  }
+
+  /**
+   * acto_administrativoActions::executeFileDocsRadMasiva()
+   * Carga el archivo comprimido con los documentos de la radicacion masiva, en la misma
+   * carpeta temporal donde se leen luego los documentos al radicar.
+   * @return
+   */
+  public function executeFileDocsRadMasiva()
+  {
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    $this->getResponse()->setContentType('application/json');
+    if (!$this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_RADICACION_MASIVA", $usuariologuiado)) {
+      return $this->renderText(json_encode(array('status' => 400, 'file_name' => '', 'message' => 'Esta funcionalidad no esta permitida')));
+    }
+    if (!$this->getRequest()->hasFiles() || !$this->getRequest()->getFileName('filedocs')) {
+      return $this->renderText(json_encode(array('status' => 400, 'file_name' => '', 'message' => 'Debe enviar un archivo comprimido con todos los documentos para radicar')));
+    }
+    //*******************************************************************************************
+    $upload_dir = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp';
+    $directorio = simad_util::createPath($upload_dir);
+    $util_simad = new simad_util();
+    $cleanfilename = $util_simad->clean_name_fileinfo(new SplFileInfo($this->getRequest()->getFileName('filedocs')));
+    $file_name = simad_util::uniquename($upload_dir, sha1($cleanfilename . time()), ".zip");
+    $inputFileName = $directorio . DIRECTORY_SEPARATOR . $file_name;
+    $this->getRequest()->moveFile('filedocs', $inputFileName);
+    //*******************************************************************************************
+    $mime_trust = array('application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed');
+    if (!simad_util::CheckIsValidFormatFile($inputFileName, $mime_trust)) {
+      unlink($inputFileName);
+      return $this->renderText(json_encode(array('status' => 400, 'file_name' => '', 'message' => 'El formato del archivo no esta permitido')));
+    }
+    return $this->renderText(json_encode(array('status' => 200, 'file_name' => $file_name, 'message' => 'El archivo se cargo correctamente')));
   }
 
   /**

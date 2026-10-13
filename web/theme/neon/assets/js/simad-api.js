@@ -1775,7 +1775,9 @@ jQuery(document).ready(function ($) {
 		});
 	});
 
+	// El endpoint de carga lo define cada modulo en el boton (data-endpoint).
 	jQuery('body').on('click', '#docs_upload', function (event) {
+		var endpoint = $(this).data('endpoint');
 		var files = $('#filedocs')[0].files;
 		// Check file selected or not
 		if (files.length > 0) {
@@ -1786,53 +1788,7 @@ jQuery(document).ready(function ($) {
 				form_data.append('filedocs', files[0]);
 
 				$.ajax({
-					url: '/enviada.php/com_enviada/fileDocsRadMasiva',
-					type: 'post',
-					data: form_data,
-					contentType: false,
-					processData: false,
-					beforeSend: function () {
-						$.LoadingStructData();
-					},
-					success: function (response) {
-						if (response.status == 200) {
-							$("#fdocsremoteupdate").html('<input type="hidden" name="filedocsupload" id="filedocsupload" value="' + response.message + '"></input>');
-							$("#fdocsremoteupdate").append('<div class="alert alert-success"><strong>Excelente!</strong> ' + response.message + '</div>');
-							$("#fdocsremoteupdate").show();
-							$("#dataufiledocs").val(response.file_name);
-							$("#filedocsupload").val(response.file_name);
-							$(".upinfofiles").remove();
-						} else {
-							$("#fdocsremoteupdate").hide();
-							$("#fdocsremoteupdate").empty();
-							$("#dataufiledocs").val('');
-							$("#filedocsupload").val('');
-							alert('Error al subir el archivo ' + response.message);
-						}
-					},
-					complete: function () {
-						$.CloseLoadingStructData();
-					},
-				});
-			} else {
-				alert("El archivo seleccionado no esta permitido.");
-			}
-		} else {
-			alert("Debe seleccionar un archivo.");
-		}
-	});
-
-	jQuery('body').on('click', '#docs_upload', function (event) {
-		var files = $('#filedocs')[0].files;
-		if (files.length > 0) {
-			var extension = $('#filedocs').val().split('.').pop().toLowerCase();
-			var validFileExtensions = ['zip', '7z', 'rar'];
-			if ($.inArray(extension, validFileExtensions) != -1) {
-				var form_data = new FormData();
-				form_data.append('filedocs', files[0]);
-
-				$.ajax({
-					url: '/recibida.php/com_recibida/fileDocsRadMasiva',
+					url: endpoint,
 					type: 'post',
 					data: form_data,
 					contentType: false,

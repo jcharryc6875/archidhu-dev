@@ -156,7 +156,7 @@ $currentUser = $sf_user->getAttribute('username', '', 'subscriber');
                             echo input_file_tag('filedocs', array('class' => 'docsupload required', 'width' => '40'));
                             echo '</div></div>';
                             echo '<div class="col-sm-offset-1 col-sm-4"><div class="form-group">';
-                            echo '<input type="button" class="btn btn-success" value="Enviar Documentos..." id="docs_upload">';
+                            echo '<input type="button" class="btn btn-success" value="Enviar Documentos..." id="docs_upload" data-endpoint="' . url_for('acto_administrativo/fileDocsRadMasiva') . '">';
                             echo '&nbsp;&nbsp;&nbsp;';
                             echo button_to('Cancelar', 'acto_administrativo/radicarMasivas', array('class' => "btn btn-red"));
                             echo '</div></div>';

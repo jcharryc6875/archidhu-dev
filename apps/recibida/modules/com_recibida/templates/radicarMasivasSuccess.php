@@ -152,7 +152,7 @@
                                         echo input_file_tag('filedocs',array ('class' => 'docsupload required', 'width' => '40'));
                                         echo '</div></div>';
                                         echo '<div class="col-sm-offset-1 col-sm-4"><div class="form-group">';
-                                        echo '<input type="button" class="btn btn-success" value="Enviar Documentos..." id="docs_upload">';
+                                        echo '<input type="button" class="btn btn-success" value="Enviar Documentos..." id="docs_upload" data-endpoint="' . url_for('com_recibida/fileDocsRadMasiva') . '">';
                                         echo '&nbsp;&nbsp;&nbsp;';
                                         echo jq_button_to_function('Cancelar','javascript:parent.jQuery.CloseModalSIMAD();',array('class'=>"btn btn-red"));                                            
                                         echo '</div></div>';

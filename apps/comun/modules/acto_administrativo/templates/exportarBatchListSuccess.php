@@ -18,7 +18,9 @@
             <th style="background-color:#bdedbc;">Fecha Creaci&oacute;n</th>
             <th style="background-color:#bdedbc;">C&oacute;digo Dependencia</th>
             <th style="background-color:#bdedbc;">Nombre Dependencia</th>
-            <th style="background-color:#bdedbc;">C&oacute;digo Subserie</th>  
+            <th style="background-color:#bdedbc;">C&oacute;digo Subserie</th>
+            <th style="background-color:#bdedbc;">Estado</th>
+            <th style="background-color:#bdedbc;">Observaci&oacute;n</th>
         </tr>
     </thead>
     <tbody>
@@ -30,6 +32,8 @@
                 <td class="text-center"><?php echo $com_migmasivo->getCodDependencia(); ?></td>
                 <td class="text-center"><?php echo htmlentities($com_migmasivo->getNombreDependencia()); ?></td>
                 <td class="text-center"><?php echo $com_migmasivo->getSubserieCodigo(); ?></td>
+                <td class="text-center"><?php echo $com_migmasivo->getEstadoMigracion(); ?></td>
+                <td><?php echo htmlentities($com_migmasivo->getMensajeInfo()); ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>
