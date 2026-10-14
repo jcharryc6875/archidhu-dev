@@ -2136,8 +2136,11 @@ jQuery(document).ready(function ($) {
 
 		if (detalle) {
 			$detalles.show();
-			$detalles.prepend(`<div>${detalle}</div>`);
-			$detalles.scrollTop(0);
+			// Sigue al ultimo registro solo si el usuario ya esta al final; si subio a revisar, no lo mueve.
+			var el = $detalles[0];
+			var alFinal = (el.scrollHeight - el.scrollTop - el.clientHeight) < 30;
+			$detalles.append(`<div>${detalle}</div>`);
+			if (alFinal) { $detalles.scrollTop(el.scrollHeight); }
 		}
 
 		if (porcentaje === 100) {

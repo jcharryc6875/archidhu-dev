@@ -1270,6 +1270,24 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
      */
     private static function processActoAdministrativoRow($row, $usuario_origen, $ucargo_origen, $outfile_zip, $filedir_target, $firma_electronica, array &$ciudad_codigo, array &$dependencia_cod, array &$lexpedientes, array &$lcomtipo_servicio)
     {
+        try {
+            $response = ComMigmasivoPeer::processActoAdministrativoRowBody($row, $usuario_origen, $ucargo_origen, $outfile_zip, $filedir_target, $firma_electronica, $ciudad_codigo, $dependencia_cod, $lexpedientes, $lcomtipo_servicio);
+        } catch (\Throwable $th) {
+            $response = array('status' => 400, 'message' => 'Error interno del servidor: ' . $th->getMessage());
+        }
+        //Toda fila que falla debe quedar con el motivo en observaciones, incluso si el fallo
+        //ocurrio antes de que el proceso alcanzara a registrarlo.
+        if ($response['status'] != 200 && empty(trim($row->getMensajeInfo()))) {
+            $row->setEstadoMigracion('ERROR RADICANDO');
+            $row->setUsuarioId($usuario_origen->getPrimaryKey());
+            $row->setMensajeInfo(mb_substr($response['message'], 0, 500));
+            $row->save();
+        }
+        return $response;
+    }
+
+    private static function processActoAdministrativoRowBody($row, $usuario_origen, $ucargo_origen, $outfile_zip, $filedir_target, $firma_electronica, array &$ciudad_codigo, array &$dependencia_cod, array &$lexpedientes, array &$lcomtipo_servicio)
+    {
         $params = array();
         $estado_documento = 1;
         //******************************************************************************
