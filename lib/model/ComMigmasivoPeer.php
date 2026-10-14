@@ -1569,6 +1569,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             //**************************************************************************
             $row->setEstadoMigracion('RADICADO');
             $row->setRadicadoSalida($acto_administrativo->getRadicadoCompuesto());
+            $row->setRadicadoGenerado($acto_administrativo->getRadicadoCompuesto());
             $row->setUsuarioId($usuario_origen->getPrimaryKey());
             $row->setFechaRadicado(date("Y-m-d G:i:s"));
             $row->save();
