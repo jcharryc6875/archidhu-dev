@@ -1943,7 +1943,7 @@ class unidad_documentalActions extends sfActions
 			$list_docs = is_object($list_docs) ? $list_docs->fetchAll() : array();
 			//*****************************************************************************************************
 			foreach ($list_docs as $object) {
-				$addfile = $this->getPathFileToDownload($object);
+				$addfile = ContenidoUnidadDocumentalPeer::getPathFileToDownload($object);
 				if (empty($addfile)) {
 					$omitted++;
 					$this->logMessage('AsyncDownloadDocs: documento sin archivo DocId_' . $object['CONTENIDOUNIDADDOCUMENTAL_ID'], 'warning');
@@ -1979,49 +1979,6 @@ class unidad_documentalActions extends sfActions
 			'message' => $message,
 			'url_descarga' => "/tmp/" . $zipFileName
 		)));
-	}
-
-	/**
-	 * unidad_documentalActions::getPathFileToDownload()
-	 * ruta fisica del archivo de un documento del expediente, ya sea cargado directamente o vinculado a una comunicacion/acto
-	 * @param array $object fila de ContenidoUnidadDocumentalPeer::getListDocsDownload()
-	 * @return string|null null si el archivo no existe
-	 */
-	private function getPathFileToDownload($object)
-	{
-		$ruta_file = $object['RUTA'];
-		if (empty($ruta_file)) {
-			return null;
-		}
-		//********************************************************************************************************
-		if ($object['VINCULO_REGISTRO'] == 1) {
-			$peers = array(
-				'cominterna_id' => 'ComInternaPeer',
-				'comenviada_id' => 'ComEnviadaPeer',
-				'comrecibida_id' => 'ComRecibidaPeer',
-				'actoadministrativo_id' => 'ActoAdministrativoPeer'
-			);
-			foreach ($peers as $key => $peer) {
-				if (strpos($ruta_file, $key)) {
-					$id = basename($ruta_file);
-					$registro = empty($id) ? null : call_user_func(array($peer, 'retrieveByPK'), $id);
-					$path = $registro ? $registro->getPathImageDigitByCom() : null;
-					return (!empty($path) && file_exists($path)) ? $path : null;
-				}
-			}
-			return null;
-		}
-		//********************************************************************************************************
-		if (empty($object['PATH_ABSOLUTE'])) {
-			return null;
-		}
-		$base = rtrim($object['PATH_ABSOLUTE'], '/\\') . DIRECTORY_SEPARATOR . trim($object['PATH_RELATIVE'], '/\\') . DIRECTORY_SEPARATOR;
-		foreach (array(mb_convert_encoding($ruta_file, 'UTF-8'), trim($ruta_file)) as $candidate) {
-			if (file_exists($base . $candidate)) {
-				return $base . $candidate;
-			}
-		}
-		return null;
 	}
 
 	// PARA STICKER POR UBICACION
