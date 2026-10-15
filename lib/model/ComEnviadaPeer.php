@@ -382,7 +382,7 @@ class ComEnviadaPeer extends BaseComEnviadaPeer
             $estadocomenviada_id = isset($params['estadocomenviada_id']) ? $params['estadocomenviada_id'] : 1;
             //****************************************************************************************************
             $com_enviada = new ComEnviada();
-            $com_enviada_anterior = $com_enviada->copy();
+            $com_enviada_anterior = clone $com_enviada;
             $radicado = 'Sin Radicar';
             $numero_radicacion = 0;
             //****************************************************************************************************

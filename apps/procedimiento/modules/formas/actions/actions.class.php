@@ -233,7 +233,7 @@ class formasActions extends sfActions
       $this->forward404Unless($procedimiento);
     }
     //*****************************************************************************************************
-    $procedimiento_anterior=$procedimiento->copy();			
+    $procedimiento_anterior=clone $procedimiento;			
 	$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
 	$usernameloguiado = $this->getUser()->getAttribute('username', '', 'subscriber');
     //*****************************************************************************************************

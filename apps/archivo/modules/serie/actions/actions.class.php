@@ -99,7 +99,7 @@ class serieActions extends sfActions
     else
     {
       $serie = SeriePeer::retrieveByPk($this->getRequestParameter('serie_id'));
-      $serie_anterior = $serie->copy();
+      $serie_anterior = clone $serie;
       $this->forward404Unless($serie);
     }
     //****************************************************************************************************
@@ -121,7 +121,7 @@ class serieActions extends sfActions
   public function executeValidate()
   {
   	$serie = SeriePeer::retrieveByPK($this->getRequestParameter('serie_id'));
-    $serie_anterior = $serie->copy();
+    $serie_anterior = clone $serie;
     //******************************************************************************************
     $serie->setEsVisible(empty($serie->getEsVisible()) ? 1 : 0);
     $serie->save();

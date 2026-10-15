@@ -462,7 +462,7 @@ class subserieActions extends sfActions
       $subserie = new Subserie();
     }else{
       $subserie = SubseriePeer::retrieveByPk($this->getRequestParameter('subserie_id'));
-      $subserie_anterior = $subserie->copy();
+      $subserie_anterior = clone $subserie;
       $this->forward404Unless($subserie);
     }
     //*****************************************************************************************************
@@ -495,7 +495,7 @@ class subserieActions extends sfActions
   public function executeValidate()
   {
   	$subserie = SubseriePeer::retrieveByPK($this->getRequestParameter('subserie_id'));
-    $subserie_anterior = $subserie->copy();
+    $subserie_anterior = clone $subserie;
     //******************************************************************************************
     $subserie->setEsVisible(empty($subserie->getEsVisible()) ? 1 : 0);
     $subserie->save();

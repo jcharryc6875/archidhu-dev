@@ -28,7 +28,7 @@ class UsuarioReportePeer extends BaseUsuarioReportePeer
 			if(!empty($usuario_reporte_id)) //modo edicion
 			{
 				$usuario_reporte = UsuarioReportePeer::retrieveByPk($usuario_reporte_id);
-				$usuario_reporte_anterior = $usuario_reporte->copy();
+				$usuario_reporte_anterior = clone $usuario_reporte;
 			}
 			else //modo creacion
 			{

@@ -6,10 +6,10 @@
  * 
  *
  * @package lib.model
- */ 
+ */
 class SeriePeer extends BaseSeriePeer
 {
-	public static function guardarAuditoria($registro_anterior, $registro_nuevo)
+    public static function guardarAuditoria($registro_anterior, $registro_nuevo)
     {
         try {
             $campos_objeto = SeriePeer::getFieldNames();
@@ -30,7 +30,8 @@ class SeriePeer extends BaseSeriePeer
                 $valor_nuevo,
                 $registro_nuevo->getCodigo(),
                 $usuario_conectado,
-                SeriePeer::getOMClass()
+                SeriePeer::getOMClass(),
+                $registro_nuevo->getPrimaryKey()
             );
         } catch (PropelException $ex) {
             $msg_error = $ex->getMessage();
@@ -41,13 +42,15 @@ class SeriePeer extends BaseSeriePeer
 
     public static function getSerieByNombreAndCodigo($codigo = null, $nombre = null)
     {
-		if(empty(trim($codigo)) || empty(trim($nombre))) { return ""; }
-		//*******************************************************************
-		$c = new Criteria();
-        $c->add(SeriePeer::CODIGO,$codigo);
-        $c->add(SeriePeer::DESCRIPCION,$nombre);
+        if (empty(trim($codigo)) || empty(trim($nombre))) {
+            return "";
+        }
+        //*******************************************************************
+        $c = new Criteria();
+        $c->add(SeriePeer::CODIGO, $codigo);
+        $c->add(SeriePeer::DESCRIPCION, $nombre);
         $object = SeriePeer::doSelectOne($c);
         //*******************************************************************
-		return $object;
-	}
+        return $object;
+    }
 }

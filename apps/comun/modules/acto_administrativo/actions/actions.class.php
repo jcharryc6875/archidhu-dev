@@ -2011,7 +2011,7 @@ class acto_administrativoActions extends sfActions
   {
     $this->verificaPrilegio("ACTO_ADMINISTRATIVO_RADICAR");
     $this->acto_administrativo = $acto_administrativo = ActoAdministrativoPeer::retrieveByPk($this->getRequestParameter('actoadministrativo_id'));
-    $actoadmin_anterior = $acto_administrativo->copy();
+    $actoadmin_anterior = clone $acto_administrativo;
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     //***************************************************************************************************************
     $usuarios_com = $acto_administrativo->getUsuariosListComIds();
@@ -2307,7 +2307,7 @@ class acto_administrativoActions extends sfActions
         return $this->renderText(json_encode($response_info));
       }
       //*********************************************************************************************************
-      $object_anterior = $acto_administrativo->copy();
+      $object_anterior = clone $acto_administrativo;
       //*********************************************************************************************************
       $unidad_documental = UnidadDocumentalPeer::retrieveByPK($unidaddocumental_id);
       $subserie_id = $unidad_documental->getSubserieId();

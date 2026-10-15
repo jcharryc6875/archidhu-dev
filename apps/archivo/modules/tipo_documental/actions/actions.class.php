@@ -136,7 +136,7 @@ class tipo_documentalActions extends sfActions
   public function executeValidate()
   {
     $tipo_documental = TipoDocumentalPeer::retrieveByPk($this->getRequestParameter('tipodocumental_id'));
-    $tipo_documental_anterior = $tipo_documental->copy();
+    $tipo_documental_anterior = clone $tipo_documental;
     //********************************************************************************************************
     $tipo_documental->setEsObligatorio(empty($tipo_documental->getEsObligatorio()) ? 1 : 0);
     $tipo_documental->save();
@@ -150,7 +150,7 @@ class tipo_documentalActions extends sfActions
   public function executeEnableTipoServicio()
   {
     $servicio_asociado = UnidaddocumentalTiposervicioPeer::retrieveByPk($this->getRequestParameter('unidaddocumentaltiposervicio_id'));
-    $servicio_asociado_anterior = $servicio_asociado->copy();
+    $servicio_asociado_anterior = clone $servicio_asociado;
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     //********************************************************************************************************
     $servicio_asociado->setEstaActivo(empty($servicio_asociado->getEstaActivo()) ? 1 : 0);
@@ -193,7 +193,7 @@ class tipo_documentalActions extends sfActions
     else
     {
       $tipo_documental = TipoDocumentalPeer::retrieveByPk($this->getRequestParameter('tipodocumental_id'));
-      $tipo_documental_anterior = $tipo_documental->copy();
+      $tipo_documental_anterior = clone $tipo_documental;
       $this->forward404Unless($tipo_documental);
     }
     //****************************************************************************************

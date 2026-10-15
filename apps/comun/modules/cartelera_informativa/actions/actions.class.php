@@ -58,7 +58,7 @@ class cartelera_informativaActions extends sfActions
     }
     //******************************************************************************************
     $cartelera_informativa = CarteleraInformativaPeer::retrieveByPK($this->getRequestParameter('cartelerainformativa_id'));
-    $cinformativo_anterior = $cartelera_informativa->copy();
+    $cinformativo_anterior = clone $cartelera_informativa;
     //******************************************************************************************
     $estadopublicacion_id = $cartelera_informativa->getEstadopublicacionId() == 1 ? StatusPublicacion::Despublicado : StatusPublicacion::Publicado;
     $cartelera_informativa->setEstadopublicacionId($estadopublicacion_id);

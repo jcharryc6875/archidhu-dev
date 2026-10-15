@@ -46,7 +46,7 @@ class SubseriePeer extends BaseSubseriePeer
                 $valor_nuevo[] = $registro_nuevo->$instanceMethod();
             }
             //**************************************************************************************
-            sfContext::getInstance()->getUser()->guardarAuditoria(1,$campos_objeto,$valor_anterior,$valor_nuevo,$registro_nuevo->getCodigo());
+            AuditLogPeer::guardarAuditoria(ModulesEnable::Seguridad,$campos_objeto,$valor_anterior,$valor_nuevo,$registro_nuevo->getCodigo(),null,SubseriePeer::getOMClass(),$registro_nuevo->getPrimaryKey());
         }catch (Exception $ex){       
             $msg_error = $ex->getMessage();       
         }

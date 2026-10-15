@@ -6,30 +6,10 @@ class myUser extends sfBasicSecurityUser
 	
  public function guardarAuditoria($modulo,$campos,$valor_anterior,$valor_nuevo,$codigo_principal)
   {
-    $audit_log = new AuditLog();
-    $audit_log->setUsuarioId($this->getUsuarioId());
-    $audit_log->setModuloId($modulo);
-    //$campos=array_keys($valor_anterior);  
-    
-	foreach($campos as $campo){
-    	 $campos_string.=$campo."|";		
-	}
-    foreach($valor_anterior as $valor){
-    	 $valor_anterior_string.=$valor."|";		
-	}
-	foreach($valor_nuevo as $valor){
-    	 $valor_nuevo_string.=$valor."|";		
-	}
-    
-    $audit_log->setCampos($campos_string);
-	$audit_log->setValorAnterior($valor_anterior_string);
-    $audit_log->setValorNuevo($valor_nuevo_string);
-    $audit_log->setFechaCreacion(date("Y-m-d h:m:s"));
-    $audit_log->setCodigoPrincipal($codigo_principal);
-    $audit_log->save();    
+    AuditLogPeer::guardarAuditoria($modulo,$campos,$valor_anterior,$valor_nuevo,$codigo_principal,$this->getUsuarioId(),null);
   }
-	
-	public function getUsuarioId(){
+
+		public function getUsuarioId(){
 	    return $this->getAttribute('usuario_id','', 'subscriber');	
 	}
     

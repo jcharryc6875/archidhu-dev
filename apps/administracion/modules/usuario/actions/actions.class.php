@@ -430,7 +430,7 @@ class usuarioActions extends sfActions
               $com_recibida = ComRecibidaPeer::retrieveByPk($this->getRequestParameter('comrecibida_id'));
               $tipoprocesocomId = $com_recibida->getTipoprocesocomId();
 
-              $com_recibida_anterior = $com_recibida->copy();
+              $com_recibida_anterior = clone $com_recibida;
               $CodigoReenResp = $com_recibida->getCodigoReenResp() ? $com_recibida->getCodigoReenResp() : $com_recibida->getPrimaryKey();
               $observaciones = trim($this->getRequestParameter('detalles'));
               //$tipoprocesocomId = 2;
@@ -472,7 +472,7 @@ class usuarioActions extends sfActions
               $com_interna = ComInternaPeer::retrieveByPk($this->getRequestParameter('cominterna_id')); 
               //$tipoprocesocomId = $com_recibida->getTipoprocesocomId(); //var_dump($com_interna); // exit();
 
-              $com_interna_anterior = $com_interna->copy();
+              $com_interna_anterior = clone $com_interna;
               $CodigoReenResp = $com_interna->getCodigoReenResp() ? $com_interna->getCodigoReenResp() : $com_interna->getPrimaryKey();
               $observaciones = trim($this->getRequestParameter('detalles'));
               //$tipoprocesocomId = 2;
@@ -535,7 +535,7 @@ class usuarioActions extends sfActions
               $enviada_usuario = EnviadaUsuarioPeer::getCurrentUserAsig($this->getRequestParameter('comenviada_id'));
               $tipoprocesocomId = $enviada_usuario->getTipoprocesocomId();
               //$tipoprocesocomId = $com_enviada->getTipoprocesocomId();   // esto da null
-              $com_enviada_anterior = $com_enviada->copy();
+              $com_enviada_anterior = clone $com_enviada;
               //$CodigoReenResp = $com_recibida->getCodigoReenResp() ? $com_recibida->getCodigoReenResp() : $com_recibida->getPrimaryKey();
               $observaciones = trim($this->getRequestParameter('detalles')) ? trim($this->getRequestParameter('detalles')) : null;
               //$tipoprocesocomId = 2;
@@ -660,7 +660,7 @@ class usuarioActions extends sfActions
 		foreach($regsFinales as $com_recibida)
 		{
 			$tipoprocesocomId = $com_recibida->getTipoprocesocomId();
-			$com_recibida_anterior = $com_recibida->copy();
+			$com_recibida_anterior = clone $com_recibida;
 			$CodigoReenResp = $com_recibida->getCodigoReenResp() ? $com_recibida->getCodigoReenResp() : $com_recibida->getPrimaryKey();
 			$observaciones = trim($this->getRequestParameter('detalles')) ? trim($this->getRequestParameter('detalles')) : null;
 			//*************************************************************************************************
@@ -695,7 +695,7 @@ class usuarioActions extends sfActions
 		  $regsFinales = ComInternaPeer::doSelect($c);
 		  foreach($regsFinales as $com_interna)
 		  {              
-        $com_interna_anterior = $com_interna->copy();
+        $com_interna_anterior = clone $com_interna;
         $CodigoReenResp = $com_interna->getCodigoReenResp() ? $com_interna->getCodigoReenResp() : $com_interna->getPrimaryKey();
         $observaciones = trim($this->getRequestParameter('detalles')) ? trim($this->getRequestParameter('detalles')) : null;
         //**************************************************************************************************
@@ -737,7 +737,7 @@ class usuarioActions extends sfActions
 			$enviada_usuario = EnviadaUsuarioPeer::getCurrentUserAsig($com_enviada->getPrimaryKey());
 
 			$tipoprocesocomId = $com_enviada->getTipoprocesocomId();         
-			$com_enviada_anterior = $com_enviada->copy();
+			$com_enviada_anterior = clone $com_enviada;
 			$observaciones = trim($this->getRequestParameter('detalles')) ? trim($this->getRequestParameter('detalles')) : null;
 			//**************************************************************************************************
 			$com_enviada->setTipoprocesocomId($tipoprocesocomId);

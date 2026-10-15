@@ -216,7 +216,7 @@ class dependenciaActions extends sfActions
   public function executeValidate()
   {
   	$dependencia = DependenciaPeer::retrieveByPK($this->getRequestParameter('dependencia_id'));
-    $dependencia_anterior = $dependencia->copy();
+    $dependencia_anterior = clone $dependencia;
     //******************************************************************************************
     $dependencia->setEsActual(empty($dependencia->getEsActual()) ? 1 : 0);
     $dependencia->save();

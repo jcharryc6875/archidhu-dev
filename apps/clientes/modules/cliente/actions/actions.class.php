@@ -346,7 +346,7 @@ class clienteActions extends sfActions
       $this->forward404Unless($cliente);
     }
     
-    $cliente_anterior=$cliente->copy();
+    $cliente_anterior=clone $cliente;
     
     $cliente->setClienteId($this->getRequestParameter('cliente_id'));
     $cliente->setFrecconsultaclienteId($this->getRequestParameter('frecconsultacliente_id') ? $this->getRequestParameter('frecconsultacliente_id') : null);

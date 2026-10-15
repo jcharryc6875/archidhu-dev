@@ -6,32 +6,31 @@
  * 
  *
  * @package lib.model
- */ 
+ */
 
 use Box\Spout\Common\Exception\IOException;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
 class DependenciaPeer extends BaseDependenciaPeer
 {
-	
+
     /**
      * DependenciaPeer::addNewTrd($params,$isBackObj = true)
      * funcion para crear una nueva TRD
      * @return object or json basic data
      * @params array que contine todos los datos para crear la comunicacion recibida
      * @isBackObj parametro que indica si retorna el objeto o un json
-    */
-    public static function addNewTrd($params,$isBackObj = false)
+     */
+    public static function addNewTrd($params, $isBackObj = false)
     {
         $list_newreg = array();
         //********************************************************************************************************
-        try
-        {
-            $dependencia = DependenciaPeer::getDependenciaByNombreAndCodigo(trim($params['CODIGO_DEPENDENCIA']) ,trim($params['NOMBRE_DEPENDENCIA']));
+        try {
+            $dependencia = DependenciaPeer::getDependenciaByNombreAndCodigo(trim($params['CODIGO_DEPENDENCIA']), trim($params['NOMBRE_DEPENDENCIA']));
             //****************************************************************************************************
-            if(empty($dependencia)){
+            if (empty($dependencia)) {
                 $dependencia = new Dependencia();
-                $dependencia_anterior = $dependencia->copy();
+                $dependencia_anterior = clone $dependencia;
                 //$fecha_creacion = date("Y-m-d G:i:s");
                 //************************************************************************************************
                 $entidad = EntidadPeer::getEntidadByNombre($params['ENTIDAD']);
@@ -48,19 +47,19 @@ class DependenciaPeer extends BaseDependenciaPeer
                 $dependencia->setVersionInst(isset($params['VERSION_INST']) ? trim($params['VERSION_INST']) : NULL);
                 $dependencia->save();
                 //************************************************************************************************
-                if($dependencia->getPrimaryKey() != null){
+                if ($dependencia->getPrimaryKey() != null) {
                     $list_newreg['dependencias_list'][] = $isBackObj ? $dependencia : $dependencia->getPrimaryKey();
-                    AuditLogPeer::guardarAuditoriaLite("Dependencia",$dependencia_anterior,$dependencia,ModulesEnable::Seguridad,$dependencia->getCodigo(),$params['USUARIO_ID']);
-                }else{
-                    return null; 
+                    AuditLogPeer::guardarAuditoriaLite("Dependencia", $dependencia_anterior, $dependencia, ModulesEnable::Seguridad, $dependencia->getCodigo(), $params['USUARIO_ID']);
+                } else {
+                    return null;
                 }
             }
             //****************************************************************************************************
-            $serie = SeriePeer::getSerieByNombreAndCodigo(trim($params['CODIGO_SERIE']),trim($params['DESCIPCION_SERIE']));
+            $serie = SeriePeer::getSerieByNombreAndCodigo(trim($params['CODIGO_SERIE']), trim($params['DESCIPCION_SERIE']));
             //****************************************************************************************************
-            if(empty($serie) && !empty($dependencia)){
+            if (empty($serie) && !empty($dependencia)) {
                 $serie = new Serie();
-                $serie_anterior = $serie->copy();
+                $serie_anterior = clone $serie;
 
                 $serie->setDependenciaId($dependencia->getPrimaryKey());
                 $serie->setDescripcion(isset($params['DESCIPCION_SERIE']) ? trim($params['DESCIPCION_SERIE']) : null);
@@ -68,17 +67,17 @@ class DependenciaPeer extends BaseDependenciaPeer
                 $serie->setEsVisible(1);
                 $serie->save();
                 //************************************************************************************************
-                if($serie->getPrimaryKey() != null){
+                if ($serie->getPrimaryKey() != null) {
                     $list_newreg['series_list'][] = $isBackObj ? $serie : $serie->getPrimaryKey();
-                    AuditLogPeer::guardarAuditoriaLite("Serie",$serie_anterior,$serie,ModulesEnable::Seguridad,$serie->getCodigo(),$params['USUARIO_ID']);
+                    AuditLogPeer::guardarAuditoriaLite("Serie", $serie_anterior, $serie, ModulesEnable::Seguridad, $serie->getCodigo(), $params['USUARIO_ID']);
                 }
             }
             //****************************************************************************************************
-            $subserie = SubseriePeer::getSubserieByNombreAndCodigo(trim($params['CODIGO_SUBSERIE']),trim($params['DESCIPCION_SUBSERIE']));
+            $subserie = SubseriePeer::getSubserieByNombreAndCodigo(trim($params['CODIGO_SUBSERIE']), trim($params['DESCIPCION_SUBSERIE']));
             //****************************************************************************************************
-            if(empty($subserie) && !empty($serie)){
+            if (empty($subserie) && !empty($serie)) {
                 $subserie = new Subserie();
-                $subserie_anterior = $subserie->copy();
+                $subserie_anterior = clone $subserie;
 
                 $subserie->setSerieId($serie->getPrimaryKey());
                 $subserie->setDescripcion(isset($params['DESCIPCION_SUBSERIE']) ? trim($params['DESCIPCION_SUBSERIE']) : null);
@@ -100,17 +99,17 @@ class DependenciaPeer extends BaseDependenciaPeer
                 $subserie->setEsVisible(1);
                 $subserie->save();
                 //************************************************************************************************
-                if($subserie->getPrimaryKey() != null){
+                if ($subserie->getPrimaryKey() != null) {
                     $list_newreg['subserie_list'][] = $isBackObj ? $subserie : $subserie->getPrimaryKey();
-                    AuditLogPeer::guardarAuditoriaLite("Subserie",$subserie_anterior,$subserie,ModulesEnable::Seguridad,$subserie->getCodigo(),$params['USUARIO_ID']);
+                    AuditLogPeer::guardarAuditoriaLite("Subserie", $subserie_anterior, $subserie, ModulesEnable::Seguridad, $subserie->getCodigo(), $params['USUARIO_ID']);
                 }
             }
             //****************************************************************************************************
-            $tipo_documental = TipoDocumentalPeer::getTipoDocByNombreAndCodigo(trim($params['CODIGO_TIPODOC']),trim($params['DESCRIPCION_DOC']));
+            $tipo_documental = TipoDocumentalPeer::getTipoDocByNombreAndCodigo(trim($params['CODIGO_TIPODOC']), trim($params['DESCRIPCION_DOC']));
             //****************************************************************************************************
-            if(empty($tipo_documental) && !empty($subserie)){
+            if (empty($tipo_documental) && !empty($subserie)) {
                 $tipo_documental = new TipoDocumental();
-                $tipo_documental_anterior = $serie->copy();
+                $tipo_documental_anterior = clone $serie;
 
                 $tipo_documental->setSubserieId($subserie->getPrimaryKey());
                 $tipo_documental->setDescripcion(isset($params['DESCRIPCION_DOC']) ? trim($params['DESCRIPCION_DOC']) : null);
@@ -118,43 +117,43 @@ class DependenciaPeer extends BaseDependenciaPeer
                 $tipo_documental->setOrden(isset($params['ORDEN_TIPODOC']) ? trim($params['ORDEN_TIPODOC']) : null);
                 //************************************************************************************************
                 $tipodoc_cierre = 0;
-                if(isset($params['CIERRA_EXPEDIENTE'])){
+                if (isset($params['CIERRA_EXPEDIENTE'])) {
                     $tipodoc_cierre = trim($params['CIERRA_EXPEDIENTE']) == "SI" ? 1 : 0;
                 }
                 $tipo_documental->setCierraExpediente($tipodoc_cierre);
                 //************************************************************************************************
-                if($params['DOCF'] == "SI" && $params['DOCE'] == "SI")
+                if ($params['DOCF'] == "SI" && $params['DOCE'] == "SI")
                     $tipo_documental->setSoporteunidaddocumentalId(9);
-                else if($params['DOCF'] == "SI")
+                else if ($params['DOCF'] == "SI")
                     $tipo_documental->setSoporteunidaddocumentalId(8);
-                else if($params['DOCE'] == "SI")
+                else if ($params['DOCE'] == "SI")
                     $tipo_documental->setSoporteunidaddocumentalId(11);
                 else
                     $tipo_documental->setSoporteunidaddocumentalId(null);
                 //************************************************************************************************
                 $tipo_documental->save();
                 //************************************************************************************************
-                if($serie->getPrimaryKey() != null){
+                if ($serie->getPrimaryKey() != null) {
                     $list_newreg['tiposdoc_list'][] = $isBackObj ? $tipo_documental : $tipo_documental->getPrimaryKey();
-                    AuditLogPeer::guardarAuditoriaLite("TipoDocumental",$tipo_documental_anterior,$tipo_documental,ModulesEnable::Seguridad,$tipo_documental->getCodigo(),$params['USUARIO_ID']);
+                    AuditLogPeer::guardarAuditoriaLite("TipoDocumental", $tipo_documental_anterior, $tipo_documental, ModulesEnable::Seguridad, $tipo_documental->getCodigo(), $params['USUARIO_ID']);
                 }
             }
             //****************************************************************************************************
-            if(count($list_newreg)){
+            if (count($list_newreg)) {
                 return array('isError' => false, 'message' => 'Trds importadas exitosamente', 'list_newreg' => $list_newreg);
-            }else{
+            } else {
                 return array('isError' => true, 'message' => 'Ocurrio un error y ningun registro se importo', 'list_newreg' => arayy());
             }
-        }catch(PropelException $ex){
-            return array('isError' => true, 'message' => 'Error de acceso a la base de datos','list_newreg' => $list_newreg);
-        }catch(\Exception $ex){
-            return array('isError' => true, 'message' => 'Error interno de la aplicacion','list_newreg' => $list_newreg);
-        }catch(\Throwable $ex){
-            return array('isError' => true, 'message' => 'Error interno del servidor','list_newreg' => $list_newreg);
+        } catch (PropelException $ex) {
+            return array('isError' => true, 'message' => 'Error de acceso a la base de datos', 'list_newreg' => $list_newreg);
+        } catch (\Exception $ex) {
+            return array('isError' => true, 'message' => 'Error interno de la aplicacion', 'list_newreg' => $list_newreg);
+        } catch (\Throwable $ex) {
+            return array('isError' => true, 'message' => 'Error interno del servidor', 'list_newreg' => $list_newreg);
         }
     }
 
-	public static function getDependenciaAll()
+    public static function getDependenciaAll()
     {
         $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $entidad_conectado = sfContext::getInstance()->getUser()->getAttribute('entidad_id', '', 'subscriber');
@@ -164,35 +163,35 @@ class DependenciaPeer extends BaseDependenciaPeer
         //**********************************************************************************************
         $criteria = new Criteria();
         //**********************************************************************************************
-        if(!$listalldep){
-  		    $criteria->add(DependenciaPeer::ENTIDAD_ID,$entidad_conectado);
-        }      	
+        if (!$listalldep) {
+            $criteria->add(DependenciaPeer::ENTIDAD_ID, $entidad_conectado);
+        }
         //**********************************************************************************************
-        $criteria->add(DependenciaPeer::ES_ACTUAL,1);
-        $criteria->addAscendingOrderByColumn(DependenciaPeer::NOMBRE);        
+        $criteria->add(DependenciaPeer::ES_ACTUAL, 1);
+        $criteria->addAscendingOrderByColumn(DependenciaPeer::NOMBRE);
         return DependenciaPeer::doSelect($criteria);
     }
-    
+
     public static function getDependenciaUserLoadList()
-    {        
+    {
         $criteria = new Criteria();
         //**********************************************************************************************
-        $criteria->add(DependenciaPeer::ES_ACTUAL,1);
-        $criteria->addAscendingOrderByColumn(DependenciaPeer::NOMBRE);        
+        $criteria->add(DependenciaPeer::ES_ACTUAL, 1);
+        $criteria->addAscendingOrderByColumn(DependenciaPeer::NOMBRE);
         return DependenciaPeer::doSelect($criteria);
     }
-	
-	public static function getDependenciaByRecepCom()
-    {        
+
+    public static function getDependenciaByRecepCom()
+    {
         $criteria = new Criteria();
         $criteria->setDistinct();
         //**********************************************************************************************
-        $criteria->add(DependenciaPeer::ES_ACTUAL,1);
-        $criteria->addJoin(DependenciaPeer::DEPENDENCIA_ID,ReceptorComunicacionesPeer::DEPENDENCIA_ID);
-        $criteria->addAscendingOrderByColumn(DependenciaPeer::NOMBRE);        
+        $criteria->add(DependenciaPeer::ES_ACTUAL, 1);
+        $criteria->addJoin(DependenciaPeer::DEPENDENCIA_ID, ReceptorComunicacionesPeer::DEPENDENCIA_ID);
+        $criteria->addAscendingOrderByColumn(DependenciaPeer::NOMBRE);
         return DependenciaPeer::doSelect($criteria);
     }
-	
+
     public static function getDependenciaAllJoin()
     {
         $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
@@ -203,54 +202,62 @@ class DependenciaPeer extends BaseDependenciaPeer
         //*******************************************************************
         $c = new Criteria();
         //*******************************************************************
-        if(!$listalldep){
-  		    $c->add(DependenciaPeer::ENTIDAD_ID,$entidad_conectado);
-        }      	
+        if (!$listalldep) {
+            $c->add(DependenciaPeer::ENTIDAD_ID, $entidad_conectado);
+        }
         //*******************************************************************
-        $c->addAscendingOrderByColumn(DependenciaPeer::NOMBRE);        
+        $c->addAscendingOrderByColumn(DependenciaPeer::NOMBRE);
         return DependenciaPeer::doSelectJoinAll($c);
     }
-    
+
     public static function getDependenciaIdByUser($userdestino_id)
     {
-		if(!trim($userdestino_id)) { return ""; }
-		//*******************************************************************
-		$user_destino = UsuarioPeer::retrieveByPk($userdestino_id);
-		return $user_destino->getDependenciaId();
-	}
-    
+        if (!trim($userdestino_id)) {
+            return "";
+        }
+        //*******************************************************************
+        $user_destino = UsuarioPeer::retrieveByPk($userdestino_id);
+        return $user_destino->getDependenciaId();
+    }
+
     public static function getCodigoDependenciaById($dependencia_id)
     {
-		if(!trim($dependencia_id)) { return ""; }
-		//*******************************************************************
-		$dependencia = DependenciaPeer::retrieveByPk($dependencia_id);
-		return trim($dependencia->getCodigo());
-	}
+        if (!trim($dependencia_id)) {
+            return "";
+        }
+        //*******************************************************************
+        $dependencia = DependenciaPeer::retrieveByPk($dependencia_id);
+        return trim($dependencia->getCodigo());
+    }
 
     public static function getDependenciaByCodigo($codigo = null)
     {
-		if(!trim($codigo)) { return ""; }
-		//*******************************************************************
-		$c = new Criteria();
-        $c->add(DependenciaPeer::CODIGO,$codigo);
+        if (!trim($codigo)) {
+            return "";
+        }
+        //*******************************************************************
+        $c = new Criteria();
+        $c->add(DependenciaPeer::CODIGO, $codigo);
         $dependencia = DependenciaPeer::doSelectOne($c);
         //*******************************************************************
-		return $dependencia;
-	}
+        return $dependencia;
+    }
 
     public static function getDependenciaByNombreAndCodigo($codigo = null, $nombre = null)
     {
-		if(empty(trim($codigo)) || empty(trim($nombre))) { return null; }
-		//*******************************************************************
-		$c = new Criteria();
-        $c->add(DependenciaPeer::CODIGO,$codigo);
-        $c->add(DependenciaPeer::NOMBRE,$nombre);
+        if (empty(trim($codigo)) || empty(trim($nombre))) {
+            return null;
+        }
+        //*******************************************************************
+        $c = new Criteria();
+        $c->add(DependenciaPeer::CODIGO, $codigo);
+        $c->add(DependenciaPeer::NOMBRE, $nombre);
         $dependencia = DependenciaPeer::doSelectOne($c);
         //*******************************************************************
-		return $dependencia;
-	}
+        return $dependencia;
+    }
 
-    public static function getDependenciaPorArchivo($permiso,$form_tag,$param_trd)
+    public static function getDependenciaPorArchivo($permiso, $form_tag, $param_trd)
     {
         $usuario_conectado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
         $entidad_conectado = sfContext::getInstance()->getUser()->getAttribute('entidad_id', '', 'subscriber');
@@ -259,53 +266,55 @@ class DependenciaPeer extends BaseDependenciaPeer
         $param_factory = ParametroPeer::retrieveByPK(61);
         $param_trd = $param_factory->getValornumerico();
         //***************************************************************************************
-        $objusuario = UsuarioPeer::retrieveByPK($usuario_conectado);//usuario logueado
-        $entidad_id = $objusuario->getRegional()->getEntidadId();//entidad del usuario
-        $dependencia_usuario = $objusuario->getDependenciaId();//dependencia del usuario logueado
+        $objusuario = UsuarioPeer::retrieveByPK($usuario_conectado); //usuario logueado
+        $entidad_id = $objusuario->getRegional()->getEntidadId(); //entidad del usuario
+        $dependencia_usuario = $objusuario->getDependenciaId(); //dependencia del usuario logueado
         //***************************************************************************************
-        $tipo_tabla = "TRD";//tipo de tabla para creacion
+        $tipo_tabla = "TRD"; //tipo de tabla para creacion
         $perm_all_depen =  sfContext::getInstance()->getUser()->checkPerm("ARCHIVO_CREAR_EXPEDIENTE_TVD", $usuario_conectado);
         $perm_alldep =  sfContext::getInstance()->getUser()->checkPerm("LISTAR_EXPEDIENTES_TODAS_ENTIDADES", $usuario_conectado);
         $perm_all_subseries =  sfContext::getInstance()->getUser()->checkPerm("VER_TODAS_LAS_SUBSERIES", $usuario_conectado);
         //***************************************************************************************
-        if($param_trd == 2){
+        if ($param_trd == 2) {
             $c = new Criteria();
             $c->setDistinct();
-            $c->addJoin(MacroProcesoPeer::MACROPROCESO_ID,ProcesosPeer::MACROPROCESO_ID);
-            $c->addJoin(ProcesosPeer::PROCESOS_ID,OficinaProductoraPeer::PROCESOS_ID);
-            $c->addJoin(OficinaProductoraPeer::OFICINAPRODUCTORA_ID,DependenciaPeer::OFICINAPRODUCTORA_ID);
+            $c->addJoin(MacroProcesoPeer::MACROPROCESO_ID, ProcesosPeer::MACROPROCESO_ID);
+            $c->addJoin(ProcesosPeer::PROCESOS_ID, OficinaProductoraPeer::PROCESOS_ID);
+            $c->addJoin(OficinaProductoraPeer::OFICINAPRODUCTORA_ID, DependenciaPeer::OFICINAPRODUCTORA_ID);
             //***********************************************************************************
-            if($permiso == 2 && !$perm_all_subseries){	  		  	
+            if ($permiso == 2 && !$perm_all_subseries) {
                 // CONSULTA DE MACRO PROCESOS
-                $c->addJoin(DependenciaPeer::DEPENDENCIA_ID, SeriePeer::DEPENDENCIA_ID);                
+                $c->addJoin(DependenciaPeer::DEPENDENCIA_ID, SeriePeer::DEPENDENCIA_ID);
                 $c->addJoin(SeriePeer::SERIE_ID, SubseriePeer::SERIE_ID);
                 $c->addJoin(SubseriePeer::SUBSERIE_ID, SubseriePorUsuarioPeer::SUBSERIE_ID);
                 $c->add(SubseriePorUsuarioPeer::USUARIO_ID, $usuario_conectado);
                 //*******************************************************************************
-                if($form_tag != 1){ $c->add(SubseriePorUsuarioPeer::CREACION, true); }
+                if ($form_tag != 1) {
+                    $c->add(SubseriePorUsuarioPeer::CREACION, true);
+                }
                 //*******************************************************************************
             }
             //***********************************************************************************
             //SI ES PARA CREACION SOLO SE LISTAN LOS MACRO PROCESOS QUE TIENEN DEPENDENCIAS EN TRD
-            if($form_tag != 1 && !$perm_all_depen){
-                $c->add(DependenciaPeer::TIPO_TABLA,$tipo_tabla);
-                $c->add(DependenciaPeer::ES_ACTUAL,1);
+            if ($form_tag != 1 && !$perm_all_depen) {
+                $c->add(DependenciaPeer::TIPO_TABLA, $tipo_tabla);
+                $c->add(DependenciaPeer::ES_ACTUAL, 1);
             }
             //***********************************************************************************
             //validar permiso para listar macro procesos para todas las entidades
-            if(!$perm_alldep){
+            if (!$perm_alldep) {
                 $c->add(DependenciaPeer::ENTIDAD_ID, $entidad_id);
             }
             //***********************************************************************************
             $c->addAscendingOrderByColumn(MacroProcesoPeer::DESCRIPCION);
             return MacroProcesoPeer::doSelect($c);
-        }elseif($param_trd == 1){
+        } elseif ($param_trd == 1) {
             $c = new Criteria();
             $c->setDistinct();
             //***********************************************************************************
-            if(($permiso == 2) && !$perm_all_subseries){
+            if (($permiso == 2) && !$perm_all_subseries) {
                 // PARA CARPTURAR DEPENDENCIAS DE SUBSERIES POR USUARIO EN ARCHIVO DE GESTION
-                $dependencias_disponibles = array();    	  	
+                $dependencias_disponibles = array();
                 $dependencias_disponibles = DependenciaPeer::getDepForSubseriesUsuario($usuario_conectado, $dependencia_usuario);
                 //*******************************************************************************
                 // ADICIONAMOS LAS DEPENDENCIAS DISPONIBLES PARA EL USUARIO ACTUAL    	  	
@@ -314,27 +323,29 @@ class DependenciaPeer extends BaseDependenciaPeer
             }
             //***********************************************************************************
             //SI ES PARA CREACION SOLO SE LISTAN LOS MACRO PROCESOS QUE TIENEN DEPENDENCIAS EN TRD
-            if($form_tag != 1 && !$perm_all_depen){
-                $c->add(DependenciaPeer::TIPO_TABLA,$tipo_tabla);
-                $c->add(DependenciaPeer::ES_ACTUAL,1);
+            if ($form_tag != 1 && !$perm_all_depen) {
+                $c->add(DependenciaPeer::TIPO_TABLA, $tipo_tabla);
+                $c->add(DependenciaPeer::ES_ACTUAL, 1);
             }
             //***********************************************************************************
             //validar permiso para listar macro procesos para todas las entidades
-            if(!$perm_alldep){ $c->add(DependenciaPeer::ENTIDAD_ID, $entidad_id); }
+            if (!$perm_alldep) {
+                $c->add(DependenciaPeer::ENTIDAD_ID, $entidad_id);
+            }
             //***********************************************************************************
             $c->addAscendingOrderByColumn(DependenciaPeer::NOMBRE);
             return DependenciaPeer::doSelectJoinAll($c);
         }
     }
 
-    public static function getDepForSubseriesUsuario($usuario_id,$dependencia_id)
+    public static function getDepForSubseriesUsuario($usuario_id, $dependencia_id)
     {
         // PARA CARPTURAR DEPENDENCIAS DE SUBSERIES POR USUARIO EN ARCHIVO DE GESTION
         $s = new Criteria();
         $s->setDistinct();
         $s->addJoin(SubseriePorUsuarioPeer::SUBSERIE_ID, SubseriePeer::SUBSERIE_ID);
         $s->addJoin(SubseriePeer::SERIE_ID, SeriePeer::SERIE_ID);
-        $s->addJoin(SeriePeer::DEPENDENCIA_ID,DependenciaPeer::DEPENDENCIA_ID);
+        $s->addJoin(SeriePeer::DEPENDENCIA_ID, DependenciaPeer::DEPENDENCIA_ID);
         $s->add(SubseriePorUsuarioPeer::USUARIO_ID, $usuario_id);
         /*******************************************************************************/
         $s->clearSelectColumns();
@@ -343,47 +354,45 @@ class DependenciaPeer extends BaseDependenciaPeer
         /*******************************************************************************/
         $resultset = SubseriePorUsuarioPeer::doSelectStmt($s);
         $dependencias_disponibles = array();
-        while($object = $resultset->fetch())
-        {
-            if($object[0] != $dependencia_id)
-            {
+        while ($object = $resultset->fetch()) {
+            if ($object[0] != $dependencia_id) {
                 $dependencias_disponibles[] = $object[0];
             }
         }
-        $dependencias_disponibles[] = $dependencia_id;  	
+        $dependencias_disponibles[] = $dependencia_id;
         /*******************************************************************************/
         return  $dependencias_disponibles;
     }
 
-    public static function guardarAuditoria($registro_anterior,$registro_nuevo)
+    public static function guardarAuditoria($registro_anterior, $registro_nuevo)
     {
-        try{ 
+        try {
             $campos_objeto = DependenciaPeer::getFieldNames();
             $valor_anterior = array();
             $valor_nuevo = array();
 
-            foreach($campos_objeto as $field){
-				$instanceMethod = 'get'.$field;
-				$valor_anterior[] = $registro_anterior->$instanceMethod();
-				$valor_nuevo[] = $registro_nuevo->$instanceMethod();
+            foreach ($campos_objeto as $field) {
+                $instanceMethod = 'get' . $field;
+                $valor_anterior[] = $registro_anterior->$instanceMethod();
+                $valor_nuevo[] = $registro_nuevo->$instanceMethod();
             }
             //**************************************************************************************
-            sfContext::getInstance()->getUser()->guardarAuditoria(1,$campos_objeto,$valor_anterior,$valor_nuevo,$registro_nuevo->getCodigo());
-        }catch (Exception $ex){       
-            $msg_error = $ex->getMessage();       
+            AuditLogPeer::guardarAuditoria(ModulesEnable::Seguridad, $campos_objeto, $valor_anterior, $valor_nuevo, $registro_nuevo->getCodigo(), null, DependenciaPeer::getOMClass(), $registro_nuevo->getPrimaryKey());
+        } catch (Exception $ex) {
+            $msg_error = $ex->getMessage();
         }
     }
 
     /**
-    * objectActions::readFileComCombined()
-    * Obtiene los datos de un archivo de excel
-    * @param $inputFileName rutal absoluta al archivo de excel en el servidor
-	* @param $readHeaders indica si la primera fila son los encabezados del archivo
-	* @param $deleteFile indica si se debe eliminar el archivo temporal
-	* @param $rows_read inidca cuantas filas maximo se van a leer del archivo de excel
-    * @return mixed array lista con los resultados
-    */
-	public static function readFileComCombined($inputFileName, $readHeaders=true, $deleteFile = false, $rows_read = 1000)
+     * objectActions::readFileComCombined()
+     * Obtiene los datos de un archivo de excel
+     * @param $inputFileName rutal absoluta al archivo de excel en el servidor
+     * @param $readHeaders indica si la primera fila son los encabezados del archivo
+     * @param $deleteFile indica si se debe eliminar el archivo temporal
+     * @param $rows_read inidca cuantas filas maximo se van a leer del archivo de excel
+     * @return mixed array lista con los resultados
+     */
+    public static function readFileComCombined($inputFileName, $readHeaders = true, $deleteFile = false, $rows_read = 1000)
     {
         require_once sfConfig::get('sf_lib_dir') . '/Spout/Autoloader/autoload.php';
         //*************************************************************************************************************
@@ -393,44 +402,48 @@ class DependenciaPeer extends BaseDependenciaPeer
         $array_data = array();
         $sheetData = array();
         //*************************************************************************************************************
-        if (trim($inputFileName)){
+        if (trim($inputFileName)) {
             try {
                 $reader = ReaderEntityFactory::createXLSXReader();
                 //$reader->setShouldPreserveEmptyRows(true);
                 $reader->open($inputFileName);
-            } catch(Exception $e) {
-                die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+            } catch (Exception $e) {
+                die('Error loading file "' . pathinfo($inputFileName, PATHINFO_BASENAME) . '": ' . $e->getMessage());
                 return null;
             }
             //*********************************************************************************************************
             foreach ($reader->getSheetIterator() as $sheet) {
                 foreach ($sheet->getRowIterator() as $rowNumber => $rows) {
                     $rowNumber -= 1;
-                    if($rowNumber > $rows_read){ break 2; }
+                    if ($rowNumber > $rows_read) {
+                        break 2;
+                    }
                     // do not empty row
                     $errors = array_filter($rows);
                     if (empty($errors)) {
                         continue;
                     }
                     // do stuff with the row
-                    if($readHeaders){
-                        $array_data['headerList'] = array_merge(array("rowNumber"),$rows);
+                    if ($readHeaders) {
+                        $array_data['headerList'] = array_merge(array("rowNumber"), $rows);
                         $readHeaders = false;
-                    }else{
-                        $sheetData[] = array_merge(array($rowNumber),$rows);
+                    } else {
+                        $sheetData[] = array_merge(array($rowNumber), $rows);
                     }
                 }
                 break;
             }
             //*********************************************************************************************************            
-            $sheetDataSerialize = $simad_util->getArrayForSend($sheetData);           
+            $sheetDataSerialize = $simad_util->getArrayForSend($sheetData);
             $array_data['sheetData'] = $sheetData;
             $array_data['sheetDataSerialize'] = $sheetDataSerialize;
             $array_data['cod_msg'] = 0;
             $array_data['msg_error'] = "";
             //*********************************************************************************************************
-            if(file_exists($inputFileName) && $deleteFile){ unlink($inputFileName); }
-        }else{
+            if (file_exists($inputFileName) && $deleteFile) {
+                unlink($inputFileName);
+            }
+        } else {
             $msg_error = "Debe seleccionar el archivo que contiene las registros para importar";
             $array_data['cod_msg'] = 1;
             $array_data['msg_error'] = $msg_error;
@@ -441,23 +454,42 @@ class DependenciaPeer extends BaseDependenciaPeer
 
     /**
      * ComMigmasivoPeer::getIsValidByIdBatch()
-    * funcion para validar los datos de un lote de radicacion masiva
-    * @param idLote mixed id del lote de migracion
-    * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
-    */
+     * funcion para validar los datos de un lote de radicacion masiva
+     * @param idLote mixed id del lote de migracion
+     * @return mixed resultado proceso array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     */
     public static function getIsValidByIdBatch($list_datarows = array())
     {
         try {
             $listall_valid = array();
-            $listfields_madatory = array('ENTIDAD','NOMBRE_DEPENDENCIA','CODIGO_DEPENDENCIA','TIPO_TABLA','VERSION_INST','CODIGO_SERIE',
-                'DESCIPCION_SERIE','CODIGO_SUBSERIE','DESCIPCION_SUBSERIE','ANOS_EN_GESTION','ANOS_EN_CENTRAL','ANOS_EN_HISTORICO',
-                'NIVEL_CONFIDENCIALIDAD','CTOTAL','MTECN','SELECCION','ELIMINAR','CODIGO_TIPODOC','DESCRIPCION_DOC','ORDEN_TIPODOC',
-                'CIERRA_EXPEDIENTE');
+            $listfields_madatory = array(
+                'ENTIDAD',
+                'NOMBRE_DEPENDENCIA',
+                'CODIGO_DEPENDENCIA',
+                'TIPO_TABLA',
+                'VERSION_INST',
+                'CODIGO_SERIE',
+                'DESCIPCION_SERIE',
+                'CODIGO_SUBSERIE',
+                'DESCIPCION_SUBSERIE',
+                'ANOS_EN_GESTION',
+                'ANOS_EN_CENTRAL',
+                'ANOS_EN_HISTORICO',
+                'NIVEL_CONFIDENCIALIDAD',
+                'CTOTAL',
+                'MTECN',
+                'SELECCION',
+                'ELIMINAR',
+                'CODIGO_TIPODOC',
+                'DESCRIPCION_DOC',
+                'ORDEN_TIPODOC',
+                'CIERRA_EXPEDIENTE'
+            );
             //*******************************************************************************************
             $index = 1;
             foreach ($list_datarows as $data_row) {
                 foreach ($listfields_madatory as $rmadatory) {
-                    if(!simad_util::array_check($data_row,$rmadatory)){
+                    if (!simad_util::array_check($data_row, $rmadatory)) {
                         $listall_valid[] = sprintf("El campo %s para la fila %s no existe y es obligatorio", $rmadatory, $index);
                     }
                 }
@@ -465,78 +497,78 @@ class DependenciaPeer extends BaseDependenciaPeer
                 $index++;
             }
             //*******************************************************************************************
-            if(count($listall_valid)){ return $listall_valid; }
+            if (count($listall_valid)) {
+                return $listall_valid;
+            }
             //*******************************************************************************************
             $index = 1;
             foreach ($list_datarows as $data_row) {
-                $dependencia = DependenciaPeer::getDependenciaByNombreAndCodigo($data_row['CODIGO_DEPENDENCIA'],$data_row['NOMBRE_DEPENDENCIA']);
-                if($dependencia != null)
-                    $listall_valid[] = sprintf("La dependencia %s - %s de la fila %s ya existe en el SGDEA", $data_row['CODIGO_DEPENDENCIA'], $data_row['NOMBRE_DEPENDENCIA'] , $index);
+                $dependencia = DependenciaPeer::getDependenciaByNombreAndCodigo($data_row['CODIGO_DEPENDENCIA'], $data_row['NOMBRE_DEPENDENCIA']);
+                if ($dependencia != null)
+                    $listall_valid[] = sprintf("La dependencia %s - %s de la fila %s ya existe en el SGDEA", $data_row['CODIGO_DEPENDENCIA'], $data_row['NOMBRE_DEPENDENCIA'], $index);
                 //***************************************************************************************
                 $entidad = EntidadPeer::getEntidadByNombre($data_row['ENTIDAD']);
-                if($entidad == null)
-                    $listall_valid[] = sprintf("La entidad %s de la fila %s NO existe en el SGDEA", $data_row['ENTIDAD'] , $index);
+                if ($entidad == null)
+                    $listall_valid[] = sprintf("La entidad %s de la fila %s NO existe en el SGDEA", $data_row['ENTIDAD'], $index);
                 //***************************************************************************************
                 $oficina_productora = OficinaProductoraPeer::getOfProductoraByNombre($data_row['OFICINA_PRODUCTORA']);
-                if($oficina_productora == null)
-                    $listall_valid[] = sprintf("La oficina productoria %s de la fila %s NO existe en el SGDEA", $data_row['OFICINA_PRODUCTORA'] , $index);
+                if ($oficina_productora == null)
+                    $listall_valid[] = sprintf("La oficina productoria %s de la fila %s NO existe en el SGDEA", $data_row['OFICINA_PRODUCTORA'], $index);
                 //***************************************************************************************
                 $tipo_tabla = trim($data_row['TIPO_TABLA']);
-                if(!in_array($tipo_tabla,array('TRD','TVD')))
-                    $listall_valid[] = sprintf("El tipo de tabla %s de la fila %s no es valido", $tipo_tabla , $index);
+                if (!in_array($tipo_tabla, array('TRD', 'TVD')))
+                    $listall_valid[] = sprintf("El tipo de tabla %s de la fila %s no es valido", $tipo_tabla, $index);
                 //***************************************************************************************
-                $serie = SeriePeer::getSerieByNombreAndCodigo($data_row['CODIGO_SERIE'],$data_row['DESCIPCION_SERIE']);
-                if($serie != null)
-                    $listall_valid[] = sprintf("La serie %s - %s de la fila %s ya existe en el SGDEA", $data_row['CODIGO_SERIE'], $data_row['DESCIPCION_SERIE'] , $index);
+                $serie = SeriePeer::getSerieByNombreAndCodigo($data_row['CODIGO_SERIE'], $data_row['DESCIPCION_SERIE']);
+                if ($serie != null)
+                    $listall_valid[] = sprintf("La serie %s - %s de la fila %s ya existe en el SGDEA", $data_row['CODIGO_SERIE'], $data_row['DESCIPCION_SERIE'], $index);
                 //***************************************************************************************
-                $subserie = SubseriePeer::getSubserieByNombreAndCodigo($data_row['CODIGO_SUBSERIE'],$data_row['DESCIPCION_SUBSERIE']);
-                if($subserie != null)
-                    $listall_valid[] = sprintf("La subserie %s - %s de la fila %s ya existe en el SGDEA", $data_row['CODIGO_SUBSERIE'], $data_row['DESCIPCION_SUBSERIE'] , $index);
+                $subserie = SubseriePeer::getSubserieByNombreAndCodigo($data_row['CODIGO_SUBSERIE'], $data_row['DESCIPCION_SUBSERIE']);
+                if ($subserie != null)
+                    $listall_valid[] = sprintf("La subserie %s - %s de la fila %s ya existe en el SGDEA", $data_row['CODIGO_SUBSERIE'], $data_row['DESCIPCION_SUBSERIE'], $index);
                 //***************************************************************************************
-                $tipo_documental = TipoDocumentalPeer::getTipoDocByNombreAndCodigo($data_row['CODIGO_TIPODOC'],$data_row['DESCRIPCION_DOC']);
-                if($tipo_documental != null)
-                    $listall_valid[] = sprintf("El tipo documental %s - %s de la fila %s ya existe en el SGDEA", $data_row['CODIGO_TIPODOC'], $data_row['DESCRIPCION_DOC'] , $index);
+                $tipo_documental = TipoDocumentalPeer::getTipoDocByNombreAndCodigo($data_row['CODIGO_TIPODOC'], $data_row['DESCRIPCION_DOC']);
+                if ($tipo_documental != null)
+                    $listall_valid[] = sprintf("El tipo documental %s - %s de la fila %s ya existe en el SGDEA", $data_row['CODIGO_TIPODOC'], $data_row['DESCRIPCION_DOC'], $index);
                 //***************************************************************************************
                 $nivel_confidencialidad = NivelConfidencialidadPeer::getNivelConfidencialidadByNombre($data_row['NIVEL_CONFIDENCIALIDAD']);
-                if($nivel_confidencialidad != null)
-                    $listall_valid[] = sprintf("El nivel de confidencialidad %s de la fila %s no existe en el SGDEA", $data_row['NIVEL_CONFIDENCIALIDAD'] , $index);
+                if ($nivel_confidencialidad != null)
+                    $listall_valid[] = sprintf("El nivel de confidencialidad %s de la fila %s no existe en el SGDEA", $data_row['NIVEL_CONFIDENCIALIDAD'], $index);
             }
             //*******************************************************************************************
             $elist_msg = array();
             foreach ($listall_valid as $ierror) {
-                if(is_array($ierror))
-                {
-                    if($ierror['isError']){
+                if (is_array($ierror)) {
+                    if ($ierror['isError']) {
                         $elist_msg[] = $ierror['message'];
                     }
-                }            
+                }
             }
             //*******************************************************************************************
             return $elist_msg;
         } catch (PropelException $th) {
             //throw $th;
-            return array('Error interno del servidor, '.$th->getMessage());
+            return array('Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
             //throw $th;
-            return array('Error interno del servidor, '.$th->getMessage());
+            return array('Error interno del servidor, ' . $th->getMessage());
         } catch (\Throwable $th) {
             //throw $th;
-            return array('Error interno del servidor, '.$th->getMessage());
+            return array('Error interno del servidor, ' . $th->getMessage());
         }
     }
 
     /**
-    * ComMigmasivoPeer::getRowsFilesToArray()
-    * Genera un array con la estructura necesaria de datos para la migracion de las TRDs, con la informacion del excel 
-    * @param mixed @list_datarows array de datos leidos desde el archivo de excel
-    * @return mixed @ilist lista de registros ajustados a la estructura necesaria para la migracion
-    */
-    public static function getRowsFilesToArray($list_datarows = array(),$usuario_id)
+     * ComMigmasivoPeer::getRowsFilesToArray()
+     * Genera un array con la estructura necesaria de datos para la migracion de las TRDs, con la informacion del excel 
+     * @param mixed @list_datarows array de datos leidos desde el archivo de excel
+     * @return mixed @ilist lista de registros ajustados a la estructura necesaria para la migracion
+     */
+    public static function getRowsFilesToArray($list_datarows = array(), $usuario_id)
     {
         try {
             $list_nrow = array();
-            foreach($list_datarows as $row)
-            {
+            foreach ($list_datarows as $row) {
                 $dataRow = array();
                 $dataRow['USUARIO_ID'] = $usuario_id;
                 $dataRow['ENTIDAD'] = trim($row[1]) ? trim($row[1]) : null;

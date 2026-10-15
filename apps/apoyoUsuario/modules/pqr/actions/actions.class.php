@@ -308,7 +308,7 @@ class pqrActions extends sfActions
     //******************************************************************************************************
     $receptor_id = $this->getReceptorId();    
     if(!is_null($receptor_id)){
-        $pqr_anterior = $pqr->copy();
+        $pqr_anterior = clone $pqr;
     	$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     	$reg = $this->getRegional($usuariologuiado);
         //**************************************************************************************************

@@ -30,16 +30,13 @@ class AuditLogPeer extends BaseAuditLogPeer
 			//*************************************************************************************
 			foreach ($valor_anterior as $valor) {
 				$valor_anterior_string .= $valor . "|";
-				if(empty($tipo_operacion)){
-					if(!empty($valor))
-						$tipo_operacion = "edit";
-					else
-						$tipo_operacion = "create";
-				}
 			}
 			//*************************************************************************************
 			foreach ($valor_nuevo as $valor) {
 				$valor_nuevo_string .= $valor . "|";
+			}
+			if (empty($tipo_operacion)) {
+				$tipo_operacion = AuditLogPeer::getTipoOperacion($valor_anterior, $valor_nuevo);
 			}
 			//*************************************************************************************
 			$client_agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "(none)";
@@ -57,13 +54,24 @@ class AuditLogPeer extends BaseAuditLogPeer
 			$audit_log->save();
 			//******************************************************************
 			AuditLogPeer::addDataHashLog($audit_log);
-		} catch (PropelException $th) {
-			$logfilename = sfConfig::get("sf_log_dir") . DIRECTORY_SEPARATOR . "access_app.log";
-			simad_util::writetolog($logfilename, $th);
-		} catch (Exception $th) {
-			$logfilename = sfConfig::get("sf_log_dir") . DIRECTORY_SEPARATOR . "access_app.log";
-			simad_util::writetolog($logfilename, $th);
+		} catch (Throwable $th) {
+				$logfilename = sfConfig::get("sf_log_dir") . DIRECTORY_SEPARATOR . "access_app.log";
+				simad_util::writetolog($logfilename, $th);
+			}
 		}
+
+	/**
+	 * Clasifica la operacion: edit (anterior y nuevo con datos), create (solo nuevo) o delete (solo anterior).
+	 */
+	public static function getTipoOperacion(array $valor_anterior, array $valor_nuevo)
+	{
+		$hay_anterior = count(array_filter($valor_anterior, function ($v) { return !empty($v); })) > 0;
+		$hay_nuevo = count(array_filter($valor_nuevo, function ($v) { return !empty($v); })) > 0;
+		if ($hay_anterior && !$hay_nuevo)
+			return "delete";
+		if (!$hay_anterior && $hay_nuevo)
+			return "create";
+		return "edit";
 	}
 
     public static function guardarAuditoriaLite($object_class, $registro_anterior, $registro_nuevo, $modulo_id, $codigo_principal,$usuario_id = null, $toperation = null)
@@ -81,11 +89,17 @@ class AuditLogPeer extends BaseAuditLogPeer
 				
 			}
 			//**************************************************************************************
-			$pkObjectId = $registro_nuevo->getPrimaryKey() != null ? $registro_nuevo->getPrimaryKey() : null;
+			// isNew() evita que los valores por defecto de un objeto vacio cuenten como datos
+			if (empty($toperation)) {
+				if ($registro_anterior == null || $registro_anterior->isNew())
+					$toperation = "create";
+				elseif ($registro_nuevo == null || $registro_nuevo->isNew() || $registro_nuevo->isDeleted())
+					$toperation = "delete";
+			}
+			$registro_pk = $registro_nuevo != null ? $registro_nuevo : $registro_anterior;
+			$pkObjectId = $registro_pk != null ? $registro_pk->getPrimaryKey() : null;
 			AuditLogPeer::guardarAuditoria($modulo_id, $campos_objeto, $valor_anterior, $valor_nuevo, $codigo_principal,$usuario_id,$object_class,$pkObjectId, $toperation);
-		} catch (PropelException $ex) {
-			$msg_error = $ex->getMessage();
-		} catch (Exception $ex) {
+		} catch (Throwable $ex) {
 			$msg_error = $ex->getMessage();
 		}
 	}

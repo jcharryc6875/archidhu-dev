@@ -554,7 +554,7 @@ class ServicioPeer extends BaseServicioPeer
                 }
                 //***************************************************************************
                 //$servicio_anterior = new Servicio();
-                //$servicio_anterior = $servicio->copy();
+                //$servicio_anterior = clone $servicio;
                 //$this->guardarAuditoria($servicio_anterior,$servicio);
                 //***************************************************************************
                 return array('isError' => false, 'message' => 'Servicio creado', 'object' => $servicio);

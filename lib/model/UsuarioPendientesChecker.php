@@ -204,7 +204,7 @@ class UsuarioPendientesChecker
         if (!$com_recibida) {
             return null;
         }
-        $com_recibida_anterior = $com_recibida->copy();
+        $com_recibida_anterior = clone $com_recibida;
         //*********************************************************************************
         $codigoReenResp = $com_recibida->getCodigoReenResp() ? $com_recibida->getCodigoReenResp() : $com_recibida->getPrimaryKey();
         $observaciones = trim($com_recibida->getObsReenResp())
@@ -248,7 +248,7 @@ class UsuarioPendientesChecker
         if (!$com_interna) {
             return null;
         }
-        $com_interna_anterior = $com_interna->copy();
+        $com_interna_anterior = clone $com_interna;
         //*********************************************************************************
         $codigoReenResp = $com_interna->getCodigoReenResp() ? $com_interna->getCodigoReenResp() : $com_interna->getPrimaryKey();
         $observaciones = trim($com_interna->getObsReenResp())
@@ -291,7 +291,7 @@ class UsuarioPendientesChecker
         if (!$com_enviada) {
             return null;
         }
-        $com_enviada_anterior = $com_enviada->copy();
+        $com_enviada_anterior = clone $com_enviada;
         //*********************************************************************************
         $codigoReenResp = $com_enviada->getCodigoReenResp() ? $com_enviada->getCodigoReenResp() : $com_enviada->getPrimaryKey();
         $observaciones = trim($com_enviada->getObsReenResp())
