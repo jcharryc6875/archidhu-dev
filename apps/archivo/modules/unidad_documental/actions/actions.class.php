@@ -1894,7 +1894,7 @@ class unidad_documentalActions extends sfActions
 
 	/**
 	 * unidad_documentalActions::executeAsyncDownloadDocs()
-	 * crea el archivo comprimido de todos los documentos electronicos que componen un expedientes 
+	 * crea el archivo comprimido de todos los documentos electronicos que componen los expedientes marcados
 	 * @return
 	 */
 	public function executeAsyncDownloadDocs()
@@ -1902,123 +1902,126 @@ class unidad_documentalActions extends sfActions
 		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
 		$localizacionunidaddoc_id = trim($this->getRequestParameter('localizacionunidaddocumental_id')) ? trim($this->getRequestParameter('localizacionunidaddocumental_id')) : 0;
 		$localizacion_doc = LocalizacionUnidadDocumentalPeer::retrieveByPK($localizacionunidaddoc_id);
+		$this->getResponse()->setContentType('application/json');
 		//********************************************************************************************************
-		/*$unidaddocumental_id = trim($this->getRequestParameter('unidaddocumental_id')) ? trim($this->getRequestParameter('unidaddocumental_id')) : 0;
-		$unidad_documental = UnidadDocumentalPeer::retrieveByPK($unidaddocumental_id);
-		$nro_expediente = trim($unidad_documental->getCodigoBarras());
-		$nombre_expediente = trim($unidad_documental->getTitulo());
-		$folder_zip = sprintf("%s_%s",$nro_expediente,$nombre_expediente);
-		
-		if($unidad_documental == null){
-			$this->redirect(sfConfig::get('base_simad').'/no_autorizado_cerrar.html');
-		}*/
-		//********************************************************************************************************
-		$modulo  = strtoupper($localizacion_doc->getDescripcion());
-		$currentForm = $modulo . "_DESCARGAR_DOCUMENTOS";
-		//********************************************************************************************************
-		if (!$this->tienePrilegio($currentForm)) {
-			$response_info['httpStatus'] = 400;
-			$response_info['message'] = "Ocurrio un error, el archivo no se genero..";
-			$response_info['url_descarga'] = null;
-
-			$this->getResponse()->setContentType('application/json');
-			return $this->renderText(json_encode($response_info));
+		$modulo = $localizacion_doc ? strtoupper($localizacion_doc->getDescripcion()) : '';
+		if ($localizacion_doc == null || !$this->tienePrilegio($modulo . "_DESCARGAR_DOCUMENTOS")) {
+			return $this->renderText(json_encode(array(
+				'httpStatus' => 400,
+				'message' => "Ocurrio un error, el archivo no se genero..",
+				'url_descarga' => null
+			)));
 		}
 		//********************************************************************************************************
 		$list_expedientes = UnidadDocumentalPeer::getAllExpedienteByMarca($usuariologuiado, $localizacionunidaddoc_id);
 		//********************************************************************************************************
-		$response_info['httpStatus'] = 200;
-		$response_info['message'] = "Archivo generado..";
-		$base_path = sfConfig::get('base_simad');
-		$response_info['url_descarga'] = $base_path;
-		$include_folderdoc = false;
+		// Se libera el bloqueo de la sesion: la generacion puede tardar minutos y bloquearia las demas peticiones del usuario
+		session_write_close();
+		set_time_limit(0);
+		//********************************************************************************************************
+		$zipFileName = md5($modulo . uniqid($usuariologuiado, true)) . ".zip";
+		$base_zpath = sfConfig::get('sf_web_dir');
+		if (!empty(sfConfig::get('sf_shared_tmp_dir'))) {
+			$base_zpath = sfConfig::get('sf_shared_tmp_dir');
+		}
+		$pathzip = $base_zpath . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $zipFileName;
 		//********************************************************************************************************
 		$zip = new ZipArchive();
-		$zipFileName = md5($modulo . date("YmdGis")) . ".zip";
-		$pathzip = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $zipFileName;
-		if (file_exists($pathzip)) {
-			unlink($pathzip);
-		}
-		if ($zip->open($pathzip, ZIPARCHIVE::CREATE) != TRUE) {
-			die("Could not open archive");
+		if ($zip->open($pathzip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+			return $this->renderText(json_encode(array(
+				'httpStatus' => 400,
+				'message' => "Ocurrio un error generando el archivo..",
+				'url_descarga' => null
+			)));
 		}
 		//********************************************************************************************************
+		$added = 0;
+		$omitted = 0;
 		foreach ($list_expedientes as $unidad_documental) {
-			$nro_expediente = trim($unidad_documental->getCodigoBarras());
-			$nombre_expediente = trim($unidad_documental->getTitulo());
-			$folder_zip = sprintf("%s_%s", $nro_expediente, $nombre_expediente);
-
-			if ($unidad_documental == null) {
-				$this->redirect(sfConfig::get('base_simad') . '/no_autorizado_cerrar.html');
-			}
-			//*****************************************************************************************************
+			$folder_zip = $unidad_documental->getFolderNameByExpediente();
 			$list_docs = ContenidoUnidadDocumentalPeer::getListDocsDownload($unidad_documental->getPrimaryKey());
+			$list_docs = is_object($list_docs) ? $list_docs->fetchAll() : array();
 			//*****************************************************************************************************
-			while ($object = $list_docs->fetch()) {
-				$addfile = null;
-				//$file_digit = null;
-				$ruta_file = $object['RUTA'];
-				if ($object['VINCULO_REGISTRO'] == 1) {
-					if (strpos($ruta_file, 'cominterna_id')) {
-						$cominterna_id = basename($ruta_file);
-						if (empty($cominterna_id)) {
-							continue;
-						}
-						$com_interna = ComInternaPeer::retrieveByPK($cominterna_id);
-						$addfile = $com_interna->getPathImageDigitByCom();
-					} elseif (strpos($ruta_file, 'comenviada_id')) {
-						$comenviada_id = basename($ruta_file);
-						if (empty($comenviada_id)) {
-							continue;
-						}
-						$com_enviada = ComEnviadaPeer::retrieveByPK($comenviada_id);
-						$addfile = $com_enviada->getPathImageDigitByCom();
-					} elseif (strpos($ruta_file, 'comrecibida_id')) {
-						$comrecibida_id = basename($ruta_file);
-						if (empty($comrecibida_id)) {
-							continue;
-						}
-						$com_recibida = ComRecibidaPeer::retrieveByPK($comrecibida_id);
-						$addfile = $com_recibida->getPathImageDigitByCom();
-					} elseif (strpos($ruta_file, 'actoadministrativo_id')) {
-						$actoadministrativo_id = basename($ruta_file);
-						if (empty($actoadministrativo_id)) {
-							continue;
-						}
-						$acto_administrativo = ActoAdministrativoPeer::retrieveByPK($actoadministrativo_id);
-						$addfile = $acto_administrativo->getPathImageDigitByCom();
-					} else {
-						continue;
-					}
+			foreach ($list_docs as $object) {
+				$addfile = $this->getPathFileToDownload($object);
+				if (empty($addfile)) {
+					$omitted++;
+					$this->logMessage('AsyncDownloadDocs: documento sin archivo DocId_' . $object['CONTENIDOUNIDADDOCUMENTAL_ID'], 'warning');
+					continue;
+				}
+				//*************************************************************************************************
+				$entry_name = $folder_zip . '/' . mb_convert_encoding('DocId_' . $object['CONTENIDOUNIDADDOCUMENTAL_ID'] . '_' . basename($addfile), 'UTF-8');
+				// CM_STORE: los PDF/imagenes ya vienen comprimidos, deflate solo consume CPU
+				if ($zip->addFile($addfile, $entry_name)) {
+					$zip->setCompressionName($entry_name, ZipArchive::CM_STORE);
+					$added++;
 				} else {
-					$path_absolute = $object['PATH_ABSOLUTE'];
-					$path_relative = $object['PATH_RELATIVE'];
-					$source_path = sprintf("%s%s%s%s", $path_absolute, $path_relative, DIRECTORY_SEPARATOR, $ruta_file);
-					if (file_exists(mb_convert_encoding($source_path, 'UTF-8'))) {
-						$addfile = mb_convert_encoding($source_path, 'UTF-8');
-					}
-				}
-				//************************************************************************************************
-				if ($include_folderdoc) {
-					$tipodoc_name = mb_convert_encoding(trim($object['TIPODOC_NOMBRE']), 'UTF-8');
-					$folder_zip .= '/' . $tipodoc_name;
-				}
-				//************************************************************************************************
-				$docid_cont = 'DocId_' . $object['CONTENIDOUNIDADDOCUMENTAL_ID'];
-				//************************************************************************************************
-				if (!empty($addfile)) {
-					$zip->addFile($addfile, $folder_zip . '/' . mb_convert_encoding($docid_cont . '_' . basename($addfile), 'UTF-8'));
+					$omitted++;
 				}
 			}
 		}
 		//********************************************************************************************************
 		$zip->close();
-		if (file_exists($pathzip)) {
-			$response_info['url_descarga'] = "/tmp/" . $zipFileName;
+		if ($added == 0 || !file_exists($pathzip)) {
+			return $this->renderText(json_encode(array(
+				'httpStatus' => 400,
+				'message' => "No se encontraron archivos para descargar en los expedientes marcados..",
+				'url_descarga' => null
+			)));
 		}
 		//********************************************************************************************************
-		$this->getResponse()->setContentType('application/json');
-		return $this->renderText(json_encode($response_info));
+		$message = "Archivo generado..";
+		if ($omitted > 0) {
+			$message .= " (" . $omitted . " documento(s) omitido(s) por no encontrarse el archivo)";
+		}
+		return $this->renderText(json_encode(array(
+			'httpStatus' => 200,
+			'message' => $message,
+			'url_descarga' => "/tmp/" . $zipFileName
+		)));
+	}
+
+	/**
+	 * unidad_documentalActions::getPathFileToDownload()
+	 * ruta fisica del archivo de un documento del expediente, ya sea cargado directamente o vinculado a una comunicacion/acto
+	 * @param array $object fila de ContenidoUnidadDocumentalPeer::getListDocsDownload()
+	 * @return string|null null si el archivo no existe
+	 */
+	private function getPathFileToDownload($object)
+	{
+		$ruta_file = $object['RUTA'];
+		if (empty($ruta_file)) {
+			return null;
+		}
+		//********************************************************************************************************
+		if ($object['VINCULO_REGISTRO'] == 1) {
+			$peers = array(
+				'cominterna_id' => 'ComInternaPeer',
+				'comenviada_id' => 'ComEnviadaPeer',
+				'comrecibida_id' => 'ComRecibidaPeer',
+				'actoadministrativo_id' => 'ActoAdministrativoPeer'
+			);
+			foreach ($peers as $key => $peer) {
+				if (strpos($ruta_file, $key)) {
+					$id = basename($ruta_file);
+					$registro = empty($id) ? null : call_user_func(array($peer, 'retrieveByPK'), $id);
+					$path = $registro ? $registro->getPathImageDigitByCom() : null;
+					return (!empty($path) && file_exists($path)) ? $path : null;
+				}
+			}
+			return null;
+		}
+		//********************************************************************************************************
+		if (empty($object['PATH_ABSOLUTE'])) {
+			return null;
+		}
+		$base = rtrim($object['PATH_ABSOLUTE'], '/\\') . DIRECTORY_SEPARATOR . trim($object['PATH_RELATIVE'], '/\\') . DIRECTORY_SEPARATOR;
+		foreach (array(mb_convert_encoding($ruta_file, 'UTF-8'), trim($ruta_file)) as $candidate) {
+			if (file_exists($base . $candidate)) {
+				return $base . $candidate;
+			}
+		}
+		return null;
 	}
 
 	// PARA STICKER POR UBICACION
