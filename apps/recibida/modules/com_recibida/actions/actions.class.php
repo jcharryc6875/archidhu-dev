@@ -2587,63 +2587,65 @@ class com_recibidaActions extends sfActions
     $this->forward('com_recibida', 'mezclarPdf');
   }
 
-  public function executePrintBatchFile()
+  /**
+   * com_recibidaActions::executeDownloadBatchFiles()
+   * ventana que procesa por trozos los radicados marcados para la descarga masiva de documentos
+   * @return
+   */
+  public function executeDownloadBatchFiles()
   {
-    require_once sfConfig::get('sf_lib_dir') . '/ZipTools/autoload.php';
-    //*********************************************************************************************
     $this->verificaPrilegio("COM_RECIBIDA_DIGIT_DESCARGA_MASIVA");
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     //*********************************************************************************************
-    $dir_raiz = ParametroPeer::retrieveByPk(27)->getValortexto();
-    $digit_dir  = ParametroPeer::retrieveByPk(14)->getValortexto();
-    $mimetypes = explode(";", ParametroPeer::retrieveByPK(31)->getValortexto());
-    //*********************************************************************************************
     $c = new Criteria();
+    $c->clearSelectColumns();
+    $c->addSelectColumn(ComRecibidaPeer::COMRECIBIDA_ID);
     $c->add(ComRecibidaPeer::MARCA, $usuariologuiado);
-    $list_com = ComRecibidaPeer::doSelect($c);
-    //*********************************************************************************************
-    $zipFileName = md5(date("YmdGis")) . ".zip";
-    $pathzip = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp";
-    //*********************************************************************************************
-    if (file_exists($pathzip . DIRECTORY_SEPARATOR . $zipFileName)) {
-      unlink($pathzip . DIRECTORY_SEPARATOR . $zipFileName);
-    }
-    //*********************************************************************************************
-    $path = "{$pathzip}/{$zipFileName}";
-    $stream = fopen($path, 'w');
-    //*********************************************************************************************
-    $zip = new ZipStream($zipFileName, array(
-      ZipStream::OPTION_OUTPUT_STREAM => $stream
-    ));
-    //*********************************************************************************************
-    $zip->opt['ContentType'] = 'application/octet-stream';
-    //*********************************************************************************************
-    try {
-      foreach ($list_com as $com_object) {
-        $dir_raiz = !empty($com_object->getDirDigit()) ? empty($com_object->getDirDigit()) : $dir_raiz;
-        $filename_digit = $com_object->getLocalDigitDocument($dir_raiz, $digit_dir);
-        $filename = basename($filename_digit);
-        //*****************************************************************************************
-        if (file_exists($filename_digit)) {
-          $zip->addFileFromPath($filename, $filename_digit);
-        }
-      }
-    } catch (\Exception $ex) {
-      $data_array = array('status' => 200, 'message' => $ex->getMessage(), 'url_file' => null);
-    }
-    //*********************************************************************************************
-    $zip->finish();
-    fclose($stream);
-    //*********************************************************************************************
-    if (file_exists($pathzip)) {
-      $data_array = array('status' => 200, 'message' => 'Archivo zip generado', 'url_file' => '/tmp/' . $zipFileName);
-    } else {
-      $data_array = array('status' => 400, 'message' => 'Ocurrio un error al generar el archivo', 'url_file' => null);
-    }
-    //*********************************************************************************************
+    $c->addAscendingOrderByColumn(ComRecibidaPeer::COMRECIBIDA_ID);
+    $this->chunks = array_chunk(ComRecibidaPeer::doSelectStmt($c)->fetchAll(PDO::FETCH_COLUMN), 25);
+    $this->lote = md5(uniqid($usuariologuiado, true));
+  }
+
+  /**
+   * com_recibidaActions::executePrintBatchFile()
+   * resuelve los archivos digitalizados de UN trozo de radicados marcados y los deja en el manifiesto del lote;
+   * se invoca una vez por trozo para que cada peticion sea corta
+   * @return
+   */
+  public function executePrintBatchFile()
+  {
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     $this->getResponse()->setContentType('application/json');
-    $data_json = json_encode($data_array);
-    return $this->renderText($data_json);
+    //*********************************************************************************************
+    $result = $this->tienePrilegio("COM_RECIBIDA_DIGIT_DESCARGA_MASIVA") ? ComRecibidaPeer::saveBatchDigitFiles(explode(',', $this->getRequestParameter('ids')), $usuariologuiado, $this->getRequestParameter('lote')) : null;
+    if ($result == null) {
+      return $this->renderText(json_encode(array('httpStatus' => 400, 'message' => 'Ocurrio un error al generar el archivo')));
+    }
+    //*********************************************************************************************
+    return $this->renderText(json_encode(array('httpStatus' => 200, 'message' => 'Radicados procesados', 'added' => $result['found'], 'omitted' => $result['missing'], 'pending' => implode(',', $result['pending']))));
+  }
+
+  /**
+   * com_recibidaActions::executePrintBatchFileFinish()
+   * crea un zip plano con todos los archivos resueltos del lote y entrega la url de descarga
+   * @return
+   */
+  public function executePrintBatchFileFinish()
+  {
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    $dir_lote = UnidadDocumentalPeer::getBatchDownloadDir($usuariologuiado, $this->getRequestParameter('lote'));
+    $this->getResponse()->setContentType('application/json');
+    $can_download = $this->tienePrilegio("COM_RECIBIDA_DIGIT_DESCARGA_MASIVA");
+    session_write_close();
+    set_time_limit(0);
+    //*********************************************************************************************
+    $zipFileName = 'RadicadosEntrada_' . date('Ymd_His') . '_' . substr($this->getRequestParameter('lote'), 0, 8) . '.zip';
+    $total = ($dir_lote == null || !$can_download) ? 0 : ComRecibidaPeer::bundleBatchFiles($dir_lote, UnidadDocumentalPeer::getTmpBaseDir() . DIRECTORY_SEPARATOR . $zipFileName);
+    if ($total == 0) {
+      return $this->renderText(json_encode(array('httpStatus' => 400, 'message' => 'No se encontraron archivos para descargar en los radicados marcados', 'url_descarga' => null)));
+    }
+    //*********************************************************************************************
+    return $this->renderText(json_encode(array('httpStatus' => 200, 'message' => 'Archivo generado', 'url_descarga' => '/tmp/' . $zipFileName)));
   }
 
   public function executePrintBatchStream()

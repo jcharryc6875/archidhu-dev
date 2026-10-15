@@ -14,6 +14,9 @@ use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
 class ComRecibidaPeer extends BaseComRecibidaPeer
 {
+    // peso maximo (bytes) que copia al zip una peticion de trozo
+    const BATCH_MAX_BYTES = 314572800;
+
     /**
      * ComRecibidaPeer::getPrimaryKeyColumnName()
      * funcion que obtiene el nombre de la llave primaria de la tabla
@@ -1268,5 +1271,81 @@ class ComRecibidaPeer extends BaseComRecibidaPeer
         }
         //*************************************************************************************************************
         return $array_data;
+    }
+
+    /**
+     * ComRecibidaPeer::saveBatchDigitFiles()
+     * agrega al zip del lote los archivos digitalizados de radicados marcados por el usuario, hasta BATCH_MAX_BYTES por peticion
+     * @param array $ids COMRECIBIDA_ID (maximo 100)
+     * @param int $usuario_id usuario que marco los radicados
+     * @param string $lote token del lote
+     * @return array|null array('found' => int, 'missing' => int, 'pending' => array de ids sin procesar), null si el lote no es valido
+     */
+    public static function saveBatchDigitFiles($ids, $usuario_id, $lote)
+    {
+        $dir = UnidadDocumentalPeer::getBatchDownloadDir($usuario_id, $lote);
+        if ($dir == null) {
+            return null;
+        }
+        $ids = array_slice(array_values(array_unique(array_filter(array_map('intval', (array) $ids)))), 0, 100);
+        if (empty($ids)) {
+            return array('found' => 0, 'missing' => 0, 'pending' => array());
+        }
+        //*****************************************************************************************
+        $c = new Criteria();
+        $c->add(self::COMRECIBIDA_ID, $ids, Criteria::IN);
+        $c->add(self::MARCA, $usuario_id);
+        $c->addAscendingOrderByColumn(self::COMRECIBIDA_ID);
+        $list_com = self::doSelect($c);
+        //*****************************************************************************************
+        $writer = new ZipAppendWriter($dir);
+        if (!$writer->open()) {
+            return null;
+        }
+        $names = $writer->getNames();
+        $dir_raiz = ParametroPeer::retrieveByPk(27)->getValortexto();
+        $digit_dir = ParametroPeer::retrieveByPk(14)->getValortexto();
+        $mimetypes = explode(";", ParametroPeer::retrieveByPK(31)->getValortexto());
+        $found = 0;
+        $missing = 0;
+        $bytes = 0;
+        $pending = array();
+        foreach ($list_com as $com_object) {
+            // se corta por peso: lo que no cabe en esta peticion lo retoma el cliente con otra
+            if ($bytes >= self::BATCH_MAX_BYTES) {
+                $pending[] = $com_object->getPrimaryKey();
+                continue;
+            }
+            $path = $com_object->findLocalDigitDocument($dir_raiz, $digit_dir, $mimetypes);
+            if ($path == null) {
+                $missing++;
+                continue;
+            }
+            $name = basename($path);
+            if (isset($names[$name])) {
+                continue;
+            }
+            if (!$writer->addFile($path, $name)) {
+                $missing++;
+                continue;
+            }
+            $names[$name] = true;
+            $found++;
+            $bytes += filesize($path);
+        }
+        $writer->close();
+        return array('found' => $found, 'missing' => $missing, 'pending' => $pending);
+    }
+
+    /**
+     * ComRecibidaPeer::bundleBatchFiles()
+     * cierra el zip plano del lote (solo escribe el directorio central) y lo deja en $pathzip
+     * @param string $dir carpeta del lote
+     * @param string $pathzip ruta del zip final
+     * @return int cantidad de archivos incluidos
+     */
+    public static function bundleBatchFiles($dir, $pathzip)
+    {
+        return ZipAppendWriter::finish($dir, $pathzip);
     }
 }

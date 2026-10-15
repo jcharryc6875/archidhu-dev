@@ -310,15 +310,7 @@ $cantidad_registros = $pager->getNbResults();
             ?>
 
             <?php if ($sf_user->checkPerm("COM_RECIBIDA_DIGIT_DESCARGA_MASIVA", $usuariologuiado)) { ?>
-              <a class="btn btn-white btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Descargar documento(s) para impresi&oacute;n" href="#"
-                onclick="<?php
-                          echo jq_remote_function(array(
-                            'update'    => md5('divstrlistrows'),
-                            'url'  => url_for('com_recibida/printBatchFile'),
-                            'confirm' => 'Esta seguro de realizar esta acci&oacute;n?, recuerde que puede descargar maximo 100 archivos',
-                            'loading'  => "javascript:jQuery.LoadingStructData()",
-                            'complete' => "javascript:jQuery.CloseLoadingStructData(); try{ var response_value = JSON.parse(XMLHttpRequest.responseText); if(response_value.status == 200){ toastr.success(response_value.message); window.open(response_value.url_file, 'MyWindow'); }else{ toastr.error(response_value.message); } }catch(err) { toastr.error(err.message); }",
-                          )); ?>">
+              <a class="btn btn-white btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Descargar documento(s) para impresi&oacute;n" href="#" onclick="javascript:jQuery.OpenModalSIMAD('<?php echo url_for('com_recibida/downloadBatchFiles'); ?>','1280','640');">
                 <img src="<?php echo $base_path; ?>/images/simad/ico_imprimir.png" width="25" height="25" align="middle" />
                 Descargar Documentos
               </a>

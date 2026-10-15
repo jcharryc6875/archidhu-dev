@@ -1571,4 +1571,31 @@ class ComRecibida extends BaseComRecibida
         //*********************************************************************************************
         return $attach_url;
     }
+
+    /**
+     * ComRecibida::findLocalDigitDocument()
+     * ruta del documento digitalizado principal si existe en disco; a diferencia de getBasicUrlDigitCom() no crea carpetas
+     * @param string $dir_raiz directorio raiz por defecto
+     * @param string $digit_dir carpeta de digitalizados
+     * @param array $mimetypes extensiones permitidas
+     * @return string|null null si el archivo no existe
+     */
+    public function findLocalDigitDocument($dir_raiz, $digit_dir, $mimetypes)
+    {
+        $dir_raiz = trim($this->getDirDigit()) != '' ? trim($this->getDirDigit()) : $dir_raiz;
+        $regional = $this->getRegional();
+        $folder_entidad = trim($regional->getEntidad()->getDirectorioName());
+        $folder_regional = trim($regional->getDirectorioName());
+        $entidad_text = $folder_entidad ? ($folder_regional ? $folder_entidad . DIRECTORY_SEPARATOR . $folder_regional : $folder_entidad) : $folder_regional;
+        $basic_path = $dir_raiz . $entidad_text . DIRECTORY_SEPARATOR . $digit_dir . DIRECTORY_SEPARATOR . $this->getPeriodoId();
+        $basic_path = simad_util::NormalizePath(preg_replace("#/+#", DIRECTORY_SEPARATOR, $basic_path));
+        //*****************************************************************************************
+        foreach ($mimetypes as $format) {
+            $targetpath = $basic_path . DIRECTORY_SEPARATOR . sprintf("%s.%s", trim($this->getRadicado()), trim($format));
+            if (file_exists($targetpath)) {
+                return $targetpath;
+            }
+        }
+        return null;
+    }
 }
