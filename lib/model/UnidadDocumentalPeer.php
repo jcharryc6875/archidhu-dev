@@ -960,4 +960,60 @@ class UnidadDocumentalPeer extends BaseUnidadDocumentalPeer
 		}
 		return $resultado;
 	}
+
+	/**
+	 * UnidadDocumentalPeer::getTmpBaseDir()
+	 * carpeta temporal (compartida si esta configurada) donde se dejan los zip de descarga
+	 * @return string
+	 */
+	public static function getTmpBaseDir()
+	{
+		$base = !empty(sfConfig::get('sf_shared_tmp_dir')) ? sfConfig::get('sf_shared_tmp_dir') : sfConfig::get('sf_web_dir');
+		return $base . DIRECTORY_SEPARATOR . "tmp";
+	}
+
+	/**
+	 * UnidadDocumentalPeer::getBatchDownloadDir()
+	 * carpeta de trabajo donde se acumulan los zip por expediente de un lote de descarga de un usuario
+	 * @param int $usuario_id
+	 * @param string $lote token de 32 caracteres hexadecimales
+	 * @return string|null null si el lote no es valido
+	 */
+	public static function getBatchDownloadDir($usuario_id, $lote)
+	{
+		if (!preg_match('/^[a-f0-9]{32}$/', (string) $lote) || (int) $usuario_id <= 0) {
+			return null;
+		}
+		return self::getTmpBaseDir() . DIRECTORY_SEPARATOR . 'dwasync' . DIRECTORY_SEPARATOR . (int) $usuario_id . '_' . $lote;
+	}
+
+	/**
+	 * UnidadDocumentalPeer::bundleBatchZips()
+	 * reune en un solo zip (sin recomprimir) los zip por expediente de la carpeta del lote y la elimina
+	 * @param string $dir carpeta del lote
+	 * @param string $pathzip ruta del zip final
+	 * @return int cantidad de zip por expediente incluidos
+	 */
+	public static function bundleBatchZips($dir, $pathzip)
+	{
+		$files = is_dir($dir) ? glob($dir . DIRECTORY_SEPARATOR . '*.zip') : array();
+		if (empty($files)) {
+			return 0;
+		}
+		$zip = new ZipArchive();
+		if ($zip->open($pathzip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+			return 0;
+		}
+		foreach ($files as $file) {
+			$zip->addFile($file, basename($file));
+			$zip->setCompressionName(basename($file), ZipArchive::CM_STORE);
+		}
+		$closed = $zip->close();
+		// los zip por expediente se leen al cerrar el zip final: solo despues se pueden borrar
+		foreach ($files as $file) {
+			unlink($file);
+		}
+		rmdir($dir);
+		return $closed ? count($files) : 0;
+	}
 }

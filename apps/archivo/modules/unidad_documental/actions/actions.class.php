@@ -1888,97 +1888,70 @@ class unidad_documentalActions extends sfActions
 		//********************************************************************************************************
 		$this->list_expedientes = UnidadDocumentalPeer::getAllExpedienteByMarca($usuariologuiado, $localizacionunidaddoc_id);
 		$this->localizacionunidaddocumental_id = $localizacionunidaddoc_id;
+		$this->lote = md5(uniqid($usuariologuiado, true));
 		//********************************************************************************************************
 		$this->setTemplate('downloadBatchDocs');
 	}
 
 	/**
 	 * unidad_documentalActions::executeAsyncDownloadDocs()
-	 * crea el archivo comprimido de todos los documentos electronicos que componen los expedientes marcados
+	 * crea el zip con los documentos electronicos de UN expediente marcado y lo deja en la carpeta del lote;
+	 * se invoca una vez por expediente para que cada peticion sea corta
 	 * @return
 	 */
 	public function executeAsyncDownloadDocs()
 	{
 		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-		$localizacionunidaddoc_id = trim($this->getRequestParameter('localizacionunidaddocumental_id')) ? trim($this->getRequestParameter('localizacionunidaddocumental_id')) : 0;
-		$localizacion_doc = LocalizacionUnidadDocumentalPeer::retrieveByPK($localizacionunidaddoc_id);
+		$unidad_documental = UnidadDocumentalPeer::retrieveByPK(trim($this->getRequestParameter('unidaddocumental_id')));
+		$dir_lote = UnidadDocumentalPeer::getBatchDownloadDir($usuariologuiado, $this->getRequestParameter('lote'));
 		$this->getResponse()->setContentType('application/json');
 		//********************************************************************************************************
-		$modulo = $localizacion_doc ? strtoupper($localizacion_doc->getDescripcion()) : '';
-		if ($localizacion_doc == null || !$this->tienePrilegio($modulo . "_DESCARGAR_DOCUMENTOS")) {
-			return $this->renderText(json_encode(array(
-				'httpStatus' => 400,
-				'message' => "Ocurrio un error, el archivo no se genero..",
-				'url_descarga' => null
-			)));
+		$modulo = $unidad_documental ? strtoupper($unidad_documental->getLocalizacionUnidadDocumental()->getDescripcion()) : '';
+		if ($unidad_documental == null || $dir_lote == null || $unidad_documental->getMarca() != $usuariologuiado || !$this->tienePrilegio($modulo . "_DESCARGAR_DOCUMENTOS")) {
+			return $this->renderText(json_encode(array('httpStatus' => 400, 'message' => "Ocurrio un error, el archivo no se genero..")));
 		}
 		//********************************************************************************************************
-		$list_expedientes = UnidadDocumentalPeer::getAllExpedienteByMarca($usuariologuiado, $localizacionunidaddoc_id);
-		//********************************************************************************************************
-		// Se libera el bloqueo de la sesion: la generacion puede tardar minutos y bloquearia las demas peticiones del usuario
+		// Se libera el bloqueo de la sesion para no frenar las demas peticiones del usuario
 		session_write_close();
 		set_time_limit(0);
 		//********************************************************************************************************
-		$zipFileName = md5($modulo . uniqid($usuariologuiado, true)) . ".zip";
-		$base_zpath = sfConfig::get('sf_web_dir');
-		if (!empty(sfConfig::get('sf_shared_tmp_dir'))) {
-			$base_zpath = sfConfig::get('sf_shared_tmp_dir');
+		simad_util::createPath($dir_lote);
+		$result = $unidad_documental->createZipDocs($dir_lote . DIRECTORY_SEPARATOR . $unidad_documental->getFolderNameByExpediente() . ".zip");
+		if ($result == null) {
+			return $this->renderText(json_encode(array('httpStatus' => 400, 'message' => "Ocurrio un error generando el archivo..")));
 		}
-		$pathzip = $base_zpath . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $zipFileName;
-		//********************************************************************************************************
-		$zip = new ZipArchive();
-		if ($zip->open($pathzip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-			return $this->renderText(json_encode(array(
-				'httpStatus' => 400,
-				'message' => "Ocurrio un error generando el archivo..",
-				'url_descarga' => null
-			)));
+		foreach ($result['missing'] as $docid) {
+			$this->logMessage('AsyncDownloadDocs: documento sin archivo DocId_' . $docid, 'warning');
 		}
 		//********************************************************************************************************
-		$added = 0;
-		$omitted = 0;
-		foreach ($list_expedientes as $unidad_documental) {
-			$folder_zip = $unidad_documental->getFolderNameByExpediente();
-			$list_docs = ContenidoUnidadDocumentalPeer::getListDocsDownload($unidad_documental->getPrimaryKey());
-			$list_docs = is_object($list_docs) ? $list_docs->fetchAll() : array();
-			//*****************************************************************************************************
-			foreach ($list_docs as $object) {
-				$addfile = ContenidoUnidadDocumentalPeer::getPathFileToDownload($object);
-				if (empty($addfile)) {
-					$omitted++;
-					$this->logMessage('AsyncDownloadDocs: documento sin archivo DocId_' . $object['CONTENIDOUNIDADDOCUMENTAL_ID'], 'warning');
-					continue;
-				}
-				//*************************************************************************************************
-				$entry_name = $folder_zip . '/' . mb_convert_encoding('DocId_' . $object['CONTENIDOUNIDADDOCUMENTAL_ID'] . '_' . basename($addfile), 'UTF-8');
-				// CM_STORE: los PDF/imagenes ya vienen comprimidos, deflate solo consume CPU
-				if ($zip->addFile($addfile, $entry_name)) {
-					$zip->setCompressionName($entry_name, ZipArchive::CM_STORE);
-					$added++;
-				} else {
-					$omitted++;
-				}
-			}
-		}
-		//********************************************************************************************************
-		$zip->close();
-		if ($added == 0 || !file_exists($pathzip)) {
-			return $this->renderText(json_encode(array(
-				'httpStatus' => 400,
-				'message' => "No se encontraron archivos para descargar en los expedientes marcados..",
-				'url_descarga' => null
-			)));
-		}
-		//********************************************************************************************************
-		$message = "Archivo generado..";
-		if ($omitted > 0) {
-			$message .= " (" . $omitted . " documento(s) omitido(s) por no encontrarse el archivo)";
-		}
 		return $this->renderText(json_encode(array(
 			'httpStatus' => 200,
-			'message' => $message,
-			'url_descarga' => "/tmp/" . $zipFileName
+			'message' => "Expediente comprimido..",
+			'added' => $result['added'],
+			'omitted' => count($result['missing'])
 		)));
+	}
+
+	/**
+	 * unidad_documentalActions::executeAsyncDownloadDocsFinish()
+	 * reune en un solo zip los zip por expediente generados para el lote y entrega la url de descarga
+	 * @return
+	 */
+	public function executeAsyncDownloadDocsFinish()
+	{
+		$usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+		$dir_lote = UnidadDocumentalPeer::getBatchDownloadDir($usuariologuiado, $this->getRequestParameter('lote'));
+		$this->getResponse()->setContentType('application/json');
+		session_write_close();
+		set_time_limit(0);
+		//********************************************************************************************************
+		$zipFileName = 'Expedientes_' . date('Ymd_His') . '_' . substr($this->getRequestParameter('lote'), 0, 8) . '.zip';
+		$total = $dir_lote == null ? 0 : UnidadDocumentalPeer::bundleBatchZips($dir_lote, UnidadDocumentalPeer::getTmpBaseDir() . DIRECTORY_SEPARATOR . $zipFileName);
+		if ($total == 0) {
+			return $this->renderText(json_encode(array('httpStatus' => 400, 'message' => "No se encontraron archivos para descargar en los expedientes marcados..", 'url_descarga' => null)));
+		}
+		//********************************************************************************************************
+		return $this->renderText(json_encode(array('httpStatus' => 200, 'message' => "Archivo generado..", 'url_descarga' => "/tmp/" . $zipFileName)));
 	}
 
 	// PARA STICKER POR UBICACION

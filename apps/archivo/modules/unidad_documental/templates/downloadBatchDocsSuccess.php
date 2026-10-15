@@ -6,13 +6,24 @@ $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 use_helper('jQuery');
 ?>
 <script src="<?php echo $path_theme; ?>assets/js/toastr.js"></script>
-<div class="row">
+<script src="<?php echo $path_theme; ?>assets/js/descarga_masiva_expedientes.js"></script>
+<div class="row" id="descarga-masiva" data-url-expediente="<?php echo url_for('unidad_documental/asyncDownloadDocs'); ?>" data-url-finish="<?php echo url_for('unidad_documental/asyncDownloadDocsFinish'); ?>" data-lote="<?php echo $lote; ?>">
     <div class="col-md-12">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">0 / 0</div>
+        </div>
+        <div class="alert alert-warning descarga-aviso" role="alert">
+            <span class="glyphicon glyphicon-warning-sign"></span>
+            <strong>Por favor no cierre ni recargue esta ventana</strong> hasta que el proceso termine. Al finalizar aparecer&aacute; aqu&iacute; el bot&oacute;n para descargar el archivo.
+        </div>
         <!-- Contenedor Pagina -->
         <div class="panel panel-primary" data-collapsed="0">
             <div class="panel-heading">
                 <div class="panel-title">
                     Lista de Expediente
+                </div>
+                <div class="panel-options">
+                    <a href="#" target="_blank" class="btn btn-warning btn-sm pull-right descarga-link hidden"><span class="glyphicon glyphicon-download-alt"></span> Descargar ZIP</a>
                 </div>
             </div>
             <!-- Contenedor Contenido Formulario-->
@@ -23,16 +34,16 @@ use_helper('jQuery');
                             <th class="text-center" style="width: 10%">ID Expediente</th>
                             <th class="text-center" style="width: 15%">N&uacute;mero Expediente</th>
                             <th class="text-center">Nombre Expediente</th>
-                            <th class="text-center" style="width: 10%">...</th>
+                            <th class="text-center" style="width: 10%">Estado</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($list_expedientes as $unidad_documental) { ?>
-                            <tr>
+                            <tr data-id="<?php echo $unidad_documental->getPrimaryKey(); ?>">
                                 <td class="text-center"><?php echo $unidad_documental->getPrimaryKey(); ?></td>
                                 <td class="text-center"><?php echo $unidad_documental->getCodigoBarras(); ?></td>
                                 <td><?php echo $unidad_documental->getTitulo(); ?></td>
-                                <td><?php echo "&nbsp;"; ?></td>
+                                <td class="descarga-estado text-center">Pendiente</td>
                             </tr>
                         <?php } ?>
                     </tbody>
@@ -41,42 +52,3 @@ use_helper('jQuery');
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    jQuery(window).on('load', function() {
-        jQuery.ajax({
-            type: 'POST',
-            url: '<?php echo url_for('unidad_documental/asyncDownloadDocs'); ?>',
-            data: jQuery.param({
-                localizacionunidaddocumental_id: "<?php echo $localizacionunidaddocumental_id; ?>"
-            }),
-            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-            cache: false,
-            processData: false,
-            beforeSend: function() {
-                javascript: jQuery.LoadingStructData();
-            },
-            success: function(data) {
-                javascript: jQuery.CloseLoadingStructData();
-                try {
-                    if (data.httpStatus == 200) {
-                        toastr.success(data.message);
-                        if (data.url_descarga.length > 0) {
-                            window.open(data.url_descarga, '_blank');
-                        }
-                    } else if (data.httpStatus == 400) {
-                        toastr.error(data.message);
-                    } else {
-                        toastr.warning(data.message);
-                    }
-                } catch (err) {
-                    toastr.error(err.message);
-                }
-            },
-            complete: function() {
-                javascript: jQuery.CloseLoadingStructData();
-                //toastr.info('Por favor actualice esta pagina para ver los cambios'); 
-            },
-        });
-    });
-</script>

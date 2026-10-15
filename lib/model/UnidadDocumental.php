@@ -962,4 +962,45 @@ class UnidadDocumental extends BaseUnidadDocumental
         }
         return $folder;
     }
+
+    /**
+     * unidad_documental::createZipDocs()
+     * comprime en $pathzip los archivos de todos los documentos electronicos del expediente
+     * @param string $pathzip ruta del zip a generar
+     * @return array|null array('added' => int, 'missing' => array de CONTENIDOUNIDADDOCUMENTAL_ID sin archivo), null si no se pudo generar el zip
+     */
+    public function createZipDocs($pathzip)
+    {
+        $zip = new ZipArchive();
+        if ($zip->open($pathzip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            return null;
+        }
+        //******************************************************************************************
+        // fetchAll: pdo_sqlsrv sin MARS no permite otras consultas mientras haya un cursor abierto
+        $list_docs = ContenidoUnidadDocumentalPeer::getListDocsDownload($this->getPrimaryKey());
+        $list_docs = is_object($list_docs) ? $list_docs->fetchAll() : array();
+        $added = 0;
+        $missing = array();
+        foreach ($list_docs as $object) {
+            $addfile = ContenidoUnidadDocumentalPeer::getPathFileToDownload($object);
+            if (empty($addfile)) {
+                $missing[] = $object['CONTENIDOUNIDADDOCUMENTAL_ID'];
+                continue;
+            }
+            //**************************************************************************************
+            $entry_name = mb_convert_encoding('DocId_' . $object['CONTENIDOUNIDADDOCUMENTAL_ID'] . '_' . basename($addfile), 'UTF-8');
+            // CM_STORE: los PDF/imagenes ya vienen comprimidos, deflate solo consume CPU
+            if ($zip->addFile($addfile, $entry_name)) {
+                $zip->setCompressionName($entry_name, ZipArchive::CM_STORE);
+                $added++;
+            } else {
+                $missing[] = $object['CONTENIDOUNIDADDOCUMENTAL_ID'];
+            }
+        }
+        //******************************************************************************************
+        if (!$zip->close() && $added > 0) {
+            return null;
+        }
+        return array('added' => $added, 'missing' => $missing);
+    }
 }
