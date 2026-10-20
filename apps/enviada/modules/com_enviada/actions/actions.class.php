@@ -1182,7 +1182,7 @@ class com_enviadaActions extends sfActions
         $nuid_interesado = trim($this->getRequestParameter('nuid_interesado'));
         if (!empty($nuid_interesado)) {
             $expaddjoin_interesado = true;
-            $c->add(InteresadosPeer::NUMERO_IDENTIFICACION, '%' . $nuid_interesado . '%', Criteria::LIKE);
+            $c->add(InteresadosPeer::NUMERO_IDENTIFICACION, $nuid_interesado . '%', Criteria::LIKE);
             $this->parametros .= "&nuid_interesado=" . $nuid_interesado;
         }
         //*************************************************************************************************
@@ -1203,7 +1203,7 @@ class com_enviadaActions extends sfActions
         if ($nuid_representantelegal) {
             $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaInteresadosPeer::COMENVIADA_ID);
             $c->addJoin(EnviadaInteresadosPeer::REPRESENTANTELEGAL_ID, RepresentanteLegalPeer::REPRESENTANTELEGAL_ID);
-            $c->add(RepresentanteLegalPeer::NUMERO_IDENTIFICACION, '%' . $nuid_representantelegal . '%', Criteria::LIKE);
+            $c->add(RepresentanteLegalPeer::NUMERO_IDENTIFICACION, $nuid_representantelegal . '%', Criteria::LIKE);
             $this->parametros .= "&nuid_representantelegal=" . $nuid_representantelegal;
         }
         //*************************************************************************************************
