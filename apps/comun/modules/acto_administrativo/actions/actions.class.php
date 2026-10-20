@@ -2430,7 +2430,14 @@ class acto_administrativoActions extends sfActions
       // No se permite adjuntar el acto como PDF directo sin el permiso "Usar PDF"
       // Tampoco si el participante actual no puede editar en esta etapa
       $replyfile = ($puedeEditarContenido && $this->getUser()->checkPerm("ACTO_ADMINISTRATIVO_USAR_PDF", $usuariologuiado)) ? trim($this->getRequestParameter('replyfile')) : '';
-      if (!empty($replyfile)) {
+      if (!$isNewActoAdm && $acto_administrativo->getIsCreateWord()) {
+        // El tipo de documento (PDF / Word / editor) solo se elige al crear el borrador: los switches
+        // no se envian en la edicion, asi que se conserva el archivo vigente sin regenerarlo ni anularlo
+        // (el reemplazo del archivo se hace aparte, desde "Seleccionar archivo").
+        $acto_administrativo->setContenido(null);
+        $acto_administrativo->setUseMembrete($object_anterior->getUseMembrete());
+        $is_create_doc = true;
+      } else if (!empty($replyfile)) {
         $filedir_tmp = sfConfig::get("sf_web_dir") . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $replyfile;
         $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(25)->getValortexto() . 'uploads');
         $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd")) . DIRECTORY_SEPARATOR . $replyfile;
