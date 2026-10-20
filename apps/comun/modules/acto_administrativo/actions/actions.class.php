@@ -1150,6 +1150,7 @@ class acto_administrativoActions extends sfActions
       //El lector de Excel entrega las celdas de fecha como DateTime, que trim() no admite.
       $fechaResolucion = $row[14] instanceof DateTime ? $row[14]->format('Y-m-d') : trim($row[14]);
       $dataRow['FECHA_RESOLUCION'] = $fechaResolucion ?: null;
+	  //******************************************************************************************
       $dataRow['ID_SUBORIGEN'] = trim($row[15]) ? trim($row[15]) : null;
       $dataRow['MARCO_NORMATIVO'] = trim($row[16]) ? trim($row[16]) : null;
       $dataRow['COD_TIPO_DOC'] = trim($row[17]) ? trim($row[17]) : null;
@@ -1583,7 +1584,7 @@ class acto_administrativoActions extends sfActions
             //*****************************************************************************
             $docxProps = simad_util::readCustomPropsFromDocx($fullpath);
             //*****************************************************************************
-            $uuid = $acto_administrativo->getPrimaryKey() . '#' . $acto_administrativo->getPlantillasCom()->getPrimaryKey();
+            $uuid = $acto_administrativo->getPlantillascomId() . '#' . $acto_administrativo->getPlantillasCom()->getModuloId();
             $plantillaId = $acto_administrativo->getPlantillascomId();
             $modulo_id = $acto_administrativo->getPlantillasCom()->getModuloId();
             $periodoAt = $acto_administrativo->getPeriodoId();
