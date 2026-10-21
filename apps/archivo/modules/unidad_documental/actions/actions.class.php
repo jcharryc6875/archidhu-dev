@@ -520,9 +520,14 @@ class unidad_documentalActions extends sfActions
 				$cSinPermiso = (new Criteria())->add(UnidadDocumentalPeer::CODIGO_BARRAS, trim($this->getRequestParameter('codigo_barras')) . '%', Criteria::LIKE);
 			}
 			if ($cSinPermiso) {
+				if ($localizacion) {
+					$cSinPermiso->add(UnidadDocumentalPeer::LOCALIZACIONUNIDADDOCUMENTAL_ID, $localizacion);
+				}
 				$countSinPermiso = UnidadDocumentalPeer::doCount($cSinPermiso);
 			} else {
-				$countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('UnidaddocumentalInteresadosPeer', UnidaddocumentalInteresadosPeer::INTERESADO_ID);
+				$countSinPermiso = $localizacion
+					? ConsultaPermisoHelper::countInteresadoArchivoSinPermiso($localizacion)
+					: ConsultaPermisoHelper::countInteresadoSinPermiso('UnidaddocumentalInteresadosPeer', UnidaddocumentalInteresadosPeer::INTERESADO_ID);
 			}
 			$this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
 		}
@@ -908,9 +913,14 @@ class unidad_documentalActions extends sfActions
 				$cSinPermiso = (new Criteria())->add(UnidadDocumentalPeer::CODIGO_BARRAS, trim($this->getRequestParameter('codigo_barras')) . '%', Criteria::LIKE);
 			}
 			if ($cSinPermiso) {
+				if ($localizacion) {
+					$cSinPermiso->add(UnidadDocumentalPeer::LOCALIZACIONUNIDADDOCUMENTAL_ID, $localizacion);
+				}
 				$countSinPermiso = UnidadDocumentalPeer::doCount($cSinPermiso);
 			} else {
-				$countSinPermiso = ConsultaPermisoHelper::countInteresadoSinPermiso('UnidaddocumentalInteresadosPeer', UnidaddocumentalInteresadosPeer::INTERESADO_ID);
+				$countSinPermiso = $localizacion
+					? ConsultaPermisoHelper::countInteresadoArchivoSinPermiso($localizacion)
+					: ConsultaPermisoHelper::countInteresadoSinPermiso('UnidaddocumentalInteresadosPeer', UnidaddocumentalInteresadosPeer::INTERESADO_ID);
 			}
 			$this->mensajeListaVacia = ConsultaPermisoHelper::mensajeListaVacia($countSinPermiso);
 		}

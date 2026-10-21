@@ -986,13 +986,14 @@ class busqueda_avanzadaActions extends sfActions
 				$view_all_expedientes = $this->getUser()->checkPerm("VER_TODAS_LAS_SUBSERIES", $usuariologuiado);
 				//**********************************************************************************************************
 				//SECCION DE PERMISOS DE ACCESO
+				// VER_TODAS_LAS_SUBSERIES da acceso a todos los expedientes en las tres fases: sin alcance por regional/entidad.
 				$currentFormListAllRegional = "LISTAR_EXPEDIENTES_TODAS_REGIONALES";
-				if (!$this->getUser()->checkPerm($currentFormListAllRegional, $usuariologuiado)) {
+				if (!$view_all_expedientes && !$this->getUser()->checkPerm($currentFormListAllRegional, $usuariologuiado)) {
 					$cbasic->add(UnidadDocumentalPeer::REGIONAL_ID, $usuario_object->getRegionalId());
 				}
 
 				$currentFormListAllEntidad = "LISTAR_EXPEDIENTES_TODAS_ENTIDADES";
-				if (!$this->getUser()->checkPerm($currentFormListAllEntidad, $usuariologuiado)) {
+				if (!$view_all_expedientes && !$this->getUser()->checkPerm($currentFormListAllEntidad, $usuariologuiado)) {
 					$cbasic->addJoin(UnidadDocumentalPeer::REGIONAL_ID, RegionalPeer::REGIONAL_ID);
 					$cbasic->add(RegionalPeer::ENTIDAD_ID, $usuario_object->getRegional()->getEntidadId());
 				}
@@ -1003,8 +1004,8 @@ class busqueda_avanzadaActions extends sfActions
 				//**********************************************************************************************************
 				$ag->addJoin(UnidadDocumentalPeer::SUBSERIE_ID, SubseriePeer::SUBSERIE_ID, Criteria::INNER_JOIN);
 				//*******************ALCANCE POR DEPENDENCIA/SUBSERIE ******************************************************
-				$ag->addJoin(UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidaddocumentalUsuarioPeer::UNIDADDOCUMENTAL_ID);
 				if (!$view_all_expedientes) {
+					$ag->addJoin(UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidaddocumentalUsuarioPeer::UNIDADDOCUMENTAL_ID);
 					$usuario_object = UsuarioPeer::retrieveByPK($usuariologuiado);
 					$dependencia_conectado = $usuario_object->getDependenciaId();
 					if ($this->getUser()->checkPerm('VER_EXPEDIENTES_POR_DEPENDENCIA', $usuariologuiado)) {
@@ -1022,9 +1023,8 @@ class busqueda_avanzadaActions extends sfActions
 					} else {
 						$ag->add(UnidaddocumentalUsuarioPeer::USUARIO_ID, $usuariologuiado);
 					}
+					$ag->add(UnidaddocumentalUsuarioPeer::ROLUSUUNIDADDOC_ID, 1);
 				}
-				//**********************************************************************************************************
-				$ag->add(UnidaddocumentalUsuarioPeer::ROLUSUUNIDADDOC_ID, 1);
 				//**********************************************************************************************************
 				$ag->clearSelectColumns();
 				$ag->addSelectColumn(UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID);
@@ -1115,9 +1115,7 @@ class busqueda_avanzadaActions extends sfActions
 		}
 
 		if (!empty($param_list['pnombre_interesado']) || !empty($param_list['papellido_interesado']) || !empty($param_list['nuid_interesado'])) {
-			// Mismo patron ya usado en unidad_documental/com_recibida/etc: no se acota por
-			// localizacion, el helper solo confirma si existe algun interesado coincidente.
-			return ConsultaPermisoHelper::countInteresadoSinPermiso('UnidaddocumentalInteresadosPeer', UnidaddocumentalInteresadosPeer::INTERESADO_ID);
+			return ConsultaPermisoHelper::countInteresadoArchivoSinPermiso($localizacion_id);
 		}
 
 		return 0;

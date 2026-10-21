@@ -79,8 +79,22 @@ class ConsultaPermisoHelper
      *
      * @param string $joinPeerClass       Peer de la tabla intermedia (ej. 'ComrecibidaInteresadosPeer')
      * @param string $interesadoIdColumn  Columna FQ de esa tabla hacia INTERESADO_ID (ej. ComrecibidaInteresadosPeer::INTERESADO_ID)
+     * @param Criteria $criteriaBase      Condiciones/joins previos que acotan el conteo (ej. localizacion del expediente)
      */
-    public static function countInteresadoSinPermiso($joinPeerClass, $interesadoIdColumn)
+    /**
+     * Igual que countInteresadoSinPermiso() para expedientes, acotado a una localizacion
+     * (1 gestion, 2 central, 3 historico) para no contar los de otra fase.
+     */
+    public static function countInteresadoArchivoSinPermiso($localizacionId)
+    {
+        $base = new Criteria();
+        $base->addJoin(UnidaddocumentalInteresadosPeer::UNIDADDOCUMENTAL_ID, UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID);
+        $base->add(UnidadDocumentalPeer::LOCALIZACIONUNIDADDOCUMENTAL_ID, $localizacionId);
+
+        return self::countInteresadoSinPermiso('UnidaddocumentalInteresadosPeer', UnidaddocumentalInteresadosPeer::INTERESADO_ID, $base);
+    }
+
+    public static function countInteresadoSinPermiso($joinPeerClass, $interesadoIdColumn, Criteria $criteriaBase = null)
     {
         $request = sfContext::getInstance()->getRequest();
         $pnombre = trim($request->getParameter('pnombre_interesado'));
@@ -93,7 +107,7 @@ class ConsultaPermisoHelper
             return 0;
         }
 
-        $c = new Criteria();
+        $c = $criteriaBase !== null ? $criteriaBase : new Criteria();
         $c->addJoin($interesadoIdColumn, InteresadosPeer::INTERESADO_ID);
         if ($pnombre) {
             $c->add(InteresadosPeer::PRIMER_NOMBRE, '%'.$pnombre.'%', Criteria::LIKE);
