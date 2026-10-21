@@ -1005,7 +1005,7 @@ class busqueda_avanzadaActions extends sfActions
 				$ag->addJoin(UnidadDocumentalPeer::SUBSERIE_ID, SubseriePeer::SUBSERIE_ID, Criteria::INNER_JOIN);
 				//*******************ALCANCE POR DEPENDENCIA/SUBSERIE ******************************************************
 				if (!$view_all_expedientes) {
-					$ag->addJoin(UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidaddocumentalUsuarioPeer::UNIDADDOCUMENTAL_ID);
+					$ag->addJoin(UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, UnidaddocumentalUsuarioPeer::UNIDADDOCUMENTAL_ID, Criteria::INNER_JOIN);
 					$usuario_object = UsuarioPeer::retrieveByPK($usuariologuiado);
 					$dependencia_conectado = $usuario_object->getDependenciaId();
 					if ($this->getUser()->checkPerm('VER_EXPEDIENTES_POR_DEPENDENCIA', $usuariologuiado)) {
