@@ -208,7 +208,7 @@ class UsuarioPendientesChecker
         //*********************************************************************************
         $codigoReenResp = $com_recibida->getCodigoReenResp() ? $com_recibida->getCodigoReenResp() : $com_recibida->getPrimaryKey();
         $observaciones = trim($com_recibida->getObsReenResp())
-            ? trim($com_recibida->getObsReenResp()).' | '.self::OBSERVACION_REASIGNACION_AUTOMATICA
+            ? trim($com_recibida->getObsReenResp()) . ' | ' . self::OBSERVACION_REASIGNACION_AUTOMATICA
             : self::OBSERVACION_REASIGNACION_AUTOMATICA;
         $com_recibida->setObsReenResp($observaciones);
         $com_recibida->setCodigoReenResp($codigoReenResp);
@@ -252,7 +252,7 @@ class UsuarioPendientesChecker
         //*********************************************************************************
         $codigoReenResp = $com_interna->getCodigoReenResp() ? $com_interna->getCodigoReenResp() : $com_interna->getPrimaryKey();
         $observaciones = trim($com_interna->getObsReenResp())
-            ? trim($com_interna->getObsReenResp()).' | '.self::OBSERVACION_REASIGNACION_AUTOMATICA
+            ? trim($com_interna->getObsReenResp()) . ' | ' . self::OBSERVACION_REASIGNACION_AUTOMATICA
             : self::OBSERVACION_REASIGNACION_AUTOMATICA;
         $com_interna->setObsReenResp($observaciones);
         $com_interna->setCodigoReenResp($codigoReenResp);
@@ -295,7 +295,7 @@ class UsuarioPendientesChecker
         //*********************************************************************************
         $codigoReenResp = $com_enviada->getCodigoReenResp() ? $com_enviada->getCodigoReenResp() : $com_enviada->getPrimaryKey();
         $observaciones = trim($com_enviada->getObsReenResp())
-            ? trim($com_enviada->getObsReenResp()).' | '.self::OBSERVACION_REASIGNACION_AUTOMATICA
+            ? trim($com_enviada->getObsReenResp()) . ' | ' . self::OBSERVACION_REASIGNACION_AUTOMATICA
             : self::OBSERVACION_REASIGNACION_AUTOMATICA;
         $com_enviada->setObsReenResp($observaciones);
         $com_enviada->setCodigoReenResp($codigoReenResp);
@@ -367,11 +367,11 @@ class UsuarioPendientesChecker
         $dependencia = $usuarioDeshabilitado->getDependencia() ? $usuarioDeshabilitado->getDependencia()->getNombre() : 'N/D';
         $cuerpo = '
         <html><body style="font-family:Calibri,Arial,sans-serif;color:#222222;">
-        '.self::getLogoCorporativoHtml($usuarioDeshabilitado).'
+        ' . self::getLogoCorporativoHtml($usuarioDeshabilitado) . '
         <h3 style="color:#1b3d6d;margin-bottom:4px;">Reasignacion de actividades pendientes</h3>
-        <p>Estimado(a) '.htmlspecialchars(trim($jefe->getNombre().' '.$jefe->getApellido())).',</p>
-        <p>El usuario <b>'.htmlspecialchars(trim($usuarioDeshabilitado->getNombre().' '.$usuarioDeshabilitado->getApellido())).' ('.htmlspecialchars($usuarioDeshabilitado->getUserName()).')</b>
-        de la dependencia <b>'.htmlspecialchars($dependencia).'</b> fue deshabilitado en el sistema el <b>'.date('Y-m-d H:i:s').'</b>,
+        <p>Estimado(a) ' . htmlspecialchars(trim($jefe->getNombre() . ' ' . $jefe->getApellido())) . ',</p>
+        <p>El usuario <b>' . htmlspecialchars(trim($usuarioDeshabilitado->getNombre() . ' ' . $usuarioDeshabilitado->getApellido())) . ' (' . htmlspecialchars($usuarioDeshabilitado->getUserName()) . ')</b>
+        de la dependencia <b>' . htmlspecialchars($dependencia) . '</b> fue deshabilitado en el sistema el <b>' . date('Y-m-d H:i:s') . '</b>,
         al detectarse inactivo en el Directorio Activo.</p>
         <p>Como jefe de esta dependencia, las siguientes actividades pendientes fueron reasignadas automaticamente a su usuario
         y a partir de ahora estan bajo su responsabilidad:</p>
@@ -381,7 +381,7 @@ class UsuarioPendientesChecker
                 <th style="padding:6px 10px;border:1px solid #ddd;">Cantidad</th>
                 <th style="padding:6px 10px;border:1px solid #ddd;text-align:left;">Radicados</th>
             </tr>
-            '.$filas.'
+            ' . $filas . '
         </table>
         <p style="margin-top:16px;">Por favor verifique sus bandejas de trabajo en SGDEA ArchiDhu para dar continuidad a estas actividades.</p>
         </body></html>';
@@ -391,9 +391,9 @@ class UsuarioPendientesChecker
         $baseMail->SetMsgHTML($cuerpo);
         $baseMail->SetAddAddress($jefe->getEmail(), $jefe->getEmail());
         if ($baseMail->InitSend() === true) {
-            $baseMail->writetolog('Reasignacion de pendientes notificada al jefe: '.$jefe->getUsuarioId().' por deshabilitacion de: '.$usuarioDeshabilitado->getUsuarioId());
+            $baseMail->writetolog('Reasignacion de pendientes notificada al jefe: ' . $jefe->getUsuarioId() . ' por deshabilitacion de: ' . $usuarioDeshabilitado->getUsuarioId());
         } else {
-            $baseMail->writetolog('Error notificando reasignacion de pendientes al jefe: '.$jefe->getUsuarioId());
+            $baseMail->writetolog('Error notificando reasignacion de pendientes al jefe: ' . $jefe->getUsuarioId());
         }
     }
 
@@ -412,11 +412,11 @@ class UsuarioPendientesChecker
         $cuerpo = '
         <html><body style="font-family:Calibri,Arial,sans-serif;color:#222222;">
         <h3 style="color:#a83232;margin-bottom:4px;">Novedad: usuario deshabilitado sin jefe de dependencia configurado</h3>
-        <p>El usuario <b>'.htmlspecialchars(trim($user->getNombre().' '.$user->getApellido())).' ('.htmlspecialchars($user->getUserName()).')</b>
-        de la dependencia <b>'.htmlspecialchars($dependencia).'</b> fue deshabilitado automaticamente el <b>'.date('Y-m-d H:i:s').'</b>,
+        <p>El usuario <b>' . htmlspecialchars(trim($user->getNombre() . ' ' . $user->getApellido())) . ' (' . htmlspecialchars($user->getUserName()) . ')</b>
+        de la dependencia <b>' . htmlspecialchars($dependencia) . '</b> fue deshabilitado automaticamente el <b>' . date('Y-m-d H:i:s') . '</b>,
         al detectarse inactivo en el Directorio Activo.</p>
         <p>Este usuario presenta actividades pendientes en el sistema, pero no fue posible reasignarlas automaticamente porque
-        no hay un jefe de dependencia (Activo o Bloqueado) configurado para <b>'.htmlspecialchars($dependencia).'</b>.</p>
+        no hay un jefe de dependencia (Activo o Bloqueado) configurado para <b>' . htmlspecialchars($dependencia) . '</b>.</p>
         <p>Las actividades pendientes quedan sin reasignar y deben gestionarse manualmente.</p>
         </body></html>';
         //*********************************************************************************
@@ -430,9 +430,9 @@ class UsuarioPendientesChecker
             }
         }
         if ($baseMail->InitSend() === true) {
-            $baseMail->writetolog('Novedad sin jefe enviada por deshabilitacion de: '.$user->getUsuarioId());
+            $baseMail->writetolog('Novedad sin jefe enviada por deshabilitacion de: ' . $user->getUsuarioId());
         } else {
-            $baseMail->writetolog('Error enviando novedad sin jefe por deshabilitacion de: '.$user->getUsuarioId());
+            $baseMail->writetolog('Error enviando novedad sin jefe por deshabilitacion de: ' . $user->getUsuarioId());
         }
     }
 
@@ -443,10 +443,10 @@ class UsuarioPendientesChecker
             $logo = $entidad ? trim($entidad->getLogoCorporativo()) : '';
             $base_url = rtrim(sfConfig::get('publicUrl'), '/');
             $src = $logo
-                ? $base_url.'/images/encabezado_carta/logos_carnet/'.$logo
-                : $base_url.'/images/lincenciadoa.jpg';
+                ? $base_url . '/images/encabezado_carta/logos_carnet/' . $logo
+                : $base_url . '/images/lincenciadoa.jpg';
 
-            return '<div style="text-align:center;margin-bottom:16px;"><img src="'.$src.'" alt="Logo" style="max-height:80px;"></div>';
+            return '<div style="text-align:center;margin-bottom:16px;"><img src="' . $src . '" alt="Logo" style="max-height:80px;"></div>';
         } catch (Exception $ex) {
             return '';
         }
@@ -605,6 +605,7 @@ class UsuarioPendientesChecker
         $c->add(CominternaUsuarioPeer::USUARIO_ID, $usuario_id);
         $c->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, 4);
         $c->add(CominternaUsuarioPeer::ESTADOCOMINTERNA_ID, 2);
+        $c->add(CominternaUsuarioPeer::ESTA_ASIGNADA, 1);
         self::excluirNoRequiereRespuestaInterna($c);
 
         return $c;
@@ -616,6 +617,7 @@ class UsuarioPendientesChecker
         $c->add(CominternaUsuarioPeer::USUARIO_ID, $usuario_id);
         $c->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, 4);
         $c->add(CominternaUsuarioPeer::ESTADOCOMINTERNA_ID, 5);
+        $c->add(CominternaUsuarioPeer::ESTA_ASIGNADA, 1);
         self::excluirNoRequiereRespuestaInterna($c);
 
         return $c;
@@ -652,7 +654,7 @@ class UsuarioPendientesChecker
         $c = new Criteria();
         $c->add(EnviadaUsuarioPeer::USUARIO_ID, $usuario_id);
         $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 5);
-        $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, 1);
+        $c->add(EnviadaUsuarioPeer::ESTADOCOMENVIADA_ID, array(4, 5, 1), Criteria::NOT_IN);
         $c->add(EnviadaUsuarioPeer::TIPOPROCESOCOM_ID, 3);
         $c->add(EnviadaUsuarioPeer::ESTA_ASIGNADA, 1);
 
