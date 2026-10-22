@@ -4367,6 +4367,19 @@ class unidad_documentalActions extends sfActions
 			$parametros_consulta .= "&titulo=" . str_replace('%', '|', $titulo);
 		}
 		//**********************************************************************************************
+		$termino = trim($asunto);   // el término sin los % que agrega el LIKE
+		$prefiltro = str_replace(array('%', '_', '[', ']'), '', $termino);
+
+		if (mb_strlen($prefiltro) >= 3) {
+			$q = str_replace("'", "''", mb_substr($prefiltro, 0, 200));
+			$c->add(
+				UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID,
+				UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID .
+					" IN (SELECT ID_UNIDAD FROM dbo.fn_BuscarTitulo('" . $q . "'))",
+				Criteria::CUSTOM
+			);
+		}
+		//**********************************************************************************************
 		// CONSULTA CONTENIDO
 		$contenido = $this->getRequestParameter('contenido');
 		if ($contenido != "") {

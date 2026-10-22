@@ -921,10 +921,22 @@ class busqueda_avanzadaActions extends sfActions
 
 				$cbasic = new Criteria();
 				$cbasic->setDistinct();
-				//$cbasic->setLimit($max_rows);
 
-				$cbasic->setDistinct();
 				if (!empty($param_list['asunto'])) {
+
+					$termino = trim($param_list['asunto']);   // el término sin los % que agrega el LIKE
+					$prefiltro = str_replace(array('%', '_', '[', ']'), '', $termino);
+
+					if (mb_strlen($prefiltro) >= 3) {
+						$q = str_replace("'", "''", mb_substr($prefiltro, 0, 200));
+						$cbasic->add(
+							UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID,
+							UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID .
+								" IN (SELECT ID_UNIDAD FROM dbo.fn_BuscarTitulo('" . $q . "'))",
+							Criteria::CUSTOM
+						);
+					}
+
 					$cbasic->addJoin(UnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, ContenidoUnidadDocumentalPeer::UNIDADDOCUMENTAL_ID, Criteria::LEFT_JOIN);
 					$cton0 = $cbasic->getNewCriterion(UnidadDocumentalPeer::TITULO, '%' . $param_list['asunto'] . '%', Criteria::LIKE);
 					$cton1 = $cbasic->getNewCriterion(ContenidoUnidadDocumentalPeer::DESCRIPCION, '%' . $param_list['asunto'] . '%', Criteria::LIKE);
