@@ -8,7 +8,7 @@ use_helper('Object', 'jQuery');
 
 <ul class="nav nav-tabs flujo-subtabs">
   <li class="active"><a data-toggle="tab" href="#flujoOrdenPane_<?php echo $acto_administrativo->getPrimaryKey(); ?>">Orden y participantes</a></li>
-  <?php if (count($etapasConfigActo)) { ?>
+  <?php if (count74($etapasConfigActo)) { ?>
     <li><a data-toggle="tab" href="#flujoEtapasPane_<?php echo $acto_administrativo->getPrimaryKey(); ?>">Permisos de edición por etapa</a></li>
   <?php } ?>
 </ul>
@@ -63,7 +63,7 @@ use_helper('Object', 'jQuery');
     </ul>
   </div>
 
-  <?php if (count($etapasConfigActo)) { ?>
+  <?php if (count74($etapasConfigActo)) { ?>
     <div id="flujoEtapasPane_<?php echo $acto_administrativo->getPrimaryKey(); ?>" class="tab-pane">
       <p class="help-block">Por defecto cada etapa hereda la configuración global (Administración &gt; Etapas). Aquí puede forzar sí/no solo para este acto.</p>
       <?php foreach ($etapasConfigActo as $etapa):

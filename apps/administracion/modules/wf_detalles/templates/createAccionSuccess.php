@@ -38,7 +38,7 @@ use_helper('Object','jQuery');
         </form>
       </div>
       <?php 
-    	if(count($wf_transiciones)){ include_partial('accionesList', array('wf_transiciones' => $wf_transiciones)); } 
+    	if(count74($wf_transiciones)){ include_partial('accionesList', array('wf_transiciones' => $wf_transiciones)); } 
 	  ?>
     </div>
   </div>

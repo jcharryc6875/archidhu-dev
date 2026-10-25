@@ -59,7 +59,7 @@ class EmailPeer extends BaseEmailPeer
                     $email_obj->setEmailOrigen($email['from_email']);
                     $email_obj->setEmailDestino($email['to_email']);
                     $email_obj->setAsunto($email['subject']);
-                    $email_obj->setCountAttachment(count($email['attachments']));
+                    $email_obj->setCountAttachment(count74($email['attachments']));
                     $email_obj->setContenido($email['body']);
                     //***********************************************************************************
                     if(empty(trim($email['clean_html']))){
@@ -210,7 +210,7 @@ class EmailPeer extends BaseEmailPeer
             //*******************************************************************************************
             $list_emails = $exchange->getEmails($maxItems,$lastUid);
             //*******************************************************************************************
-            if(count($list_emails)){ 
+            if(count74($list_emails)){ 
                 $mail_account->setLastSyncData(date("Y-m-d G:i:s"));
                 $mail_account->save();
             }
@@ -229,7 +229,7 @@ class EmailPeer extends BaseEmailPeer
                     $email_obj->setEmailOrigen($email['from_email']);
                     $email_obj->setEmailDestino($email['to_email']);
                     $email_obj->setAsunto($email['subject']);
-                    $email_obj->setCountAttachment(count($email['attachments']));
+                    $email_obj->setCountAttachment(count74($email['attachments']));
                     $email_obj->setContenido($email['body']);
                     //***********************************************************************************
                     if(empty(trim($email['clean_html']))){

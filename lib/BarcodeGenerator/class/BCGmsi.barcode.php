@@ -70,7 +70,7 @@ class BCGmsi extends BCGBarcode1D {
             $this->drawChar($im, $this->findCode($this->text[$i]), true);
         }
 
-        $c = count($this->checksumValue);
+        $c = count74($this->checksumValue);
         for ($i = 0; $i < $c; $i++) {
             $this->drawChar($im, $this->findCode($this->checksumValue[$i]), true);
         }
@@ -170,7 +170,7 @@ class BCGmsi extends BCGBarcode1D {
 
         if ($this->checksumValue !== false) {
             $ret = '';
-            $c = count($this->checksumValue);
+            $c = count74($this->checksumValue);
             for ($i = 0; $i < $c; $i++) {
                 $ret .= $this->keys[$this->checksumValue[$i]];
             }

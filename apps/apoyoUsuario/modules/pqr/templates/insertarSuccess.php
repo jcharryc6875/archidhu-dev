@@ -87,7 +87,7 @@ use_helper('Object','jQuery');
 								<div class="col-sm-4"><p><strong>Adjunto:</strong></p></div>
 								<div class="col-sm-8"><p>
 								<?php  $arr = preg_split("/[,]+/",$pqr->getRuta(), null, PREG_SPLIT_NO_EMPTY);
-									for ($i = 0; $i < count($arr) ; $i++){?>
+									for ($i = 0; $i < count74($arr) ; $i++){?>
 										<a class="tooltip-primary" data-toggle="tooltip" data-original-title="<?php echo basename($arr[$i]) ?>" href="<?php echo ($arr[$i]);?>" target="_blank">
 											<img src="<?php echo $base_path; ?>/images/simad/ico-adj-file.png" width="25" height="25" align="middle" />                                    
 										</a>

@@ -55,8 +55,8 @@ class wsUarivTask extends sfBaseTask
     //****************************************************************************************
     $result_stmt  = ComRecibidaPeer::doSelectStmt($c1);
     $objects_com = $result_stmt->fetchAll();
-    simad_util::writetolog($log_dir,'Total registros => '.count($objects_com));
-    $this->log('Total registros => '.count($objects_com));
+    simad_util::writetolog($log_dir,'Total registros => '.count74($objects_com));
+    $this->log('Total registros => '.count74($objects_com));
     $conexion = Propel::getConnection();
 	$index = 1;
     //****************************************************************************************
@@ -79,7 +79,7 @@ class wsUarivTask extends sfBaseTask
       $list_objects = $ws_log->fetchAll();
       //**************************************************************************************
       $enviarRespExt = true;
-      if(count($list_objects)){
+      if(count74($list_objects)){
         foreach ($list_objects as $item) {
           $isNotError = strpos($item['MENSAJE'], 'Enviado Exitoso');
           if ($isNotError !== false){

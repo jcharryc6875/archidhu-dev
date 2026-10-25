@@ -143,12 +143,12 @@ class PHPExcel_Chart_DataSeries
         $this->plotOrder = $plotOrder;
         $keys = array_keys($plotValues);
         $this->plotValues = $plotValues;
-        if ((count($plotLabel) == 0) || (is_null($plotLabel[$keys[0]]))) {
+        if ((count74($plotLabel) == 0) || (is_null($plotLabel[$keys[0]]))) {
             $plotLabel[$keys[0]] = new PHPExcel_Chart_DataSeriesValues();
         }
 
         $this->plotLabel = $plotLabel;
-        if ((count($plotCategory) == 0) || (is_null($plotCategory[$keys[0]]))) {
+        if ((count74($plotCategory) == 0) || (is_null($plotCategory[$keys[0]]))) {
             $plotCategory[$keys[0]] = new PHPExcel_Chart_DataSeriesValues();
         }
         $this->plotCategory = $plotCategory;
@@ -344,7 +344,7 @@ class PHPExcel_Chart_DataSeries
      */
     public function getPlotSeriesCount()
     {
-        return count($this->plotValues);
+        return count74($this->plotValues);
     }
 
     /**

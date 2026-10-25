@@ -39,7 +39,7 @@ $webcodeurl = $base_path.'/tmp/'
 		</style>
 	</head>
 
-	<?php for($a = 0; $a < count($sticker_final); $a++){ ?>
+	<?php for($a = 0; $a < count74($sticker_final); $a++){ ?>
 		<?php
 			$qrfilename = 'qr'.$sticker_final[$a]['pkId'].'.png';
 			$qrfullpath = $path_tmp.$qrfilename;
@@ -248,7 +248,7 @@ $webcodeurl = $base_path.'/tmp/'
 				<td class="csA4A4F90C" style="width:2px;height:1px;"><!--[if lte IE 7]><div class="csF7D3565D"></div><![endif]--></td>
 			</tr>
 		</table>
-		<?php if( count($sticker_final) > 1){ ?> <h6 style="page-break-after: always;">&nbsp;</h6><?php } ?>
+		<?php if( count74($sticker_final) > 1){ ?> <h6 style="page-break-after: always;">&nbsp;</h6><?php } ?>
 	<?php } ?>
 </body>
 </html>

@@ -686,9 +686,9 @@ class PHPExcel_Worksheet_PageSetup
             } else {
                 $printAreas = explode(',', $this->printArea);
                 if ($index < 0) {
-                    $index = count($printAreas) - abs($index) + 1;
+                    $index = count74($printAreas) - abs($index) + 1;
                 }
-                if (($index <= 0) || ($index > count($printAreas))) {
+                if (($index <= 0) || ($index > count74($printAreas))) {
                     throw new PHPExcel_Exception('Invalid index for setting print range.');
                 }
                 $printAreas[$index-1] = $value;
@@ -702,7 +702,7 @@ class PHPExcel_Worksheet_PageSetup
                 if ($index < 0) {
                     $index = abs($index) - 1;
                 }
-                if ($index > count($printAreas)) {
+                if ($index > count74($printAreas)) {
                     throw new PHPExcel_Exception('Invalid index for setting print range.');
                 }
                 $printAreas = array_merge(array_slice($printAreas, 0, $index), array($value), array_slice($printAreas, $index));

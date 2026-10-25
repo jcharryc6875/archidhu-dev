@@ -86,7 +86,7 @@ class PHPExcel_HashTable
         $hash = $pSource->getHashCode();
         if (!isset($this->items[$hash])) {
             $this->items[$hash] = $pSource;
-            $this->keyMap[count($this->items) - 1] = $hash;
+            $this->keyMap[count74($this->items) - 1] = $hash;
         }
     }
 
@@ -112,7 +112,7 @@ class PHPExcel_HashTable
                     $deleteKey = $key;
                 }
             }
-            unset($this->keyMap[count($this->keyMap) - 1]);
+            unset($this->keyMap[count74($this->keyMap) - 1]);
         }
     }
 
@@ -133,7 +133,7 @@ class PHPExcel_HashTable
      */
     public function count()
     {
-        return count($this->items);
+        return count74($this->items);
     }
 
     /**

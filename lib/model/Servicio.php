@@ -130,7 +130,7 @@ class Servicio extends BaseServicio
 					$files_adjuntos = array();
 			}
 			//****************************************************************************************
-			for($j = 0; $j < count($files_adjuntos); $j++){
+			for($j = 0; $j < count74($files_adjuntos); $j++){
 				if(trim($files_adjuntos[$j])){
 					try {
 						$filename = basename($files_adjuntos[$j]);
@@ -236,7 +236,7 @@ class Servicio extends BaseServicio
 						case 17: //acto_administrativo
 							if($acto_administrativo != null){
 								$ulist_firma = ActoadministrativoUsuarioPeer::getAllUserFirmaDigitalObj($acto_administrativo->getPrimaryKey());
-								$isFirmaDigital = count($ulist_firma) ? true : false;
+								$isFirmaDigital = count74($ulist_firma) ? true : false;
 								//*****************************************************************************
 								$margins = array('top' => 30,'left' => 20,'buttom' => 25,'rigth' => 18);
 								$file_attach = $acto_administrativo->generateFileInDisk($margins,$isFirmaDigital);
@@ -507,7 +507,7 @@ class Servicio extends BaseServicio
 			$fsize_all = filesize($digit_com);
 			//***********************************************************************************************
 			$files_attach = $this->getListAttachmentCom();
-			if (count($files_attach) > 0) {
+			if (count74($files_attach) > 0) {
 				foreach ($files_attach as $fattach) {
 					$fsize_all += $fattach['size'];
 					$attach_list[] = $fattach['fullpath'];
@@ -533,7 +533,7 @@ class Servicio extends BaseServicio
 			$email_all = !empty($email_destino) ? $email_destino : array();
 			//***********************************************************************************************
 			$interesados_list = ServicioPeer::getListIntersadosByComId($this->getPrimaryKey());
-			if (count($interesados_list) > 0) {
+			if (count74($interesados_list) > 0) {
 				foreach ($interesados_list as $row) {
 					$interesado_com   = $row->getInteresados();
 					$email_interesado = trim($interesado_com->getEmail());
@@ -581,8 +581,8 @@ class Servicio extends BaseServicio
 			$bodyEmail     = file_get_contents($tpl_email);
 			$patrones      = array('{$#ENTIDAD_NOMBRER$#}', '{$#ENTIDAD_FUNCIONARIO$#}');
 			$sustituciones = array(
-				count($certimail_destino) === 1 ? $certimail_destino[0]['ENTIDAD_DESTINO']     : '',
-				count($certimail_destino) === 1 ? $certimail_destino[0]['FUNCIONARIO_DESTINO'] : '',
+				count74($certimail_destino) === 1 ? $certimail_destino[0]['ENTIDAD_DESTINO']     : '',
+				count74($certimail_destino) === 1 ? $certimail_destino[0]['FUNCIONARIO_DESTINO'] : '',
 			);
 			$params_service['body'] = str_replace($patrones, $sustituciones, $bodyEmail);
 			//***********************************************************************************************
@@ -649,7 +649,7 @@ class Servicio extends BaseServicio
 			$email_all = array();
 			//***********************************************************************************************
 			$files_attach = $this->getListAttachmentCom();
-			if(count($files_attach)){
+			if(count74($files_attach)){
 				$finfo = new SplFileInfo($digit_com);
 				$filename = sprintf("%s.%s",$finfo->getBasename('.'.$finfo->getExtension()),'zip');
 				$pathzip_tmp = sfConfig::get('sf_web_dir'). DIRECTORY_SEPARATOR .'tmp'. DIRECTORY_SEPARATOR .md5(time().$this->getPrimaryKey()). DIRECTORY_SEPARATOR;
@@ -688,11 +688,11 @@ class Servicio extends BaseServicio
 			$funcionario_destino = "";
 			$email_destino = trim($this->getEmailDestino()) ? preg_split("/[;]+/",trim($this->getEmailDestino()), -1, PREG_SPLIT_NO_EMPTY) : null;
 			//***********************************************************************************************
-			if(count($email_destino) <= 0){
+			if(count74($email_destino) <= 0){
 				$email_all = !empty($email_destino) ? array_merge($email_all,$email_destino) : $email_all;
 				$interesados_list = ServicioPeer::getListIntersadosByComId($this->getPrimaryKey());
 				//*******************************************************************************************
-				if(count($interesados_list) >= 0){
+				if(count74($interesados_list) >= 0){
 					foreach ($interesados_list as $row) {
 						$interesado_com = $row->getInteresados();
 						$entidad_destino = mb_convert_encoding($interesado_com->getNombreCompuesto(),'UTF-8');
@@ -1381,7 +1381,7 @@ class Servicio extends BaseServicio
 			}
 			//********************************************************************************************************
 			$msgnotify = "";
-			if($this->getTipoServicio()->getTipoEnvio() == 2 && (!empty($this->getEmailDestino()) || count($coll_interesados) > 0)){
+			if($this->getTipoServicio()->getTipoEnvio() == 2 && (!empty($this->getEmailDestino()) || count74($coll_interesados) > 0)){
 				$response_crtemail = $this->sendCertiMailApi();
 				//****************************************************************************************************
 				foreach ($response_crtemail as $response_item) {
@@ -1414,7 +1414,7 @@ class Servicio extends BaseServicio
 				$msgnotify = ($sendEmailNotify != true) ? "&msgnotify=false" : "&msgnotify=true";
 			}
 			//********************************************************************************************************
-			if($this->getTipoServicio()->getTipoEnvio() == 3 && (count($coll_interesados) > 0 || !empty($this->getDirectorioexternoId()))){
+			if($this->getTipoServicio()->getTipoEnvio() == 3 && (count74($coll_interesados) > 0 || !empty($this->getDirectorioexternoId()))){
 				$response_crtnnal = $this->apiSipostSvc(); 
 				//****************************************************************************************************
 				foreach ($response_crtnnal as $response_item) 
@@ -1432,7 +1432,7 @@ class Servicio extends BaseServicio
 				}
 			}
 			//********************************************************************************************************
-			if($this->getTipoServicio()->getTipoEnvio() == 5 && (count($coll_interesados) > 0 || !empty($this->getDirectorioexternoId()))){
+			if($this->getTipoServicio()->getTipoEnvio() == 5 && (count74($coll_interesados) > 0 || !empty($this->getDirectorioexternoId()))){
 				if($dependencia_id){
 					$sendEmailNotify = $this->envioEmailNotificacion($dependencia_id);
 					$isError = $sendEmailNotify['error'];

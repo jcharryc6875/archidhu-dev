@@ -155,7 +155,7 @@ class resumenActions extends sfActions
             $params['fecha_final'] = date('Y-m-d');
         }
         //**********************************************************************************************
-        if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+        if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
         {
             return array();
         }
@@ -220,7 +220,7 @@ class resumenActions extends sfActions
             $params['fecha_final'] = date('Y-m-d');
         }
         //**********************************************************************************************
-        if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+        if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
         {
             return array();
         }
@@ -286,7 +286,7 @@ class resumenActions extends sfActions
             $params['fecha_final'] = date('Y-m-d');
         }        
         //**********************************************************************************************
-        if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+        if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
         {
             return array();
         }
@@ -418,7 +418,7 @@ class resumenActions extends sfActions
                     if($_POST['graphtype'] == 1)
                     {
                         $tipoGraph = 'BarCustom';
-                        $nro_items_y_axis = count($resultado);
+                        $nro_items_y_axis = count74($resultado);
                         $caracteres = 'abcdefghijklmnopqrstuvwyz';
                         $array_labels = array();
                         $array_totales = array();
@@ -583,7 +583,7 @@ class resumenActions extends sfActions
                     $resultado5 = EstadisticaPeer::getComEnviadaGestionadas($params); 
                     $resultado_total = EstadisticaPeer::getAllComEnviadasMes($params);
                     //*************************************************************************************
-                    $mas_alto = max(array(count($resultado5), count($resultado_total)));
+                    $mas_alto = max(array(count74($resultado5), count74($resultado_total)));
                     $data_views5 = array();
                     //*************************************************************************************
                     $array_labels5 = array();
@@ -846,7 +846,7 @@ class resumenActions extends sfActions
         {
             $rows = array(); 
 
-            for($i = 0; $i < count($filarows); $i++ )
+            for($i = 0; $i < count74($filarows); $i++ )
             {
                 $rows[] = $fila[$filarows[$i]];
             }

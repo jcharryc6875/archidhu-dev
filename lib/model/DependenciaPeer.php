@@ -139,7 +139,7 @@ class DependenciaPeer extends BaseDependenciaPeer
                 }
             }
             //****************************************************************************************************
-            if (count($list_newreg)) {
+            if (count74($list_newreg)) {
                 return array('isError' => false, 'message' => 'Trds importadas exitosamente', 'list_newreg' => $list_newreg);
             } else {
                 return array('isError' => true, 'message' => 'Ocurrio un error y ningun registro se importo', 'list_newreg' => arayy());
@@ -497,7 +497,7 @@ class DependenciaPeer extends BaseDependenciaPeer
                 $index++;
             }
             //*******************************************************************************************
-            if (count($listall_valid)) {
+            if (count74($listall_valid)) {
                 return $listall_valid;
             }
             //*******************************************************************************************

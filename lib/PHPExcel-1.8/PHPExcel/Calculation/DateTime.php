@@ -512,10 +512,10 @@ class PHPExcel_Calculation_DateTime
                 }
             }
         }
-        if ((count($t1) == 1) && (strpos($t, ':') != false)) {
+        if ((count74($t1) == 1) && (strpos($t, ':') != false)) {
             //    We've been fed a time value without any date
             return 0.0;
-        } elseif (count($t1) == 2) {
+        } elseif (count74($t1) == 2) {
             //    We only have two parts of the date: either day/month or month/year
             if ($yearFound) {
                 array_unshift($t1, 1);

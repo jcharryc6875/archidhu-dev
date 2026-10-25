@@ -240,7 +240,7 @@ class BCGgs1128 extends BCGcode128 {
     private function formatGs1128() {
         $formatedText = '~F1';
         $formatedLabel = '';
-        $c = count($this->identifiersId);
+        $c = count74($this->identifiersId);
         
         for ($i = 0; $i < $c; $i++) {
             if ($i > 0) {
@@ -297,7 +297,7 @@ class BCGgs1128 extends BCGcode128 {
             $formatArray = array();
             foreach($text as $content) {
                 if (is_array($content)) { /* double array */
-                    if (count($content) === 2) {
+                    if (count74($content) === 2) {
                         if (is_array($content[self::ID]) || is_array($content[self::CONTENT])) {
                             throw new BCGParseException('gs1128', 'Double arrays can\'t contain arrays.');
                         } else {
@@ -317,7 +317,7 @@ class BCGgs1128 extends BCGcode128 {
             $text = array($text);
         }
 
-        $textCount = count($text);
+        $textCount = count74($text);
         for ($cmpt = 0; $cmpt < $textCount; $cmpt++) {
             /* We parse the content of the array */
             if (!$this->parseContent($text[$cmpt])) {

@@ -209,7 +209,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
             //***************************************************************************************************
             //$tempdir_firma = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.md5(date("YmdGis"));
             $ulist_firma = ActoadministrativoUsuarioPeer::getAllUserFirmaDigitalObj($this->getPrimaryKey());
-            $isFirmaDigital = count($ulist_firma) ? true : false;
+            $isFirmaDigital = count74($ulist_firma) ? true : false;
             //***************************************************************************************************
             if (!empty($this->getUrlFileWord()) && file_exists($this->getUrlFileWord())) {
                 $file_attach = $this->generatePdfByFile($this->getUrlFileWord(), true);
@@ -226,7 +226,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 $response_list = array();
                 //***********************************************************************************************
                 if (WsFirmaApiAndes::SERVICE_ENABLE_WS) {
-                    if (count($ulist_firma) <= 0) {
+                    if (count74($ulist_firma) <= 0) {
                         $this->setFirmadoDigital(4); //EL DOCUMENTO NO SE FIRMA DIGITAL
                         $this->save();
                         //***************************************************************************************
@@ -504,7 +504,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 //$ilfirmates_ucargo = $actlist_users['firmas_ucargo'];
                 $ilfirmates_areas = $actlist_users['firmas_areas'];
                 $firmas_tncargos = $actlist_users['firmas_tncargos'];
-                $cantidad_firmantes = count($ilfirmates_pks);
+                $cantidad_firmantes = count74($ilfirmates_pks);
                 //*******************************************************************************************************
                 // Datos de CADA firmante (antes solo se usaba el indice [0], perdiendo el resto cuando
                 // habia mas de un firmante). Ver duplicacion del bloque {[FIRMA_MECANICA]}/{[FIRMAS_NOMBRE]}/
@@ -602,7 +602,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 //***********************************INICIA SECCION DE GESTORES****************************************
                 // Datos de CADA gestor/aprobador (antes, con mas de uno, se concatenaban los nombres en una
                 // sola etiqueta con implode() — se perdia el cargo/area/firma individual de cada uno).
-                $gestores_count = isset($actlist_users['gestores_pkusers']) ? count($actlist_users['gestores_pkusers']) : 0;
+                $gestores_count = isset($actlist_users['gestores_pkusers']) ? count74($actlist_users['gestores_pkusers']) : 0;
                 $gestores_filas = array();
                 if ($gestores_count > 0) {
                     foreach ($actlist_users['gestores_pkusers'] as $idx_gestor => $pk_gestor) {
@@ -635,7 +635,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
                     }
                 }
                 //***********************************INICIA SECCION DE REVISORES**************************************
-                $revisores_count = isset($actlist_users['revisores_pkusers']) ? count($actlist_users['revisores_pkusers']) : 0;
+                $revisores_count = isset($actlist_users['revisores_pkusers']) ? count74($actlist_users['revisores_pkusers']) : 0;
                 $revisores_filas = array();
                 if ($revisores_count > 0) {
                     foreach ($actlist_users['revisores_pkusers'] as $idx_revisor => $pk_revisor) {
@@ -842,7 +842,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
             $isError = false;
             $list_state = array();
             //********************************************************************************
-            if (count($files_new)) {
+            if (count74($files_new)) {
                 foreach ($files_new as $nfile) {
                     try {
                         if (!empty($nfile)) {
@@ -1071,7 +1071,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         if ($is_files_old) {
             $files_adjuntos = preg_split("/[,]+/", $files_old_text, -1, PREG_SPLIT_NO_EMPTY);
             $files_text = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j < count($files_text); $j++) {
+            for ($j = 0; $j < count74($files_text); $j++) {
                 $url = simad_util::strpos_array($files_text[$j], $files_adjuntos);
                 if (!is_null($url)) {
                     $url_files .= $url . ",";
@@ -1089,7 +1089,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
             }
         } else {
             $files_adjuntos = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j <= count($files_adjuntos); $j++) {
+            for ($j = 0; $j <= count74($files_adjuntos); $j++) {
                 if (trim($files_adjuntos[$j])) {
                     $file_name = basename($files_adjuntos[$j]);
                     $filenamesource = $directorio_tmp . basename($files_adjuntos[$j]);
@@ -1491,7 +1491,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
             $contFirmas++;
         }
         //**************************************************************************************************
-        if (count($cargos_firmas)) {
+        if (count74($cargos_firmas)) {
             $firmas .= $this->getDataAreasOrCargosFirmas($mecanica_firmas);
             $firmas .= $this->getDataAreasOrCargosFirmas($usuario_firmas, false);
             if ($isAddCargo) {
@@ -1699,7 +1699,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //**************************************************************************************************
         //$sustituciones[6] = isset($actlist_users['revisores_names']) ? $actlist_users['revisores_names'][0] : "";
         if (isset($actlist_users['revisores_names'])) {
-            if (is_array($actlist_users['revisores_names']) && count($actlist_users['revisores_names']) > 1) {
+            if (is_array($actlist_users['revisores_names']) && count74($actlist_users['revisores_names']) > 1) {
                 $sustituciones[6] = implode("<br><br>", $actlist_users['revisores_names']);
             } else {
                 $sustituciones[6] = $actlist_users['revisores_names'][0];
@@ -1710,7 +1710,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //**************************************************************************************************
         //$sustituciones[7] = isset($actlist_users['gestores_names']) ? $actlist_users['gestores_names'][0] : "";
         if (isset($actlist_users['gestores_names'])) {
-            if (is_array($actlist_users['gestores_names']) && count($actlist_users['gestores_names']) > 1) {
+            if (is_array($actlist_users['gestores_names']) && count74($actlist_users['gestores_names']) > 1) {
                 $sustituciones[7] = implode("<br><br>", $actlist_users['gestores_names']);
             } else {
                 $sustituciones[7] = $actlist_users['gestores_names'][0];
@@ -1729,7 +1729,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //**************************************************************************************************
         //$sustituciones[15] = isset($list_urevisor['cargo_revisor']) ? $list_urevisor['cargo_revisor'] : "";
         if (isset($list_urevisor['cargo_revisor'])) {
-            if (is_array($list_urevisor['cargo_revisor']) && count($list_urevisor['cargo_revisor']) > 1) {
+            if (is_array($list_urevisor['cargo_revisor']) && count74($list_urevisor['cargo_revisor']) > 1) {
                 $sustituciones[15] = implode("<br><br>", $list_urevisor['cargo_revisor']);
             } else {
                 $sustituciones[15] = $list_urevisor['cargo_revisor'][0];
@@ -1740,7 +1740,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //**************************************************************************************************
         //$sustituciones[16] = isset($list_urevisor['dependencia_revisor']) ? $list_urevisor['dependencia_revisor'] : "";
         if (isset($list_urevisor['dependencia_revisor'])) {
-            if (is_array($list_urevisor['dependencia_revisor']) && count($list_urevisor['dependencia_revisor']) > 1) {
+            if (is_array($list_urevisor['dependencia_revisor']) && count74($list_urevisor['dependencia_revisor']) > 1) {
                 $sustituciones[16] = implode("<br><br>", $list_urevisor['dependencia_revisor']);
             } else {
                 $sustituciones[16] = $list_urevisor['dependencia_revisor'][0];
@@ -1751,7 +1751,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //**************************************************************************************************
         //$sustituciones[17] = isset($list_urevisor['fmecanica_revisor']) ? $list_urevisor['fmecanica_revisor'] : "";
         if (isset($list_urevisor['fmecanica_revisor'])) {
-            if (is_array($list_urevisor['fmecanica_revisor']) && count($list_urevisor['fmecanica_revisor']) > 1) {
+            if (is_array($list_urevisor['fmecanica_revisor']) && count74($list_urevisor['fmecanica_revisor']) > 1) {
                 $sustituciones[17] = implode("<br><br>", $list_urevisor['fmecanica_revisor']);
             } else {
                 $sustituciones[17] = $list_urevisor['fmecanica_revisor'][0];
@@ -1762,7 +1762,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //**************************************************************************************************
         //$sustituciones[18] = isset($list_ugestor['cargo_gestor']) ? $list_ugestor['cargo_gestor'] : "";
         if (isset($list_ugestor['cargo_gestor'])) {
-            if (is_array($list_ugestor['cargo_gestor']) && count($list_ugestor['cargo_gestor']) > 1) {
+            if (is_array($list_ugestor['cargo_gestor']) && count74($list_ugestor['cargo_gestor']) > 1) {
                 $sustituciones[18] = implode("<br><br>", $list_ugestor['cargo_gestor']);
             } else {
                 $sustituciones[18] = $list_ugestor['cargo_gestor'][0];
@@ -1773,7 +1773,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //**************************************************************************************************
         //$sustituciones[19] = isset($list_ugestor['dependencia_gestor']) ? $list_ugestor['dependencia_gestor'] : "";
         if (isset($list_ugestor['dependencia_gestor'])) {
-            if (is_array($list_ugestor['dependencia_gestor']) && count($list_ugestor['dependencia_gestor']) > 1) {
+            if (is_array($list_ugestor['dependencia_gestor']) && count74($list_ugestor['dependencia_gestor']) > 1) {
                 $sustituciones[19] = implode("<br><br>", $list_ugestor['dependencia_gestor']);
             } else {
                 $sustituciones[19] = $list_ugestor['dependencia_gestor'][0];
@@ -1784,7 +1784,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //**************************************************************************************************
         //$sustituciones[20] = isset($list_ugestor['fmecanica_gestor']) ? $list_ugestor['fmecanica_gestor'] : "";
         if (isset($list_ugestor['fmecanica_gestor'])) {
-            if (is_array($list_ugestor['fmecanica_gestor']) && count($list_ugestor['fmecanica_gestor']) > 1) {
+            if (is_array($list_ugestor['fmecanica_gestor']) && count74($list_ugestor['fmecanica_gestor']) > 1) {
                 $sustituciones[20] = implode("<br><br>", $list_ugestor['fmecanica_gestor']);
             } else {
                 $sustituciones[20] = $list_ugestor['fmecanica_gestor'][0];
@@ -1853,7 +1853,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
 
     public function getDataAreasOrCargosFirmas($data_str, $add_td = true)
     {
-        if (!count($data_str)) {
+        if (!count74($data_str)) {
             return '';
         }
         $fila_html = '';
@@ -2213,7 +2213,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
             if (in_array($this->getEstadoactoadministrativoId(), array(6, 9, 8))) {
                 $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
                 //************************************************************************************
-                for ($j = 0; $j < count($files_adjuntos); $j++) {
+                for ($j = 0; $j < count74($files_adjuntos); $j++) {
                     if (trim($files_adjuntos[$j])) {
                         try {
                             $filename = basename($files_adjuntos[$j]);
@@ -2400,7 +2400,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         if ($include_anexos) {
             $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
             //*****************************CREANDO LISTA DE ARCHIVOS*******************************
-            for ($j = 0; $j < count($files_adjuntos); $j++) {
+            for ($j = 0; $j < count74($files_adjuntos); $j++) {
                 $size_file = 0;
                 if (trim($files_adjuntos[$j])) {
                     $filename = basename($files_adjuntos[$j]);
@@ -2471,7 +2471,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         try {
             $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
             //*****************************CREANDO LISTA DE ARCHIVOS***********************************
-            for ($j = 0; $j < count($files_adjuntos); $j++) {
+            for ($j = 0; $j < count74($files_adjuntos); $j++) {
                 if (trim($files_adjuntos[$j])) {
                     $filename = basename(trim($files_adjuntos[$j]));
                     $xguid = simad_util::create_guid($filename);

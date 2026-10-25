@@ -72,7 +72,7 @@ $list_interesados = ComRecibidaPeer::getListIntersadosByComId($com_recibida->get
             <div class="tabs-vertical-env">
                 <ul class="nav nav-tabs bordered"><!-- available classes "right-aligned" -->
                     <li class="active"><a data-toggle="tab" href="#data"><span class="glyphicon glyphicon-import"></span>Detalles</a></li>
-                    <?php if(count($list_interesados)){ ?>
+                    <?php if(count74($list_interesados)){ ?>
                         <li><a data-toggle="tab" href="#listinteresados"><span class="glyphicon glyphicon-list"></span>Lista Interesados</a></li>
                     <?php } ?>
                     <li><a data-toggle="tab" href="#listbitacora"><span class="glyphicon glyphicon-list"></span>&nbsp;Bitacora Proceso</a></li>
@@ -351,7 +351,7 @@ $list_interesados = ComRecibidaPeer::getListIntersadosByComId($com_recibida->get
                         </div>
                     </div>
                     <!-- listado de interesados -->
-                    <?php if(count($list_interesados)){ ?>
+                    <?php if(count74($list_interesados)){ ?>
                         <div id="listinteresados" class="tab-pane">
                             <?php
                                 include_partial('listInteresados',array('list_interesados'=>$list_interesados)); 

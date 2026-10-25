@@ -572,7 +572,7 @@ class BpmnParser
                             );
                         }
 
-                        if (count($fields) > 0) {
+                        if (count74($fields) > 0) {
                             $taskForms[$taskId] = array(
                                 'taskId' => $taskId,
                                 'taskName' => $taskName,

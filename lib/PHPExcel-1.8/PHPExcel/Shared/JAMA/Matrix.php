@@ -70,8 +70,8 @@ class PHPExcel_Shared_JAMA_Matrix
             switch ($match) {
                 //Rectangular matrix - m x n initialized from 2D array
                 case 'array':
-                    $this->m = count($args[0]);
-                    $this->n = count($args[0][0]);
+                    $this->m = count74($args[0]);
+                    $this->n = count74($args[0][0]);
                     $this->A = $args[0];
                     break;
                 //Square matrix - n x n
@@ -90,11 +90,11 @@ class PHPExcel_Shared_JAMA_Matrix
                 case 'array,integer':
                     $this->m = $args[1];
                     if ($this->m != 0) {
-                        $this->n = count($args[0]) / $this->m;
+                        $this->n = count74($args[0]) / $this->m;
                     } else {
                         $this->n = 0;
                     }
-                    if (($this->m * $this->n) == count($args[0])) {
+                    if (($this->m * $this->n) == count74($args[0])) {
                         for ($i = 0; $i < $this->m; ++$i) {
                             for ($j = 0; $j < $this->n; ++$j) {
                                 $this->A[$i][$j] = $args[0][$i + $j * $this->m];
@@ -218,13 +218,13 @@ class PHPExcel_Shared_JAMA_Matrix
                 //$R = array of row indices; $C = array of column indices
                 case 'array,array':
                     list($RL, $CL) = $args;
-                    if (count($RL) > 0) {
-                        $m = count($RL);
+                    if (count74($RL) > 0) {
+                        $m = count74($RL);
                     } else {
                         throw new PHPExcel_Calculation_Exception(self::ARGUMENT_BOUNDS_EXCEPTION);
                     }
-                    if (count($CL) > 0) {
-                        $n = count($CL);
+                    if (count74($CL) > 0) {
+                        $n = count74($CL);
                     } else {
                         throw new PHPExcel_Calculation_Exception(self::ARGUMENT_BOUNDS_EXCEPTION);
                     }
@@ -239,13 +239,13 @@ class PHPExcel_Shared_JAMA_Matrix
                 //$RL = array of row indices; $CL = array of column indices
                 case 'array,array':
                     list($RL, $CL) = $args;
-                    if (count($RL) > 0) {
-                        $m = count($RL);
+                    if (count74($RL) > 0) {
+                        $m = count74($RL);
                     } else {
                         throw new PHPExcel_Calculation_Exception(self::ARGUMENT_BOUNDS_EXCEPTION);
                     }
-                    if (count($CL) > 0) {
-                        $n = count($CL);
+                    if (count74($CL) > 0) {
+                        $n = count74($CL);
                     } else {
                         throw new PHPExcel_Calculation_Exception(self::ARGUMENT_BOUNDS_EXCEPTION);
                     }
@@ -265,8 +265,8 @@ class PHPExcel_Shared_JAMA_Matrix
                     } else {
                         throw new PHPExcel_Calculation_Exception(self::ARGUMENT_BOUNDS_EXCEPTION);
                     }
-                    if (count($CL) > 0) {
-                        $n = count($CL);
+                    if (count74($CL) > 0) {
+                        $n = count74($CL);
                     } else {
                         throw new PHPExcel_Calculation_Exception(self::ARGUMENT_BOUNDS_EXCEPTION);
                     }
@@ -281,8 +281,8 @@ class PHPExcel_Shared_JAMA_Matrix
                 //$RL = array of row indices
                 case 'array,integer,integer':
                     list($RL, $j0, $jF) = $args;
-                    if (count($RL) > 0) {
-                        $m = count($RL);
+                    if (count74($RL) > 0) {
+                        $m = count74($RL);
                     } else {
                         throw new PHPExcel_Calculation_Exception(self::ARGUMENT_BOUNDS_EXCEPTION);
                     }

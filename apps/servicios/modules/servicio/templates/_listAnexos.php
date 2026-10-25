@@ -16,7 +16,7 @@ $IsDeleteImg = $sf_user->checkPerm("SERVICIO_ELIMINAR_IMAGEN", $currentUser);
 				  Anexos Servicio
 				</div>
 			</div>
-			<?php if(!count($servicio_anexos)){ ?>
+			<?php if(!count74($servicio_anexos)){ ?>
 				<div class="panel-body">
 					<div class="alert alert-default"><strong>No existen Registros</strong>.</div>
 				</div>

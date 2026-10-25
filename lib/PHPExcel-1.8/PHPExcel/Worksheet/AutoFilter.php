@@ -107,7 +107,7 @@ class PHPExcel_Worksheet_AutoFilter
     {
         // Uppercase coordinate
         $cellAddress = explode('!', strtoupper($pRange));
-        if (count($cellAddress) > 1) {
+        if (count74($cellAddress) > 1) {
             list($worksheet, $pRange) = $cellAddress;
         }
 
@@ -612,7 +612,7 @@ class PHPExcel_Worksheet_AutoFilter
                     //    Test if we want to include blanks in our filter criteria
                     $blanks = false;
                     $ruleDataSet = array_filter($ruleValues);
-                    if (count($ruleValues) != count($ruleDataSet)) {
+                    if (count74($ruleValues) != count74($ruleDataSet)) {
                         $blanks = true;
                     }
                     if ($ruleType == PHPExcel_Worksheet_AutoFilter_Column_Rule::AUTOFILTER_RULETYPE_FILTER) {

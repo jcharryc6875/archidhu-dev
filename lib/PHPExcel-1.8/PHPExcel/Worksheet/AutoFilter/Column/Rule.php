@@ -328,7 +328,7 @@ class PHPExcel_Worksheet_AutoFilter_Column_Rule
                     $grouping = max($grouping, array_search($key, self::$dateTimeGroups));
                 }
             }
-            if (count($pValue) == 0) {
+            if (count74($pValue) == 0) {
                 throw new PHPExcel_Exception('Invalid rule value for column AutoFilter Rule.');
             }
             //    Set the dateTime grouping that we've anticipated

@@ -78,7 +78,7 @@ $wdg = new wf_widgets();
                 <div class="tabs-vertical-env">
                     <ul class="nav nav-tabs bordered"><!-- available classes "right-aligned" -->
                         <li class="active"><a data-toggle="tab" href="#data"><span class="glyphicon glyphicon-import"></span>&nbsp;Detalles</a></li>
-                        <?php if (count($lista_servicios)) { ?>
+                        <?php if (count74($lista_servicios)) { ?>
                             <li><a data-toggle="tab" href="#listservicioscom"><span class="glyphicon glyphicon-list"></span>&nbsp;Servicios Relacionados</a></li>
                         <?php } ?>
                         <li><a data-toggle="tab" href="#listbitacora"><span class="glyphicon glyphicon-list"></span>&nbsp;Bitacora Proceso</a></li>
@@ -308,7 +308,7 @@ $wdg = new wf_widgets();
                                     </div>
                                 <?php } ?>
 
-                                <?php if (isset($radicador_name) || count($usuarios_copia)) { ?>
+                                <?php if (isset($radicador_name) || count74($usuarios_copia)) { ?>
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="col-sm-4">
@@ -423,7 +423,7 @@ $wdg = new wf_widgets();
                             </div>
                         </div>
                         <!-- listado de servicios -->
-                        <?php if (count($lista_servicios)) { ?>
+                        <?php if (count74($lista_servicios)) { ?>
                             <div id="listservicioscom" class="tab-pane">
                                 <?php
                                 include_partial('listServiciosCom', array('list_servicios' => $lista_servicios));

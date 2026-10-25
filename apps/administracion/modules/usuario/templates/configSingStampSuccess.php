@@ -11,7 +11,7 @@ use_helper('Object','jQuery');
   <div class="col-md-12">
 	<!-- Contenedor Pagina -->
 	<div class="panel panel-gradient" data-collapsed="0">
-	  <?php if(count($sf_request->getErrors())){ ?>
+	  <?php if(count74($sf_request->getErrors())){ ?>
 		<div class="alert alert-danger">
 		  <p><strong>Opps!</strong> Los datos introducidos no son correctos.
 		  Por favor, corrija los siguientes errores y vuelva a enviar el formulario:</p>

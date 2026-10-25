@@ -608,7 +608,7 @@ class PHPExcel_Cell
             // Split out any worksheet name from the reference
             $worksheet = '';
             $cellAddress = explode('!', $pCoordinateString);
-            if (count($cellAddress) > 1) {
+            if (count74($cellAddress) > 1) {
                 list($worksheet, $pCoordinateString) = $cellAddress;
             }
             if ($worksheet > '') {
@@ -640,7 +640,7 @@ class PHPExcel_Cell
             // Split out any worksheet name from the coordinate
             $worksheet = '';
             $cellAddress = explode('!', $pCoordinateString);
-            if (count($cellAddress) > 1) {
+            if (count74($cellAddress) > 1) {
                 list($worksheet, $pCoordinateString) = $cellAddress;
             }
             if ($worksheet > '') {
@@ -673,7 +673,7 @@ class PHPExcel_Cell
         }
 
         $exploded = explode(',', $pRange);
-        $counter = count($exploded);
+        $counter = count74($exploded);
         for ($i = 0; $i < $counter; ++$i) {
             $exploded[$i] = explode(':', $exploded[$i]);
         }
@@ -696,7 +696,7 @@ class PHPExcel_Cell
 
         // Build range
         $imploded = array();
-        $counter = count($pRange);
+        $counter = count74($pRange);
         for ($i = 0; $i < $counter; ++$i) {
             $pRange[$i] = implode(':', $pRange[$i]);
         }

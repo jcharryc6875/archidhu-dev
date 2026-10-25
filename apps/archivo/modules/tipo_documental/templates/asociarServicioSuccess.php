@@ -96,7 +96,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
       </div>
   </div>
   <?php 
-    if(count($uniddoc_tiposerv)){
+    if(count74($uniddoc_tiposerv)){
       echo include_partial('listServicioTipo',array('uniddoc_tiposerv' => $uniddoc_tiposerv)); 
     }
   ?>

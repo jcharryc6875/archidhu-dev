@@ -240,7 +240,7 @@ class Datamatrix {
 		// get data codewords
 		$cw = $this->getHighLevelEncoding($code);
 		// number of data codewords
-		$nd = count($cw);
+		$nd = count74($cw);
 		// check size
 		if ($nd > 1558) {
 			return false;

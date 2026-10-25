@@ -68,7 +68,7 @@ class PHPExcel_Chart_Renderer_jpgraph
         $plotMarkKeys = array_keys(self::$markSet);
         if (is_null($markerID)) {
             //    Use default plot marker (next marker in the series)
-            self::$plotMark %= count(self::$markSet);
+            self::$plotMark %= count74(self::$markSet);
             $seriesPlot->mark->SetType(self::$markSet[$plotMarkKeys[self::$plotMark++]]);
         } elseif ($markerID !== 'none') {
             //    Use specified plot marker (if it exists)
@@ -76,7 +76,7 @@ class PHPExcel_Chart_Renderer_jpgraph
                 $seriesPlot->mark->SetType(self::$markSet[$markerID]);
             } else {
                 //    If the specified plot marker doesn't exist, use default plot marker (next marker in the series)
-                self::$plotMark %= count(self::$markSet);
+                self::$plotMark %= count74(self::$markSet);
                 $seriesPlot->mark->SetType(self::$markSet[$plotMarkKeys[self::$plotMark++]]);
             }
         } else {
@@ -269,7 +269,7 @@ class PHPExcel_Chart_Renderer_jpgraph
     {
         $grouping = $this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotGrouping();
 
-        $labelCount = count($this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotValuesByIndex(0)->getPointCount());
+        $labelCount = count74($this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotValuesByIndex(0)->getPointCount());
         if ($labelCount > 0) {
             $datasetLabels = $this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotCategoryByIndex(0)->getDataValues();
             $datasetLabels = $this->formatDataSetLabels($groupID, $datasetLabels, $labelCount);
@@ -338,7 +338,7 @@ class PHPExcel_Chart_Renderer_jpgraph
         }
         $grouping = $this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotGrouping();
 
-        $labelCount = count($this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotValuesByIndex(0)->getPointCount());
+        $labelCount = count74($this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotValuesByIndex(0)->getPointCount());
         if ($labelCount > 0) {
             $datasetLabels = $this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotCategoryByIndex(0)->getDataValues();
             $datasetLabels = $this->formatDataSetLabels($groupID, $datasetLabels, $labelCount, $rotation);
@@ -438,7 +438,7 @@ class PHPExcel_Chart_Renderer_jpgraph
                 $seriesPlot->link->SetColor(self::$colourSet[self::$plotColour]);
             } elseif ($scatterStyle == 'smoothMarker') {
                 $spline = new Spline($dataValuesY, $dataValuesX);
-                list($splineDataY, $splineDataX) = $spline->Get(count($dataValuesX) * self::$width / 20);
+                list($splineDataY, $splineDataX) = $spline->Get(count74($dataValuesX) * self::$width / 20);
                 $lplot = new LinePlot($splineDataX, $splineDataY);
                 $lplot->SetColor(self::$colourSet[self::$plotColour]);
 
@@ -540,14 +540,14 @@ class PHPExcel_Chart_Renderer_jpgraph
 
         $dataValuesPlot = array();
         // Flatten the plot arrays to a single dimensional array to work with jpgraph
-        for ($j = 0; $j < count($dataValues[0]); ++$j) {
+        for ($j = 0; $j < count74($dataValues[0]); ++$j) {
             for ($i = 0; $i < $seriesCount; ++$i) {
                 $dataValuesPlot[] = $dataValues[$i][$j];
             }
         }
 
         // Set the x-axis labels
-        $labelCount = count($this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotValuesByIndex(0)->getPointCount());
+        $labelCount = count74($this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotValuesByIndex(0)->getPointCount());
         if ($labelCount > 0) {
             $datasetLabels = $this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotCategoryByIndex(0)->getDataValues();
             $datasetLabels = $this->formatDataSetLabels($groupID, $datasetLabels, $labelCount);
@@ -637,7 +637,7 @@ class PHPExcel_Chart_Renderer_jpgraph
             $grouping = $this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotGrouping();
             $exploded = $this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotStyle();
             if ($groupID == 0) {
-                $labelCount = count($this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotValuesByIndex(0)->getPointCount());
+                $labelCount = count74($this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotValuesByIndex(0)->getPointCount());
                 if ($labelCount > 0) {
                     $datasetLabels = $this->chart->getPlotArea()->getPlotGroupByIndex($groupID)->getPlotCategoryByIndex(0)->getDataValues();
                     $datasetLabels = $this->formatDataSetLabels($groupID, $datasetLabels, $labelCount);
@@ -681,8 +681,8 @@ class PHPExcel_Chart_Renderer_jpgraph
                 }
 
                 $seriesPlot->SetColor(self::$colourSet[self::$plotColour++]);
-                if (count($datasetLabels) > 0) {
-                    $seriesPlot->SetLabels(array_fill(0, count($datasetLabels), ''));
+                if (count74($datasetLabels) > 0) {
+                    $seriesPlot->SetLabels(array_fill(0, count74($datasetLabels), ''));
                 }
                 if ($dimensions != '3d') {
                     $seriesPlot->SetGuideLines(false);
@@ -802,9 +802,9 @@ class PHPExcel_Chart_Renderer_jpgraph
                 $chartTypes[] = $this->chart->getPlotArea()->getPlotGroupByIndex($i)->getPlotType();
             }
             $chartTypes = array_unique($chartTypes);
-            if (count($chartTypes) == 1) {
+            if (count74($chartTypes) == 1) {
                 $chartType = array_pop($chartTypes);
-            } elseif (count($chartTypes) == 0) {
+            } elseif (count74($chartTypes) == 0) {
                 echo 'Chart is not yet implemented<br />';
                 return false;
             } else {

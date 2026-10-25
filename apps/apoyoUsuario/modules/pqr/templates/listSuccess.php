@@ -65,7 +65,7 @@ use_helper('Object','jQuery');
                       <td class="text-center">
                         <?php  
                             $arr = preg_split("/[,]+/",$pqr->getRuta(), -1 , PREG_SPLIT_NO_EMPTY);
-                            for ($i = 0; $i < count($arr) ; $i++){ ?>
+                            for ($i = 0; $i < count74($arr) ; $i++){ ?>
                                 <a class="tooltip-primary" data-toggle="tooltip" data-original-title="<?php echo basename($arr[$i]) ?>" href="<?php  echo $arr[$i];?>" target="_blank">
                                     <img src="<?php echo $base_path; ?>/images/simad/ico-adj-file.png" width="25" height="25" align="middle" />                                    
                                 </a>

@@ -65,8 +65,8 @@ class AuditLogPeer extends BaseAuditLogPeer
 	 */
 	public static function getTipoOperacion(array $valor_anterior, array $valor_nuevo)
 	{
-		$hay_anterior = count(array_filter($valor_anterior, function ($v) { return !empty($v); })) > 0;
-		$hay_nuevo = count(array_filter($valor_nuevo, function ($v) { return !empty($v); })) > 0;
+		$hay_anterior = count74(array_filter($valor_anterior, function ($v) { return !empty($v); })) > 0;
+		$hay_nuevo = count74(array_filter($valor_nuevo, function ($v) { return !empty($v); })) > 0;
 		if ($hay_anterior && !$hay_nuevo)
 			return "delete";
 		if (!$hay_anterior && $hay_nuevo)

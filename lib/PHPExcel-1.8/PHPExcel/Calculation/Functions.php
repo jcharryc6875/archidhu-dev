@@ -585,7 +585,7 @@ class PHPExcel_Calculation_Functions
     public static function TYPE($value = null)
     {
         $value = self::flattenArrayIndexed($value);
-        if (is_array($value) && (count($value) > 1)) {
+        if (is_array($value) && (count74($value) > 1)) {
             end($value);
             $a = key($value);
             //    Range of cells is an error

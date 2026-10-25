@@ -247,7 +247,7 @@ class ImapAccess extends EmailCoreProvider {
                 //*****************************************************************************************************
                 $email['attachments'] = $this->getAttachments($message,$email);                
                 $message_eml = $this->saveMessageAsEml($message,$email);
-                $email['has_attachments'] = count($email['attachments']) > 0;
+                $email['has_attachments'] = count74($email['attachments']) > 0;
                 //*****************************************************************************************************
                 $emails[] = $email;
             }catch (\Webklex\PHPIMAP\Exceptions\RuntimeException $e) {

@@ -144,13 +144,13 @@ class BCGcode93 extends BCGBarcode1D {
     public function draw($im) {
         // Starting *
         $this->drawChar($im, $this->code[$this->starting], true);
-        $c = count($this->data);
+        $c = count74($this->data);
         for ($i = 0; $i < $c; $i++) {
             $this->drawChar($im, $this->data[$i], true);
         }
 
         // Checksum
-        $c = count($this->checksumValue);
+        $c = count74($this->checksumValue);
         for ($i = 0; $i < $c; $i++) {
             $this->drawChar($im, $this->code[$this->checksumValue[$i]], true);
         }
@@ -173,7 +173,7 @@ class BCGcode93 extends BCGBarcode1D {
     public function getDimension($w, $h) {
 
         $startlength = 9;
-        $textlength = 9 * count($this->data);
+        $textlength = 9 * count74($this->data);
         $checksumlength = 2 * 9;
         $endlength = 9 + 1; // + final bar
 
@@ -186,7 +186,7 @@ class BCGcode93 extends BCGBarcode1D {
      * Validates the input.
      */
     protected function validate() {
-        $c = count($this->data);
+        $c = count74($this->data);
         if ($c === 0) {
             throw new BCGParseException('code93', 'No data has been entered.');
         }
@@ -213,7 +213,7 @@ class BCGcode93 extends BCGBarcode1D {
         $indcheck = $this->indcheck;
         for ($z = 0; $z < 2; $z++) {
             $checksum = 0;
-            for ($i = count($indcheck), $j = 0; $i > 0; $i--, $j++) {
+            for ($i = count74($indcheck), $j = 0; $i > 0; $i--, $j++) {
                 $multiplier = $i % $sequence_multiplier[$z];
                 if ($multiplier === 0) {
                     $multiplier = $sequence_multiplier[$z];
@@ -237,7 +237,7 @@ class BCGcode93 extends BCGBarcode1D {
 
         if ($this->checksumValue !== false) {
             $ret = '';
-            $c = count($this->checksumValue);
+            $c = count74($this->checksumValue);
             for ($i = 0; $i < $c; $i++) {
                 $ret .= $this->keys[$this->checksumValue[$i]];
             }

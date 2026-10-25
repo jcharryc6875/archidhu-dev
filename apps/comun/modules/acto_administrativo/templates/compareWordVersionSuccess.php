@@ -22,7 +22,7 @@
               <?php echo $versionA->getFechaCreacion(); ?> —
               <?php echo $versionA->getUsuario() ? $versionA->getUsuario()->getNombreAll() : ''; ?>
             </p>
-            <?php if(count($imagenesA) == 0){ ?>
+            <?php if(count74($imagenesA) == 0){ ?>
               <div class="alert alert-default">No se pudo generar la vista previa de esta versión.</div>
             <?php } ?>
             <?php foreach ($imagenesA as $imagen): ?>
@@ -35,7 +35,7 @@
               <?php echo $versionB->getFechaCreacion(); ?> —
               <?php echo $versionB->getUsuario() ? $versionB->getUsuario()->getNombreAll() : ''; ?>
             </p>
-            <?php if(count($imagenesB) == 0){ ?>
+            <?php if(count74($imagenesB) == 0){ ?>
               <div class="alert alert-default">No se pudo generar la vista previa de esta versión.</div>
             <?php } ?>
             <?php foreach ($imagenesB as $imagen): ?>

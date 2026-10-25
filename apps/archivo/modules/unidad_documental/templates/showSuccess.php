@@ -94,13 +94,13 @@
 					<div class="process tabs-vertical-env">
 						<ul class="process-row nav nav-tabs bordered"><!-- available classes "right-aligned" -->
 							<li class="active"><a data-toggle="tab" href="#data"><span class="glyphicon glyphicon-import"></span>&nbsp;Detalles</a></li>
-							<?php if(count($lista_metadatos) && (1 != 1)){ ?>
+							<?php if(count74($lista_metadatos) && (1 != 1)){ ?>
 								<li><a data-toggle="tab" href="#listmetadatos"><span class="glyphicon glyphicon-list"></span>&nbsp;Lista Metadatos</a></li>
 							<?php } ?>
-							<?php if(count($lista_interesados)){ ?>
+							<?php if(count74($lista_interesados)){ ?>
 								<li><a data-toggle="tab" href="#listinteresados"><span class="glyphicon glyphicon-list"></span>&nbsp;Lista Interesados</a></li>
 							<?php } ?>
-							<?php if(count($lista_documentos) && empty($unidad_documental->getEstaCerrado())){ ?>
+							<?php if(count74($lista_documentos) && empty($unidad_documental->getEstaCerrado())){ ?>
 								<li><a data-toggle="tab" href="#expindice"><span class="glyphicon glyphicon-list"></span>&nbsp;&Iacute;ndice Electr&oacute;nico</a></li>
 							<?php } ?>
 							<?php if(!empty($unidad_documental->getEstaCerrado()) && !empty($unidad_documental->getEidxAbspath()) && !empty($unidad_documental->getEidxRelpath())){ ?>
@@ -259,7 +259,7 @@
 											</div>
 										<?php } ?>
 
-										<?php for ($num = 0; $num < count($lista_metadatos); $num++) { ?>
+										<?php for ($num = 0; $num < count74($lista_metadatos); $num++) { ?>
 											<?php if (($num % 2) == 0) { ?>
 												<div class="row">
 													<div class="col-sm-6">
@@ -275,7 +275,7 @@
 											<?php } ?>
 										<?php } ?>
 										
-										<?php if((count($lista_metadatos) % 2) != 0) { echo '</div>'; } ?>
+										<?php if((count74($lista_metadatos) % 2) != 0) { echo '</div>'; } ?>
 
 										<?php if(trim($unidad_documental->getContenido())){ ?>
 											<div class="row">                    
@@ -330,7 +330,7 @@
 								</div>
 							</div>
 							<!-- listado de metadatos -->
-							<?php if(count($lista_metadatos)){ ?>
+							<?php if(count74($lista_metadatos)){ ?>
 								<div id="listmetadatos" class="tab-pane">
 									<?php 
 										include_partial('listMetadatos',array('list_metadatos'=>$lista_metadatos)); 
@@ -338,7 +338,7 @@
 								</div>
 							<?php } ?>
 							<!-- listado de interesados -->
-							<?php if(count($lista_interesados)){ ?>
+							<?php if(count74($lista_interesados)){ ?>
 								<div id="listinteresados" class="tab-pane">
 									<?php 
 										include_partial('listInteresados',array('unidad_documental' => $unidad_documental,'list_interesados'=> $lista_interesados));
@@ -346,7 +346,7 @@
 								</div>
 							<?php } ?>
 							<!-- lista de documentos -->
-							<?php if(count($lista_documentos) && empty($unidad_documental->getEstaCerrado())){ ?>
+							<?php if(count74($lista_documentos) && empty($unidad_documental->getEstaCerrado())){ ?>
 								<div id="expindice" class="tab-pane">
 									<?php 
 										include_partial('viewIndice',array('unidad_documental' => $unidad_documental,'list_documentos'=> $lista_documentos));

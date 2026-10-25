@@ -14,7 +14,7 @@ use_helper('Object','jQuery','UserComponent');
 <div class="row">
 	<div class="col-md-12">
 	    <?php
-	    $cantidad_registros = count($data_views[0]['resultado']);
+	    $cantidad_registros = count74($data_views[0]['resultado']);
 	    if($cantidad_registros == 0)
         {
             ?>
@@ -98,7 +98,7 @@ use_helper('Object','jQuery','UserComponent');
 
                                     <tbody>
                                         <?php 
-                                        for ($i = 0; $i <= count($data_views[0]['resultado']); $i++)
+                                        for ($i = 0; $i <= count74($data_views[0]['resultado']); $i++)
                                         {
                                             ?>
                                             <tr>
@@ -153,7 +153,7 @@ use_helper('Object','jQuery','UserComponent');
 
                                     <tbody>
                                         <?php 
-                                        for ($i = 0; $i < count($data_views[0]['resultado']); $i++)
+                                        for ($i = 0; $i < count74($data_views[0]['resultado']); $i++)
                                         {
                                             ?>
                                             <tr>

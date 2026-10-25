@@ -70,7 +70,7 @@ class ActoadminEtapaPeer extends BaseActoadminEtapaPeer
     public static function getPrimeraEtapaRol()
     {
         $etapas = ActoadminEtapaPeer::getEtapasActivasOrdenadas();
-        return count($etapas) ? $etapas[0]->getRolusuarioactoadministvoId() : null;
+        return count74($etapas) ? $etapas[0]->getRolusuarioactoadministvoId() : null;
     }
 
     /**
@@ -79,7 +79,7 @@ class ActoadminEtapaPeer extends BaseActoadminEtapaPeer
     public static function getUltimaEtapaRol()
     {
         $etapas = ActoadminEtapaPeer::getEtapasActivasOrdenadas();
-        return count($etapas) ? $etapas[count($etapas) - 1]->getRolusuarioactoadministvoId() : null;
+        return count74($etapas) ? $etapas[count74($etapas) - 1]->getRolusuarioactoadministvoId() : null;
     }
 
     /**
@@ -91,7 +91,7 @@ class ActoadminEtapaPeer extends BaseActoadminEtapaPeer
     public static function getRolesFlujoConfiguradoODefault($fallback = array(2,3,4))
     {
         $etapas = ActoadminEtapaPeer::getEtapasActivasOrdenadas();
-        if(!count($etapas)){ return $fallback; }
+        if(!count74($etapas)){ return $fallback; }
         //*************************************************************************************************
         $roles = array();
         foreach($etapas as $etapa){ $roles[] = $etapa->getRolusuarioactoadministvoId(); }

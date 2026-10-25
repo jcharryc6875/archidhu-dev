@@ -212,7 +212,7 @@ class PHPExcel_Chart_DataSeriesValues
      */
     public function isMultiLevelSeries()
     {
-        if (count($this->dataValues) > 0) {
+        if (count74($this->dataValues) > 0) {
             return is_array($this->dataValues[0]);
         }
         return null;
@@ -227,7 +227,7 @@ class PHPExcel_Chart_DataSeriesValues
     {
         $levelCount = 0;
         foreach ($this->dataValues as $dataValueSet) {
-            $levelCount = max($levelCount, count($dataValueSet));
+            $levelCount = max($levelCount, count74($dataValueSet));
         }
         return $levelCount;
     }
@@ -249,7 +249,7 @@ class PHPExcel_Chart_DataSeriesValues
      */
     public function getDataValue()
     {
-        $count = count($this->dataValues);
+        $count = count74($this->dataValues);
         if ($count == 0) {
             return null;
         } elseif ($count == 1) {
@@ -270,7 +270,7 @@ class PHPExcel_Chart_DataSeriesValues
     public function setDataValues($dataValues = array(), $refreshDataSource = true)
     {
         $this->dataValues = PHPExcel_Calculation_Functions::flattenArray($dataValues);
-        $this->pointCount = count($dataValues);
+        $this->pointCount = count74($dataValues);
 
         if ($refreshDataSource) {
             //    TO DO
@@ -305,7 +305,7 @@ class PHPExcel_Chart_DataSeriesValues
                 unset($dataValue);
             } else {
                 $cellRange = explode('!', $this->dataSource);
-                if (count($cellRange) > 1) {
+                if (count74($cellRange) > 1) {
                     list(, $cellRange) = $cellRange;
                 }
 
@@ -327,7 +327,7 @@ class PHPExcel_Chart_DataSeriesValues
                     $this->dataValues = $newArray;
                 }
             }
-            $this->pointCount = count($this->dataValues);
+            $this->pointCount = count74($this->dataValues);
         }
     }
 }

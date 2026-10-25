@@ -802,7 +802,7 @@ class UnidadDocumental extends BaseUnidadDocumental
                 $exp_ubicacion = sprintf("%s / %s", trim($this->getNumeroCaja()), trim($this->getNumeroCarpeta()));
             }
             //******************************************************************************************************
-            $qrfile = simad_util::generateCodeQrInFile($this->getCodigoTitulo(), 20, QR_ECLEVEL_L, 1);
+            $qrfile = simad_util::generateCodeQrInFile($this->getCodigoTitulo(), 20, 0, 1);
             $codebarfile = simad_util::generateCodeBarInFile($exp_ubicacion, false);
             $urlQrCode = sfConfig::get('localUrl') . "/tmp/" . $qrfile;
             $urlBarCode = sfConfig::get('localUrl') . "/tmp/" . $codebarfile;

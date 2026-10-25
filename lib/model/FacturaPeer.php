@@ -234,7 +234,7 @@ class FacturaPeer extends BaseFacturaPeer
 		$url = $http . "://".$_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 		$filename = explode("/", $url);		
 		$base = "";
-		for( $i = 0; $i < (count($filename) - 1); ++$i ) {
+		for( $i = 0; $i < (count74($filename) - 1); ++$i ) {
 			$base .= $filename[$i].'/';
 		}
 		return $base;

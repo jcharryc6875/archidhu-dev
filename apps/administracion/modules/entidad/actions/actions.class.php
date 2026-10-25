@@ -178,7 +178,7 @@ class entidadActions extends sfActions
 	if(trim($file_path))
     {
 	    $archivos_upload = preg_split("/[,]+/", $file_path,-1,PREG_SPLIT_NO_EMPTY);
-	    $cantidad_archivos = count($archivos_upload);
+	    $cantidad_archivos = count74($archivos_upload);
 	    /********************************************************************************/
         //RUTA Y ESTRUCTURA DE ARCHIVOS
     	$dirRaiz = ParametroPeer::retrieveByPk(17)->getValortexto();

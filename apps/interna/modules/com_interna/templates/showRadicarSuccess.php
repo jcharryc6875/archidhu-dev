@@ -195,7 +195,7 @@ use_helper('Object','jQuery','UserComponent');
     				</div>
                 <?php } ?>
                 
-                <?php if(trim($com_interna->getValorGuia()) || count($usuarios_copia)){ ?>
+                <?php if(trim($com_interna->getValorGuia()) || count74($usuarios_copia)){ ?>
                     <div class="row">                   
     					<div class="col-sm-6">
     						<div class="col-sm-4"><p><strong>Valor gu&iacute;a:</strong></p></div>

@@ -272,22 +272,22 @@ class PHPExcel_Shared_OLERead
 
             // Workbook directory entry (BIFF5 uses Book, BIFF8 uses Workbook)
             if (($upName === 'WORKBOOK') || ($upName === 'BOOK')) {
-                $this->wrkbook = count($this->props) - 1;
+                $this->wrkbook = count74($this->props) - 1;
             } elseif ($upName === 'ROOT ENTRY' || $upName === 'R') {
                 // Root entry
-                $this->rootentry = count($this->props) - 1;
+                $this->rootentry = count74($this->props) - 1;
             }
 
             // Summary information
             if ($name == chr(5) . 'SummaryInformation') {
 //                echo 'Summary Information<br />';
-                $this->summaryInformation = count($this->props) - 1;
+                $this->summaryInformation = count74($this->props) - 1;
             }
 
             // Additional Document Summary information
             if ($name == chr(5) . 'DocumentSummaryInformation') {
 //                echo 'Document Summary Information<br />';
-                $this->documentSummaryInformation = count($this->props) - 1;
+                $this->documentSummaryInformation = count74($this->props) - 1;
             }
 
             $offset += self::PROPERTY_STORAGE_BLOCK_SIZE;

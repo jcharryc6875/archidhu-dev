@@ -348,7 +348,7 @@ class PHPExcel
      */
     public function getSheetByCodeName($pName = '')
     {
-        $worksheetCount = count($this->workSheetCollection);
+        $worksheetCount = count74($this->workSheetCollection);
         for ($i = 0; $i < $worksheetCount; ++$i) {
             if ($this->workSheetCollection[$i]->getCodeName() == $pName) {
                 return $this->workSheetCollection[$i];
@@ -554,7 +554,7 @@ class PHPExcel
     public function removeSheetByIndex($pIndex = 0)
     {
 
-        $numSheets = count($this->workSheetCollection);
+        $numSheets = count74($this->workSheetCollection);
         if ($pIndex > $numSheets - 1) {
             throw new PHPExcel_Exception(
                 "You tried to remove a sheet by the out of bounds index: {$pIndex}. The actual number of sheets is {$numSheets}."
@@ -564,7 +564,7 @@ class PHPExcel
         }
         // Adjust active sheet index if necessary
         if (($this->activeSheetIndex >= $pIndex) &&
-            ($pIndex > count($this->workSheetCollection) - 1)) {
+            ($pIndex > count74($this->workSheetCollection) - 1)) {
             --$this->activeSheetIndex;
         }
 
@@ -607,7 +607,7 @@ class PHPExcel
      */
     public function getSheetByName($pName = '')
     {
-        $worksheetCount = count($this->workSheetCollection);
+        $worksheetCount = count74($this->workSheetCollection);
         for ($i = 0; $i < $worksheetCount; ++$i) {
             if ($this->workSheetCollection[$i]->getTitle() === $pName) {
                 return $this->workSheetCollection[$i];
@@ -667,7 +667,7 @@ class PHPExcel
      */
     public function getSheetCount()
     {
-        return count($this->workSheetCollection);
+        return count74($this->workSheetCollection);
     }
 
     /**
@@ -689,7 +689,7 @@ class PHPExcel
      */
     public function setActiveSheetIndex($pIndex = 0)
     {
-        $numSheets = count($this->workSheetCollection);
+        $numSheets = count74($this->workSheetCollection);
 
         if ($pIndex > $numSheets - 1) {
             throw new PHPExcel_Exception(
@@ -749,7 +749,7 @@ class PHPExcel
         }
 
         // count how many cellXfs there are in this workbook currently, we will need this below
-        $countCellXfs = count($this->cellXfCollection);
+        $countCellXfs = count74($this->cellXfCollection);
 
         // copy all the shared cellXfs from the external workbook and append them to the current
         foreach ($pSheet->getParent()->getCellXfCollection() as $cellXf) {
@@ -862,7 +862,7 @@ class PHPExcel
     {
         $copied = clone $this;
 
-        $worksheetCount = count($this->workSheetCollection);
+        $worksheetCount = count74($this->workSheetCollection);
         for ($i = 0; $i < $worksheetCount; ++$i) {
             $this->workSheetCollection[$i] = $this->workSheetCollection[$i]->copy();
             $this->workSheetCollection[$i]->rebindParent($this);
@@ -953,7 +953,7 @@ class PHPExcel
     public function addCellXf(PHPExcel_Style $style)
     {
         $this->cellXfCollection[] = $style;
-        $style->setIndex(count($this->cellXfCollection) - 1);
+        $style->setIndex(count74($this->cellXfCollection) - 1);
     }
 
     /**
@@ -964,7 +964,7 @@ class PHPExcel
      */
     public function removeCellXfByIndex($pIndex = 0)
     {
-        if ($pIndex > count($this->cellXfCollection) - 1) {
+        if ($pIndex > count74($this->cellXfCollection) - 1) {
             throw new PHPExcel_Exception("CellXf index is out of bounds.");
         } else {
             // first remove the cellXf
@@ -1042,7 +1042,7 @@ class PHPExcel
     public function addCellStyleXf(PHPExcel_Style $pStyle)
     {
         $this->cellStyleXfCollection[] = $pStyle;
-        $pStyle->setIndex(count($this->cellStyleXfCollection) - 1);
+        $pStyle->setIndex(count74($this->cellStyleXfCollection) - 1);
     }
 
     /**
@@ -1053,7 +1053,7 @@ class PHPExcel
      */
     public function removeCellStyleXfByIndex($pIndex = 0)
     {
-        if ($pIndex > count($this->cellStyleXfCollection) - 1) {
+        if ($pIndex > count74($this->cellStyleXfCollection) - 1) {
             throw new PHPExcel_Exception("CellStyleXf index is out of bounds.");
         } else {
             array_splice($this->cellStyleXfCollection, $pIndex, 1);

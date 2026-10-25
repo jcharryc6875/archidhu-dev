@@ -1167,8 +1167,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = count74($yValues);
+        $xValueCount = count74($xValues);
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -1325,8 +1325,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = count74($yValues);
+        $xValueCount = count74($xValues);
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -1611,8 +1611,8 @@ class PHPExcel_Calculation_Statistical
         } elseif (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = count74($yValues);
+        $xValueCount = count74($xValues);
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -1906,8 +1906,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = count74($yValues);
+        $xValueCount = count74($xValues);
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -2021,14 +2021,14 @@ class PHPExcel_Calculation_Statistical
         $const = (is_null($const)) ? true : (boolean) PHPExcel_Calculation_Functions::flattenSingleValue($const);
         $stats = (is_null($stats)) ? false : (boolean) PHPExcel_Calculation_Functions::flattenSingleValue($stats);
         if (is_null($xValues)) {
-            $xValues = range(1, count(PHPExcel_Calculation_Functions::flattenArray($yValues)));
+            $xValues = range(1, count74(PHPExcel_Calculation_Functions::flattenArray($yValues)));
         }
 
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = count74($yValues);
+        $xValueCount = count74($xValues);
 
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
@@ -2081,14 +2081,14 @@ class PHPExcel_Calculation_Statistical
         $const = (is_null($const)) ? true : (boolean) PHPExcel_Calculation_Functions::flattenSingleValue($const);
         $stats = (is_null($stats)) ? false : (boolean) PHPExcel_Calculation_Functions::flattenSingleValue($stats);
         if (is_null($xValues)) {
-            $xValues = range(1, count(PHPExcel_Calculation_Functions::flattenArray($yValues)));
+            $xValues = range(1, count74(PHPExcel_Calculation_Functions::flattenArray($yValues)));
         }
 
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = count74($yValues);
+        $xValueCount = count74($xValues);
 
         foreach ($yValues as $value) {
             if ($value <= 0.0) {
@@ -2330,7 +2330,7 @@ class PHPExcel_Calculation_Statistical
             }
         }
 
-        $mValueCount = count($mArgs);
+        $mValueCount = count74($mArgs);
         if ($mValueCount > 0) {
             sort($mArgs, SORT_NUMERIC);
             $mValueCount = $mValueCount / 2;
@@ -2704,7 +2704,7 @@ class PHPExcel_Calculation_Statistical
                     $mArgs[] = $arg;
                 }
             }
-            $mValueCount = count($mArgs);
+            $mValueCount = count74($mArgs);
             if ($mValueCount > 0) {
                 sort($mArgs);
                 $count = self::COUNT($mArgs);
@@ -2745,7 +2745,7 @@ class PHPExcel_Calculation_Statistical
             }
         }
         sort($valueSet, SORT_NUMERIC);
-        $valueCount = count($valueSet);
+        $valueCount = count74($valueSet);
         if ($valueCount == 0) {
             return PHPExcel_Calculation_Functions::NaN();
         }
@@ -2919,8 +2919,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = count74($yValues);
+        $xValueCount = count74($xValues);
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -2985,8 +2985,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = count74($yValues);
+        $xValueCount = count74($xValues);
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -3278,8 +3278,8 @@ class PHPExcel_Calculation_Statistical
         if (!self::checkTrendArrays($yValues, $xValues)) {
             return PHPExcel_Calculation_Functions::VALUE();
         }
-        $yValueCount = count($yValues);
-        $xValueCount = count($xValues);
+        $yValueCount = count74($yValues);
+        $xValueCount = count74($xValues);
 
         if (($yValueCount == 0) || ($yValueCount != $xValueCount)) {
             return PHPExcel_Calculation_Functions::NA();
@@ -3738,7 +3738,7 @@ class PHPExcel_Calculation_Statistical
         if (is_null($sigma)) {
             $sigma = self::STDEV($dataSet);
         }
-        $n = count($dataSet);
+        $n = count74($dataSet);
 
         return 1 - self::NORMSDIST((self::AVERAGE($dataSet) - $m0) / ($sigma / SQRT($n)));
     }

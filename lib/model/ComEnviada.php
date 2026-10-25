@@ -334,7 +334,7 @@ class ComEnviada extends BaseComEnviada
         if ($include_anexos) {
             $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
             //*****************************CREANDO LISTA DE ARCHIVOS*******************************
-            for ($j = 0; $j < count($files_adjuntos); $j++) {
+            for ($j = 0; $j < count74($files_adjuntos); $j++) {
                 $size_file = 0;
                 if (trim($files_adjuntos[$j])) {
                     $filename = basename($files_adjuntos[$j]);
@@ -401,7 +401,7 @@ class ComEnviada extends BaseComEnviada
         try {
             $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
             //*****************************CREANDO LISTA DE ARCHIVOS***********************************
-            for ($j = 0; $j < count($files_adjuntos); $j++) {
+            for ($j = 0; $j < count74($files_adjuntos); $j++) {
                 if (trim($files_adjuntos[$j])) {
                     $filename = basename(trim($files_adjuntos[$j]));
                     $xguid = simad_util::create_guid($filename);
@@ -521,7 +521,7 @@ class ComEnviada extends BaseComEnviada
         if ($is_files_old) {
             $files_adjuntos = preg_split("/[,]+/", $files_old_text, -1, PREG_SPLIT_NO_EMPTY);
             $files_text = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j < count($files_text); $j++) {
+            for ($j = 0; $j < count74($files_text); $j++) {
                 $url = ComEnviada::strpos_array($files_text[$j], $files_adjuntos);
                 if (!is_null($url)) {
                     $url_files .= $url . ",";
@@ -539,7 +539,7 @@ class ComEnviada extends BaseComEnviada
             }
         } else {
             $files_adjuntos = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j <= count($files_adjuntos); $j++) {
+            for ($j = 0; $j <= count74($files_adjuntos); $j++) {
                 if (trim($files_adjuntos[$j])) {
                     $file_name = basename($files_adjuntos[$j]);
                     $filenamesource = $directorio_tmp . basename($files_adjuntos[$j]);
@@ -601,7 +601,7 @@ class ComEnviada extends BaseComEnviada
             $list_com = array();
             $list_comdirdestino = EnviadaDirectorioPeer::getListEnviadaDirByRol($this->getPrimaryKey());
             //*************************************************************************************************
-            if (count($list_comdirdestino) > 1) {
+            if (count74($list_comdirdestino) > 1) {
                 $response_create = $this->addComByDirectorioExt($list_comdirdestino, $firmante_id, $entidad_id, $regional, $depen_codigo);
                 if ($response_create['isError'] == false) {
                     $list_com = $response_create['list_com'];
@@ -902,7 +902,7 @@ class ComEnviada extends BaseComEnviada
         $isError = false;
         $list_state = array();
         //********************************************************************************
-        if (count($files_new)) {
+        if (count74($files_new)) {
             foreach ($files_new as $nfile) {
                 try {
                     if (!empty($nfile)) {
@@ -1015,7 +1015,7 @@ class ComEnviada extends BaseComEnviada
         if (trim($files_old_text)) {
             $files_adjuntos = preg_split("/[,]+/", $files_old_text, -1, PREG_SPLIT_NO_EMPTY);
             $files_text = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j < count($files_text); $j++) {
+            for ($j = 0; $j < count74($files_text); $j++) {
                 $url = ComEnviada::strpos_array($files_text[$j], $files_adjuntos);
                 if (!is_null($url)) {
                     $url_files .= $url . ",";
@@ -1033,7 +1033,7 @@ class ComEnviada extends BaseComEnviada
             }
         } else {
             $files_adjuntos = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j < count($files_adjuntos); $j++) {
+            for ($j = 0; $j < count74($files_adjuntos); $j++) {
                 if (trim($files_adjuntos[$j])) {
                     $file_name = basename($files_adjuntos[$j]);
                     $filenamesource = $directorio_tmp . $file_name;
@@ -1272,7 +1272,7 @@ class ComEnviada extends BaseComEnviada
             $contFirmas++;
         }
         //**************************************************************************************************
-        if (count($cargos_firmas)) {
+        if (count74($cargos_firmas)) {
             $firmas .= $this->getDataAreasOrCargosFirmas($mecanica_firmas);
             $firmas .= $this->getDataAreasOrCargosFirmas($usuario_firmas, false);
             $firmas .= $this->getDataAreasOrCargosFirmas($cargos_firmas);
@@ -1659,7 +1659,7 @@ class ComEnviada extends BaseComEnviada
             $contFirmas++;
         }
         //**************************************************************************************************
-        if (count($cargos_firmas)) {
+        if (count74($cargos_firmas)) {
             $firmas .= $this->getDataAreasOrCargosFirmas($mecanica_firmas);
             $firmas .= $this->getDataAreasOrCargosFirmas($usuario_firmas, false);
             if ($isAddCargo) {
@@ -1808,7 +1808,7 @@ class ComEnviada extends BaseComEnviada
         $funcionario_destino = "";
         $entidad_origen = "";
         //**************************************************************************************************
-        if (!count($enviada_interesados) && $enviada_usuario_destino != null) {
+        if (!count74($enviada_interesados) && $enviada_usuario_destino != null) {
             if (trim($this->getPrefijo())) {
                 $tratamiento = ($this->getPrefijoHtml());
                 $htmlcontent .= '<br/><br/>' . $tratamiento;
@@ -2372,7 +2372,7 @@ class ComEnviada extends BaseComEnviada
                 $uapcargo = "";
                 $uaparea = "";
                 //*****************************************************************************************************
-                if (count($lstaprobadores) > 1) {
+                if (count74($lstaprobadores) > 1) {
                     $arrayHtml = array();
                     foreach ($lstaprobadores as $value) {
                         $data_list_com = array();
@@ -2388,7 +2388,7 @@ class ComEnviada extends BaseComEnviada
                     $tablaFinal = simad_util::generateTablaHtml($arrayHtml);
                     //**************************************************************************************************
                     $datos['APROBADOR_NOMBRE'] = $tablaFinal;
-                } else if (count($lstaprobadores) == 1) {
+                } else if (count74($lstaprobadores) == 1) {
                     foreach ($lstaprobadores as $value) {
                         $unaprobador = $value['nombre_gestor'];
                         $uapcargo = $value['cargo_ugestor'];
@@ -2421,7 +2421,7 @@ class ComEnviada extends BaseComEnviada
                 $urcargo = "";
                 $urarea = "";
                 //*******************************************************************************************************
-                if (count($lstrevisores) > 1) {
+                if (count74($lstrevisores) > 1) {
                     $arrayHtml = array();
                     foreach ($lstrevisores as $value) {
                         $data_list_com = array();
@@ -2585,7 +2585,7 @@ class ComEnviada extends BaseComEnviada
 
     public function getDataAreasOrCargosFirmas($data_str, $add_td = true)
     {
-        if (!count($data_str)) {
+        if (!count74($data_str)) {
             return '';
         }
         $fila_html = '';
@@ -2659,7 +2659,7 @@ class ComEnviada extends BaseComEnviada
             $filename   = sprintf("%s.%s", trim($this->getRadicado()), 'pdf');
             $tempdir_firma = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . md5(date("YmdGis"));
             $ulist_firma = EnviadaUsuarioPeer::getAllUserFirmaDigitalObj($this->getPrimaryKey());
-            $isFirmaDigital = count($ulist_firma) ? true : false;
+            $isFirmaDigital = count74($ulist_firma) ? true : false;
             //***************************************************************************************************			
             if (!empty($this->getUrlFileWord())) {
                 $file_attach = $this->SimadGeneratePdf($this->getUrlFileWord(), true, false, $isFirmaDigital);
@@ -2677,7 +2677,7 @@ class ComEnviada extends BaseComEnviada
                 $response_list = array();
                 //***********************************************************************************************
                 if (WsFirmaApiAndes::SERVICE_ENABLE_WS) {
-                    if (count($ulist_firma) <= 0) {
+                    if (count74($ulist_firma) <= 0) {
                         $this->setFirmadoDigital(4); //EL DOCUMENTO NO SE FIRMA DIGITAL
                         $this->save();
                         return $response_process = array('httpStatus' => 400, 'message' => 'Ninguno de los usuarios que firman la comunicaci&oacute;n tienen habilitada la firma digital');
@@ -2839,7 +2839,7 @@ class ComEnviada extends BaseComEnviada
             $filename   = sprintf("%s.%s", trim($this->getRadicado()), 'pdf');
             $tempdir_firma = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . md5(date("YmdGis"));
             $ulist_firma = EnviadaUsuarioPeer::getAllUserFirmaDigitalObj($this->getPrimaryKey());
-            $isFirmaDigital = count($ulist_firma) ? true : false;
+            $isFirmaDigital = count74($ulist_firma) ? true : false;
             //***************************************************************************************************			
             if (!empty($this->getUrlFileWord())) {
                 $file_attach = $this->SimadGeneratePdf($this->getUrlFileWord(), true, false, $isFirmaDigital);
@@ -2858,7 +2858,7 @@ class ComEnviada extends BaseComEnviada
                 $response_list = array();
                 //***********************************************************************************************
                 if ($token != null) {
-                    if (count($ulist_firma) <= 0) {
+                    if (count74($ulist_firma) <= 0) {
                         $this->setFirmadoDigital(4); //EL DOCUMENTO NO SE FIRMA DIGITAL
                         $this->save();
                         return $response_process = array('httpStatus' => 400, 'message' => 'Ninguno de los usuarios que firman la comunicaci&oacute;n tienen habilitada la firma digital');
@@ -3061,7 +3061,7 @@ class ComEnviada extends BaseComEnviada
             $filename   = sprintf("%s.%s", trim($this->getRadicado()), 'pdf');
             $tempdir_firma = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . md5(date("YmdGis"));
             $ulist_firma = EnviadaUsuarioPeer::getAllUserFirmaDigitalObj($this->getPrimaryKey());
-            $isFirmaDigital = count($ulist_firma) ? true : false;
+            $isFirmaDigital = count74($ulist_firma) ? true : false;
             //***************************************************************************************************
             if (!empty($this->getUrlFileWord())) {
                 $file_attach = $this->SimadGeneratePdf($this->getUrlFileWord(), true, false, $isFirmaDigital);
@@ -3077,7 +3077,7 @@ class ComEnviada extends BaseComEnviada
             $storage_com = $this->getBasicUrlDigitCom($dir_raiz, $digit_dir);
             $targetpath = $storage_com['storage_path'] . DIRECTORY_SEPARATOR . $filename;
             //***************************************************************************************************
-            if (count($ulist_firma) <= 0) {
+            if (count74($ulist_firma) <= 0) {
                 $this->setFirmadoDigital(4); //EL DOCUMENTO NO SE FIRMA DIGITAL
                 $this->save();
                 if (file_exists($file_attach)) {
@@ -3547,7 +3547,7 @@ class ComEnviada extends BaseComEnviada
     public function comNumResByIntIsCreate($interesados_comlist)
     {
         try {
-            if (!count($interesados_comlist)) {
+            if (!count74($interesados_comlist)) {
                 return array('isError' => false, 'message' => '');
             }
             //****************************************************************************************
@@ -3588,7 +3588,7 @@ class ComEnviada extends BaseComEnviada
             $list_com[] = $this->getPrimaryKey();
             $estadocomenviada_id = $this->getEstadocomenviadaId();
             //***********************************************************************************************************
-            if (count($list_interesados)) {
+            if (count74($list_interesados)) {
                 do {
                     $new_comenviada = new ComEnviada();
                     $new_comenviada = $this->copy();
@@ -3617,7 +3617,7 @@ class ComEnviada extends BaseComEnviada
                     //*******************************************************************************************************
                     $list_com[] = $new_comenviada->getPrimaryKey();
                     $a++;
-                } while ($a < count($list_interesados));
+                } while ($a < count74($list_interesados));
             }
             //***************************************************************************************************************
             return array('isError' => false, 'message' => 'Las comunicaciones se radicaron existosamente', 'list_com' => $list_com);
@@ -3712,7 +3712,7 @@ class ComEnviada extends BaseComEnviada
         $listc_user = $this->getUsuariosListComIds(true);
         if (isset($listc_user['firmas'])) {
             $list_com[] = $this->getPrimaryKey();
-            $list_com = count($list_com) > 1 ? array_unique($list_com) : $list_com;
+            $list_com = count74($list_com) > 1 ? array_unique($list_com) : $list_com;
             foreach ($list_com as $pkcom_id) {
                 UsuarioNotificacionPeer::notifyUserTask($listc_user['firmas'], ModuleEnableNotify::ComEnviada, $pkcom_id, RolComTypeNotify::FirmaDocsEnviada);
             }
@@ -3890,7 +3890,7 @@ class ComEnviada extends BaseComEnviada
             if (in_array($this->getEstadocomenviadaId(), array(2, 3))) {
                 $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
                 //************************************************************************************
-                for ($j = 0; $j < count($files_adjuntos); $j++) {
+                for ($j = 0; $j < count74($files_adjuntos); $j++) {
                     if (trim($files_adjuntos[$j])) {
                         try {
                             $filename = basename($files_adjuntos[$j]);

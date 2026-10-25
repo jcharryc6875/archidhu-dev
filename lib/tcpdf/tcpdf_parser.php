@@ -676,7 +676,7 @@ class TCPDF_PARSER {
 	 */
 	protected function getIndirectObject($obj_ref, $offset=0, $decoding=true) {
 		$obj = explode('_', $obj_ref);
-		if (($obj === false) OR (count($obj) != 2)) {
+		if (($obj === false) OR (count74($obj) != 2)) {
 			$this->Error('Invalid object reference: '.$obj);
 			return;
 		}

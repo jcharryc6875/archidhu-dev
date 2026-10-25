@@ -119,7 +119,7 @@ use_helper('jQuery');
             </div>
         </div>
         <?php        
-            if(count($arrIds))
+            if(count74($arrIds))
             {
                 include_partial('list',array('pager'=> $pagina,'parametros'=>$filtros_consulta));
             }

@@ -1,9 +1,9 @@
-<?php if(count($wf_variables)){ ?>
+<?php if(count74($wf_variables)){ ?>
 <!-- variables -->
 <div class="row">
 	<div class="col-md-12">        
         <?php
-	    $cantidad_registros = count($wf_variables);
+	    $cantidad_registros = count74($wf_variables);
 	    if($cantidad_registros == 0):
 	    ?>
         <div class="panel panel-primary">

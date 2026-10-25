@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (count($instances) == 0): ?>
+                <?php if (count74($instances) == 0): ?>
                     <tr>
                         <td colspan="7" class="text-center text-muted">
                             <i class="fas fa-inbox"></i> No hay instancias disponibles

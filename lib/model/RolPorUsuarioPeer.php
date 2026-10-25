@@ -23,7 +23,7 @@ class RolPorUsuarioPeer extends BaseRolPorUsuarioPeer
 	}
 
     public static function addNewRolByUser($rolPkDelete = array(), $usuario_id = 0){
-        if(count($rolPkDelete) > 0){
+        if(count74($rolPkDelete) > 0){
             $rows_affected = RolPorUsuarioPeer::removeRolByUsuario($rolPkDelete,$usuario_id);
             //**********************************************************************************************
             foreach ($rolPkDelete as $rolId) {

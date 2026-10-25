@@ -19,7 +19,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
         <!-- Contenedor Contenido Formulario-->
         <div class="panel-body">
             <?php 
-            if(count($uniddoc_tiposerv) > 0):
+            if(count74($uniddoc_tiposerv) > 0):
             ?>
                 <table class="table table-bordered table-hover table-striped responsive">
                 <thead>

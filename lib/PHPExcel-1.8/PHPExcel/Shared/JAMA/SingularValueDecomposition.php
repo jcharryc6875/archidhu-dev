@@ -518,7 +518,7 @@ class SingularValueDecomposition
         $eps = pow(2.0, -52.0);
         $tol = max($this->m, $this->n) * $this->s[0] * $eps;
         $r = 0;
-        for ($i = 0; $i < count($this->s); ++$i) {
+        for ($i = 0; $i < count74($this->s); ++$i) {
             if ($this->s[$i] > $tol) {
                 ++$r;
             }

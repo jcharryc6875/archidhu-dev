@@ -73,14 +73,14 @@ use_helper('Date', 'Object', 'jQuery', 'UserComponent');
                     'prefix' => 'real'
                 )) ?>
 
-                <?php if (count($realTaskStats) > 0): ?>
+                <?php if (count74($realTaskStats) > 0): ?>
                     <?php include_partial('task_statistics', array(
                         'taskStats' => $realTaskStats,
                         'title' => 'Tareas Más Frecuentes (Real)'
                     )) ?>
                 <?php endif; ?>
 
-                <?php if (count($realTopUsers) > 0): ?>
+                <?php if (count74($realTopUsers) > 0): ?>
                     <?php include_partial('top_users', array(
                         'topUsers' => $realTopUsers,
                         'avgHours' => $realMetrics['avg_completion_hours'],
@@ -119,7 +119,7 @@ use_helper('Date', 'Object', 'jQuery', 'UserComponent');
                 )) ?>
 
                 <!-- Lista de simulaciones guardadas -->
-                <?php if (count($simulations) > 0): ?>
+                <?php if (count74($simulations) > 0): ?>
                     <div class="stats-section">
                         <h3><i class="fas fa-database"></i> Simulaciones Guardadas</h3>
                         <div class="table-responsive">
@@ -178,7 +178,7 @@ use_helper('Date', 'Object', 'jQuery', 'UserComponent');
                     </div>
                 <?php endif; ?>
 
-                <?php if (count($simulationTaskStats) > 0): ?>
+                <?php if (count74($simulationTaskStats) > 0): ?>
                     <?php include_partial('task_statistics', array(
                         'taskStats' => $simulationTaskStats,
                         'title' => 'Tareas Más Frecuentes (Simulación)'

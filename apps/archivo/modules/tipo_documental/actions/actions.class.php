@@ -94,7 +94,7 @@ class tipo_documentalActions extends sfActions
           {
               //validar que no exista ya el servicio para ese expediente
               $existing = UnidaddocumentalTiposervicioPeer::verifyAlreadyExist($expediente_id, $tiposervicio_id,$tipodocumental_id);
-              if(count($existing) == 0)
+              if(count74($existing) == 0)
               {
                 UnidaddocumentalTiposervicioPeer::addNewUnidaddocumentalTiposervicio($expediente_id, $tiposervicio_id, $tipodocumental_id,$usuariologuiado);
 

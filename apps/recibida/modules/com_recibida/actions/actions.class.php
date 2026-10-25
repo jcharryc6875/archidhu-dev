@@ -356,12 +356,12 @@ class com_recibidaActions extends sfActions
     //*******************************************************************************************
     $elist_msg = ComMigmasivoPeer::getIsValidByIdBatch($idLote, ModulesEnable::ComRecibida);
     //*******************************************************************************************
-    if (count($elist_msg)) {
+    if (count74($elist_msg)) {
       ComMigmasivoPeer::deleteBatchNotValid($idLote);
     }
     //*******************************************************************************************
     $this->getResponse()->setContentType('application/json');
-    $response_info = array('status' => (count($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'comIdLote' => $idLote);
+    $response_info = array('status' => (count74($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'comIdLote' => $idLote);
     return $this->renderText(json_encode($response_info));
   }
 
@@ -1797,7 +1797,7 @@ class com_recibidaActions extends sfActions
     //*******************************************************************************************
     $usuario_calidad = UsuarioPeer::getUserDestinoComByProceso($tipoprocesocom_id);
     //var_dump($usuario_calidad);exit;
-    if (count($usuario_calidad) == 1) {
+    if (count74($usuario_calidad) == 1) {
       $this->usuario_id = $usuario_calidad[0]->getUsuarioId();
       $this->cargousuario_id = $usuario_calidad[0]->getCargousuarioId();
       $this->nombre_usuario = $usuario_calidad[0]->getUsuario()->getFullNombre();
@@ -2171,7 +2171,7 @@ class com_recibidaActions extends sfActions
       && !in_array($com_recibida->getEstadocomrecibidaId(), array(14, 12))
     ) {
       $radicados = $com_recibida->buscarDuplicados();
-      if (!empty($radicados) && count($radicados) > 0) {
+      if (!empty($radicados) && count74($radicados) > 0) {
         $this->getUser()->setFlash('warning', 'Al parecer esta misma comunicación ya existe');
         $this->radicados_comrecibida = $radicados['radicados_comrecibida'];
         if (!empty($radicados['radicados_comenviada'])) {
@@ -2203,7 +2203,7 @@ class com_recibidaActions extends sfActions
     //**************************************************************************************************
     $user_id = "";
     $autorizaciones = $this->getAutorizaciones();
-    for ($i = 0; $i < count($autorizaciones); $i++) {
+    for ($i = 0; $i < count74($autorizaciones); $i++) {
       $user_id .= $autorizaciones[$i];
     }
     //**************************************************************************************************
@@ -2321,11 +2321,11 @@ class com_recibidaActions extends sfActions
     }
     //*******************************************************************************************
     $list_interesado = preg_split("/[,]+/", trim($this->getRequestParameter('idUserInteresados')));
-    for ($index = 0; $index < count($list_interesado); $index++) {
+    for ($index = 0; $index < count74($list_interesado); $index++) {
       ComrecibidaInteresadosPeer::addEditInteresadoByComId($com_recibida->getPrimaryKey(), $list_interesado[$index]);
     }
 
-    if (count($list_interesado)) {
+    if (count74($list_interesado)) {
       $isDeleteNotIn = ComrecibidaInteresadosPeer::deleteByComIdNotExist($com_recibida->getPrimaryKey(), $list_interesado);
     }
     //*******************************************************************************************
@@ -2818,7 +2818,7 @@ class com_recibidaActions extends sfActions
       }
       //********************************************************************************************************
       $comrecibida_list = ComRecibidaPeer::getComObjectByMarcados(date('Y'));
-      if (count($comrecibida_list) <= 0) {
+      if (count74($comrecibida_list) <= 0) {
         $this->forward('com_recibida', 'digitalizarMasivo');
       }
       //********************************************************************************************************
@@ -3451,12 +3451,12 @@ class com_recibidaActions extends sfActions
     //******************************************************************************************************
     $isAddInteresado = false;
     $listcurrent_intereados = array();
-    for ($idx = 0; $idx < count($list_interesado); $idx++) {
+    for ($idx = 0; $idx < count74($list_interesado); $idx++) {
       $isAddInteresado = ComrecibidaInteresadosPeer::addEditInteresadoByComId($com_recibida->getPrimaryKey(), $list_interesado[$idx]);
       $listcurrent_intereados[] = $list_interesado[$idx];
     }
     //******************************************************************************************************
-    if (count($listcurrent_intereados)) { //elimina los interesados que ya no hacen parte de la comunicacion
+    if (count74($listcurrent_intereados)) { //elimina los interesados que ya no hacen parte de la comunicacion
       $isDeleteNotIn = ComrecibidaInteresadosPeer::deleteByComIdNotExist($com_recibida->getPrimaryKey(), $listcurrent_intereados);
     }
     //*************************************************************************************************
@@ -3483,7 +3483,7 @@ class com_recibidaActions extends sfActions
       $text_select .= '<option value="" selected>Seleccione...</option>';
       $lista_regionales = RegionalPeer::getAllRegional(true);
       //************************************************************************************
-      if (empty($lista_regionales) || count($lista_regionales) <= 0) {
+      if (empty($lista_regionales) || count74($lista_regionales) <= 0) {
         $json_data = array('status' => 400, 'message' => 'Error, el listado de registros esta vacío, intente de nuevo');
         $this->getResponse()->setContentType('application/json');
         return $this->renderText(json_encode($json_data));
@@ -3563,7 +3563,7 @@ class com_recibidaActions extends sfActions
     //******************************************************************************************
     $list_dirs = preg_split("/[,]+/", trim($this->getRequestParameter('directorioexterno_id')), -1, PREG_SPLIT_NO_EMPTY);
     $directorioexterno_id = null;
-    if (count($list_dirs) > 0) {
+    if (count74($list_dirs) > 0) {
       $directorioexterno_id = $list_dirs[0];
     }
     //******************************************************************************************
@@ -3678,7 +3678,7 @@ class com_recibidaActions extends sfActions
     if (trim($this->getRequestParameter('idUserCopia'))) {
       $user_copia = preg_split("/[,]+/", trim($this->getRequestParameter('idUserCopia')));
       $causer_copia = preg_split("/[,]+/", trim($this->getRequestParameter('cargousuarioIdCopias')));
-      for ($x = 0; $x < count($user_copia); $x++) {
+      for ($x = 0; $x < count74($user_copia); $x++) {
         ComRecibidaPeer::addUserRolByCom($com_recibida->getPrimaryKey(), $user_copia[$x], $causer_copia[$x], 11, 3, 0);
       }
     }
@@ -3688,7 +3688,7 @@ class com_recibidaActions extends sfActions
     $list_interesado = preg_split("/[,]+/", trim($this->getRequestParameter('idUserInteresados')), -1, PREG_SPLIT_NO_EMPTY);
     $radicado_com = "";
     $mailErrorMsg = array();
-    for ($index = 0; $index < count($list_interesado); $index++) {
+    for ($index = 0; $index < count74($list_interesado); $index++) {
       $interesado_obj = InteresadosPeer::retrieveByPK($list_interesado[$index]);
       if (!$radicarByInt) {
         $isAddInteresado = ComrecibidaInteresadosPeer::addNewInteresadoByComId($com_recibida->getPrimaryKey(), $list_interesado[$index]);
@@ -3731,7 +3731,7 @@ class com_recibidaActions extends sfActions
       }
     }
     //*********************************************************************************************
-    $qurl = count($mailErrorMsg) ? '&msgmail=' . implode(",", $mailErrorMsg) : '';
+    $qurl = count74($mailErrorMsg) ? '&msgmail=' . implode(",", $mailErrorMsg) : '';
     //*******************************************************************************************
     if ($isAddInteresado || $com_recibida->getDirectorioexternoId()) {
       //if(!$this->getRequestParameter('radicado')){ //ComRecibidaPeer::envioEmail($com_recibida->getPrimaryKey(),$usuario_destino); }
@@ -4351,7 +4351,7 @@ class com_recibidaActions extends sfActions
     if (!$this->getUser()->checkPerm('COM_RECIBIDA_LISTAR_TODAS', $usuariologuiado)) {
       if (!$consulta_buzones) { //si la consulta viene por los buzones no se ejecuta este bloque de codigo
         $arrIds = $this->getAutorizaciones();
-        if (count($arrIds) > 0) {
+        if (count74($arrIds) > 0) {
           $arrIds[] = $usuariologuiado;
           $c->addJoin(ComRecibidaPeer::COMRECIBIDA_ID, ComrecibidaUsuarioPeer::COMRECIBIDA_ID);
           $c->add(ComrecibidaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN);
@@ -4550,7 +4550,7 @@ class com_recibidaActions extends sfActions
     }
     //**************************************************************************************
     $arrUser  = preg_split("/[,]+/", trim($idUser), -1, PREG_SPLIT_NO_EMPTY);
-    $iterador = count($arrUser);
+    $iterador = count74($arrUser);
     //**************************************************************************************
     for ($j = 0; $j < $iterador; $j++) {
       if (trim($arrUser[$j]) != "") {
@@ -4558,7 +4558,7 @@ class com_recibidaActions extends sfActions
         $comAsignar->setRolusuariorecibidaid(3);
         $comAsignar->setUsuarioId($arrUser[$j]);
         $comAsignar->setComrecibidaId($idComRec);
-        if (count($arrCargosUser) > 0) {
+        if (count74($arrCargosUser) > 0) {
           $comAsignar->setCargousuarioId($arrCargosUser[$j]);
         } else {
           $comAsignar->setCargousuarioId(CargoUsuarioPeer::getCargoUsuarioByIdUser($arrUser[$j]));

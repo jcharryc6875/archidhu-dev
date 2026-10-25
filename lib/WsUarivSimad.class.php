@@ -97,7 +97,7 @@ class WsSimadUariv
             $stmt  = WebserviceReplyPeer::doSelectStmt($c1);
             $objects_com = $stmt->fetchAll();
             //***********************************************************************************************************
-            simad_util::writetolog($log_dir,'Total registros => '.count($objects_com));
+            simad_util::writetolog($log_dir,'Total registros => '.count74($objects_com));
             //***********************************************************************************************************
             foreach ($objects_com as $object_info)
             {
@@ -345,8 +345,8 @@ class WsSimadUariv
 		//***************************************************************************************************************
 		$objects_com = WsSimadUariv::getCriteriaBasic($dependencia_id, $isNullOrZero, $fecha_inicial, $ndias);
 		//***************************************************************************************************************
-        simad_util::writetolog($log_dir,'Total registros => '.count($objects_com));
-		print('Total registros => '.count($objects_com). PHP_EOL);
+        simad_util::writetolog($log_dir,'Total registros => '.count74($objects_com));
+		print('Total registros => '.count74($objects_com). PHP_EOL);
         $index = 1;
 		$conexion = Propel::getConnection();
 		//***************************************************************************************************************
@@ -392,7 +392,7 @@ class WsSimadUariv
 			//***********************************************************************************************************
 			$str_log = null;
 			$enviarRespExt = true;
-			if (count($list_objects) > 0) {
+			if (count74($list_objects) > 0) {
 				foreach ($list_objects as $item) {
 					try {
 						$isNotError = strpos($item['MENSAJE'], 'Enviado Exitoso');
@@ -1891,7 +1891,7 @@ class WsSimadUariv
         //***************************************************************************************
         $stmt  = ComEnviadaPeer::doSelectStmt($c);
         $objects_com = $stmt->fetchAll();
-        print('TOTAL REGISTROS => '.count($objects_com). PHP_EOL);
+        print('TOTAL REGISTROS => '.count74($objects_com). PHP_EOL);
         //***************************************************************************************
 		$estado_respondida = 5;
 		$origentransfer_id = 3;
@@ -2034,8 +2034,8 @@ class WsSimadUariv
 		$radicado_error = array();
 		$logfile = sfConfig::get("sf_log_dir") . DIRECTORY_SEPARATOR . "comenviada_sign.log";
 		//*********************************************************************************************
-		print('TOTAL REGISTROS => ' . count($ilist_coms) . PHP_EOL);
-		simad_util::writetolog($logfile, 'TOTAL REGISTROS => ' . count($ilist_coms));
+		print('TOTAL REGISTROS => ' . count74($ilist_coms) . PHP_EOL);
+		simad_util::writetolog($logfile, 'TOTAL REGISTROS => ' . count74($ilist_coms));
 		//*********************************************************************************************
 		$index = 1;
 		foreach ($ilist_coms as $com_object) {
@@ -2101,9 +2101,9 @@ class WsSimadUariv
 		$radicado_error = array();
 		$logfile = sfConfig::get("sf_log_dir") . DIRECTORY_SEPARATOR . "comenviada_emailnotify.log";
 		//*********************************************************************************************
-		print('TOTAL REGISTROS => ' . count($ilist_coms) . PHP_EOL);
+		print('TOTAL REGISTROS => ' . count74($ilist_coms) . PHP_EOL);
 		//print('MAX ROWS => '.$rows. PHP_EOL);
-		simad_util::writetolog($logfile, 'TOTAL REGISTROS => ' . count($ilist_coms));
+		simad_util::writetolog($logfile, 'TOTAL REGISTROS => ' . count74($ilist_coms));
 		//*********************************************************************************************
 		$index = 1;
 		foreach ($ilist_coms as $com_object) {

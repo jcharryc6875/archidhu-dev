@@ -64,7 +64,7 @@ use_helper('jQuery','Object');
                     </div>
                 </div>
                 <!-- Permisos de radicacion -->
-                <?php if($permisoRadicarFirmaElectronica == 0 && ($com_enviada->getEstadocomenviadaId()==1) && count($usuarios_firman)){ ?>
+                <?php if($permisoRadicarFirmaElectronica == 0 && ($com_enviada->getEstadocomenviadaId()==1) && count74($usuarios_firman)){ ?>
                     <?php if($com_enviada->getFirmaDesatendida() == 0){ ?>
                         <div class="alert alert-warning">
                             <p><strong>Opps!</strong> USUARIO NO HABILITADO PARA RADICAR!</p>
@@ -76,10 +76,10 @@ use_helper('jQuery','Object');
                     <div class="tabs-vertical-env">
                         <ul class="nav nav-tabs bordered"><!-- available classes "right-aligned" -->
                             <li class="active"><a data-toggle="tab" href="#data"><span class="glyphicon glyphicon-import"></span>&nbsp;Detalles</a></li>
-                            <?php if(count($lista_interesados)){ ?>
+                            <?php if(count74($lista_interesados)){ ?>
                                 <li><a data-toggle="tab" href="#listinteresados"><span class="glyphicon glyphicon-list"></span>&nbsp;Lista Interesados</a></li>
                             <?php } ?>
-                            <?php if(count($lista_servicios)){ ?>
+                            <?php if(count74($lista_servicios)){ ?>
                                 <li><a data-toggle="tab" href="#listservicioscom"><span class="glyphicon glyphicon-list"></span>&nbsp;Servicios Relacionados</a></li>
                             <?php } ?>
                             <li><a data-toggle="tab" href="#listbitacora"><span class="glyphicon glyphicon-list"></span>&nbsp;Bitacora Proceso</a></li>
@@ -340,7 +340,7 @@ use_helper('jQuery','Object');
                                 </div>
                             </div>
                             <!-- listado de interesados -->
-                            <?php if(count($lista_interesados)){ ?>
+                            <?php if(count74($lista_interesados)){ ?>
                                 <div id="listinteresados" class="tab-pane">
                                     <?php 
                                         include_partial('listInteresados',array('list_interesados'=>$lista_interesados)); 
@@ -348,7 +348,7 @@ use_helper('jQuery','Object');
                                 </div>
                             <?php } ?>
                             <!-- listado de servicios -->
-                            <?php if(count($lista_servicios)){ ?>
+                            <?php if(count74($lista_servicios)){ ?>
                                 <div id="listservicioscom" class="tab-pane">
                                     <?php 
                                         include_partial('listServiciosCom',array('list_servicios'=>$lista_servicios)); 

@@ -133,7 +133,7 @@ class InteresadosPeer extends BaseInteresadosPeer
                 return null;
             }
             //*******************************************************************************
-            for ($i = 0; $i < count($list_nuids); $i++) {
+            for ($i = 0; $i < count74($list_nuids); $i++) {
                 $interesados = InteresadosPeer::existsIntByNameAndNuid($list_pnombres[$i], $list_papellidos[$i], $list_nuids[$i], true);
                 if ($interesados == null) {
                     return null;
@@ -460,7 +460,7 @@ class InteresadosPeer extends BaseInteresadosPeer
             //************************************************************************************
             $allmsg = implode(";", $msgerror);
             //************************************************************************************
-            return array('IsValid' => (!count($msgerror) ? true : false), 'MsgError' => $allmsg);
+            return array('IsValid' => (!count74($msgerror) ? true : false), 'MsgError' => $allmsg);
         } catch (PropelException $ex) {
             $msg_ex = $ex->getMessage();
             return array('IsValid' => false, 'MsgError' => 'Error de acceso a los datos del SGDEA');

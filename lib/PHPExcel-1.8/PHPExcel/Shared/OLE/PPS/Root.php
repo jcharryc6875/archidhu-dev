@@ -125,7 +125,7 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
         list($iSBDcnt, $iBBcnt, $iPPScnt) = array(0,0,0);
         $iSmallLen = 0;
         $iSBcnt = 0;
-        $iCount = count($raList);
+        $iCount = count74($raList);
         for ($i = 0; $i < $iCount; ++$i) {
             if ($raList[$i]->Type == PHPExcel_Shared_OLE::OLE_PPS_TYPE_FILE) {
                 $raList[$i]->Size = $raList[$i]->_DataLen();
@@ -143,7 +143,7 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
         $iSBDcnt = floor($iSBcnt / $iSlCnt) + (($iSBcnt % $iSlCnt)? 1:0);
         $iBBcnt +=  (floor($iSmallLen / $this->_BIG_BLOCK_SIZE) +
                       (( $iSmallLen % $this->_BIG_BLOCK_SIZE)? 1: 0));
-        $iCnt = count($raList);
+        $iCnt = count74($raList);
         $iBdCnt = $this->_BIG_BLOCK_SIZE / PHPExcel_Shared_OLE::OLE_PPS_SIZE;
         $iPPScnt = (floor($iCnt/$iBdCnt) + (($iCnt % $iBdCnt)? 1: 0));
 
@@ -257,7 +257,7 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
         $FILE = $this->_FILEH_;
 
         // cycle through PPS's
-        $iCount = count($raList);
+        $iCount = count74($raList);
         for ($i = 0; $i < $iCount; ++$i) {
             if ($raList[$i]->Type != PHPExcel_Shared_OLE::OLE_PPS_TYPE_DIR) {
                 $raList[$i]->Size = $raList[$i]->_DataLen();
@@ -305,7 +305,7 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
         $FILE = $this->_FILEH_;
         $iSmBlk = 0;
 
-        $iCount = count($raList);
+        $iCount = count74($raList);
         for ($i = 0; $i < $iCount; ++$i) {
             // Make SBD, small data string
             if ($raList[$i]->Type == PHPExcel_Shared_OLE::OLE_PPS_TYPE_FILE) {
@@ -359,12 +359,12 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
     public function _savePps(&$raList)
     {
         // Save each PPS WK
-        $iC = count($raList);
+        $iC = count74($raList);
         for ($i = 0; $i < $iC; ++$i) {
             fwrite($this->_FILEH_, $raList[$i]->_getPpsWk());
         }
         // Adjust for Block
-        $iCnt = count($raList);
+        $iCnt = count74($raList);
         $iBCnt = $this->_BIG_BLOCK_SIZE / PHPExcel_Shared_OLE::OLE_PPS_SIZE;
         if ($iCnt % $iBCnt) {
             fwrite($this->_FILEH_, str_repeat("\x00", ($iBCnt - ($iCnt % $iBCnt)) * PHPExcel_Shared_OLE::OLE_PPS_SIZE));

@@ -197,7 +197,7 @@ class GmailProvider extends EmailCoreProvider {
         $totalEmails = imap_num_msg($imap);
         $startMsg = max(1, $totalEmails - $maxResults + 1);
         
-        for ($msgNum = $totalEmails; $msgNum >= $startMsg && count($emails) < $maxResults; $msgNum--) {
+        for ($msgNum = $totalEmails; $msgNum >= $startMsg && count74($emails) < $maxResults; $msgNum--) {
             $header = imap_headerinfo($imap, $msgNum);
             $body = imap_body($imap, $msgNum);
             

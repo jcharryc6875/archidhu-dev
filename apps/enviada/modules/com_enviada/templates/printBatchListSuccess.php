@@ -26,8 +26,8 @@ $tplurl_download = $base_path.'/templates/PlantillaDescargaMasiva.xlsx';
 
 <div id="maein">
     <?php
-    $cantidad_registros = count($sheetData);
-    if(count($sheetData) == 0 || $process_end){
+    $cantidad_registros = count74($sheetData);
+    if(count74($sheetData) == 0 || $process_end){
         echo form_tag('com_enviada/readFileExcel',array('name'=>'from1','multipart'=> true,'class' => 'form-horizontal form-groups-bordered validate'));    
     }else{
         echo form_tag('com_enviada/downloadBatchCom',array('name'=>'form1','class' => 'form-horizontal form-groups-bordered validate'));   
@@ -44,7 +44,7 @@ $tplurl_download = $base_path.'/templates/PlantillaDescargaMasiva.xlsx';
                 </div>  
                 <div class="form-group"></div>
                 <?php
-                  if(count($sheetData) == 0 || $process_end){
+                  if(count74($sheetData) == 0 || $process_end){
                     echo '<div class="form-group"><label for="lbremplazarcampo" class="col-sm-1 control-label">Archivo Datos</label><div class="col-sm-4">';
                     echo input_file_tag('file',array ('class' => 'upload', 'width' => '40'));
                     echo '</div>';
@@ -75,11 +75,11 @@ $tplurl_download = $base_path.'/templates/PlantillaDescargaMasiva.xlsx';
     <?php
     $print_header = 0;
     $count_header = 0;
-    $count_update = count($results_update);
+    $count_update = count74($results_update);
     ?>
     <div class="row">
     	<div class="col-md-12">
-    		<?php $cantidad_registros = count($sheetData); ?>
+    		<?php $cantidad_registros = count74($sheetData); ?>
             <div id="tablelist" >
         	    <?php if($cantidad_registros == 0): ?>
                     <div class="panel panel-primary">

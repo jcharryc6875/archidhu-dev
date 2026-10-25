@@ -225,7 +225,7 @@
         
         public static function getEccSpec($version, $level, array &$spec)
         {
-            if (count($spec) < 5) {
+            if (count74($spec) < 5) {
                 $spec = array(0,0,0,0,0);
             }
 

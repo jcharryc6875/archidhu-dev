@@ -112,7 +112,7 @@ class PHPExcel_Writer_Excel2007_Style extends PHPExcel_Writer_Excel2007_WriterPa
 
         // cellXfs
         $objWriter->startElement('cellXfs');
-        $objWriter->writeAttribute('count', count($pPHPExcel->getCellXfCollection()));
+        $objWriter->writeAttribute('count', count74($pPHPExcel->getCellXfCollection()));
 
         // xf
         foreach ($pPHPExcel->getCellXfCollection() as $cellXf) {

@@ -375,10 +375,10 @@ use_helper('Object', 'jQuery', 'UserComponent');
           <!-- Botonera -->
           <div class="col-sm-offset-3 col-sm-10">
             <?php if ($com_interna->getPrimaryKey()) { ?>
-              <?php if ($permisoRadicarFirmaElectronica || (count($aprobacion_count) <= 0)) { ?>
-                <?php if ($sf_user->checkPerm("COM_INTERNA_RADICAR", $currentUser) && ($com_interna->getEstadocominternaId() == 1) && (count($usuarios_firman) >= 1)) { ?>
+              <?php if ($permisoRadicarFirmaElectronica || (count74($aprobacion_count) <= 0)) { ?>
+                <?php if ($sf_user->checkPerm("COM_INTERNA_RADICAR", $currentUser) && ($com_interna->getEstadocominternaId() == 1) && (count74($usuarios_firman) >= 1)) { ?>
                   <?php if ($user_asignado) { ?>
-                    <?php if ((count($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman)) || ($com_interna->getFirmaDesatendida() == 1 && count($aprobacion_ulist) == 0)) { ?>
+                    <?php if ((count74($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman)) || ($com_interna->getFirmaDesatendida() == 1 && count74($aprobacion_ulist) == 0)) { ?>
                       <button type="submit" class="btn btn-success" name="save" value="Guardar Comunicaci&oacute;n">Guardar Comunicaci&oacute;n</button>
                       <a data-toggle="tooltip" class="btn btn-blue confirm-link" data-method-type="href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'radicar', 'cominterna_id' => $com_interna->getPrimaryKey())); ?>" href="#">
                         <i class="fa fa-save"></i>

@@ -549,7 +549,7 @@ class ServicioPeer extends BaseServicioPeer
                 ServicioPeer::deleteData(ServicioPeer::TABLE_NAME, ServicioPeer::SERVICIO_ID, $servicio->getPrimaryKey());
                 return array('isError' => true, 'message' => 'Error interno del servidor SGDEA', 'object' => null);
             } else {
-                for ($index = 0; $index < count($list_interesado); $index++) {
+                for ($index = 0; $index < count74($list_interesado); $index++) {
                     ServicioInteresadosPeer::addNewInteresadoByComId($servicio->getPrimaryKey(), $list_interesado[$index]);
                 }
                 //***************************************************************************

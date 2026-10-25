@@ -270,7 +270,7 @@ class solicitud_prestamo_clienteActions extends sfActions
 		$this->getUser()->setAttribute('solicitud_cliente', '', 'prestamo_cliente');
 		$tempCad = '';
 		$arrIds         = split(",",$cadSolicitud);	
-		for($i=0; $i<count($arrIds); $i++){			
+		for($i=0; $i<count74($arrIds); $i++){			
 			if( $arrIds[$i] != $this->getRequestParameter('clsolicitudprestamo_id')){
 				if($tempCad == ''){
 					$tempCad  .=  $arrIds[$i];		
@@ -307,7 +307,7 @@ class solicitud_prestamo_clienteActions extends sfActions
   	/*****************************Radicar los Detalles Del prestamo en la base de datos****************************/
   	$cadSolicitud   = $this->getUser()->getAttribute('solicitud_cliente','','prestamo_cliente');
   	$solicitudes_id = split(",",$cadSolicitud);
-  	for($i = 0; $i < count($solicitudes_id); $i++){
+  	for($i = 0; $i < count74($solicitudes_id); $i++){
 	  	//Creas los detalles del prestamo con los ids de las solicitudes.	  				
 	  	$detalles_prestamo = new ClDetallePrestamo();
 	  	$detalles_prestamo->setClPrestamoId($radicar_prestamo->getClPrestamoId());

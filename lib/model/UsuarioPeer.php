@@ -188,7 +188,7 @@ class UsuarioPeer extends BaseUsuarioPeer
 		$regional_conectado = sfContext::getInstance()->getUser()->getAttribute('regional_id', '', 'subscriber');
 		//************************************************************************************
 		$usuarios_firma = preg_split("/[,]+/",trim($str_firmausers), -1, PREG_SPLIT_NO_EMPTY);
-		if(!count($usuarios_firma)){ return 0; }
+		if(!count74($usuarios_firma)){ return 0; }
 		//************************************************************************************
 		if(!$validCurrent){
 			if (($key = array_search($usuariologuiado, $usuarios_firma)) !== false) {
@@ -196,7 +196,7 @@ class UsuarioPeer extends BaseUsuarioPeer
 			}
 		}
 		//************************************************************************************
-		if(!count($usuarios_firma)){
+		if(!count74($usuarios_firma)){
 			$usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
 			return $usuario->getUseFirmaElectronica(); 
 		}
@@ -217,7 +217,7 @@ class UsuarioPeer extends BaseUsuarioPeer
 		$usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
 		//************************************************************************************
 		$usuarios_firma = preg_split("/[,]+/",trim($str_firmausers), -1, PREG_SPLIT_NO_EMPTY);
-		if(!count($usuarios_firma)){ return 0; }
+		if(!count74($usuarios_firma)){ return 0; }
 		//************************************************************************************
 		if(!$validCurrent){
 			if (($key = array_search($usuariologuiado, $usuarios_firma)) !== false) {
@@ -225,7 +225,7 @@ class UsuarioPeer extends BaseUsuarioPeer
 			}
 		}
 		//************************************************************************************
-		if(!count($usuarios_firma)){
+		if(!count74($usuarios_firma)){
 			$usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
 			return $usuario->getFirmaDesatendida(); 
 		}
@@ -237,7 +237,7 @@ class UsuarioPeer extends BaseUsuarioPeer
 		$sentencia = $conexion->prepare($consulta);
 		$sentencia->execute();
 		$resultset = $sentencia->fetch(PDO::FETCH_NUM);
-		return $resultset[0] == count($usuarios_firma) ? 1 : 0;
+		return $resultset[0] == count74($usuarios_firma) ? 1 : 0;
 	}
 
 	public static function updateReceptorDep($usuario_id, $dependencia_id)

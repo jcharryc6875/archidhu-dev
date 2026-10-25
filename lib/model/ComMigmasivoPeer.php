@@ -232,7 +232,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['PUNTO_RADICACION'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'El punto de radicacion ' . implode(",", $coll_error) . ' no existe en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'El punto de radicacion son validos');
@@ -272,7 +272,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['PRIORIDAD_COM'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'El campo priodidad ' . implode(",", $coll_error) . ' no existe en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'El campo priodidad son validos');
@@ -312,7 +312,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['FORMA_RECEPCION'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'La forma de recepcion ' . implode(",", $coll_error) . ' no existe en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'La forma de recepcion son validos');
@@ -352,7 +352,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['TIPO_DOCUMENTO'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'El tipo de tramite ' . implode(",", $coll_error) . ' no existe en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'El tipo de tramite son validos');
@@ -392,7 +392,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['TIPO_NOTIFICACION'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'El tipo de servicio ' . implode(",", $coll_error) . ' no existe en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los tipos de servicio son validos');
@@ -432,7 +432,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['COD_DEPENDENCIA'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Las dependencias con codigo ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Las dependencias enviadas son validos');
@@ -480,7 +480,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['COD_DEPENDENCIA'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Las dependencias con codigo ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Las dependencias enviadas son validos');
@@ -521,7 +521,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['TIPO_DOCUMENTO'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Las plantillas con nombre ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Las plantillas enviadas son validas');
@@ -561,7 +561,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['RADICADO_ENTRADA'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Los radicados de entrada ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los radicados de entrada enviados son validos');
@@ -601,7 +601,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['NUMERO_EXPEDIENTE'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Los numero de expediente ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los expedientes enviados son validos');
@@ -641,7 +641,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['COD_TIPO_DOC'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Los tipos documentales ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los tipos documentales enviados son validos');
@@ -681,7 +681,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['MARCO_NORMATIVO'];
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Los tipos documentales ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los tipos documentales enviados son validos');
@@ -725,7 +725,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $stmt_tercero = ComMigmasivoPeer::doSelectStmt($c1)->fetchAll();
             //******************************************************************************
             $coll_error = array();
-            for ($i = 0; $i < count($stmt_interesado); $i++) {
+            for ($i = 0; $i < count74($stmt_interesado); $i++) {
                 $commigint_pk = $stmt_interesado[$i]['COMMIGMASIVO_ID'];
                 $commigter_pk = $stmt_tercero[$i]['COMMIGMASIVO_ID'];
 
@@ -734,7 +734,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 }
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Los interesados o terceros no pueden estar vaciones, debe relacionar un interesado o un tercero');
             else
                 return array('isError' => false, 'message' => 'Los datos enviados son validos');
@@ -789,7 +789,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['NUID_INTERESADO'];
             }
             //******************************************************************************
-            if (count($coll_error) && $validateCreate) {
+            if (count74($coll_error) && $validateCreate) {
                 $c = new Criteria();
                 $c->add(ComMigmasivoPeer::COMLOTE_ID, $comlote_id);
                 $c->add(ComMigmasivoPeer::ESTADO_MIGRACION, "PENDIENTE VALIDAR");
@@ -836,7 +836,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error = $new_lieterrors;
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Los interesados con numero identificacion ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los interesados enviados son validos');
@@ -885,7 +885,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error[] = $object['NIT_DESTINATARIO'];
             }
             //******************************************************************************
-            if (count($coll_error) && $validateCreate) {
+            if (count74($coll_error) && $validateCreate) {
                 $c = new Criteria();
                 $c->add(ComMigmasivoPeer::COMLOTE_ID, $comlote_id);
                 $c->add(ComMigmasivoPeer::ESTADO_MIGRACION, "PENDIENTE VALIDAR");
@@ -928,7 +928,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $coll_error = $new_lieterrors;
             }
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Los terceros con numero identificacion ' . implode(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los terceros enviados son validos');
@@ -981,7 +981,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             //******************************************************************************
             $coll_error = array_diff($coll_firmas, $firmas_list);
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'El destinatario con numero de identificacion ' . implode(",", $coll_error) . ' no existen o presentan alguna novedad con la cuenta en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'El destinatario enviado son validos');
@@ -1031,7 +1031,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             //******************************************************************************
             $coll_error = array_diff($coll_firmas, $firmas_list);
             //******************************************************************************
-            if (count($coll_error))
+            if (count74($coll_error))
                 return array('isError' => true, 'message' => 'Los firmantes con numero de identificacion ' . implode(",", $coll_error) . ' no existen o presentan alguna novedad con la cuenta en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los firmantes enviados son validos');
@@ -1083,7 +1083,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 }
             }
             //******************************************************************************
-            if (count($coll_warning))
+            if (count74($coll_warning))
                 return array('isError' => true, 'message' => 'El usuario firmante con identificaci&oacute;n ' . implode(", ", $coll_warning) . ' no tiene habilitada la firma desatendida, puede continuar con el proceso pero el registro quedar&aacute; en borrador y se enviar&aacute; al usuario firmante para que se radiquen los registros manualmente');
             else
                 return array('isError' => false, 'message' => 'Los firmantes tienen la firma desatendida habilitada');
@@ -1217,7 +1217,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $ucargo_origen = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuariologuiado, true);
             //**********************************************************************************
             $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'], 'PENDIENTE VALIDAR');
-            if (count($blotes) <= 0) {
+            if (count74($blotes) <= 0) {
                 return array('status' => 400, 'message' => 'No se encontraron registros para radicar!');
             }
             //**********************************************************************************
@@ -1741,7 +1741,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $cargouser_origen = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario_origen->getPrimaryKey(), true);
             //**********************************************************************************
             $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'], 'PENDIENTE VALIDAR');
-            if (count($blotes) <= 0) {
+            if (count74($blotes) <= 0) {
                 return array('status' => 400, 'message' => 'No se encontraron registros para radicar!');
             }
             //**********************************************************************************
@@ -2045,7 +2045,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             //$usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
             //**********************************************************************************
             $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'], 'PENDIENTE VALIDAR');
-            if (count($blotes) <= 0) {
+            if (count74($blotes) <= 0) {
                 return array('status' => 400, 'message' => 'No se encontraron registros para radicar!');
             }
             //**********************************************************************************
@@ -2621,7 +2621,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     $msg_firma[] = isset($response_firma['message']) ? trim($response_firma['message']) : "Por favor verifique que el documento fue firmado correctamente";
                 }
                 //******************************************************************************
-                if (count($msg_firma)) {
+                if (count74($msg_firma)) {
                     return array('status' => 400, 'message' => 'Error Firma Digital, el radicado se genero, pero el documento no se pudo firmar,' . implode(",", $msg_firma));
                 }
             } catch (PropelException $th) {
@@ -2684,7 +2684,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $usuario_origen = UsuarioPeer::retrieveByPK($usuariologuiado);
             //**********************************************************************************
             $blotes = ComMigmasivoPeer::getListComByComLote($parameters['comIdLote'], 'PENDIENTE VALIDAR');
-            if (count($blotes) <= 0) {
+            if (count74($blotes) <= 0) {
                 return array('status' => 400, 'message' => 'No se encontraron registros para radicar!');
             }
             //**********************************************************************************
@@ -2789,7 +2789,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 //******************************************************************************
                 $interesado_data = array();
                 $coll_interesados = array();
-                for ($x = 0; $x < count($interesados_nuids); $x++) {
+                for ($x = 0; $x < count74($interesados_nuids); $x++) {
                     $interesado_data['PRIMER_NOMBRE'] = trim($interesados_pnombre[$x]);
                     $interesado_data['PRIMER_APELLIDO'] = trim($interesados_papellido[$x]);
                     $interesado_data['SEGUNDO_NOMBRE'] = trim($interesados_snombre[$x]);
@@ -2871,7 +2871,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 }
             }
             //**********************************************************************************
-            if (count($ilist_error)) {
+            if (count74($ilist_error)) {
                 return array('status' => 300, 'message' => 'Algunas comunicaciones no se pudieron radicar');
             } else {
                 return array('status' => 200, 'message' => 'Se radicaron todos los documentos, por favor verifique la informaci&oacute;n');

@@ -1,5 +1,6 @@
 <?php
-require_once(dirname(__FILE__).'/../data/sf1.3/lib/autoload/sfCoreAutoload.class.php');
+require_once(dirname(__FILE__) . '/../data/sf1.5/lib/autoload/sfCoreAutoload.class.php');
+require_once(dirname(__FILE__) . '/../lib/compat/php74_compat.php');
 sfCoreAutoload::register();
 //*******************************************************************************
 $http = 'http';
@@ -36,8 +37,7 @@ class ProjectConfiguration extends sfProjectConfiguration
   public function setup()
   {
     sfYaml::setSpecVersion('1.1');
-    //$this->enablePlugins('sfPropelPlugin');
-    $this->enableAllPluginsExcept(array('sfDoctrinePlugin','sfProtoculousPlugin'));
+    $this->enablePlugins('sfPropelORMPlugin', 'sfCompat10Plugin', 'sfPropelAdmin10Plugin');
     //****************************************************************************
     require_once(sfConfig::get('sf_lib_dir') . '/SqlServerSessionHandler.php');
     SqlServerSessionHandler::register();
@@ -53,5 +53,47 @@ class ProjectConfiguration extends sfProjectConfiguration
     if(!defined('MAX_SIZE_FILE_OCR')){
       define('MAX_SIZE_FILE_OCR', 1000000); // en bytes
     }
+	//****************************************************************
+    // Compatibilidad symfony 1.3 -> 1.5: sfAction::validate() y
+    // sfAction::handleError() se eliminaron del core en 1.4, pero
+    // sfValidationExecutionFilter (sfCompat10Plugin) los invoca cuando
+    // la acción no define validateXxx() / handleErrorXxx().
+    $this->dispatcher->connect('component.method_not_found', array($this, 'listenToCompat10ActionMethods'));
+    $this->dispatcher->connect('context.method_not_found', array($this, 'listenToCompat13ContextMethods'));
+  }
+  
+  public function listenToCompat10ActionMethods(sfEvent $event)
+  {
+    switch ($event['method']) {
+      case 'validate':
+        $event->setReturnValue(true);
+        return true;
+
+      case 'handleError':
+        $event->setReturnValue(sfView::ERROR);
+        return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Compatibilidad symfony 1.3 -> 1.5: sfContext::retrieveObjects() se eliminó
+   * en 1.4. Lo usa ObjectHelper (object_select_tag / objects_for_select).
+   * Replica la implementación 1.3: delega en sfPropelDataRetriever.
+   */
+  public function listenToCompat13ContextMethods(sfEvent $event)
+  {
+    if ('retrieveObjects' !== $event['method']) {
+      return false;
+    }
+
+    $arguments  = $event['arguments'];
+    $class      = $arguments[0];
+    $peerMethod = isset($arguments[1]) ? $arguments[1] : null;
+
+    $event->setReturnValue(sfPropelDataRetriever::retrieveObjects($class, $peerMethod));
+
+    return true;
   }
 }

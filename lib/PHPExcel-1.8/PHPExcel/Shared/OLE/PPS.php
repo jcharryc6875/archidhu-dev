@@ -204,8 +204,8 @@ class PHPExcel_Shared_OLE_PPS
     {
         if (!is_array($to_save) || (empty($to_save))) {
             return 0xFFFFFFFF;
-        } elseif (count($to_save) == 1) {
-            $cnt = count($raList);
+        } elseif (count74($to_save) == 1) {
+            $cnt = count74($raList);
             // If the first entry, it's the root... Don't clone it!
             $raList[$cnt] = ( $depth == 0 ) ? $to_save[0] : clone $to_save[0];
             $raList[$cnt]->No = $cnt;
@@ -213,10 +213,10 @@ class PHPExcel_Shared_OLE_PPS
             $raList[$cnt]->NextPps = 0xFFFFFFFF;
             $raList[$cnt]->DirPps  = self::_savePpsSetPnt($raList, @$raList[$cnt]->children, $depth++);
         } else {
-            $iPos  = floor(count($to_save) / 2);
+            $iPos  = floor(count74($to_save) / 2);
             $aPrev = array_slice($to_save, 0, $iPos);
             $aNext = array_slice($to_save, $iPos + 1);
-            $cnt   = count($raList);
+            $cnt   = count74($raList);
             // If the first entry, it's the root... Don't clone it!
             $raList[$cnt] = ( $depth == 0 ) ? $to_save[$iPos] : clone $to_save[$iPos];
             $raList[$cnt]->No = $cnt;

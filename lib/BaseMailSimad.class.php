@@ -213,7 +213,7 @@ class BaseMailSimad
 	{
 		try
 		{
-			if(count($this->list_destinatarios) <= 0){ 
+			if(count74($this->list_destinatarios) <= 0){ 
 				$message = "No hay ningun destinatario relacionado";
 				$this->writetolog($message);
 				return $message;

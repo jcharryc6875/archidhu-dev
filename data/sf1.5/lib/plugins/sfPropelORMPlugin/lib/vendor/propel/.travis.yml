@@ -1,0 +1,10 @@
+language: php
+
+branches:
+  only:
+    - php7.4
+
+services: docker
+
+script:
+  bash docker/run.sh

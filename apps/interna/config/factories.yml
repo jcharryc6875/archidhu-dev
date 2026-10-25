@@ -45,7 +45,7 @@ all:
     class: myUser
     param:
       timeout:         84600
-#      logging:         %SF_LOGGING_ENABLED%
+      #      logging:         %SF_LOGGING_ENABLED%
 #      use_flash:       true
 #      default_culture: %SF_DEFAULT_CULTURE%
 #
@@ -53,7 +53,8 @@ all:
     class: sfSessionStorage
     param:
       session_name: symfony
-      session_cookie_path: '/; SameSite=Lax'
+      session_cookie_path: '/'
+      session_cookie_samesite: Lax
       session_cookie_httponly: true
       session_cookie_secure: false
 #

@@ -357,7 +357,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
             switch ($rel["Type"]) {
                 case "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme":
                     $themeOrderArray = array('lt1', 'dk1', 'lt2', 'dk2');
-                    $themeOrderAdditional = count($themeOrderArray);
+                    $themeOrderAdditional = count74($themeOrderArray);
 
                     $xmlTheme = simplexml_load_string($this->securityScan($this->getFromZipArchive($zip, "xl/{$rel['Target']}")), 'SimpleXMLElement', PHPExcel_Settings::getLibXmlLoaderOptions());
                     if (is_object($xmlTheme)) {
@@ -948,7 +948,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
                                             $objConditional->setText((string)$cfRule["text"]);
                                         }
 
-                                        if (count($cfRule->formula) > 1) {
+                                        if (count74($cfRule->formula) > 1) {
                                             foreach ($cfRule->formula as $formula) {
                                                 $objConditional->addCondition((string)$formula);
                                             }
@@ -1646,7 +1646,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
                                         default:
                                             if ($mapSheetId[(integer) $definedName['localSheetId']] !== null) {
                                                 $range = explode('!', (string)$definedName);
-                                                if (count($range) == 2) {
+                                                if (count74($range) == 2) {
                                                     $range[0] = str_replace("''", "'", $range[0]);
                                                     $range[0] = str_replace("'", "", $range[0]);
                                                     if ($worksheet = $docSheet->getParent()->getSheetByName($range[0])) {
@@ -1986,7 +1986,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
         }
         if ($localRibbon) {
             $excel->setRibbonXMLData($customUITarget, $localRibbon);
-            if (count($customUIImagesNames) > 0 && count($customUIImagesBinaries) > 0) {
+            if (count74($customUIImagesNames) > 0 && count74($customUIImagesBinaries) > 0) {
                 $excel->setRibbonBinObjects($customUIImagesNames, $customUIImagesBinaries);
             } else {
                 $excel->setRibbonBinObjects(null);

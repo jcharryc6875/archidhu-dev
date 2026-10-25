@@ -27,9 +27,9 @@ use_helper('Date', 'Object', 'jQuery', 'UserComponent');
                 <span class="badge badge-warning" id="simulationStatus">
                     <i class="fas fa-circle"></i> Detenida
                 </span>
-                <?php if (count($processVariables) > 0): ?>
+                <?php if (count74($processVariables) > 0): ?>
                     <span class="badge badge-primary">
-                        <i class="fas fa-database"></i> <?php echo count($processVariables) ?> Variables
+                        <i class="fas fa-database"></i> <?php echo count74($processVariables) ?> Variables
                     </span>
                 <?php endif; ?>
             </div>
@@ -88,7 +88,7 @@ use_helper('Date', 'Object', 'jQuery', 'UserComponent');
             </div>
 
             <!-- Variables del Proceso -->
-            <?php if (count($processVariables) > 0): ?>
+            <?php if (count74($processVariables) > 0): ?>
                 <div class="variables-card">
                     <h3><i class="fas fa-database"></i> Variables Actuales</h3>
                     <div id="currentVariables" class="variables-content">

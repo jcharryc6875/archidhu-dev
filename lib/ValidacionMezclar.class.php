@@ -46,7 +46,7 @@ class UtilValidacion{
 	$rango_falta = "";
 	$inicia_cont  = 0;
 	$inicia_temp = "";			
-	for($j = 0; $j < count($matriz_paginas); $j++){
+	for($j = 0; $j < count74($matriz_paginas); $j++){
 		if($matriz_paginas[$j][0]==$inicia_cont+1){
 			$inicia_cont=$matriz_paginas[$j][1];
 		}
@@ -93,7 +93,7 @@ class UtilValidacion{
 	}
 	
   	$b = 0;
-  	$length = count($matriz);  	
+  	$length = count74($matriz);  	
   	$resp = true;  	  		
 	
   	if($length != 0){

@@ -67,7 +67,7 @@ class PHPExcel_Chart_PlotArea
      */
     public function getPlotGroupCount()
     {
-        return count($this->plotSeries);
+        return count74($this->plotSeries);
     }
 
     /**

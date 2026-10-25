@@ -4,7 +4,7 @@
 $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 use_helper('Object','jQuery');
 ?>
-<?php if(count($devoluciones_list)){ ?>
+<?php if(count74($devoluciones_list)){ ?>
     <?php foreach($devoluciones_list as $item){ ?>
     	<li>
       <?php 
@@ -17,7 +17,7 @@ use_helper('Object','jQuery');
         ),array('class'=>'tooltip-primary','data-toggle'=>'tooltip', 'data-original-title'=>'Devolver el documento a este usuario')); 
       ?>
       </li>
-      <?php if(count($devoluciones_list) > 1){ ?> <li class="divider"></li> <?php } ?>
+      <?php if(count74($devoluciones_list) > 1){ ?> <li class="divider"></li> <?php } ?>
     <?php } ?>
 <?php }else{ ?>
     <li><a href="#">Ninguna devoluci&oacute;n disponible</a></li>

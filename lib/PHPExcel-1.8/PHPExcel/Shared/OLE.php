@@ -298,7 +298,7 @@ class PHPExcel_Shared_OLE
             $pps->Time2nd = self::OLE2LocalDate(fread($fh, 8));
             $pps->_StartBlock = self::_readInt4($fh);
             $pps->Size = self::_readInt4($fh);
-            $pps->No = count($this->_list);
+            $pps->No = count74($this->_list);
             $this->_list[] = $pps;
 
             // check if the PPS tree (starting from root) is complete
@@ -388,7 +388,7 @@ class PHPExcel_Shared_OLE
     */
     public function ppsTotal()
     {
-        return count($this->_list);
+        return count74($this->_list);
     }
 
     /**

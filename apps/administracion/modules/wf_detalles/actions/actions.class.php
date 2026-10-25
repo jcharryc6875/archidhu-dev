@@ -456,7 +456,7 @@ class wf_detallesActions extends sfActions
     $select_usuarios = preg_split("/[,]+/",$this->getRequestParameter('WfusuarioId'), null, PREG_SPLIT_NO_EMPTY);
     $user_active = $this->deleteUsuarios($wat_id,$select_usuarios);
     //************************************************************************************************
-  	if(count($select_usuarios) > 0){
+  	if(count74($select_usuarios) > 0){
 	    if($wat_id > 0){
             //****************************************************************************************
             foreach ($select_usuarios as $item){
@@ -587,7 +587,7 @@ class wf_detallesActions extends sfActions
     $select_usuarios = preg_split("/[,]+/",$this->getRequestParameter('WfusuarioId'), null, PREG_SPLIT_NO_EMPTY);
     $user_active = $this->deleteUsuarios($wat_id,$select_usuarios);
     //************************************************************************************************
-  	if(count($select_usuarios) > 0){
+  	if(count74($select_usuarios) > 0){
 	    if($wat_id > 0){
             foreach ($select_usuarios as $item){
                 if(!in_array($item,$user_active)){
@@ -660,13 +660,13 @@ class wf_detallesActions extends sfActions
     if(trim($wat_id)){        
         foreach($users as $urow){
             $datal = $this->IsUserAdded($wat_id, $urow);
-            if(count($datal)){            
+            if(count74($datal)){            
                 $wat_active[] = $datal[0];
                 $users_active[] = $datal[1];
             }
         }
         //*******************************************************************
-        if(count($wat_active)){                
+        if(count74($wat_active)){                
             $consulta = "DELETE FROM %s WHERE %s NOT IN(".implode(",",$wat_active).") AND %s = ".$wat_id.";";
             $consulta = sprintf($consulta,WfActividadtransicionUsuarioPeer::TABLE_NAME,WfActividadtransicionUsuarioPeer::WFACTIVIDADTRANSICIONUSUARIO_ID,WfActividadtransicionUsuarioPeer::WFACTIVIDADTRANSICION_ID);
         }else{

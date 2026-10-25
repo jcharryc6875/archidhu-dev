@@ -528,7 +528,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
         $html = '';
 
         // Only if there are more than 1 sheets
-        if (count($sheets) > 1) {
+        if (count74($sheets) > 1) {
             // Loop all sheets
             $sheetId = 0;
 
@@ -1149,7 +1149,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
             $sheetIndex = $pSheet->getParent()->getIndex($pSheet);
 
             // DomPDF and breaks
-            if ($this->isPdf && count($pSheet->getBreaks()) > 0) {
+            if ($this->isPdf && count74($pSheet->getBreaks()) > 0) {
                 $breaks = $pSheet->getBreaks();
 
                 // check if a break is needed before this row
@@ -1555,7 +1555,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
             $countColumns = PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn());
             foreach ($candidateSpannedRow as $rowIndex) {
                 if (isset($this->isSpannedCell[$sheetIndex][$rowIndex])) {
-                    if (count($this->isSpannedCell[$sheetIndex][$rowIndex]) == $countColumns) {
+                    if (count74($this->isSpannedCell[$sheetIndex][$rowIndex]) == $countColumns) {
                         $this->isSpannedRow[$sheetIndex][$rowIndex] = $rowIndex;
                     };
                 }

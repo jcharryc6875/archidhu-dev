@@ -294,7 +294,7 @@
             
                 $howManuOut = 8-(QR_FIND_FROM_RANDOM % 9);
                 for ($i = 0; $i <  $howManuOut; $i++) {
-                    $remPos = rand (0, count($checked_masks)-1);
+                    $remPos = rand (0, count74($checked_masks)-1);
                     unset($checked_masks[$remPos]);
                     $checked_masks = array_values($checked_masks);
                 }

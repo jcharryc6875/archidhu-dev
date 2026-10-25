@@ -62,7 +62,7 @@ class WorkflowInstancePeer extends BaseWorkflowInstancePeer
         $instances = WorkflowInstancePeer::doSelect($c);
 
         $stats = [
-            'total' => count($instances),
+            'total' => count74($instances),
             'running' => 0,
             'completed' => 0,
             'failed' => 0,
@@ -96,7 +96,7 @@ class WorkflowInstancePeer extends BaseWorkflowInstancePeer
         }
 
         if (!empty($durations)) {
-            $stats['avg_duration'] = array_sum($durations) / count($durations);
+            $stats['avg_duration'] = array_sum($durations) / count74($durations);
         }
 
         return $stats;
@@ -513,7 +513,7 @@ class WorkflowInstancePeer extends BaseWorkflowInstancePeer
 
         return [
             'success' => true,
-            'cancelled_tasks' => count($pendingTasks)
+            'cancelled_tasks' => count74($pendingTasks)
         ];
     }
 
@@ -571,7 +571,7 @@ class WorkflowInstancePeer extends BaseWorkflowInstancePeer
         $c->add(TaskInstancePeer::WORKFLOWINSTANCE_ID, $workflow->getPrimaryKey());
         $allTasks = TaskInstancePeer::doSelect($c);
 
-        $metrics['total_tasks'] = count($allTasks);
+        $metrics['total_tasks'] = count74($allTasks);
 
         $totalTaskDuration = 0;
         $taskWithDuration = 0;
@@ -641,7 +641,7 @@ class WorkflowInstancePeer extends BaseWorkflowInstancePeer
     public static function calculateCompletedStats($workflows)
     {
         $stats = [
-            'total' => count($workflows),
+            'total' => count74($workflows),
             'on_time' => 0,
             'delayed' => 0,
             'avg_completion_rate' => 0,
@@ -672,7 +672,7 @@ class WorkflowInstancePeer extends BaseWorkflowInstancePeer
 
             $hasDelays = false;
             $completedTasks = 0;
-            $totalTasks = count($tasks);
+            $totalTasks = count74($tasks);
 
             foreach ($tasks as $task) {
                 if ($task->getTaskinstancestatusId() === TaskInstanceStatusBpmn::completed) {

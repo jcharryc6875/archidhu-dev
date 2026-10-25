@@ -8,7 +8,7 @@ $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 <div class="row">
 	<div class="col-md-12">
       <?php
-	    $cantidad_registros = count($list_reglas_metadatos);
+	    $cantidad_registros = count74($list_reglas_metadatos);
 	    if($cantidad_registros == 0):
 	    ?>
         <div class="panel panel-primary">		      

@@ -96,7 +96,7 @@ class ReporteDinamicoExporter
         $headers = array();
         foreach ($fields as $value) {
             $parts = explode('_', str_replace('.', '_', $value));
-            if (count($parts) < 3) {
+            if (count74($parts) < 3) {
                 continue;
             }
             $peerName = sprintf('%sPeer', $parts[1]);

@@ -13,7 +13,7 @@ class WfImagenInstancia extends BaseWfImagenInstancia
         //MANEJO DE ARCHIVOS UPLAODS
         if(trim($ruta_uploads)){
             $archivos_upload = preg_split("/[,]+/", trim($ruta_uploads),-1,PREG_SPLIT_NO_EMPTY);
-            $cantidad_archivos = count($archivos_upload);
+            $cantidad_archivos = count74($archivos_upload);
             $ruta_archivo = array();
             $str_files = "";
             /********************************************************************************/
@@ -47,7 +47,7 @@ class WfImagenInstancia extends BaseWfImagenInstancia
             	}
             }
             //********************************************************************************
-            if(count($ruta_archivo)){
+            if(count74($ruta_archivo)){
                 $str_files = implode(",",$ruta_archivo);
             }
             //********************************************************************************

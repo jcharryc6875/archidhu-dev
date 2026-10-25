@@ -439,7 +439,7 @@ class PHPExcel_Shared_String
             $data .= self::ConvertEncoding($value, 'UTF-16LE', 'UTF-8');
         } else {
             $data = pack('vC', $ln, 0x09);
-            $data .= pack('v', count($arrcRuns));
+            $data .= pack('v', count74($arrcRuns));
             // characters
             $data .= self::ConvertEncoding($value, 'UTF-16LE', 'UTF-8');
             foreach ($arrcRuns as $cRun) {

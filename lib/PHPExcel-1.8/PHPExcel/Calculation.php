@@ -2313,7 +2313,7 @@ class PHPExcel_Calculation
             list($language) = explode('_', $locale);
         }
 
-        if (count(self::$validLocaleLanguages) == 1) {
+        if (count74(self::$validLocaleLanguages) == 1) {
             self::loadLocales();
         }
         //    Test whether we have any language data for this language (any locale)
@@ -2628,7 +2628,7 @@ class PHPExcel_Calculation
                 return PHPExcel_Calculation_Functions::VALUE();
             }
             //    If there's only a single cell in the array, then we allow it
-            if (count($testResult) != 1) {
+            if (count74($testResult) != 1) {
                 //    If keys are numeric, then it's a matrix result rather than a cell range result, so we permit it
                 $r = array_keys($result);
                 $r = array_shift($r);
@@ -2861,10 +2861,10 @@ class PHPExcel_Calculation
      */
     private static function getMatrixDimensions(&$matrix)
     {
-        $matrixRows = count($matrix);
+        $matrixRows = count74($matrix);
         $matrixColumns = 0;
         foreach ($matrix as $rowKey => $rowValue) {
-            $matrixColumns = max(count($rowValue), $matrixColumns);
+            $matrixColumns = max(count74($rowValue), $matrixColumns);
             if (!is_array($rowValue)) {
                 $matrix[$rowKey] = array($rowValue);
             } else {
@@ -2978,7 +2978,7 @@ class PHPExcel_Calculation
     {
         if ($this->_debugLog->getWriteDebugLog()) {
             $testArray = PHPExcel_Calculation_Functions::flattenArray($value);
-            if (count($testArray) == 1) {
+            if (count74($testArray) == 1) {
                 $value = array_pop($testArray);
             }
 
@@ -3014,7 +3014,7 @@ class PHPExcel_Calculation
     {
         if ($this->_debugLog->getWriteDebugLog()) {
             $testArray = PHPExcel_Calculation_Functions::flattenArray($value);
-            if (count($testArray) == 1) {
+            if (count74($testArray) == 1) {
                 $value = array_pop($testArray);
             }
 
@@ -3351,7 +3351,7 @@ class PHPExcel_Calculation
                         if ($matches[2] == '') {
                             //    Otherwise, we 'inherit' the worksheet reference from the start cell reference
                             //    The start of the cell range reference should be the last entry in $output
-                            $startCellRef = $output[count($output)-1]['value'];
+                            $startCellRef = $output[count74($output)-1]['value'];
                             preg_match('/^'.self::CALCULATION_REGEXP_CELLREF.'$/i', $startCellRef, $startMatches);
                             if ($startMatches[2] > '') {
                                 $val = $startMatches[2].'!'.$val;
@@ -3368,7 +3368,7 @@ class PHPExcel_Calculation
                     //    If the last entry on the stack was a : operator, then we may have a row or column range reference
                     $testPrevOp = $stack->last(1);
                     if ($testPrevOp['value'] == ':') {
-                        $startRowColRef = $output[count($output)-1]['value'];
+                        $startRowColRef = $output[count74($output)-1]['value'];
                         $rangeWS1 = '';
                         if (strpos('!', $startRowColRef) !== false) {
                             list($rangeWS1, $startRowColRef) = explode('!', $startRowColRef);
@@ -3387,13 +3387,13 @@ class PHPExcel_Calculation
                             ($startRowColRef <= 1048576) && ($val <= 1048576)) {
                             //    Row range
                             $endRowColRef = ($pCellParent !== null) ? $pCellParent->getHighestColumn() : 'XFD';    //    Max 16,384 columns for Excel2007
-                            $output[count($output)-1]['value'] = $rangeWS1.'A'.$startRowColRef;
+                            $output[count74($output)-1]['value'] = $rangeWS1.'A'.$startRowColRef;
                             $val = $rangeWS2.$endRowColRef.$val;
                         } elseif ((ctype_alpha($startRowColRef)) && (ctype_alpha($val)) &&
                             (strlen($startRowColRef) <= 3) && (strlen($val) <= 3)) {
                             //    Column range
                             $endRowColRef = ($pCellParent !== null) ? $pCellParent->getHighestRow() : 1048576;        //    Max 1,048,576 rows for Excel2007
-                            $output[count($output)-1]['value'] = $rangeWS1.strtoupper($startRowColRef).'1';
+                            $output[count74($output)-1]['value'] = $rangeWS1.strtoupper($startRowColRef).'1';
                             $val = $rangeWS2.$val.$endRowColRef;
                         }
                     }
@@ -3465,7 +3465,7 @@ class PHPExcel_Calculation
                 //        Cell References) then we have an INTERSECTION operator
 //                echo 'Possible Intersect Operator<br />';
                 if (($expectingOperator) && (preg_match('/^'.self::CALCULATION_REGEXP_CELLREF.'.*/Ui', substr($formula, $index), $match)) &&
-                    ($output[count($output)-1]['type'] == 'Cell Reference')) {
+                    ($output[count74($output)-1]['type'] == 'Cell Reference')) {
 //                    echo 'Element is an Intersect Operator<br />';
                     while ($stack->count() > 0 &&
                         ($o2 = $stack->last()) &&
@@ -3923,7 +3923,7 @@ class PHPExcel_Calculation
     private function validateBinaryOperand($cellID, &$operand, &$stack)
     {
         if (is_array($operand)) {
-            if ((count($operand, COUNT_RECURSIVE) - count($operand)) == 1) {
+            if ((count74($operand, COUNT_RECURSIVE) - count74($operand)) == 1) {
                 do {
                     $operand = array_pop($operand);
                 } while (is_array($operand));

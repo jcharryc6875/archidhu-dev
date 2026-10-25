@@ -14,7 +14,7 @@ use_helper('jQuery','Object');
         <div class="panel-title">Lista Hist&oacute;rico del Interesado (<strong><?php echo $interesado->getNombre() ?></strong>)</div>
       </div>
       <?php
-      if(count($interesados) == 0):
+      if(count74($interesados) == 0):
       ?>
         <div class="panel-body">
           <div class="alert alert-default"><strong>No existen Registros</strong>, Intente con diferentes filtros de consulta.</div>

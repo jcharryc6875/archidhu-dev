@@ -10,7 +10,7 @@ $version_trd = trim($unidad_documental->getSubserie()->getSerie()->getDependenci
 <div class="row">
 	<div class="col-md-12">
       <?php
-	    $cantidad_registros = count($list_documentos);
+	    $cantidad_registros = count74($list_documentos);
 	    if($cantidad_registros == 0):
 	    ?>
         <div class="panel panel-primary">		      

@@ -135,7 +135,7 @@ class PHPExcel_Writer_Excel2007_Chart extends PHPExcel_Writer_Excel2007_WriterPa
         $objWriter->startElement('a:p');
 
         $caption = $title->getCaption();
-        if ((is_array($caption)) && (count($caption) > 0)) {
+        if ((is_array($caption)) && (count74($caption) > 0)) {
             $caption = $caption[0];
         }
         $this->getParentWriter()->getWriterPart('stringtable')->writeRichTextForCharts($objWriter, $caption, 'a');
@@ -1024,7 +1024,7 @@ class PHPExcel_Writer_Excel2007_Chart extends PHPExcel_Writer_Excel2007_WriterPa
                 $chartTypes[] = $plotArea->getPlotGroupByIndex($i)->getPlotType();
             }
             $chartType = array_unique($chartTypes);
-            if (count($chartTypes) == 0) {
+            if (count74($chartTypes) == 0) {
                 throw new PHPExcel_Writer_Exception('Chart is not yet implemented');
             }
         }
@@ -1066,7 +1066,7 @@ class PHPExcel_Writer_Excel2007_Chart extends PHPExcel_Writer_Excel2007_WriterPa
 
         //    Get these details before the loop, because we can use the count to check for varyColors
         $plotSeriesOrder = $plotGroup->getPlotOrder();
-        $plotSeriesCount = count($plotSeriesOrder);
+        $plotSeriesCount = count74($plotSeriesOrder);
 
         if (($groupType !== PHPExcel_Chart_DataSeries::TYPE_RADARCHART) && ($groupType !== PHPExcel_Chart_DataSeries::TYPE_STOCKCHART)) {
             if ($groupType !== PHPExcel_Chart_DataSeries::TYPE_LINECHART) {

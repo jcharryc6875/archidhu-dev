@@ -14,7 +14,7 @@ $accion_labels = array(
 ?>
 <div class="row">
     <div class="col-md-12">
-        <?php if (count($list_bitacora) == 0): ?>
+        <?php if (count74($list_bitacora) == 0): ?>
             <div class="panel panel-primary">
                 <div class="panel-body">
                     <div class="alert alert-default"><strong>No existen Registros</strong>.</div>

@@ -87,7 +87,7 @@ class solicitud_documentacionActions extends sfActions
     //*************************Consulta Para Las Solicitudes Pendientes********************************************
 	$cadSolicitud   = $this->getUser()->getAttribute('solicitud_documentacion','','prestamo_documentacion');
 	$arrIds         = preg_split("/[,]+/",$cadSolicitud, null, PREG_SPLIT_NO_EMPTY);
-    if(count($arrIds))
+    if(count74($arrIds))
     {
     	$a = new Criteria();
     	$a->add(DocSolicitudPrestamoPeer::DOCSOLICITUDPRESTAMO_ID,$arrIds,Criteria::IN);
@@ -305,7 +305,7 @@ class solicitud_documentacionActions extends sfActions
 		$this->getUser()->setAttribute('solicitud_documentacion', '', 'prestamo_documentacion');
 		$tempCad = '';
 		$arrIds         = split(",",$cadSolicitud);	
-		for($i=0; $i<count($arrIds); $i++){			
+		for($i=0; $i<count74($arrIds); $i++){			
 			if( $arrIds[$i] != $this->getRequestParameter('docsolicitudprestamo_id')){
 				if($tempCad == ''){
 					$tempCad  .=  $arrIds[$i];		
@@ -343,7 +343,7 @@ class solicitud_documentacionActions extends sfActions
   	/*****************************Radicar los Detalles Del prestamo en la base de datos****************************/
   	$cadSolicitud   = $this->getUser()->getAttribute('solicitud_documentacion','','prestamo_documentacion');
   	$solicitudes_id = split(",",$cadSolicitud);  	
-  	for($i = 0; $i < count($solicitudes_id); $i++){
+  	for($i = 0; $i < count74($solicitudes_id); $i++){
 	  	//Creas los detalles del prestamo con los ids de las solicitudes.	  				
 	  	$detalles_prestamo = new DocDetallePrestamo();
 	  	$detalles_prestamo->setDocPrestamoId($radicar_prestamo->getDocprestamoId());
@@ -374,7 +374,7 @@ class solicitud_documentacionActions extends sfActions
 	$c->add(DocDetallePrestamoPeer::DOCPRESTAMO_ID,$this->getRequestParameter('docprestamo_id'));
     $pager  = DocDetallePrestamoPeer::doSelect($c);
 	//******************************************************************************************************
-    $total = count($pager);
+    $total = count74($pager);
     $nombreSolicitante = "";
 	foreach($pager as $result){
 	    $nombreSolicitante = $result->getDocSolicitudPrestamo()->getUsuario();

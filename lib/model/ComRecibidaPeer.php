@@ -620,7 +620,7 @@ class ComRecibidaPeer extends BaseComRecibidaPeer
 
     public static function updateEstadosComByEstado($comrecibida_id,$newestado,$urolComIn = array())
     {
-        if(count($urolComIn) && is_numeric($comrecibida_id) && is_numeric($newestado)){
+        if(count74($urolComIn) && is_numeric($comrecibida_id) && is_numeric($newestado)){
             try{
                 $conexion = Propel::getConnection();
                 $query = "UPDATE %s SET %s = ".$newestado." WHERE %s IN (".implode(",",$urolComIn).") AND %s = ".$comrecibida_id;
@@ -635,7 +635,7 @@ class ComRecibidaPeer extends BaseComRecibidaPeer
 
     public static function updateFechaAsignaCom($comrecibida_id,$urolComIn = array(), $isAsignado = 1)
     {
-        if(count($urolComIn) && is_numeric($comrecibida_id)){
+        if(count74($urolComIn) && is_numeric($comrecibida_id)){
             try{
                 $conexion = Propel::getConnection();
                 $query = "UPDATE %s SET %s = '".date("Y-m-d G:i:s")."' WHERE %s IN (".implode(",",$urolComIn).") AND %s = ".$comrecibida_id." AND %s = ".$isAsignado;
@@ -818,7 +818,7 @@ class ComRecibidaPeer extends BaseComRecibidaPeer
                 $user_destino = preg_split("/[,]+/", $usuario_destino);
                 $causer_destino = preg_split("/[,]+/", $cusuario_destino);
                 //*******************************************************************************************
-                for($index=0; $index < count($user_destino); $index++) {
+                for($index=0; $index < count74($user_destino); $index++) {
                     $isAddUserDest = ComRecibidaPeer::addUserRolByCom($com_recibida->getPrimaryKey(),$user_destino[$index],$causer_destino[$index],11,2,1,$tipoproceso_dest);
                 }
             }else{

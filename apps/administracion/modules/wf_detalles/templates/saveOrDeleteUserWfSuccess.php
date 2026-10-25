@@ -53,6 +53,6 @@ use_helper('Object','jQuery','UserComponent');
   </form>
 </div>
 <?php 
-	if(count($wf_actividadtransicion_usuarios)){ include_partial('userList', array('wf_actividadtransicion_usuarios' => $wf_actividadtransicion_usuarios)); } 
+	if(count74($wf_actividadtransicion_usuarios)){ include_partial('userList', array('wf_actividadtransicion_usuarios' => $wf_actividadtransicion_usuarios)); } 
 ?>
 </div>

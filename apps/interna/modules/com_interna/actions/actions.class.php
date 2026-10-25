@@ -404,7 +404,7 @@ class com_internaActions extends sfActions
         $iserror = 0;
         $errormsg = null;
         //************************************************************************************************
-        if (!count($listVars['sheetData'])) {
+        if (!count74($listVars['sheetData'])) {
             return sfView::ERROR;
         }
         //************************************************************************************************
@@ -421,7 +421,7 @@ class com_internaActions extends sfActions
         $uscargo_radicador = $cargoUsuario->getCargousuarioId();
         //************************************************************************************************
         $patrones = array();
-        for ($ihead = 0; $ihead < count($headerList); $ihead++) {
+        for ($ihead = 0; $ihead < count74($headerList); $ihead++) {
             if (trim($headerList[$ihead]))
                 $patrones[$ihead]  = '#.#$' . mb_strtolower(trim($headerList[$ihead])) . '#.#';
         }
@@ -433,9 +433,9 @@ class com_internaActions extends sfActions
         //************************************************************************************************
         $data_response = array();
         //************************************************************************************************
-        for ($row = 0; $row <= count($sheetData); ++$row) {
+        for ($row = 0; $row <= count74($sheetData); ++$row) {
             try {
-                if (count($sheetData[$row]) == 0) {
+                if (count74($sheetData[$row]) == 0) {
                     continue;
                 }
                 //****************************************************************************************
@@ -496,7 +496,7 @@ class com_internaActions extends sfActions
                 $sustituciones[]  = date("Y", mktime($com_interna->getFechaCreacion()));
                 $sustituciones[]  = $com_interna->getReferencia();
                 //****************************************************************************************                
-                for ($x = 0; $x <= count($patrones); $x++) {
+                for ($x = 0; $x <= count74($patrones); $x++) {
                     $contenido_body = str_replace($patrones[$x], $sustituciones[$x], $contenido_body);
                 }
                 //**************************************************************************************** 
@@ -922,7 +922,7 @@ class com_internaActions extends sfActions
                     $c->addOr(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, 2);
                     $c->addOr(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, 1);
                 }
-                for ($i = 0; $i < count($arrIds); $i++) {
+                for ($i = 0; $i < count74($arrIds); $i++) {
                     $user_id .= $arrIds[$i];
                 }
             }
@@ -1623,7 +1623,7 @@ class com_internaActions extends sfActions
         //*************************************************************************************************
         $user_id = "";
         $autorizaciones = $this->getAutorizaciones();
-        for ($i = 0; $i < count($autorizaciones); $i++) {
+        for ($i = 0; $i < count74($autorizaciones); $i++) {
             $user_id .= $autorizaciones[$i];
         }
         //*************************************************************************************************
@@ -1704,7 +1704,7 @@ class com_internaActions extends sfActions
         $this->usuarios_firman = $usuarios_firman;
         $this->list_users = $list_users;
         $this->aprobacion_ulist = $aprob_urlist;
-        $this->aprobacion_count = count($aprob_urlist);
+        $this->aprobacion_count = count74($aprob_urlist);
         $this->destinatarios = implode(",", $usuarios_destino);
         //*************************************************************************************************
         //verificar permiso firma electronica(la misma firma mecanica) para radicar
@@ -1805,7 +1805,7 @@ class com_internaActions extends sfActions
         //*************************************************************************************************
         $user_id = "";
         $autorizaciones = $this->getAutorizaciones();
-        for ($i = 0; $i < count($autorizaciones); $i++) {
+        for ($i = 0; $i < count74($autorizaciones); $i++) {
             $user_id .= $autorizaciones[$i];
         }
         //*************************************************************************************************
@@ -2426,7 +2426,7 @@ class com_internaActions extends sfActions
         $com_interna_anterior = clone $com_interna;
         //********************************************************************************************
         $permiso_regional =  $com_interna->getRegionalId();
-        $destinatario_id = count($udestinatarios_list) > 0 ? $udestinatarios_list[0] : 0;
+        $destinatario_id = count74($udestinatarios_list) > 0 ? $udestinatarios_list[0] : 0;
         //********************************************************************************************
         $firmante = $ufirmas_list[0];
         if (!$firmante) {
@@ -2548,7 +2548,7 @@ class com_internaActions extends sfActions
             $com_interna->envioEmail($user_copia_alerta, $firmante, $encabezado_cuerpo_copia);
         }
         //********************************************************************************************
-        if (count($udestinatarios_list) > 1) {
+        if (count74($udestinatarios_list) > 1) {
             unset($udestinatarios_list[0]);
             $com_interna->addNewBatchComInterna($udestinatarios_list, $objUsuarioFirmante, $regional, $depen_codigo);
         }
@@ -3189,7 +3189,7 @@ class com_internaActions extends sfActions
         /*********************************************APROBACIONES**********************************************/
         $matriz_data = $this->getAprobadores($this->getRequestParameter('cominterna_id'));
         $this->is_usuario_aprobador = false;
-        if (count($matriz_data) > 0) {
+        if (count74($matriz_data) > 0) {
             $this->aprobadores = implode(",", $matriz_data[0]) . ',';
             $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
 
@@ -3567,7 +3567,7 @@ class com_internaActions extends sfActions
         $depen_codigo = $objUsuarioFirmante->getDependencia()->getCodigo();
         $copia_interna->setCodigoReenResp($codigo_reen_resp);
         /********************************************************************************************/
-        $iterador = (count($cadDestinos)); //se elimina el ultimo campo del array pues viene solo con una coma            	   	 	 
+        $iterador = (count74($cadDestinos)); //se elimina el ultimo campo del array pues viene solo con una coma            	   	 	 
         for ($i = 0; $i < $iterador; $i++) { //for para recorrer arreglo de destinatarios 
             if ($cadDestinos[$i] != "") {
                 $copia_interna->setFechaCreacion(date("Y-m-d G:i:s"));
@@ -3759,7 +3759,7 @@ class com_internaActions extends sfActions
         }
         //*****************************************************************************************************
         $replyfile = trim($this->getRequestParameter('replyfile'));
-        if (!empty($replyfile) && count($lusuarios_destino) <= 1) {
+        if (!empty($replyfile) && count74($lusuarios_destino) <= 1) {
             $filedir_tmp = sfConfig::get("sf_web_dir") . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $replyfile;
             $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(25)->getValortexto() . 'uploads');
             $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd")) . DIRECTORY_SEPARATOR . $replyfile;
@@ -4249,7 +4249,7 @@ class com_internaActions extends sfActions
         $info_com['pkcom_id'] = $com_interna->getPrimaryKey();
         $new_ucom = CominternaUsuarioPeer::addOrUpdateUserByCom($info_com);
         //******************************************************************************************************
-        if (count($listucom_current) > 0 && $new_ucom != null) {
+        if (count74($listucom_current) > 0 && $new_ucom != null) {
             foreach ($listucom_current as $ucom_current) {
                 $fecha_aprobacion = ($ucom_current->getFechaAprobacion() ? $ucom_current->getFechaAprobacion() : date("Y-m-d G:i:s"));
                 $ucom_current->setEstaAsignada(0);
@@ -4367,7 +4367,7 @@ class com_internaActions extends sfActions
     public function borrarInternaUsuariosEdit($com_internaId, $usuariosArr)
     {
         $arrUsuarios = explode(',', $usuariosArr);
-        $cont = count($arrUsuarios);
+        $cont = count74($arrUsuarios);
         $usuariosIn = "";
         for ($i = 0; $i < ($cont - 1); $i++) {
             if ($i == 0) {

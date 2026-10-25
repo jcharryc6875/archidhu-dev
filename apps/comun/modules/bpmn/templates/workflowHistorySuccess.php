@@ -107,13 +107,13 @@ function formatDurationHelper($seconds)
             <div class="info-card-icon warning"><i class="fas fa-tasks"></i></div>
             <div>
                 <div class="info-card-title">Tareas</div>
-                <div class="info-card-value"><?php echo count($tasks) ?> total</div>
+                <div class="info-card-value"><?php echo count74($tasks) ?> total</div>
             </div>
         </div>
         <div class="info-card-body">
             <div class="info-row"><span class="info-row-label">Completadas</span><span class="info-row-value" style="color:#28a745;"><i class="fas fa-check"></i> <?php echo $completedTasks ?></span></div>
             <div class="info-row"><span class="info-row-label">Pendientes</span><span class="info-row-value" style="color:#ffc107;"><i class="fas fa-clock"></i> <?php echo $pendingTasks ?></span></div>
-            <?php if (count($tasks) > 0): ?><div class="info-row"><span class="info-row-label">Progreso</span><span class="info-row-value"><?php echo round(($completedTasks / count($tasks)) * 100) ?>%</span></div><?php endif; ?>
+            <?php if (count74($tasks) > 0): ?><div class="info-row"><span class="info-row-label">Progreso</span><span class="info-row-value"><?php echo round(($completedTasks / count74($tasks)) * 100) ?>%</span></div><?php endif; ?>
         </div>
     </div>
 
@@ -143,9 +143,9 @@ function formatDurationHelper($seconds)
 
 <div class="tabs-container">
     <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('timeline', this)"><i class="fas fa-stream"></i> Timeline <span class="badge"><?php echo count($history) ?></span></button>
-        <button class="tab-btn" onclick="showTab('tasks', this)"><i class="fas fa-clipboard-list"></i> Tareas <span class="badge"><?php echo count($tasks) ?></span></button>
-        <button class="tab-btn" onclick="showTab('variables', this)"><i class="fas fa-database"></i> Variables <span class="badge"><?php echo count($variables) ?></span></button>
+        <button class="tab-btn active" onclick="showTab('timeline', this)"><i class="fas fa-stream"></i> Timeline <span class="badge"><?php echo count74($history) ?></span></button>
+        <button class="tab-btn" onclick="showTab('tasks', this)"><i class="fas fa-clipboard-list"></i> Tareas <span class="badge"><?php echo count74($tasks) ?></span></button>
+        <button class="tab-btn" onclick="showTab('variables', this)"><i class="fas fa-database"></i> Variables <span class="badge"><?php echo count74($variables) ?></span></button>
         <button class="tab-btn" onclick="showTab('attachments', this)"><i class="fas fa-paperclip"></i> Archivos</button>
         <button class="tab-btn" onclick="showTab('diagram', this)"><i class="fas fa-project-diagram"></i> Diagrama</button>
     </div>

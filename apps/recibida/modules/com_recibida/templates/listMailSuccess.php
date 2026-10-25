@@ -19,7 +19,7 @@
 </tr>
 <?php     
 	$fila="spec"; 
-	for ( $i = 0; $i < count( $mail ); $i++ ): ?>
+	for ( $i = 0; $i < count74( $mail ); $i++ ): ?>
 <tr <?php //echo $fila;
 if($fila=="specalt"){
 	$fila="spec";
@@ -34,7 +34,7 @@ else{
       <td class="<?php echo $fila?>"><?php echo $mail[$i]->subject ?></td>
       <td class="<?php echo $fila?>"><?php echo "&nbsp;"//echo $mail[$i]->generateBody()?></td>
       <td class="<?php echo $fila?>"><?php 
-	  for($b=0; $b < count( $nombre_adjuntos ); $b++){
+	  for($b=0; $b < count74( $nombre_adjuntos ); $b++){
 		  	echo basename($nombre_adjuntos[$i][$b]);                  
 	   }?></td>
       <td class="<?php echo $fila?>"><?php echo "&nbsp;"//echo substr($com_recibida->getDirectorioexterno().' - '.$com_recibida->getDirectorioexterno(),0,40).'...' ?></td>

@@ -672,7 +672,7 @@ if (!class_exists('QRcode', false)) {
 			$this->items = array();
 			$this->encodeString($code);
 			$qrTab = $this->binarize($this->data);
-			$size = count($qrTab);
+			$size = count74($qrTab);
 			$barcode_array['num_rows'] = $size;
 			$barcode_array['num_cols'] = $size;
 			$barcode_array['bcode'] = array();
@@ -701,7 +701,7 @@ if (!class_exists('QRcode', false)) {
 		 * @return array frame in binary form
 		 */
 		protected function binarize($frame) {
-			$len = count($frame);
+			$len = count74($frame);
 			// the frame is square (width = height)
 			foreach ($frame as &$frameLine) {
 				for ($i=0; $i<$len; $i++) {
@@ -1238,7 +1238,7 @@ if (!class_exists('QRcode', false)) {
 			if (QR_FIND_FROM_RANDOM !== false) {
 				$howManuOut = 8 - (QR_FIND_FROM_RANDOM % 9);
 				for ($i = 0; $i <  $howManuOut; ++$i) {
-					$remPos = rand (0, count($checked_masks)-1);
+					$remPos = rand (0, count74($checked_masks)-1);
 					unset($checked_masks[$remPos]);
 					$checked_masks = array_values($checked_masks);
 				}
@@ -1526,8 +1526,8 @@ if (!class_exists('QRcode', false)) {
 		 */
 		 protected function newInputItem($mode, $size, $data, $bstream=null) {
 			$setData = array_slice($data, 0, $size);
-			if (count($setData) < $size) {
-				$setData = array_merge($setData, array_fill(0, ($size - count($setData)), 0));
+			if (count74($setData) < $size) {
+				$setData = array_merge($setData, array_fill(0, ($size - count74($setData)), 0));
 			}
 			if (!$this->check($mode, $size, $setData)) {
 				return NULL;
@@ -2027,7 +2027,7 @@ if (!class_exists('QRcode', false)) {
 			$total = 0;
 			foreach ($items as $key => $item) {
 				$items[$key] = $this->encodeBitStream($item, $this->version);
-				$bits = count($items[$key]['bstream']);
+				$bits = count74($items[$key]['bstream']);
 				$total += $bits;
 			}
 			return array($items, $total);
@@ -2068,7 +2068,7 @@ if (!class_exists('QRcode', false)) {
 		 * @return array bitstream
 		 */
 		 protected function appendPaddingBit($bstream) {
-			$bits = count($bstream);
+			$bits = count74($bstream);
 			$maxwords = $this->getDataLength($this->version, $this->level);
 			$maxbits = $maxwords * 8;
 			if ($maxbits == $bits) {
@@ -2190,10 +2190,10 @@ if (!class_exists('QRcode', false)) {
 		 * @return array bitstream
 		 */
 		 protected function appendBitstream($bitstream, $append) {
-			if ((!is_array($append)) OR (count($append) == 0)) {
+			if ((!is_array($append)) OR (count74($append) == 0)) {
 				return $bitstream;
 			}
-			if (count($bitstream) == 0) {
+			if (count74($bitstream) == 0) {
 				return $append;
 			}
 			return array_values(array_merge($bitstream, $append));
@@ -2235,7 +2235,7 @@ if (!class_exists('QRcode', false)) {
 		 * @return array of bytes
 		 */
 		 protected function bitstreamToByte($bstream) {
-			$size = count($bstream);
+			$size = count74($bstream);
 			if ($size == 0) {
 				return array();
 			}
@@ -2388,7 +2388,7 @@ if (!class_exists('QRcode', false)) {
 		 * @return array spec
 		 */
 		protected function getEccSpec($version, $level, $spec) {
-			if (count($spec) < 5) {
+			if (count74($spec) < 5) {
 				$spec = array(0, 0, 0, 0, 0);
 			}
 			$b1 = $this->eccTable[$version][$level][0];

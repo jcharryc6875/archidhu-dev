@@ -3795,7 +3795,7 @@ class TCPDF {
 	 */
 	public function AddSpotColor($name, $c, $m, $y, $k) {
 		if (!isset($this->spot_colors[$name])) {
-			$i = (1 + count($this->spot_colors));
+			$i = (1 + count74($this->spot_colors));
 			$this->spot_colors[$name] = array('C' => $c, 'M' => $m, 'Y' => $y, 'K' => $k, 'name' => $name, 'i' => $i);
 		}
 	}
@@ -4214,7 +4214,7 @@ class TCPDF {
 	 */
 	public function GetNumChars($s) {
 		if ($this->isUnicodeFont()) {
-			return count(TCPDF_FONTS::UTF8StringToArray($s, $this->isunicode, $this->CurrentFont));
+			return count74(TCPDF_FONTS::UTF8StringToArray($s, $this->isunicode, $this->CurrentFont));
 		}
 		return strlen($s);
 	}
@@ -4456,7 +4456,7 @@ class TCPDF {
 		if (isset($diff) AND (!empty($diff))) {
 			//Search existing encodings
 			$d = 0;
-			$nb = count($this->diffs);
+			$nb = count74($this->diffs);
 			for ($i=1; $i <= $nb; ++$i) {
 				if ($this->diffs[$i] == $diff) {
 					$d = $i;
@@ -4763,7 +4763,7 @@ class TCPDF {
 	 */
 	public function AddLink() {
 		// create a new internal link
-		$n = count($this->links) + 1;
+		$n = count74($this->links) + 1;
 		$this->links[$n] = array('p' => 0, 'y' => 0, 'f' => false);
 		return $n;
 	}
@@ -4840,7 +4840,7 @@ class TCPDF {
 		// recalculate coordinates to account for graphic transformations
 		if (isset($this->transfmatrix) AND !empty($this->transfmatrix)) {
 			for ($i=$this->transfmatrix_key; $i > 0; --$i) {
-				$maxid = count($this->transfmatrix[$i]) - 1;
+				$maxid = count74($this->transfmatrix[$i]) - 1;
 				for ($j=$maxid; $j >= 0; --$j) {
 					$ctm = $this->transfmatrix[$i][$j];
 					if (isset($ctm['a'])) {
@@ -5322,7 +5322,7 @@ class TCPDF {
 					// replace thai chars (if any)
 					if (defined('K_THAI_TOPCHARS') AND (K_THAI_TOPCHARS == true)) {
 						// number of chars
-						$numchars = count($unicode);
+						$numchars = count74($unicode);
 						// po pla, for far, for fan
 						$longtail = array(0x0e1b, 0x0e1d, 0x0e1f);
 						// do chada, to patak
@@ -5536,7 +5536,7 @@ class TCPDF {
 						// x space to skip
 						if ($spacewidth != 0) {
 							// justification shift
-							$xshift += (count(array_keys($uniarr, 32)) * $spw);
+							$xshift += (count74(array_keys($uniarr, 32)) * $spw);
 						}
 						$xshift += $this->GetArrStringWidth($uniarr); // + shift justification
 					} else {
@@ -6242,7 +6242,7 @@ class TCPDF {
 		$sum = 0;
 		$chars = TCPDF_FONTS::utf8Bidi(TCPDF_FONTS::UTF8StringToArray($txt, $this->isunicode, $this->CurrentFont), $txt, $this->tmprtl, $this->isunicode, $this->CurrentFont);
 		$charsWidth = $this->GetArrStringWidth($chars, '', '', 0, true);
-		$length = count($chars);
+		$length = count74($chars);
 		$lastSeparator = -1;
 		for ($i = 0; $i < $length; ++$i) {
 			$c = $chars[$i];
@@ -6399,7 +6399,7 @@ class TCPDF {
 		// get array of chars
 		$uchars = TCPDF_FONTS::UTF8ArrayToUniArray($chars, $this->isunicode);
 		// get the number of characters
-		$nb = count($chars);
+		$nb = count74($chars);
 		// replacement for SHY character (minus symbol)
 		$shy_replacement = 45;
 		$shy_replacement_char = TCPDF_FONTS::unichr($shy_replacement, $this->isunicode);
@@ -7413,7 +7413,7 @@ class TCPDF {
 			// correct gamma
 			$this->gdgammacache['#'.$c] = (int) (pow(($this->gdgammacache['#'.$c] / 255), 2.2) * 255);
 			// store the latest values on cache to improve performances
-			if (count($this->gdgammacache) > 8) {
+			if (count74($this->gdgammacache) > 8) {
 				// remove one element from the cache array
 				array_shift($this->gdgammacache);
 			}
@@ -8359,7 +8359,7 @@ class TCPDF {
 						$annots .= ' >>';
 					} else {
 						$annots .= ' /Border [';
-						if (isset($pl['opt']['border']) AND (count($pl['opt']['border']) >= 3)) {
+						if (isset($pl['opt']['border']) AND (count74($pl['opt']['border']) >= 3)) {
 							$annots .= intval($pl['opt']['border'][0]).' ';
 							$annots .= intval($pl['opt']['border'][1]).' ';
 							$annots .= intval($pl['opt']['border'][2]);
@@ -8478,7 +8478,7 @@ class TCPDF {
 										if (!empty($parsedUrl['fragment'])) {
 											// check for named destination
 											$tmp = explode('=', $parsedUrl['fragment']);
-											$dest = '('.((count($tmp) == 2) ? $tmp[1] : $tmp[0]).')';
+											$dest = '('.((count74($tmp) == 2) ? $tmp[1] : $tmp[0]).')';
 										}
 										$annots .= ' /A <</S /GoToR /D '.$dest.' /F '.$this->_datastring($this->unhtmlentities($parsedUrl['path']), $annot_obj_id).' /NewWindow true>>';
 									} else {
@@ -9260,7 +9260,7 @@ class TCPDF {
 				}
 				if (isset($info['trns']) AND is_array($info['trns'])) {
 					$trns = '';
-					$count_info = count($info['trns']);
+					$count_info = count74($info['trns']);
 					if ($info['cs'] == 'Indexed') {
 						$maxval =(pow(2, $info['bpc']) - 1);
 						for ($i = 0; $i < $count_info; ++$i) {
@@ -9802,7 +9802,7 @@ class TCPDF {
 		if (isset($this->PageMode) AND (!TCPDF_STATIC::empty_string($this->PageMode))) {
 			$out .= ' /PageMode /'.$this->PageMode;
 		}
-		if (count($this->outlines) > 0) {
+		if (count74($this->outlines) > 0) {
 			$out .= ' /Outlines '.$this->OutlineRoot.' 0 R';
 			$out .= ' /PageMode /UseOutlines';
 		}
@@ -11977,7 +11977,7 @@ class TCPDF {
 		if ($this->state != 2) {
 			return;
 		}
-		$nc = count($p); // number of coordinates
+		$nc = count74($p); // number of coordinates
 		$np = $nc / 2; // number of points
 		if ($closed) {
 			// close polygon by adding the first 2 points at the end (one line)
@@ -12481,7 +12481,7 @@ class TCPDF {
 	 * @since 2.1.002 (2008-02-12)
 	 */
 	protected function _putbookmarks() {
-		$nb = count($this->outlines);
+		$nb = count74($this->outlines);
 		if ($nb == 0) {
 			return;
 		}
@@ -12580,7 +12580,7 @@ class TCPDF {
 			}
 			$out .= sprintf(' /F %d', $style);
 			// set bookmark color
-			if (isset($o['c']) AND is_array($o['c']) AND (count($o['c']) == 3)) {
+			if (isset($o['c']) AND is_array($o['c']) AND (count74($o['c']) == 3)) {
 				$color = array_values($o['c']);
 				$out .= sprintf(' /C [%F %F %F]', ($color[0] / 255), ($color[1] / 255), ($color[2] / 255));
 			} else {
@@ -13677,7 +13677,7 @@ class TCPDF {
 		if (empty($page)) {
 			$page = $this->page + 1;
 		}
-		$this->newpagegroup[$page] = sizeof($this->newpagegroup) + 1;
+		$this->newpagegroup[$page] = count74($this->newpagegroup) + 1;
 	}
 
 	/**
@@ -13842,7 +13842,7 @@ class TCPDF {
 		if ($this->state != 2) {
 			return;
 		}
-		$layer = sprintf('LYR%03d', (count($this->pdflayers) + 1));
+		$layer = sprintf('LYR%03d', (count74($this->pdflayers) + 1));
 		if (empty($name)) {
 			$name = $layer;
 		} else {
@@ -13926,7 +13926,7 @@ class TCPDF {
 				return $i;
 			}
 		}
-		$n = (count($this->extgstates) + 1);
+		$n = (count74($this->extgstates) + 1);
 		$this->extgstates[$n] = array('parms' => $parms);
 		if ($this->inxobj) {
 			// we are inside an XObject template
@@ -14160,7 +14160,7 @@ class TCPDF {
 			}
 		}
 		$bars = explode(',', $colors);
-		$numbars = count($bars); // number of bars to print
+		$numbars = count74($bars); // number of bars to print
 		if ($numbars <= 0) {
 			return;
 		}
@@ -14473,7 +14473,7 @@ class TCPDF {
 			return;
 		}
 		$this->Clip($x, $y, $w, $h);
-		$n = count($this->gradients) + 1;
+		$n = count74($this->gradients) + 1;
 		$this->gradients[$n] = array();
 		$this->gradients[$n]['type'] = 6; //coons patch mesh
 		$this->gradients[$n]['coords'] = array();
@@ -14516,10 +14516,10 @@ class TCPDF {
 		$bpcd = 65535; //16 bits per coordinate
 		//build the data stream
 		$this->gradients[$n]['stream'] = '';
-		$count_patch = count($patch_array);
+		$count_patch = count74($patch_array);
 		for ($i=0; $i < $count_patch; ++$i) {
 			$this->gradients[$n]['stream'] .= chr($patch_array[$i]['f']); //start with the edge flag as 8 bit
-			$count_points = count($patch_array[$i]['points']);
+			$count_points = count74($patch_array[$i]['points']);
 			for ($j=0; $j < $count_points; ++$j) {
 				//each point as 16 bit
 				$patch_array[$i]['points'][$j] = (($patch_array[$i]['points'][$j] - $coords_min) / ($coords_max - $coords_min)) * $bpcd;
@@ -14532,7 +14532,7 @@ class TCPDF {
 				$this->gradients[$n]['stream'] .= chr((int) floor($patch_array[$i]['points'][$j] / 256));
 				$this->gradients[$n]['stream'] .= chr((int) floor(intval($patch_array[$i]['points'][$j]) % 256));
 			}
-			$count_cols = count($patch_array[$i]['colors']);
+			$count_cols = count74($patch_array[$i]['colors']);
 			for ($j=0; $j < $count_cols; ++$j) {
 				//each color component as 8 bit
 				$this->gradients[$n]['stream'] .= chr($patch_array[$i]['colors'][$j]['r']);
@@ -14591,7 +14591,7 @@ class TCPDF {
 		if (($this->pdfa_mode && $this->pdfa_version < 2) OR ($this->state != 2)) {
 			return;
 		}
-		$n = count($this->gradients) + 1;
+		$n = count74($this->gradients) + 1;
 		$this->gradients[$n] = array();
 		$this->gradients[$n]['type'] = $type;
 		$this->gradients[$n]['coords'] = $coords;
@@ -14599,7 +14599,7 @@ class TCPDF {
 		$this->gradients[$n]['colors'] = array();
 		$this->gradients[$n]['transparency'] = false;
 		// color space
-		$numcolspace = count($stops[0]['color']);
+		$numcolspace = count74($stops[0]['color']);
 		$bcolor = array_values($background);
 		switch($numcolspace) {
 			case 5:   // SPOT
@@ -14625,7 +14625,7 @@ class TCPDF {
 				break;
 			}
 		}
-		$num_stops = count($stops);
+		$num_stops = count74($stops);
 		$last_stop_id = $num_stops - 1;
 		foreach ($stops as $key => $stop) {
 			$this->gradients[$n]['colors'][$key] = array();
@@ -14698,7 +14698,7 @@ class TCPDF {
 		if ($this->pdfa_mode && $this->pdfa_version < 2) {
 			return;
 		}
-		$idt = count($this->gradients); //index for transparency gradients
+		$idt = count74($this->gradients); //index for transparency gradients
 		foreach ($this->gradients as $id => $grad) {
 			if (($grad['type'] == 2) OR ($grad['type'] == 3)) {
 				$fc = $this->_newobj();
@@ -14709,7 +14709,7 @@ class TCPDF {
 				$bounds = '';
 				$encode = '';
 				$i = 1;
-				$num_cols = count($grad['colors']);
+				$num_cols = count74($grad['colors']);
 				$lastcols = $num_cols - 1;
 				for ($i = 1; $i < $num_cols; ++$i) {
 					$functions .= ($fc + $i).' 0 R ';
@@ -14744,7 +14744,7 @@ class TCPDF {
 					$out .= ' /Domain [0 1]';
 					$functions = '';
 					$i = 1;
-					$num_cols = count($grad['colors']);
+					$num_cols = count74($grad['colors']);
 					for ($i = 1; $i < $num_cols; ++$i) {
 						$functions .= ($ft + $i).' 0 R ';
 					}
@@ -14979,7 +14979,7 @@ class TCPDF {
 		$regs = array();
 		// EPS/AI compatibility check (only checks files created by Adobe Illustrator!)
 		preg_match("/%%Creator:([^\r\n]+)/", $data, $regs); # find Creator
-		if (count($regs) > 1) {
+		if (count74($regs) > 1) {
 			$version_str = trim($regs[1]); # e.g. "Adobe Illustrator(R) 8.0"
 			if (strpos($version_str, 'Adobe Illustrator') !== false) {
 				$versexp = explode(' ', $version_str);
@@ -14996,7 +14996,7 @@ class TCPDF {
 		}
 		// find BoundingBox params
 		preg_match("/%%BoundingBox:([^\r\n]+)/", $data, $regs);
-		if (count($regs) > 1) {
+		if (count74($regs) > 1) {
 			list($x1, $y1, $x2, $y2) = explode(' ', trim($regs[1]));
 		} else {
 			$this->Error('No BoundingBox found in EPS/AI file: '.$file);
@@ -15078,7 +15078,7 @@ class TCPDF {
 		// handle pc/unix/mac line endings
 		$lines = preg_split('/[\r\n]+/si', $data, -1, PREG_SPLIT_NO_EMPTY);
 		$u=0;
-		$cnt = count($lines);
+		$cnt = count74($lines);
 		for ($i=0; $i < $cnt; ++$i) {
 			$line = $lines[$i];
 			if (($line == '') OR ($line[0] == '%')) {
@@ -16018,7 +16018,7 @@ class TCPDF {
 	protected function getCSSBorderStyle($cssborder) {
 		$bprop = preg_split('/[\s]+/', trim($cssborder));
 		$border = array(); // value to be returned
-		switch (count($bprop)) {
+		switch (count74($bprop)) {
 			case 3: {
 				$width = $bprop[0];
 				$style = $bprop[1];
@@ -16069,7 +16069,7 @@ class TCPDF {
 	public function getCSSPadding($csspadding, $width=0) {
 		$padding = preg_split('/[\s]+/', trim($csspadding));
 		$cell_padding = array(); // value to be returned
-		switch (count($padding)) {
+		switch (count74($padding)) {
 			case 4: {
 				$cell_padding['T'] = $padding[0];
 				$cell_padding['R'] = $padding[1];
@@ -16123,7 +16123,7 @@ class TCPDF {
 	public function getCSSMargin($cssmargin, $width=0) {
 		$margin = preg_split('/[\s]+/', trim($cssmargin));
 		$cell_margin = array(); // value to be returned
-		switch (count($margin)) {
+		switch (count74($margin)) {
 			case 4: {
 				$cell_margin['T'] = $margin[0];
 				$cell_margin['R'] = $margin[1];
@@ -16177,7 +16177,7 @@ class TCPDF {
 	public function getCSSBorderMargin($cssbspace, $width=0) {
 		$space = preg_split('/[\s]+/', trim($cssbspace));
 		$border_spacing = array(); // value to be returned
-		switch (count($space)) {
+		switch (count74($space)) {
 			case 2: {
 				$border_spacing['H'] = $space[0];
 				$border_spacing['V'] = $space[1];
@@ -16508,7 +16508,7 @@ class TCPDF {
 		// explodes the string
 		$a = preg_split($tagpattern, $html, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 		// count elements
-		$maxel = count($a);
+		$maxel = count74($a);
 		$elkey = 0;
 		$key = 0;
 		// create an array of elements
@@ -17283,9 +17283,9 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 		$this->premode = false;
 		if ($this->inxobj) {
 			// we are inside an XObject template
-			$pask = count($this->xobjects[$this->xobjid]['annotations']);
+			$pask = count74($this->xobjects[$this->xobjid]['annotations']);
 		} elseif (isset($this->PageAnnots[$this->page])) {
-			$pask = count($this->PageAnnots[$this->page]);
+			$pask = count74($this->PageAnnots[$this->page]);
 		} else {
 			$pask = 0;
 		}
@@ -17341,7 +17341,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 			$this->resetLastH();
 		}
 		$dom = $this->getHtmlDomArray($html);
-		$maxel = count($dom);
+		$maxel = count74($dom);
 		$key = 0;
 		while ($key < $maxel) {
 			if ($dom[$key]['tag'] AND $dom[$key]['opening'] AND $dom[$key]['hide']) {
@@ -17532,7 +17532,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 							$this->setPageBuffer($this->page, $tstart."\nq\n".$try."\n".$linebeg."\nQ\n".$tend);
 							// shift the annotations and links
 							if (isset($this->PageAnnots[$this->page])) {
-								$next_pask = count($this->PageAnnots[$this->page]);
+								$next_pask = count74($this->PageAnnots[$this->page]);
 							} else {
 								$next_pask = 0;
 							}
@@ -17541,7 +17541,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 									if ($pak >= $pask) {
 										$this->PageAnnots[$this->page][] = $pac;
 										unset($this->PageAnnots[$startlinepage][$pak]);
-										$npak = count($this->PageAnnots[$this->page]) - 1;
+										$npak = count74($this->PageAnnots[$this->page]) - 1;
 										$this->PageAnnots[$this->page][$npak]['y'] -= $yshift;
 									}
 								}
@@ -17597,7 +17597,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 								$this->setPageBuffer($this->page, $tstart."\nq\n".$try."\n".$linebeg."\nQ\n".$tend);
 								// shift the annotations and links
 								if (isset($this->PageAnnots[$this->page])) {
-									$next_pask = count($this->PageAnnots[$this->page]);
+									$next_pask = count74($this->PageAnnots[$this->page]);
 								} else {
 									$next_pask = 0;
 								}
@@ -17606,7 +17606,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 										if ($pak >= $pask) {
 											$this->PageAnnots[$this->page][] = $pac;
 											unset($this->PageAnnots[$startlinepage][$pak]);
-											$npak = count($this->PageAnnots[$this->page]) - 1;
+											$npak = count74($this->PageAnnots[$this->page]) - 1;
 											$this->PageAnnots[$this->page][$npak]['y'] -= $yshift;
 										}
 									}
@@ -17812,7 +17812,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 							// search spaces
 							if (preg_match_all('/\[\(([^\)]*)\)\]/x', $pmidtemp, $lnstring, PREG_PATTERN_ORDER)) {
 								$spacestr = $this->getSpaceString();
-								$maxkk = count($lnstring[1]) - 1;
+								$maxkk = count74($lnstring[1]) - 1;
 								for ($kk=0; $kk <= $maxkk; ++$kk) {
 									// restore special characters
 									$lnstring[1][$kk] = str_replace('#!#OP#!#', '(', $lnstring[1][$kk]);
@@ -18126,7 +18126,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				unset($endlinepos);
 				$plalign = $lalign;
 				if (isset($this->PageAnnots[$this->page])) {
-					$pask = count($this->PageAnnots[$this->page]);
+					$pask = count74($this->PageAnnots[$this->page]);
 				} else {
 					$pask = 0;
 				}
@@ -18267,7 +18267,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 						// skip row-spanned cells started on the previous rows
 						if (isset($dom[$table_el]['rowspans'])) {
 							$rsk = 0;
-							$rskmax = count($dom[$table_el]['rowspans']);
+							$rskmax = count74($dom[$table_el]['rowspans']);
 							while ($rsk < $rskmax) {
 								$trwsp = $dom[$table_el]['rowspans'][$rsk];
 								$rsstartx = $trwsp['startx'];
@@ -18548,7 +18548,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 						if (($wadj > 0) AND (($strlinelen + $wadj) >= $cwa)) {
 							$wadj = 0;
 							$nextstr = TCPDF_STATIC::pregSplit('/'.$this->re_space['p'].'/', $this->re_space['m'], $dom[$key]['value']);
-							$numblks = count($nextstr);
+							$numblks = count74($nextstr);
 							if ($numblks > 1) {
 								// try to split on blank spaces
 								$wadj = ($cwa - $strlinelen + $this->GetStringWidth($nextstr[($numblks - 1)]));
@@ -19703,13 +19703,13 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 					$table_el = $dom[($dom[$key]['parent'])];
 				}
 				// for each row
-				if (count($table_el['trids']) > 0) {
+				if (count74($table_el['trids']) > 0) {
 					unset($xmax);
 				}
 				foreach ($table_el['trids'] as $j => $trkey) {
 					$parent = $dom[$trkey];
 					if (!isset($xmax)) {
-						$xmax = $parent['cellpos'][(count($parent['cellpos']) - 1)]['endx'];
+						$xmax = $parent['cellpos'][(count74($parent['cellpos']) - 1)]['endx'];
 					}
 					// for each cell on the row
 					foreach ($parent['cellpos'] as $k => $cellpos) {
@@ -21421,7 +21421,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 		}
 		if (isset($this->newpagegroup[$page])) {
 			// start a new group
-			$this->newpagegroup[$this->page] = sizeof($this->newpagegroup) + 1;
+			$this->newpagegroup[$this->page] = count74($this->newpagegroup) + 1;
 			$this->currpagegroup = $this->newpagegroup[$this->page];
 			$this->pagegroups[$this->currpagegroup] = 1;
 		} elseif (isset($this->currpagegroup) AND ($this->currpagegroup > 0)) {
@@ -21918,7 +21918,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 	 */
 	public function setColumnsArray($columns) {
 		$this->columns = $columns;
-		$this->num_columns = count($columns);
+		$this->num_columns = count74($columns);
 		$this->current_column = 0;
 		$this->column_start_page = $this->page;
 		$this->selectColumn(0);
@@ -22148,7 +22148,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 	 */
 	protected function hyphenateWord($word, $patterns, $dictionary=array(), $leftmin=1, $rightmin=2, $charmin=1, $charmax=8) {
 		$hyphenword = array(); // hyphens positions
-		$numchars = count($word);
+		$numchars = count74($word);
 		if ($numchars <= $charmin) {
 			return $word;
 		}
@@ -22177,7 +22177,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				$subword = strtolower(TCPDF_FONTS::UTF8ArrSubString($tmpword, $pos, ($pos + $i), $this->isunicode));
 				if (isset($patterns[$subword])) {
 					$pattern = TCPDF_FONTS::UTF8StringToArray($patterns[$subword], $this->isunicode, $this->CurrentFont);
-					$pattern_length = count($pattern);
+					$pattern_length = count74($pattern);
 					$digits = 1;
 					for ($j = 0; $j < $pattern_length; ++$j) {
 						// check if $pattern[$j] is a number = hyphenation level (only numbers from 1 to 5 are valid)
@@ -22938,7 +22938,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 			$tmp = array();
 			$view_box = array();
 			if (preg_match('/[\s]+viewBox[\s]*=[\s]*"[\s]*([0-9\.\-]+)[\s]+([0-9\.\-]+)[\s]+([0-9\.]+)[\s]+([0-9\.]+)[\s]*"/si', $regs[1], $tmp)) {
-				if (count($tmp) == 5) {
+				if (count74($tmp) == 5) {
 					array_shift($tmp);
 					foreach ($tmp as $key => $val) {
 						$view_box[$key] = $this->getHTMLUnitToUnits($val, 0, $this->svgunit, false);
@@ -22950,7 +22950,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				$tmp = array();
 				if (preg_match('/[\s]+preserveAspectRatio[\s]*=[\s]*"([^"]*)"/si', $regs[1], $tmp)) {
 					$aspect_ratio = preg_split('/[\s]+/si', $tmp[1]);
-					switch (count($aspect_ratio)) {
+					switch (count74($aspect_ratio)) {
 						case 3: {
 							$aspect_ratio_align = $aspect_ratio[1];
 							$aspect_ratio_ms = $aspect_ratio[2];
@@ -23301,7 +23301,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 			//set clipping area
 			if (!empty($clip_function) AND method_exists($this, $clip_function)) {
 				$bbox = call_user_func_array(array($this, $clip_function), $clip_params);
-				if ((!isset($gradient['type']) OR ($gradient['type'] != 3)) AND is_array($bbox) AND (count($bbox) == 4)) {
+				if ((!isset($gradient['type']) OR ($gradient['type'] != 3)) AND is_array($bbox) AND (count74($bbox) == 4)) {
 					list($x, $y, $w, $h) = $bbox;
 				}
 			}
@@ -23380,7 +23380,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				$cy -= $h;
 			}
 			$this->_out(sprintf('%F 0 0 %F %F %F cm', ($w * $this->k), ($h * $this->k), ($x * $this->k), ($cy * $this->k)));
-			if (count($gradient['stops']) > 1) {
+			if (count74($gradient['stops']) > 1) {
 				$this->Gradient($gradient['type'], $gradient['coords'], $gradient['stops'], array(), false);
 			}
 		} elseif ($svgstyle['fill'] != 'none') {
@@ -23897,7 +23897,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 	protected function removeTagNamespace($name) {
 		if(strpos($name, ':') !== false) {
 			$parts = explode(':', $name);
-			return $parts[(sizeof($parts) - 1)];
+			return $parts[(count74($parts) - 1)];
 		}
 		return $name;
 	}
@@ -23928,7 +23928,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 			if (end($this->svgdefs) !== FALSE) {
 				$last_svgdefs_id = key($this->svgdefs);
 				if (isset($this->svgdefs[$last_svgdefs_id]['attribs']['child_elements'])) {
-					$attribs['id'] = 'DF_'.(count($this->svgdefs[$last_svgdefs_id]['attribs']['child_elements']) + 1);
+					$attribs['id'] = 'DF_'.(count74($this->svgdefs[$last_svgdefs_id]['attribs']['child_elements']) + 1);
 					$this->svgdefs[$last_svgdefs_id]['attribs']['child_elements'][$attribs['id']] = array('name' => $name, 'attribs' => $attribs);
 					return;
 				}
@@ -23941,7 +23941,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 			$clipping = true;
 		}
 		// get styling properties
-		$prev_svgstyle = $this->svgstyles[max(0,(count($this->svgstyles) - 1))]; // previous style
+		$prev_svgstyle = $this->svgstyles[max(0,(count74($this->svgstyles) - 1))]; // previous style
 		$svgstyle = $this->svgstyles[0]; // set default style
 		if ($clipping AND !isset($attribs['fill']) AND (!isset($attribs['style']) OR (!preg_match('/[;\"\s]{1}fill[\s]*:[\s]*([^;\"]*)/si', $attribs['style'], $attrval)))) {
 			// default fill attribute for clipping
@@ -24003,7 +24003,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				}
 				$this->svgclipmode = true;
 				if (!isset($attribs['id'])) {
-					$attribs['id'] = 'CP_'.(count($this->svgcliptm) + 1);
+					$attribs['id'] = 'CP_'.(count74($this->svgcliptm) + 1);
 				}
 				$this->svgclipid = $attribs['id'];
 				$this->svgclippaths[$this->svgclipid] = array();
@@ -24037,7 +24037,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 					$tmp = array();
 					preg_match_all("/[0-9]+/", $attribs['viewBox'], $tmp);
 					$tmp = $tmp[0];
-					if (sizeof($tmp) == 4) {
+					if (count74($tmp) == 4) {
 						$vx = $tmp[0];
 						$vy = $tmp[1];
 						$vw = $tmp[2];
@@ -24053,7 +24053,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 							} else {
 								preg_match_all('/[a-zA-Z]+/', $attribs['preserveAspectRatio'], $tmp);
 								$tmp = $tmp[0];
-								if ((sizeof($tmp) == 2) AND (strlen($tmp[0]) == 8) AND (in_array($tmp[1], array('meet', 'slice', 'none')))) {
+								if ((count74($tmp) == 2) AND (strlen($tmp[0]) == 8) AND (in_array($tmp[1], array('meet', 'slice', 'none')))) {
 									$aspectX = substr($tmp[0], 0, 4);
 									$aspectY = substr($tmp[0], 4, 4);
 									$fit = $tmp[1];
@@ -24106,7 +24106,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 					break;
 				}
 				if (!isset($attribs['id'])) {
-					$attribs['id'] = 'GR_'.(count($this->svggradients) + 1);
+					$attribs['id'] = 'GR_'.(count74($this->svggradients) + 1);
 				}
 				$this->svggradientid = $attribs['id'];
 				$this->svggradients[$this->svggradientid] = array();
@@ -24146,7 +24146,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 					break;
 				}
 				if (!isset($attribs['id'])) {
-					$attribs['id'] = 'GR_'.(count($this->svggradients) + 1);
+					$attribs['id'] = 'GR_'.(count74($this->svggradients) + 1);
 				}
 				$this->svggradientid = $attribs['id'];
 				$this->svggradients[$this->svggradientid] = array();
@@ -24332,7 +24332,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				$points = trim($points);
 				// note that point may use a complex syntax not covered here
 				$points = preg_split('/[\,\s]+/si', $points);
-				if (count($points) < 4) {
+				if (count74($points) < 4) {
 					break;
 				}
 				$p = array();

@@ -68,7 +68,7 @@ class IMAPProvider extends EmailCoreProvider {
         $totalEmails = imap_num_msg($this->imapResource);
         $startMsg = max(1, $totalEmails - $maxResults + 1);
         
-        for ($msgNum = $totalEmails; $msgNum >= $startMsg && count($emails) < $maxResults; $msgNum--) {
+        for ($msgNum = $totalEmails; $msgNum >= $startMsg && count74($emails) < $maxResults; $msgNum--) {
             $header = imap_headerinfo($this->imapResource, $msgNum);
             $body = imap_body($this->imapResource, $msgNum);
             $structure = imap_fetchstructure($this->imapResource, $msgNum);
@@ -92,7 +92,7 @@ class IMAPProvider extends EmailCoreProvider {
                 'provider' => 'imap'
             ];
 
-            $email['has_attachments'] = count($email['attachments']) > 0;
+            $email['has_attachments'] = count74($email['attachments']) > 0;
 
             $emails[] = $email;
         }
@@ -575,8 +575,8 @@ class IMAPProvider extends EmailCoreProvider {
         
         $attachments = [];
         
-        if (isset($structure->parts) && count($structure->parts)) {
-            for ($i = 0; $i < count($structure->parts); $i++) {
+        if (isset($structure->parts) && count74($structure->parts)) {
+            for ($i = 0; $i < count74($structure->parts); $i++) {
                 $part = $structure->parts[$i];
                 
                 // Verificar si es un adjunto
@@ -588,8 +588,8 @@ class IMAPProvider extends EmailCoreProvider {
                 }
                 
                 // Verificar subpartes (adjuntos anidados)
-                if (isset($part->parts) && count($part->parts)) {
-                    for ($j = 0; $j < count($part->parts); $j++) {
+                if (isset($part->parts) && count74($part->parts)) {
+                    for ($j = 0; $j < count74($part->parts); $j++) {
                         $subpart = $part->parts[$j];
                         if ($this->isAttachment($subpart)) {
                             $attachment = $this->extractAttachment($emailNumber, ($i + 1) . '.' . ($j + 1), $subpart);
@@ -879,7 +879,7 @@ class IMAPProvider extends EmailCoreProvider {
         
         // Obtener adjuntos con el método nuevo
         $attachments = $this->getAttachmentsNew($emailNumber);
-        echo "\nAdjuntos encontrados: " . count($attachments) . "\n";
+        echo "\nAdjuntos encontrados: " . count74($attachments) . "\n";
         
         foreach ($attachments as $index => $attachment) {
             echo "\n--- ADJUNTO " . ($index + 1) . " ---\n";
@@ -937,7 +937,7 @@ class IMAPProvider extends EmailCoreProvider {
         }
         
         if (isset($structure->parts)) {
-            echo $indent . "Subpartes: " . count($structure->parts) . "\n";
+            echo $indent . "Subpartes: " . count74($structure->parts) . "\n";
             foreach ($structure->parts as $index => $part) {
                 echo $indent . "Parte " . ($index + 1) . ":\n";
                 $this->printStructure($part, $level + 1);

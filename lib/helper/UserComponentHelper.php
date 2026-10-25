@@ -55,7 +55,7 @@ function component_user_multiple($element_id, $idhidenuser, $idhiddencargo, $opt
     $full_url = isset($advquery) ? $full_url . $advquery : $full_url;
     //***************************************************************************************
     $term_list = null;
-    for ($i = 0; $i < count($values_uid); $i++) {
+    for ($i = 0; $i < count74($values_uid); $i++) {
         $cargo_usuario = CargoUsuarioPeer::retrieveByPK($values_cuid[$i]);
         $cargo_text = trim($cargo_usuario) ? " - " . (trim($cargo_usuario->getCargo())) : "";
 
@@ -66,7 +66,7 @@ function component_user_multiple($element_id, $idhidenuser, $idhiddencargo, $opt
         }
 
         if (trim($values_uid[$i])) {
-            $term_list[] = array("id" => $values_uid[$i], "text" => ($values_text[$i]) . $cargo_text, "cid" => (count($values_cuid) ? trim($values_cuid[$i]) : null), "img" => $img);
+            $term_list[] = array("id" => $values_uid[$i], "text" => ($values_text[$i]) . $cargo_text, "cid" => (count74($values_cuid) ? trim($values_cuid[$i]) : null), "img" => $img);
         }
     }
     $data_json = json_encode($term_list);

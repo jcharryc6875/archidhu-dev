@@ -364,7 +364,7 @@ class PHPExcel_Calculation_MathTrig
             $myCountedFactors = array_count_values($myFactors);
             $allValuesFactors[] = $myCountedFactors;
         }
-        $allValuesCount = count($allValuesFactors);
+        $allValuesCount = count74($allValuesFactors);
         if ($allValuesCount == 0) {
             return 0;
         }
@@ -373,7 +373,7 @@ class PHPExcel_Calculation_MathTrig
         for ($i=1; $i < $allValuesCount; ++$i) {
             $mergedArray = array_intersect_key($mergedArray, $allValuesFactors[$i]);
         }
-        $mergedArrayValues = count($mergedArray);
+        $mergedArrayValues = count74($mergedArray);
         if ($mergedArrayValues == 0) {
             return $returnValue;
         } elseif ($mergedArrayValues > 1) {
@@ -1239,7 +1239,7 @@ class PHPExcel_Calculation_MathTrig
 
 		$sumArgs = PHPExcel_Calculation_Functions::flattenArray(array_shift($arrayList));
 
-        while (count($arrayList) > 0) {
+        while (count74($arrayList) > 0) {
             $aArgsArray[] = PHPExcel_Calculation_Functions::flattenArray(array_shift($arrayList));
             $conditions[] = PHPExcel_Calculation_Functions::ifCondition(array_shift($arrayList));
         }
@@ -1296,7 +1296,7 @@ class PHPExcel_Calculation_MathTrig
         $arrayList = func_get_args();
 
         $wrkArray = PHPExcel_Calculation_Functions::flattenArray(array_shift($arrayList));
-        $wrkCellCount = count($wrkArray);
+        $wrkCellCount = count74($wrkArray);
 
         for ($i=0; $i< $wrkCellCount; ++$i) {
             if ((!is_numeric($wrkArray[$i])) || (is_string($wrkArray[$i]))) {
@@ -1306,7 +1306,7 @@ class PHPExcel_Calculation_MathTrig
 
         foreach ($arrayList as $matrixData) {
             $array2 = PHPExcel_Calculation_Functions::flattenArray($matrixData);
-            $count = count($array2);
+            $count = count74($array2);
             if ($wrkCellCount != $count) {
                 return PHPExcel_Calculation_Functions::VALUE();
             }
@@ -1363,7 +1363,7 @@ class PHPExcel_Calculation_MathTrig
     {
         $array1 = PHPExcel_Calculation_Functions::flattenArray($matrixData1);
         $array2 = PHPExcel_Calculation_Functions::flattenArray($matrixData2);
-        $count = min(count($array1), count($array2));
+        $count = min(count74($array1), count74($array2));
 
         $result = 0;
         for ($i = 0; $i < $count; ++$i) {
@@ -1388,7 +1388,7 @@ class PHPExcel_Calculation_MathTrig
     {
         $array1 = PHPExcel_Calculation_Functions::flattenArray($matrixData1);
         $array2 = PHPExcel_Calculation_Functions::flattenArray($matrixData2);
-        $count = min(count($array1), count($array2));
+        $count = min(count74($array1), count74($array2));
 
         $result = 0;
         for ($i = 0; $i < $count; ++$i) {
@@ -1413,7 +1413,7 @@ class PHPExcel_Calculation_MathTrig
     {
         $array1 = PHPExcel_Calculation_Functions::flattenArray($matrixData1);
         $array2 = PHPExcel_Calculation_Functions::flattenArray($matrixData2);
-        $count = min(count($array1), count($array2));
+        $count = min(count74($array1), count74($array2));
 
         $result = 0;
         for ($i = 0; $i < $count; ++$i) {

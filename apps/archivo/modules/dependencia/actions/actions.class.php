@@ -139,7 +139,7 @@ class dependenciaActions extends sfActions
     $elist_msg = DependenciaPeer::getIsValidByIdBatch($list_nrow);
     //*******************************************************************************************
     $this->getResponse()->setContentType('application/json');
-    $response_info = array('status' => (count($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'comIdLote' => null);
+    $response_info = array('status' => (count74($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'comIdLote' => null);
     return $this->renderText(json_encode($response_info));
   }
 
@@ -193,7 +193,7 @@ class dependenciaActions extends sfActions
       //*****************************************************************************************
       ini_set('max_execution_time', $max_time);
       //*****************************************************************************************
-      if(count($ilsit_error)){
+      if(count74($ilsit_error)){
         $error_message = implode(";",$ilsit_error);
         $response_info = array('status' => 301, 'message' => "Ocurrio un error y algunos registros no se importaron, ".$error_message, 'comIdLote' => null);
       }else{

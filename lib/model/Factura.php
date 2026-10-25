@@ -56,7 +56,7 @@ class Factura extends BaseFactura
     {
         $users_list = UsuarioPeer::getAllUserActiveFacturas($proceso_id);
         $item_html = "";
-        if(count($users_list) != 1){
+        if(count74($users_list) != 1){
             $item_html .= '<div class="form-group">';                
             $item_html .= '<label for="'.md5($proceso_id.$itemid.$textitem).'" class="col-sm-2 control-label">'.$textitem.':</label>';
             $item_html .= '<div class="col-sm-6">';                                            

@@ -100,7 +100,7 @@ class TaskInstancePeer extends BaseTaskInstancePeer
         $tasks = TaskInstancePeer::doSelect($c);
 
         $stats = [
-            'total' => count($tasks),
+            'total' => count74($tasks),
             'pending' => 0,
             'assigned' => 0,
             'completed' => 0,
@@ -133,7 +133,7 @@ class TaskInstancePeer extends BaseTaskInstancePeer
         }
 
         if (!empty($completionTimes)) {
-            $stats['avg_completion_time'] = array_sum($completionTimes) / count($completionTimes);
+            $stats['avg_completion_time'] = array_sum($completionTimes) / count74($completionTimes);
         }
 
         return $stats;

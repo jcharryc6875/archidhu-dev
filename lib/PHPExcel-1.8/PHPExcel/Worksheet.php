@@ -577,7 +577,7 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
      */
     public function getChartCount()
     {
-        return count($this->chartCollection);
+        return count74($this->chartCollection);
     }
 
     /**
@@ -589,7 +589,7 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
      */
     public function getChartByIndex($index = null)
     {
-        $chartCount = count($this->chartCollection);
+        $chartCount = count74($this->chartCollection);
         if ($chartCount == 0) {
             return false;
         }
@@ -627,7 +627,7 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
      */
     public function getChartByName($chartName = '')
     {
-        $chartCount = count($this->chartCollection);
+        $chartCount = count74($this->chartCollection);
         if ($chartCount == 0) {
             return false;
         }
@@ -1698,7 +1698,7 @@ class PHPExcel_Worksheet implements PHPExcel_IComparable
             }
 
             // Blank out the rest of the cells in the range (if they exist)
-            $count = count($aReferences);
+            $count = count74($aReferences);
             for ($i = 1; $i < $count; $i++) {
                 if ($this->cellExists($aReferences[$i])) {
                     $this->getCell($aReferences[$i])->setValueExplicit(null, PHPExcel_Cell_DataType::TYPE_NULL);

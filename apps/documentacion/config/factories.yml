@@ -53,7 +53,8 @@ all:
     class: sfSessionStorage
     param:
       session_name: symfony
-      session_cookie_path: '/; SameSite=Lax'
+      session_cookie_path: '/'
+      session_cookie_samesite: Lax
       session_cookie_httponly: true
       session_cookie_secure: false
 #  view_cache:

@@ -74,7 +74,7 @@ class TCPDF_IMAGES {
 		$type = '';
 		if (isset($iminfo['mime']) AND !empty($iminfo['mime'])) {
 			$mime = explode('/', $iminfo['mime']);
-			if ((count($mime) > 1) AND ($mime[0] == 'image') AND (!empty($mime[1]))) {
+			if ((count74($mime) > 1) AND ($mime[0] == 'image') AND (!empty($mime[1]))) {
 				$type = strtolower(trim($mime[1]));
 			}
 		}
@@ -218,7 +218,7 @@ class TCPDF_IMAGES {
 			$offset = ($pos + 14 + $length);
 		}
 		// order and compact ICC segments
-		if (count($icc) > 0) {
+		if (count74($icc) > 0) {
 			ksort($icc);
 			$icc = implode('', $icc);
 			if ((ord($icc[36]) != 0x61) OR (ord($icc[37]) != 0x63) OR (ord($icc[38]) != 0x73) OR (ord($icc[39]) != 0x70)) {

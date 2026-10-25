@@ -807,7 +807,7 @@ class email_syncActions extends sfActions
             $list_interesado = preg_split("/[,]+/", trim($this->getRequestParameter('idUserInteresados')), -1, PREG_SPLIT_NO_EMPTY);
             $radicado_com = "";
             $mailErrorMsg = array();
-            for ($index = 0; $index < count($list_interesado); $index++) {
+            for ($index = 0; $index < count74($list_interesado); $index++) {
                 $interesado_obj = InteresadosPeer::retrieveByPK($list_interesado[$index]);
                 if (!$radicarByInt) {
                     $isAddInteresado = ComrecibidaInteresadosPeer::addNewInteresadoByComId($com_recibida->getPrimaryKey(), $list_interesado[$index]);

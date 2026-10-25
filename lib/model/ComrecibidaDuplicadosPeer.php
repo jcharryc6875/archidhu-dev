@@ -120,7 +120,7 @@ class ComrecibidaDuplicadosPeer extends BaseComrecibidaDuplicadosPeer
 			$c->add(ComrecibidaDuplicadosPeer::COMRECIBIDA_ID, $comrecibida_id);
 			$result = ComrecibidaDuplicadosPeer::doSelect($c);
 
-			if($result != null && count($result) > 0)
+			if($result != null && count74($result) > 0)
 			{
 				return true;
 			}
@@ -182,7 +182,7 @@ class ComrecibidaDuplicadosPeer extends BaseComrecibidaDuplicadosPeer
 				$e->add(ComrecibidaRespuestaPeer::COMRECIBIDA_ID, $comrec_duplic_id);
 				$comrecibida_conresp = ComrecibidaRespuestaPeer::doSelect($e);
 				
-				if($comrecibida_conresp !== null && count($comrecibida_conresp) > 0)
+				if($comrecibida_conresp !== null && count74($comrecibida_conresp) > 0)
 				{
 					$d = new Criteria();
 					// INICIO VARIACION -- LOGICA DEL LUNES

@@ -98,7 +98,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
 
         <div class="form-group">
           <?php
-          $class_required = count($destinatariosIds) <= 0 ? " requiredXorMaxOneSelect2 required" : " requiredXorMaxOneSelect2";
+          $class_required = count74($destinatariosIds) <= 0 ? " requiredXorMaxOneSelect2 required" : " requiredXorMaxOneSelect2";
           echo input_hidden_tag('idUserInteresados', implode(",", $intesadosIds));
           echo component_interesados_multiple('paraUserInt', "idUserInteresados", array('class' => 'form-control input-sm composer-group vinlinescomint' . $class_required, 'placeholder' => 'Digite interesado(s)', 'caption' => 'Interesados<span class="ctrlreq">(**)</span>', 'formgroup' => false, 'coldivwidth' => 'col-sm-10', 'buttontitle' => 'Buscar Interesado', 'values' => implode(",", $intesadosIds), 'values_text' => implode(",", $intesadosNames), 'option' => 1, 'maximumSelectionSize' => -1));
           ?>
@@ -106,7 +106,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
 
         <div class="form-group">
           <?php
-          $class_required = count($intesadosIds) <= 0 ? " requiredXorMaxOneSelect2 required" : " requiredXorMaxOneSelect2";
+          $class_required = count74($intesadosIds) <= 0 ? " requiredXorMaxOneSelect2 required" : " requiredXorMaxOneSelect2";
           echo input_hidden_tag('destinatariosIds', implode(",", $destinatariosIds));
           echo input_hidden_tag('cargousuarioIdDestinos', implode(",", $cargousuarioIdDestinos));
           echo component_user_multiple('paraUserDestinos', "destinatariosIds", "cargousuarioIdDestinos", array('class' => 'form-control input-sm sl strdestcom' . $class_required, 'url' => 'usuario_firma/selectUserSearching', 'formgroup' => false, 'placeholder' => 'Seleccione usuario destino del acto administrativo', 'caption' => 'Destinario<span class="ctrlreq">(**)</span>', 'coldivwidth' => 'col-sm-10', 'buttontitle' => 'Asignar Destinatario', 'values' => implode(",", $destinatariosIds), 'values_text' => implode(",", $udestinarios_names), 'values_cuid' => implode(",", $cargousuarioIdDestinos), 'option' => 1, 'maximumSelectionSize' => 1));
@@ -200,7 +200,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
               <a class="btn btn-default btn-icon" data-toggle="tooltip" data-original-title="Descargar Plantilla" target="_blank" href="<?php echo url_for('acto_administrativo/downloadTplByWord?actoadministrativo_id=' . $acto_administrativo->getPrimaryKey());; ?>"><i class="entypo-down"></i>Descargar Plantilla</a>
             <?php } ?>
           </div>
-          <?php if (count($wordVersions) >= 2) { ?>
+          <?php if (count74($wordVersions) >= 2) { ?>
             <div class="form-group">
               <label class="col-sm-1 control-label">Comparar versiones (Word):</label>
               <div class="col-sm-8">
@@ -393,9 +393,9 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
           <div class="col-sm-offset-3 col-sm-6">
             <?php if ($acto_administrativo->getPrimaryKey()) { ?>
               <?php if ($permisoRadicarFirmaElectronica) { ?>
-                <?php if ($sf_user->checkPerm($currentFormBotonRadicar, $currentUser) && ($acto_administrativo->getEstadoactoadministrativoId() == 1) && (count($usuarios_firman) >= 1)) { ?>
+                <?php if ($sf_user->checkPerm($currentFormBotonRadicar, $currentUser) && ($acto_administrativo->getEstadoactoadministrativoId() == 1) && (count74($usuarios_firman) >= 1)) { ?>
                   <?php if (in_array($currentUser, $users_asignado)) { ?>
-                    <?php if ((count($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman)) || (count($aprobacion_ulist) == 0)) { ?>
+                    <?php if ((count74($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman)) || (count74($aprobacion_ulist) == 0)) { ?>
                       <button type="button" name="saveActoAdm" id="saveActoAdm" value="save" class="btn btn-success tooltip-primary" data-toggle="tooltip" data-original-title="Guardar los cambios del registro actual">Guardar Registro</button>
                       <a class="btn btn-info tooltip-primary" data-toggle="tooltip" data-original-title="Firmar y generar el acto administrativo" href="<?php echo url_for('acto_administrativo/radicar?actoadministrativo_id=' . $acto_administrativo->getPrimaryKey()); ?>">Firmar y Generar</a>
                     <?php } elseif (in_array($currentUser, $users_aprueban) || in_array($currentUser, $users_asignado)) {
@@ -437,7 +437,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
 
               <a class="btn btn-orange tooltip-primary" data-toggle="tooltip" data-original-title="Previsualizar el documento" target="_blank" href="<?php echo $base_path; ?>/comun.php/acto_administrativo/showpdf?actoadministrativo_id=<?php echo $acto_administrativo->getPrimaryKey() ?>">Vista Previa</a>
 
-              <?php if ($puedeConfigurarFlujo && count($participantesFlujo)) { ?>
+              <?php if ($puedeConfigurarFlujo && count74($participantesFlujo)) { ?>
                 <a href="#" class="btn btn-default tooltip-primary" data-toggle="tooltip" data-original-title="Configurar el orden de ejecución y la edición del flujo para este acto" onclick="javascript:jQuery.OpenModalSIMAD('<?php echo $base_path; ?>/comun.php/acto_administrativo/configurarFlujo?actoadministrativo_id=<?php echo $acto_administrativo->getPrimaryKey() ?>');">
                   <span class="glyphicon glyphicon-cog"></span>&nbsp;Configurar Flujo
                 </a>

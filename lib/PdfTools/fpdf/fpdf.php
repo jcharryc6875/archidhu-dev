@@ -457,7 +457,7 @@ function AddFont($family, $style='', $file='')
 	if(isset($this->fonts[$fontkey]))
 		return;
 	$info = $this->_loadfont($file);
-	$info['i'] = count($this->fonts)+1;
+	$info['i'] = count74($this->fonts)+1;
 	if(!empty($info['file']))
 	{
 		// Embedded font
@@ -533,7 +533,7 @@ function SetFontSize($size)
 function AddLink()
 {
 	// Create a new internal link
-	$n = count($this->links)+1;
+	$n = count74($this->links)+1;
 	$this->links[$n] = array(0, 0);
 	return $n;
 }
@@ -883,7 +883,7 @@ function Image($file, $x=null, $y=null, $w=0, $h=0, $type='', $link='')
 		if(!method_exists($this,$mtd))
 			$this->Error('Unsupported image type: '.$type);
 		$info = $this->$mtd($file);
-		$info['i'] = count($this->images)+1;
+		$info['i'] = count74($this->images)+1;
 		$this->images[$file] = $info;
 	}
 	else
@@ -1780,7 +1780,7 @@ protected function _putimage(&$info)
 	if(isset($info['trns']) && is_array($info['trns']))
 	{
 		$trns = '';
-		for($i=0;$i<count($info['trns']);$i++)
+		for($i=0;$i<count74($info['trns']);$i++)
 			$trns .= $info['trns'][$i].' '.$info['trns'][$i].' ';
 		$this->_put('/Mask ['.$trns.']');
 	}

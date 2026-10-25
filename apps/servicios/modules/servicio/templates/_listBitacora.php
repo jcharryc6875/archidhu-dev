@@ -13,7 +13,7 @@ $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 				  B&iacute;tacora Servicio
 				</div>
 			</div>
-			<?php if(!count($bitacora_servicios)): ?>				
+			<?php if(!count74($bitacora_servicios)): ?>				
 				<div class="panel-body">
 					<div class="alert alert-default"><strong>No existen Registros</strong>.</div>
 				</div>

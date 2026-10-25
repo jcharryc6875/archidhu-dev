@@ -11,7 +11,7 @@ use_helper('jQuery');
 <table class="table table-bordered table-hover table-striped responsive">
         <thead>
             <tr>
-                <?php for ($i = 0; $i < count($list_headers); $i++): ?>
+                <?php for ($i = 0; $i < count74($list_headers); $i++): ?>
                 <th class="text-center">
                     <?php 
                         echo $list_headers[$i];

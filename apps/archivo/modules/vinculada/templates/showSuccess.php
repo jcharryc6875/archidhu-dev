@@ -37,7 +37,7 @@ use_helper('jQuery');
 						<div class="col-sm-8"><p>
 							<?php 
 							$ruta = split(',',$vinculada->getRuta());
-							$cant_registros = count($ruta);
+							$cant_registros = count74($ruta);
 							for($j=0; $j < $cant_registros; $j++){
 								echo "<a href='".$ruta[$j]."' target='_blank'>".basename($ruta[$j])."</a> ";
 							}			

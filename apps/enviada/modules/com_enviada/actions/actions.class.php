@@ -1342,7 +1342,7 @@ class com_enviadaActions extends sfActions
             $ilist_coms = ComEnviadaPeer::getListComRadicarByUser($usuariologuiado);
         }
         //*********************************************************************************************
-        if (count($ilist_coms) <= 0) {
+        if (count74($ilist_coms) <= 0) {
             $com_data = array('comenviada_id' => null, 'radicado' => null, 'fecha_creacion' => null);
             $com_data['isError'] = true;
             $com_data['message'] = "Ningun registro se seleccionado para radicar";
@@ -1758,7 +1758,7 @@ class com_enviadaActions extends sfActions
         //*********************************************************************************************************
         $this->copiasDestinatarios = isset($ldirectorio_destino['directoriocom_text']) ? implode(",", $ldirectorio_destino['directoriocom_text']) : "";
         $this->destinatario = isset($ldirectorio_destino['directoriocom_id']) ? implode(",", $ldirectorio_destino['directoriocom_id']) : "";
-        $this->destinatario = count($copiasListDest) ? implode(",", $copiasListDest) : "";
+        $this->destinatario = count74($copiasListDest) ? implode(",", $copiasListDest) : "";
         //*********************************************************************************************************
         $a = new Criteria();
         $a->add(EnviadaUsuarioPeer::COMENVIADA_ID, $com_enviada->getPrimaryKey());
@@ -1836,11 +1836,11 @@ class com_enviadaActions extends sfActions
         $this->firmas_desatendida = $firmas_desatendida;
         $this->tipoprocesocom_id = $object_asignado != null ? $object_asignado->getTipoprocesocomId() : 0;
         $this->aprobacion_ulist = $aprob_urlist;
-        $this->aprobacion_count = count($this->aprobacion_ulist);
+        $this->aprobacion_count = count74($this->aprobacion_ulist);
         //**********************************************************************************************************
         $matriz_data = $this->getAprobadores($this->getRequestParameter('comenviada_id'));
         $this->is_usuario_aprobador = false;
-        if (count($matriz_data) > 0) {
+        if (count74($matriz_data) > 0) {
             $this->aprobadores = implode(",", $matriz_data[0]) . ',';
             $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
             if (in_array($usuariologuiado, $matriz_data[0])) {
@@ -2043,18 +2043,18 @@ class com_enviadaActions extends sfActions
                 if ($proceso_actual == 3) {
                     $next_process = 4;
                     $list_next = simad_util::search_array($wait_process, 'tproceso_id', $proceso_actual);
-                    if (count($list_next) <= 0) {
+                    if (count74($list_next) <= 0) {
                         $list_next = simad_util::search_array($wait_process, 'tproceso_id', $next_process);
-                        if (count($list_next) <= 0) {
+                        if (count74($list_next) <= 0) {
                             $list_next = array('tproceso_id' => $object_current->getTipoprocesocomId(), 'object' => $object_current);
                         }
                     }
                 } elseif ($proceso_actual == 4) {
                     $next_process = 5;
                     $list_next = simad_util::search_array($wait_process, 'tproceso_id', $proceso_actual);
-                    if (count($list_next) <= 0) {
+                    if (count74($list_next) <= 0) {
                         $list_next = simad_util::search_array($wait_process, 'tproceso_id', $next_process);
-                        if (count($list_next) <= 0) {
+                        if (count74($list_next) <= 0) {
                             $list_next = array('tproceso_id' => $object_current->getTipoprocesocomId(), 'object' => $object_current);
                         }
                     }
@@ -2565,7 +2565,7 @@ class com_enviadaActions extends sfActions
                 //********************************************************************************
                 $this->intesadosIds = implode(",", $list_inteIds);
                 $this->intesadosNames = implode(",", $list_names);
-                $this->viewCheckInters = count($list_inteIds) > 1 ? true : false;
+                $this->viewCheckInters = count74($list_inteIds) > 1 ? true : false;
                 //********************************************************************************
                 if ($this->com_recibida->getContenidodocId()) {
                     $contenido_documental = ContenidoUnidadDocumentalPeer::retrieveByPK($this->com_recibida->getContenidodocId());
@@ -3073,7 +3073,7 @@ class com_enviadaActions extends sfActions
         //*************************************************************************************
         $matriz_data = $this->getAprobadores($com_enviada->getComenviadaId());
         $this->is_usuario_aprobador = false;
-        if (count($matriz_data) > 0) {
+        if (count74($matriz_data) > 0) {
             $this->aprobadores = implode(",", $matriz_data[0]) . ',';
             $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
 
@@ -3344,7 +3344,7 @@ class com_enviadaActions extends sfActions
         /*********************************************APROBACIONES**********************************************/
         $matriz_data = $this->getAprobadores($com_enviada->getComenviadaId());
         $this->is_usuario_aprobador = false;
-        if (count($matriz_data) > 0) {
+        if (count74($matriz_data) > 0) {
             $this->aprobadores = implode(",", $matriz_data[0]) . ',';
             $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
 
@@ -3567,7 +3567,7 @@ class com_enviadaActions extends sfActions
             if ($response_create['isError'] == false) {
                 $list_com = $response_create['list_com'];
             }
-        } elseif (count($list_comdirdestino) > 1) {
+        } elseif (count74($list_comdirdestino) > 1) {
             $response_create = $com_enviada->addComByDirectorioExt($list_comdirdestino, $firmante_id, $entidad_id, $regional, $depen_codigo);
             if ($response_create['isError'] == false) {
                 $list_com = $response_create['list_com'];
@@ -3753,13 +3753,15 @@ class com_enviadaActions extends sfActions
             $file_name_dir = $directorio . DIRECTORY_SEPARATOR . $file_name;
             $this->getRequest()->moveFile('file', $file_name_dir);
             //***********************************************************************************************************
+            require_once sfConfig::get('sf_lib_dir') . '/PhpSpreadsheet/vendor/autoload.php';
+            //***********************************************************************************************************
             $inputFileName = $file_name_dir;
-            $inputFileType = 'Excel2007';
+            $inputFileType = 'Xlsx';
             if ($extension_file == "xls") {
-                $inputFileType = 'Excel5';
+                $inputFileType = 'Xls';
             }
             $filterSubset = new MyReadFilter(1, $rows_read, range('A', 'C'));
-            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objReader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
             $objReader->setReadDataOnly(true);
             $objReader->setReadFilter($filterSubset);
             $objPHPExcel = $objReader->load($inputFileName);
@@ -3873,7 +3875,7 @@ class com_enviadaActions extends sfActions
         $idUserInteresados = trim($this->getRequestParameter('idUserInteresados')) ?: null;
         $interesados_comlist = preg_split("/[,]+/", $idUserInteresados, -1, PREG_SPLIT_NO_EMPTY);
         //********************************************************************************
-        if (!count($interesados_comlist)) {
+        if (!count74($interesados_comlist)) {
             $this->getResponse()->setContentType('application/json');
             return $this->renderText(json_encode(array('status' => 'success')));
         }
@@ -3975,7 +3977,7 @@ class com_enviadaActions extends sfActions
         /*********************************************APROBACIONES**********************************************/
         $matriz_data = $this->getAprobadores($this->getRequestParameter('comenviada_id'));
         $this->is_usuario_aprobador = false;
-        if (count($matriz_data) > 0) {
+        if (count74($matriz_data) > 0) {
             $this->aprobadores = implode(",", $matriz_data[0]) . ',';
             $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
             if (in_array($usuariologuiado, $matriz_data[0])) {
@@ -4156,7 +4158,7 @@ class com_enviadaActions extends sfActions
         //************************************************************************************
         if (!in_array($usuariologuiado, $usuario_asigando)) {
             $userIsCom = EnviadaUsuarioPeer::getUserAddedInCom($this->com_enviada->getPrimaryKey(), $usuariologuiado);
-            if (count($userIsCom) == 0)
+            if (count74($userIsCom) == 0)
                 $this->redirect(sfConfig::get('base_simad') . '/no_autorizado.html');
         }
         //************************************************************************************
@@ -4176,7 +4178,7 @@ class com_enviadaActions extends sfActions
         //************************************************************************************
         $this->intesadosIds = implode(",", $list_inteIds);
         $this->intesadosNames = implode(",", $list_names);
-        $this->viewCheckInters = count($list_inteIds) > 1 ? true : false;
+        $this->viewCheckInters = count74($list_inteIds) > 1 ? true : false;
         $this->users_aprueban = $firmas_aprobacion;
         $this->users_asignado = $usuario_asigando;
         $this->usuarios_firman = $user_firman;
@@ -4186,7 +4188,7 @@ class com_enviadaActions extends sfActions
         //*******************************************************************************************************
         $matriz_data = $this->getAprobadores($this->com_enviada->getPrimaryKey());
         $this->is_usuario_aprobador = false;
-        if (count($matriz_data) > 0) {
+        if (count74($matriz_data) > 0) {
             $this->aprobadores = implode(",", $matriz_data[0]) . ',';
             $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
 
@@ -4496,7 +4498,7 @@ class com_enviadaActions extends sfActions
             //***************************************************************************************
             $migrations_list = ComMigmasivoPeer::getListComByComLote($comIdLote);
             //***************************************************************************************
-            if (empty($migrations_list) || count($migrations_list) <= 0) {
+            if (empty($migrations_list) || count74($migrations_list) <= 0) {
                 return array('status' => 400, 'message' => 'Error, el listado de registros esta vacío, intente de nuevo');
             }
             //***************************************************************************************
@@ -4681,7 +4683,7 @@ class com_enviadaActions extends sfActions
         $elist_msg = ComMigmasivoPeer::getIsValidByIdBatch($idLote, $modulo_id);
         //*******************************************************************************************
         $this->getResponse()->setContentType('application/json');
-        $response_info = array('status' => (count($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'comIdLote' => $idLote);
+        $response_info = array('status' => (count74($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'comIdLote' => $idLote);
         return $this->renderText(json_encode($response_info));
     }
 
@@ -4940,7 +4942,7 @@ class com_enviadaActions extends sfActions
         //*********************************************************************************************************
         $directorioexterno_id = preg_split("/[,]+/", trim($this->getRequestParameter('directorioexterno_id')), -1, PREG_SPLIT_NO_EMPTY);
         $replyfile = trim($this->getRequestParameter('replyfile'));
-        if (!empty($replyfile) && count($directorioexterno_id) <= 1) {
+        if (!empty($replyfile) && count74($directorioexterno_id) <= 1) {
             $filedir_tmp = sfConfig::get("sf_web_dir") . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $replyfile;
             $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(53)->getValortexto() . 'uploads');
             $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd")) . DIRECTORY_SEPARATOR . $replyfile;
@@ -4997,7 +4999,7 @@ class com_enviadaActions extends sfActions
         //*********************************************************************************************************
         //inserta los directorios
         $directorioexterno_copias = preg_split("/[,]+/", trim($this->getRequestParameter('copiasDirectorioexterno_id')), -1, PREG_SPLIT_NO_EMPTY);
-        if (count($directorioexterno_id) || count($directorioexterno_copias)) {
+        if (count74($directorioexterno_id) || count74($directorioexterno_copias)) {
             EnviadaDirectorioPeer::borrarEnviadaDirectorios($com_enviada->getPrimaryKey());
             EnviadaDirectorioPeer::insertaEnviadaDirectorios($directorioexterno_id, $com_enviada->getPrimaryKey(), 1);
             EnviadaDirectorioPeer::insertaEnviadaDirectorios($directorioexterno_copias, $com_enviada->getPrimaryKey(), 2);
@@ -5007,10 +5009,10 @@ class com_enviadaActions extends sfActions
         //*********************************************************************************************************
         $list_interesado = preg_split("/[,]+/", trim($this->getRequestParameter('idUserInteresados')), -1, PREG_SPLIT_NO_EMPTY);
         $interesados_nuids = array();
-        for ($index = 0; $index < count($list_interesado); $index++) {
+        for ($index = 0; $index < count74($list_interesado); $index++) {
             $isAddInteresado = EnviadaInteresadosPeer::addNewInteresadoByComId($com_enviada->getPrimaryKey(), $list_interesado[$index]);
         }
-        if (count($list_interesado)) {
+        if (count74($list_interesado)) {
             $isDeleteNotIn = EnviadaInteresadosPeer::deleteByComIdNotExist($com_enviada->getPrimaryKey(), $list_interesado);
         } else {
             $isDeleteNotIn = EnviadaInteresadosPeer::deleteAllInteresadosByComId($com_enviada->getPrimaryKey());
@@ -5222,7 +5224,7 @@ class com_enviadaActions extends sfActions
         //*********************************************************************************************************
         $str_destinos  = trim($this->getRequestParameter('copiasDirectorioexterno_id'));
         $cadDestinos = preg_split("/[,]+/", $str_destinos, -1, PREG_SPLIT_NO_EMPTY);
-        $iterador = (count($cadDestinos)) - 1;
+        $iterador = (count74($cadDestinos)) - 1;
         //*********************************************************************************************************
         for ($i = 0; $i <= $iterador; $i++) {
             $copia_enviada = $com_enviada->copy();

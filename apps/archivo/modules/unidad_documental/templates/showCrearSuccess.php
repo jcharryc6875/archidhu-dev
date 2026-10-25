@@ -103,10 +103,10 @@ use_helper('jQuery');
 			<div class="tabs-vertical-env">
                 <ul class="nav nav-tabs bordered"><!-- available classes "right-aligned" -->
                     <li class="active"><a data-toggle="tab" href="#data"><span class="glyphicon glyphicon-import"></span>&nbsp;Detalles</a></li>
-                    <?php if(count($lista_metadatos)){ ?>
+                    <?php if(count74($lista_metadatos)){ ?>
                         <li><a data-toggle="tab" href="#listmetadatos"><span class="glyphicon glyphicon-list"></span>&nbsp;Lista Metadatos</a></li>
                     <?php } ?>
-					<?php if(count($lista_interesados)){ ?>
+					<?php if(count74($lista_interesados)){ ?>
                         <li><a data-toggle="tab" href="#listinteresados"><span class="glyphicon glyphicon-list"></span>&nbsp;Lista Interesados</a></li>
                     <?php } ?>
                 </ul>
@@ -282,7 +282,7 @@ use_helper('jQuery');
 						</div>						
 					</div>
 					<!-- listado de interesados -->
-					<?php if(count($lista_metadatos)){ ?>
+					<?php if(count74($lista_metadatos)){ ?>
 						<div id="listmetadatos" class="tab-pane">
 							<?php 
 								include_partial('listMetadatos',array('list_metadatos'=>$lista_metadatos)); 
@@ -290,7 +290,7 @@ use_helper('jQuery');
 						</div>
 					<?php } ?>
 					<!-- listado de interesados -->
-					<?php if(count($lista_interesados)){ ?>
+					<?php if(count74($lista_interesados)){ ?>
 						<div id="listinteresados" class="tab-pane">
 							<?php 
 								include_partial('listInteresados',array('unidad_documental' => $unidad_documental,'list_interesados'=> $lista_interesados));

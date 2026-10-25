@@ -26,6 +26,7 @@ all:
     default_culture:        en_US
     charset:                utf-8
     prototype_web_dir:      /sf/prototype
+    standard_helpers:       [Partial, Cache, Form, Object, Validation]
 #all:
 #  .actions:
 #    default_module:         default   # Default module and action to be called when

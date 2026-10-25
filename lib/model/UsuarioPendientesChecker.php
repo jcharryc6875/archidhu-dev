@@ -87,7 +87,7 @@ class UsuarioPendientesChecker
                     $registros[$id] = $registro;
                 }
             }
-            if (count($registros)) {
+            if (count74($registros)) {
                 $resultado[$bandeja_key] = array_values($registros);
             }
         }
@@ -156,7 +156,7 @@ class UsuarioPendientesChecker
 
         $resumen = array();
         foreach ($pendientesPorBandeja as $bandeja_key => $registros) {
-            $resumen[$bandeja_key] = array('cantidad' => count($registros), 'radicados' => array());
+            $resumen[$bandeja_key] = array('cantidad' => count74($registros), 'radicados' => array());
             foreach ($registros as $registro) {
                 switch ($bandeja_key) {
                     case 'com_recibida':

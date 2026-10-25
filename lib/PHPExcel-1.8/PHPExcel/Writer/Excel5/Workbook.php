@@ -267,7 +267,7 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
             if (isset($this->addedNumberFormats[$numberFormatHashCode])) {
                 $numberFormatIndex = $this->addedNumberFormats[$numberFormatHashCode];
             } else {
-                $numberFormatIndex = 164 + count($this->numberFormats);
+                $numberFormatIndex = 164 + count74($this->numberFormats);
                 $this->numberFormats[$numberFormatIndex] = $style->getNumberFormat();
                 $this->addedNumberFormats[$numberFormatHashCode] = $numberFormatIndex;
             }
@@ -280,7 +280,7 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
 
         $this->xfWriters[] = $xfWriter;
 
-        $xfIndex = count($this->xfWriters) - 1;
+        $xfIndex = count74($this->xfWriters) - 1;
         return $xfIndex;
     }
 
@@ -296,7 +296,7 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
         if (isset($this->addedFonts[$fontHashCode])) {
             $fontIndex = $this->addedFonts[$fontHashCode];
         } else {
-            $countFonts = count($this->fontWriters);
+            $countFonts = count74($this->fontWriters);
             $fontIndex = ($countFonts < 4) ? $countFonts : $countFonts + 1;
 
             $fontWriter = new PHPExcel_Writer_Excel5_Font($font);
@@ -317,9 +317,9 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
     private function addColor($rgb)
     {
         if (!isset($this->colors[$rgb])) {
-            if (count($this->colors) < 57) {
+            if (count74($this->colors) < 57) {
                 // then we add a custom color altering the palette
-                $colorIndex = 8 + count($this->colors);
+                $colorIndex = 8 + count74($this->colors);
                 $this->palette[$colorIndex] =
                     array(
                         hexdec(substr($rgb, 0, 2)),
@@ -476,7 +476,7 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
         $offset            = $this->_datasize;
 
         // add size of Workbook globals part 2, the length of the SHEET records
-        $total_worksheets = count($this->phpExcel->getAllSheets());
+        $total_worksheets = count74($this->phpExcel->getAllSheets());
         foreach ($this->phpExcel->getWorksheetIterator() as $sheet) {
             $offset += $boundsheet_length + strlen(PHPExcel_Shared_String::UTF8toBIFF8UnicodeShort($sheet->getTitle()));
         }
@@ -644,13 +644,13 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
         $chunk = '';
 
         // Named ranges
-        if (count($this->phpExcel->getNamedRanges()) > 0) {
+        if (count74($this->phpExcel->getNamedRanges()) > 0) {
             // Loop named ranges
             $namedRanges = $this->phpExcel->getNamedRanges();
             foreach ($namedRanges as $namedRange) {
                 // Create absolute coordinate
                 $range = PHPExcel_Cell::splitRange($namedRange->getRange());
-                for ($i = 0; $i < count($range); $i++) {
+                for ($i = 0; $i < count74($range); $i++) {
                     $range[$i][0] = '\'' . str_replace("'", "''", $namedRange->getWorksheet()->getTitle()) . '\'!' . PHPExcel_Cell::absoluteCoordinate($range[$i][0]);
                     if (isset($range[$i][1])) {
                         $range[$i][1] = PHPExcel_Cell::absoluteCoordinate($range[$i][1]);
@@ -743,7 +743,7 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
             if ($sheetSetup->isPrintAreaSet()) {
                 // Print area, e.g. A3:J6,H1:X20
                 $printArea = PHPExcel_Cell::splitRange($sheetSetup->getPrintArea());
-                $countPrintArea = count($printArea);
+                $countPrintArea = count74($printArea);
 
                 $formulaData = '';
                 for ($j = 0; $j < $countPrintArea; ++$j) {
@@ -964,7 +964,7 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
      */
     private function writeExternalsheetBiff8()
     {
-        $totalReferences = count($this->parser->references);
+        $totalReferences = count74($this->parser->references);
         $record = 0x0017;                     // Record identifier
         $length = 2 + 6 * $totalReferences;  // Number of bytes to follow
 
@@ -1262,8 +1262,8 @@ class PHPExcel_Writer_Excel5_Workbook extends PHPExcel_Writer_Excel5_BIFFwriter
         $aref = $this->palette;
 
         $record = 0x0092;                // Record identifier
-        $length = 2 + 4 * count($aref);  // Number of bytes to follow
-        $ccv    = count($aref);          // Number of RGB values to follow
+        $length = 2 + 4 * count74($aref);  // Number of bytes to follow
+        $ccv    = count74($aref);          // Number of RGB values to follow
         $data = '';                      // The RGB data
 
         // Pack the RGB data

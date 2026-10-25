@@ -12,7 +12,7 @@ $count_header = 0;
 ?>
 
 <div id="tablelist" >
-	<?php if(count($sheetData) == 0): ?>
+	<?php if(count74($sheetData) == 0): ?>
 		<div class="panel panel-success">
 			<div class="panel-heading">
 				<div class="panel-title">Lista Datos</div>

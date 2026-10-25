@@ -173,9 +173,9 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
 
         <?php if ($estadocominterna_id == 1) { ?>
             <?php if ($permisoRadicarFirmaElectronica || ($aprobacion_count <= 1)) { ?>
-                <?php if ($sf_user->checkPerm("COM_INTERNA_RADICAR", $currentUser) && (count($usuarios_firman) >= 1)) { ?>
+                <?php if ($sf_user->checkPerm("COM_INTERNA_RADICAR", $currentUser) && (count74($usuarios_firman) >= 1)) { ?>
                     <?php if (($currentUser == $usuario_asignado)) { ?>
-                        <?php if ($aprobacion_count <= 1 && in_array($currentUser, $usuarios_firman) || ($com_interna->getFirmaDesatendida() == 1 && count($aprobacion_ulist) == 0)) { ?>
+                        <?php if ($aprobacion_count <= 1 && in_array($currentUser, $usuarios_firman) || ($com_interna->getFirmaDesatendida() == 1 && count74($aprobacion_ulist) == 0)) { ?>
                             <li>
                                 <a data-toggle="tooltip" class="confirm-link" data-method-type="href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'radicar', 'vshow' => md5($com_interna->getCominternaId()), 'cominterna_id' => $com_interna->getCominternaId())); ?>" href="#">
                                     <i class="fa fa-save"></i>
@@ -190,7 +190,7 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
                                 </a>
                             </li>
                         <?php } ?>
-                    <?php } elseif ((count($users_aprueban) == 0 && $currentUser == $usuario_asignado)) { ?>
+                    <?php } elseif ((count74($users_aprueban) == 0 && $currentUser == $usuario_asignado)) { ?>
                         <li>
                             <a data-toggle="tooltip" class="confirm-link" data-method-type="href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_interna', 'action' => 'radicar', 'vshow' => md5($com_interna->getCominternaId()), 'cominterna_id' => $com_interna->getCominternaId())); ?>" href="#">
                                 <i class="fa fa-edit"></i>

@@ -109,3 +109,4 @@ all:
     default_culture:        en_US
     charset:                utf-8
     prototype_web_dir:      /
+    standard_helpers:       [Partial, Cache, Form, Object, Validation]

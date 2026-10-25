@@ -45,7 +45,7 @@ function component_interesados_multiple($element_id, $idhidenuser,$options = arr
     $form_group = isset($options['formgroup']) ? $options['formgroup'] : true;
     //***************************************************************************************
     $term_list = null;
-    for($i=0; $i < count($values_uid); $i++){
+    for($i=0; $i < count74($values_uid); $i++){
         $interesados = InteresadosPeer::retrieveByPK($values_uid[$i]);
                 
         $text_name = $interesados->getNombreCustomEmail();

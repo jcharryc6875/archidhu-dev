@@ -173,7 +173,7 @@ class ContenidodocFiletreePeer extends BaseContenidodocFiletreePeer
         $resp_list = ContenidodocFiletreePeer::doSelectStmt($c)->fetchAll(PDO::FETCH_ASSOC);
 
         // Ejecutar la consulta
-        if (count($resp_list) > 0) {
+        if (count74($resp_list) > 0) {
             return $resp_list;
         } else {
             return ContenidodocFiletreePeer::getContUnidadDocByUnidadDocumentalId($unidad_documental_id);

@@ -67,9 +67,9 @@
         <?php } ?>
 
         <?php if($permisoRadicarFirmaElectronica  && $aprobacion_count <= 1 && (in_array($acto_administrativo->getEstadoactoadministrativoId(),array(1,2,3,4)))){ ?>
-            <?php if($sf_user->checkPerm("ACTO_ADMINISTRATIVO_RADICAR", $currentUser) && ($acto_administrativo->getEstadoactoadministrativoId() == 1) && count($usuarios_firman) >= 1){ ?>
+            <?php if($sf_user->checkPerm("ACTO_ADMINISTRATIVO_RADICAR", $currentUser) && ($acto_administrativo->getEstadoactoadministrativoId() == 1) && count74($usuarios_firman) >= 1){ ?>
                 <?php if(in_array($currentUser, $users_asignado)){ ?>
-                    <?php if(count($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman) || (/*$acto_administrativo->getFirmaDesatendida() == 1 &&*/ count($aprobacion_ulist) == 0)){ ?>
+                    <?php if(count74($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman) || (/*$acto_administrativo->getFirmaDesatendida() == 1 &&*/ count74($aprobacion_ulist) == 0)){ ?>
                         <li>
                             <a data-toggle="tooltip" data-original-title="Firmar y generar acto administrativo" href="<?php echo $base_path; ?>/comun.php/acto_administrativo/radicar?actoadministrativo_id=<?php echo $acto_administrativo->getPrimaryKey(); ?>">
                                 <i class="fa fa-gavel"></i>
@@ -91,7 +91,7 @@
                             ?> 
                         </li>
                     <?php } ?>
-                <?php }elseif((count($users_aprueban) == 0 && in_array($currentUser, $users_asignado))){ ?>
+                <?php }elseif((count74($users_aprueban) == 0 && in_array($currentUser, $users_asignado))){ ?>
                     <li>
                         <a data-toggle="tooltip" data-original-title="Firmar y generar este acto administrativo" href="<?php echo $base_path; ?>/comun.php/acto_administrativo/radicar?actoadministrativo_id=<?php echo $acto_administrativo->getPrimaryKey(); ?>">
                             <i class="fa fa-edit"></i>

@@ -1515,7 +1515,7 @@ class unidad_documentalActions extends sfActions
 		$url = $http . "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 		$filename = explode("/", $url);
 		$base = "";
-		for ($i = 0; $i < (count($filename) - 1); ++$i) {
+		for ($i = 0; $i < (count74($filename) - 1); ++$i) {
 			$base .= $filename[$i] . '/';
 		}
 		return $base;
@@ -1938,7 +1938,7 @@ class unidad_documentalActions extends sfActions
 			'httpStatus' => 200,
 			'message' => "Expediente comprimido..",
 			'added' => $result['added'],
-			'omitted' => count($result['missing'])
+			'omitted' => count74($result['missing'])
 		)));
 	}
 
@@ -2314,7 +2314,7 @@ class unidad_documentalActions extends sfActions
 			}
 		}
 		//**********************************************************************************************************
-		if (count($lfiles_new) >= 1) {
+		if (count74($lfiles_new) >= 1) {
 			$zip = new ZipArchive();
 			$zipFileName = md5(time() . uniqid()) . ".zip";
 			$pathzip = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $zipFileName;
@@ -3135,7 +3135,7 @@ class unidad_documentalActions extends sfActions
 			$this->executeUserUniDocRole(3, $id_inventariador, $unidad_documental->getPrimaryKey(), trim($this->getRequestParameter('udr_inventariador')));
 			//*******************************************************************************************************************
 			$list_interesado = preg_split("/[,]+/", trim($this->getRequestParameter('idUserInteresados')));
-			for ($index = 0; $index < count($list_interesado); $index++) {
+			for ($index = 0; $index < count74($list_interesado); $index++) {
 				$isAddInteresado = UnidaddocumentalInteresadosPeer::addNewInteresadoByComId($unidad_documental->getPrimaryKey(), $list_interesado[$index]);
 			}
 			$isDeleteNotIn = UnidaddocumentalInteresadosPeer::deleteByComIdNotExist($unidad_documental->getPrimaryKey(), $list_interesado);
@@ -4620,7 +4620,7 @@ class unidad_documentalActions extends sfActions
 						$c->addJoin(SeriePeer::DEPENDENCIA_ID, DependenciaPeer::DEPENDENCIA_ID);
 						$subserielist_perm = array();
 						$subserielist_perm = $this->getPermSubseriesPorUsuario($usuario_conectado, $dependencia_conectado);
-						if (count($subserielist_perm)) {
+						if (count74($subserielist_perm)) {
 							//var_dump($subserielist_perm);echo "hola";
 							$cton0 = $c->getNewCriterion(DependenciaPeer::DEPENDENCIA_ID, $dependencia_conectado);
 							$cton1 = $c->getNewCriterion(UnidadDocumentalPeer::SUBSERIE_ID, $subserielist_perm, Criteria::IN);
@@ -4708,7 +4708,7 @@ class unidad_documentalActions extends sfActions
 		$max = 0;
 		while ($file = readdir($dir_handle)) {
 			preg_match("/^$prefix?(.*?)$suffix$/", $file, $treffer);
-			$id = count($treffer) ? $treffer[1] : "";
+			$id = count74($treffer) ? $treffer[1] : "";
 			if ($id != "" && $id > $max) {
 				$max = $id;
 			}

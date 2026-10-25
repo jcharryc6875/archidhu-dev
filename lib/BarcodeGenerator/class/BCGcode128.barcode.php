@@ -307,7 +307,7 @@ class BCGcode128 extends BCGBarcode1D {
      * @param resource $im
      */
     public function draw($im) {
-        $c = count($this->data);
+        $c = count74($this->data);
         for ($i = 0; $i < $c; $i++) {
             $this->drawChar($im, $this->data[$i], true);
         }
@@ -325,7 +325,7 @@ class BCGcode128 extends BCGBarcode1D {
      */
     public function getDimension($w, $h) {
         // Contains start + text + checksum + stop
-        $textlength = count($this->data) * 11;
+        $textlength = count74($this->data) * 11;
         $endlength = 2; // + final bar
 
         $w += $textlength + $endlength;
@@ -337,7 +337,7 @@ class BCGcode128 extends BCGBarcode1D {
      * Validates the input.
      */
     protected function validate() {
-        $c = count($this->data);
+        $c = count74($this->data);
         if ($c === 0) {
             throw new BCGParseException('code128', 'No data has been entered.');
         }
@@ -356,7 +356,7 @@ class BCGcode128 extends BCGBarcode1D {
         // it by its character position (1) and add that to the running checksum.
         // Modulated 103
         $this->checksumValue = $this->indcheck[0];
-        $c = count($this->indcheck);
+        $c = count74($this->indcheck);
         for ($i = 1; $i < $c; $i++) {
             $this->checksumValue += $this->indcheck[$i] * $i;
         }
@@ -683,7 +683,7 @@ class BCGcode128 extends BCGBarcode1D {
                 }
             }
 
-            $c = count($posArray);
+            $c = count74($posArray);
             for ($i = 0; $i < $c; $i++) {
                 if (($curLen[$posArray[$i]] + $charSiz[$posArray[$i]]) < $nxtLen[$posArray[$i]]) {
                     $nxtLen[$posArray[$i]] = $curLen[$posArray[$i]] + $charSiz[$posArray[$i]];

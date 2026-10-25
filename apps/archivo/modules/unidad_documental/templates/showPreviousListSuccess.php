@@ -14,7 +14,7 @@ $currentUser= $sf_user->getAttribute('usuario_id', '', 'subscriber');
  Lista Unidades Documentales Antiguas         
 </caption>
 <?php
-$cantidad_registros = count($pager->getResults());
+$cantidad_registros = count74($pager->getResults());
 if($cantidad_registros != 0){
 ?>			
               <tbody>

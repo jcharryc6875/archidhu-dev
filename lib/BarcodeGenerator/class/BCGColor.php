@@ -1,4 +1,5 @@
 <?php
+
 /**
  *--------------------------------------------------------------------
  *
@@ -8,7 +9,8 @@
  * Copyright (C) Jean-Sebastien Goupil
  * http://www.barcodephp.com
  */
-class BCGColor {
+class BCGColor
+{
     protected $r, $g, $b;    // int Hexadecimal Value
     protected $transparent;
 
@@ -23,15 +25,16 @@ class BCGColor {
      *
      * @param mixed ...
      */
-    public function __construct() {
+    public function __construct()
+    {
         $args = func_get_args();
-        $c = count($args);
+        $c = count74($args);
         if ($c === 3) {
             $this->r = intval($args[0]);
             $this->g = intval($args[1]);
             $this->b = intval($args[2]);
         } elseif ($c === 1) {
-            if (is_string($args[0]) && strlen($args[0]) === 7 && $args[0]{0} === '#') {        // Hex Value in String
+            if (is_string($args[0]) && strlen($args[0]) === 7 && $args[0][0] === '#') {        // Hex Value in String
                 $this->r = intval(substr($args[0], 1, 2), 16);
                 $this->g = intval(substr($args[0], 3, 2), 16);
                 $this->b = intval(substr($args[0], 5, 2), 16);
@@ -55,7 +58,8 @@ class BCGColor {
      *
      * @param bool $transparent
      */
-    public function setTransparent($transparent) {
+    public function setTransparent($transparent)
+    {
         $this->transparent = $transparent;
     }
 
@@ -64,7 +68,8 @@ class BCGColor {
      *
      * @return int
      */
-    public function r() {
+    public function r()
+    {
         return $this->r;
     }
 
@@ -73,7 +78,8 @@ class BCGColor {
      *
      * @return int
      */
-    public function g() {
+    public function g()
+    {
         return $this->g;
     }
 
@@ -82,7 +88,8 @@ class BCGColor {
      *
      * @return int
      */
-    public function b() {
+    public function b()
+    {
         return $this->b;
     }
 
@@ -92,7 +99,8 @@ class BCGColor {
      * @param resource $im
      * @return int
      */
-    public function allocate(&$im) {
+    public function allocate(&$im)
+    {
         $allocated = imagecolorallocate($im, $this->r, $this->g, $this->b);
         if ($this->transparent) {
             return imagecolortransparent($im, $allocated);
@@ -109,8 +117,9 @@ class BCGColor {
      * @param string $code
      * @param string $default
      */
-    public static function getColor($code, $default = 'white') {
-        switch(strtolower($code)) {
+    public static function getColor($code, $default = 'white')
+    {
+        switch (strtolower($code)) {
             case '':
             case 'white':
                 return 0xffffff;
@@ -151,4 +160,3 @@ class BCGColor {
         }
     }
 }
-?>

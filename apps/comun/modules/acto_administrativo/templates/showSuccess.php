@@ -14,7 +14,7 @@ use_helper('jQuery', 'Object');
 ?>
 <script src="<?php echo $path_theme; ?>assets/js/toastr.js"></script>
 <script src="<?php echo $path_theme; ?>/assets/js/dropzone/dropzone.js"></script>
-<?php if ($puedeConfigurarFlujo && count($participantesFlujo)) { ?>
+<?php if ($puedeConfigurarFlujo && count74($participantesFlujo)) { ?>
     <script src="<?php echo $path_theme; ?>assets/js/bootstrap-switch.min.js"></script>
     <script src="<?php echo $path_theme; ?>assets/js/jquery-ui/js/jquery-ui-1.10.3.custom.js"></script>
 <?php } ?>
@@ -69,23 +69,23 @@ use_helper('jQuery', 'Object');
                 <div class="tabs-vertical-env">
                     <ul class="nav nav-tabs bordered"><!-- available classes "right-aligned" -->
                         <li class="active"><a data-toggle="tab" href="#data"><span class="glyphicon glyphicon-import"></span>&nbsp;Detalles</a></li>
-                        <?php if (count($lista_interesados)) { ?>
+                        <?php if (count74($lista_interesados)) { ?>
                             <li><a data-toggle="tab" href="#listinteresados"><span class="glyphicon glyphicon-list"></span>&nbsp;Lista Interesados</a></li>
                         <?php } ?>
                         <li><a data-toggle="tab" href="#listbitacora"><span class="glyphicon glyphicon-list"></span>&nbsp;Bitacora Usuarios</a></li>
-                        <?php if (count($list_bitacora_flujo)) { ?>
+                        <?php if (count74($list_bitacora_flujo)) { ?>
                             <li><a data-toggle="tab" href="#listbitacoraflujo"><span class="glyphicon glyphicon-time"></span>&nbsp;Bitacora del Flujo</a></li>
                         <?php } ?>
-                        <?php if (count($lista_servicios)) { ?>
+                        <?php if (count74($lista_servicios)) { ?>
                             <li><a data-toggle="tab" href="#listservicioscom"><span class="glyphicon glyphicon-list"></span>&nbsp;Servicios Relacionados</a></li>
                         <?php } ?>
-                        <?php if (count($list_devoluciones)) { ?>
+                        <?php if (count74($list_devoluciones)) { ?>
                             <li><a data-toggle="tab" href="#listdevolucionesacto"><span class="glyphicon glyphicon-list"></span>&nbsp;Devoluciones</a></li>
                         <?php } ?>
-                        <?php if ($puedeConfigurarFlujo && count($participantesFlujo)) { ?>
+                        <?php if ($puedeConfigurarFlujo && count74($participantesFlujo)) { ?>
                             <li><a data-toggle="tab" href="#configurarflujoacto"><span class="glyphicon glyphicon-cog"></span>&nbsp;Flujo Aprobaci&oacute;n</a></li>
                         <?php } ?>
-                        <?php if (count($ldocument_version) || count($wordVersions)) { ?>
+                        <?php if (count74($ldocument_version) || count74($wordVersions)) { ?>
                             <li><a data-toggle="tab" href="#versionesacto"><span class="glyphicon glyphicon-book"></span>&nbsp;Versiones</a></li>
                         <?php } ?>
                     </ul>
@@ -360,7 +360,7 @@ use_helper('jQuery', 'Object');
                             </div>
                         </div>
                         <!-- listado de interesados -->
-                        <?php if (count($lista_interesados)) { ?>
+                        <?php if (count74($lista_interesados)) { ?>
                             <div id="listinteresados" class="tab-pane">
                                 <?php
                                 include_partial('listInteresados', array('list_interesados' => $lista_interesados));
@@ -368,7 +368,7 @@ use_helper('jQuery', 'Object');
                             </div>
                         <?php } ?>
                         <!-- listado de servicios -->
-                        <?php if (count($lista_servicios)) { ?>
+                        <?php if (count74($lista_servicios)) { ?>
                             <div id="listservicioscom" class="tab-pane">
                                 <?php
                                 include_partial('listServiciosGen', array('list_servicios' => $lista_servicios));
@@ -382,7 +382,7 @@ use_helper('jQuery', 'Object');
                             ?>
                         </div>
                         <!-- bitacora unificada del flujo de aprobacion (UARIV-202605) -->
-                        <?php if (count($list_bitacora_flujo)) { ?>
+                        <?php if (count74($list_bitacora_flujo)) { ?>
                             <div id="listbitacoraflujo" class="tab-pane">
                                 <?php
                                 include_partial('bitacoraFlujo', array('list_bitacora' => $list_bitacora_flujo));
@@ -390,14 +390,14 @@ use_helper('jQuery', 'Object');
                             </div>
                         <?php } ?>
                         <!-- listado de servicios -->
-                        <?php if (count($list_devoluciones)) { ?>
+                        <?php if (count74($list_devoluciones)) { ?>
                             <div id="listdevolucionesacto" class="tab-pane">
                                 <?php
                                 include_partial('devolucionesInfo', array('list_objects' => $list_devoluciones, 'acto_administrativo' => $acto_administrativo));
                                 ?>
                             </div>
                         <?php } ?>
-                        <?php if ($puedeConfigurarFlujo && count($participantesFlujo)) { ?>
+                        <?php if ($puedeConfigurarFlujo && count74($participantesFlujo)) { ?>
                             <div id="configurarflujoacto" class="tab-pane">
                                 <?php include_partial('configurarFlujo', array(
                                     'acto_administrativo' => $acto_administrativo,
@@ -406,14 +406,14 @@ use_helper('jQuery', 'Object');
                                 )); ?>
                             </div>
                         <?php } ?>
-                        <?php if (count($ldocument_version) || count($wordVersions)) { ?>
+                        <?php if (count74($ldocument_version) || count74($wordVersions)) { ?>
                             <div id="versionesacto" class="tab-pane">
-                                <?php if (count($ldocument_version)) { ?>
+                                <?php if (count74($ldocument_version)) { ?>
                                     <h5>Versiones del contenido</h5>
                                     <?php include_partial('listVersion', array('ldocument_version' => $ldocument_version, 'acto_administrativo' => $acto_administrativo)); ?>
                                 <?php } ?>
-                                <?php if (count($wordVersions) >= 2) { ?>
-                                    <h5<?php echo count($ldocument_version) ? ' style="margin-top:20px;"' : ''; ?>>Comparar versiones (Word)</h5>
+                                <?php if (count74($wordVersions) >= 2) { ?>
+                                    <h5<?php echo count74($ldocument_version) ? ' style="margin-top:20px;"' : ''; ?>>Comparar versiones (Word)</h5>
                                     <!-- No usar form_tag aqui: cualquier <form> real dispara el overlay global
                                          "Cargando informacion..." ($("form").submit(...) en simad-api.js), y como
                                          este abre en pestana nueva (target="_blank"), la pestana actual nunca navega

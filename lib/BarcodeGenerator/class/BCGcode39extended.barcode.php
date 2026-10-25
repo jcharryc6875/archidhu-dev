@@ -92,7 +92,7 @@ class BCGcode39extended extends BCGcode39 {
     public function draw($im) {
         // Starting *
         $this->drawChar($im, $this->code[$this->starting], true);
-        $c = count($this->data);
+        $c = count74($this->data);
         for ($i = 0; $i < $c; $i++) {
             $this->drawChar($im, $this->data[$i], true);
         }
@@ -115,7 +115,7 @@ class BCGcode39extended extends BCGcode39 {
      * @return int[]
      */
     public function getDimension($w, $h) {
-        $textlength = 13 * count($this->data);
+        $textlength = 13 * count74($this->data);
         $startlength = 13;
         $checksumlength = 0;
         if ($this->checksum === true) {
@@ -133,7 +133,7 @@ class BCGcode39extended extends BCGcode39 {
      * Validates the input.
      */
     protected function validate() {
-        $c = count($this->data);
+        $c = count74($this->data);
         if ($c === 0) {
             throw new BCGParseException('code39extended', 'No data has been entered.');
         }
@@ -146,7 +146,7 @@ class BCGcode39extended extends BCGcode39 {
      */
     protected function calculateChecksum() {
         $this->checksumValue = 0;
-        $c = count($this->indcheck);
+        $c = count74($this->indcheck);
         for ($i = 0; $i < $c; $i++) {
             $this->checksumValue += $this->indcheck[$i];
         }

@@ -426,7 +426,7 @@ class OutlookProvider extends EmailCoreProvider  {
                     //**************************************************************************************
                     $email['attachments'] = $this->getAttachmentsMessage($message,$email);                
                     $this->saveMessageAsEml($message,$email);
-                    $email['has_attachments'] = count($email['attachments']) > 0;
+                    $email['has_attachments'] = count74($email['attachments']) > 0;
                     //**************************************************************************************
                     $emails[] = $email;
                     $processed++;
@@ -730,7 +730,7 @@ class OutlookProvider extends EmailCoreProvider  {
         $totalEmails = imap_num_msg($imap);
         $startMsg = max(1, $totalEmails - $maxResults + 1);
         
-        for ($msgNum = $totalEmails; $msgNum >= $startMsg && count($emails) < $maxResults; $msgNum--) {
+        for ($msgNum = $totalEmails; $msgNum >= $startMsg && count74($emails) < $maxResults; $msgNum--) {
             $header = imap_headerinfo($imap, $msgNum);
             $body = imap_body($imap, $msgNum);
             

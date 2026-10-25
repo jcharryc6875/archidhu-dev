@@ -77,7 +77,7 @@ class ActoadministrativoUsuarioPeer extends BaseActoadministrativoUsuarioPeer
     private static function getRangoDefaultPorRol()
     {
         $etapas = ActoadminEtapaPeer::getEtapasActivasOrdenadas();
-        if (count($etapas)) {
+        if (count74($etapas)) {
             $rango = array();
             $pos = 1;
             foreach ($etapas as $etapa) {
@@ -187,7 +187,7 @@ class ActoadministrativoUsuarioPeer extends BaseActoadministrativoUsuarioPeer
             $c->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID,$rol_ids,Criteria::IN);
             $c->add(ActoadministrativoUsuarioPeer::ESTA_ASIGNADA,1,Criteria::NOT_EQUAL);
             $c->add(ActoadministrativoUsuarioPeer::ESTA_APROBADO,1);
-            if(count($notInUser)){ $c->add(ActoadministrativoUsuarioPeer::USUARIO_ID,$notInUser,Criteria::NOT_IN);  }
+            if(count74($notInUser)){ $c->add(ActoadministrativoUsuarioPeer::USUARIO_ID,$notInUser,Criteria::NOT_IN);  }
             //*******************************************************************************
             $c->clearSelectColumns();
             $c->addSelectColumn(UsuarioPeer::USUARIO_ID);

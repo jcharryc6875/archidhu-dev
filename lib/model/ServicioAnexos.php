@@ -72,7 +72,7 @@ class ServicioAnexos extends BaseServicioAnexos {
         try{
             $files_adjuntos = preg_split("/[,]+/",$this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
             //*****************************CREANDO LISTA DE ARCHIVOS***********************************
-            for($j = 0; $j < count($files_adjuntos); $j++){
+            for($j = 0; $j < count74($files_adjuntos); $j++){
                 if(trim($files_adjuntos[$j])){
                     $filename = basename(trim($files_adjuntos[$j]));
                     $xguid = simad_util::create_guid($filename);

@@ -20,7 +20,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         try 
         {
-            $mas_alto = max(array(count($resultado_sinresp), count($resultado_conresp), count($resultado_total)));
+            $mas_alto = max(array(count74($resultado_sinresp), count74($resultado_conresp), count74($resultado_total)));
             //*************************************************************************************
             $array_labels = array();
             $array_totales = array();
@@ -74,7 +74,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
             $data_views[] = array('resultado' => $resultado_total, 'dataviews' => $ilist_data4);
             //*************************************************************************************
             $array_final = array();
-            for ($i = 0; $i <= count($data_views[0]['resultado']); $i++)
+            for ($i = 0; $i <= count74($data_views[0]['resultado']); $i++)
             {
                 $array_final[$i]['VIGENCIA'] = $data_views[0]['resultado'][$i]["VIGENCIA"];
                 $array_final[$i]['MES'] = $data_views[0]['resultado'][$i]["MES_TEXT"];
@@ -103,7 +103,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         try 
         {
-            $mas_alto = max(array(count($resultado5), count($resultado_total)));
+            $mas_alto = max(array(count74($resultado5), count74($resultado_total)));
             //*************************************************************************************
             $data_views5 = array();
             $array_labels5 = array();
@@ -147,7 +147,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
             //*************************************************************************************
             $array_final = array();
 
-            for ($i = 0; $i <= count($data_views[0]['resultado']); $i++)
+            for ($i = 0; $i <= count74($data_views[0]['resultado']); $i++)
             {
                 $array_final[$i]['VIGENCIA'] = $data_views[0]['resultado'][$i]["VIGENCIA"];
                 $array_final[$i]['MES'] = $data_views[0]['resultado'][$i]["MES_TEXT"];
@@ -174,7 +174,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         try 
         {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -212,7 +212,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         try 
         {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -271,7 +271,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     public static function getComRecibidaPorMedioRecepcion($params = array()) 
     {
         try {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -339,7 +339,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         try 
         {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -403,7 +403,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         try 
         {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -468,7 +468,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         try 
         {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -522,7 +522,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         try 
         {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -579,7 +579,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     public static function getComRecibidaTotales($params = array())  
     {
         try {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -641,7 +641,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     public static function getComEnviadaGestionadas($params = array())  
     {
         try {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -693,7 +693,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     public static function getAllComEnviadasMes($params = array())  
     {
         try {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -744,7 +744,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         try 
         {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -794,7 +794,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         try 
         {
-            if(!count($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
+            if(!count74($params) || !isset($params['fecha_inicial']) || !isset($params['fecha_final']))
             {
                 return array();
             }
@@ -931,7 +931,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
             $resultado_sinresp = EstadisticaPeer::getComRecibidaSinRespuesta($params); 
             $resultado_total = EstadisticaPeer::getComRecibidaTotales($params); 
             $resultado_conresp = EstadisticaPeer::getComRecibidaConRespuesta($params);
-            $mas_alto = max(array(count($resultado_sinresp), count($resultado_conresp), count($resultado_total)));
+            $mas_alto = max(array(count74($resultado_sinresp), count74($resultado_conresp), count74($resultado_total)));
             //**************************************************************************************
             $array_labels = array();
             $array_totales = array();
@@ -1108,7 +1108,7 @@ class EstadisticaPeer extends BaseEstadisticaPeer
     {
         $ilist_data4 = array();
         try {
-            $nro_items_y_axis = count($ilist_data);
+            $nro_items_y_axis = count74($ilist_data);
             $caracteres = 'abcdefghijklmnopqrstuvwyz';
             $array_labels = array();
             $array_totales = array();

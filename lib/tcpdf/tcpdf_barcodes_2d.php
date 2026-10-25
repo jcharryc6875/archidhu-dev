@@ -316,7 +316,7 @@ class TCPDF2DBarcode {
 					$code = substr($code, 1, -1);
 					$rows = explode('][', $code);
 				}
-				$this->barcode_array['num_rows'] = count($rows);
+				$this->barcode_array['num_rows'] = count74($rows);
 				$this->barcode_array['num_cols'] = strlen($rows[0]);
 				$this->barcode_array['bcode'] = array();
 				foreach ($rows as $r) {

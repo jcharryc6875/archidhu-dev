@@ -246,7 +246,7 @@ class TCPDF_FONTS {
 			}
 			if (preg_match('#/BlueValues[\s]*\[([^\]]*)#', $eplain, $matches) > 0) {
 				$bv = explode(' ', $matches[1]);
-				if (count($bv) >= 6) {
+				if (count74($bv) >= 6) {
 					$v1 = intval($bv[2]);
 					$v2 = intval($bv[4]);
 					if ($v1 <= $v2) {
@@ -351,7 +351,7 @@ class TCPDF_FONTS {
 					$fmetric['cw'] .= ','.$cid.'=>'.$fmetric['MissingWidth'];
 				}
 			}
-			$fmetric['AvgWidth'] = round($fmetric['AvgWidth'] / count($cwidths));
+			$fmetric['AvgWidth'] = round($fmetric['AvgWidth'] / count74($cwidths));
 		} else {
 			// ---------- TRUE TYPE ----------
 			$offset = 0; // offset position of the font data
@@ -818,7 +818,7 @@ class TCPDF_FONTS {
 				}
 			}
 		} // end of true type
-		if (($fmetric['type'] == 'TrueTypeUnicode') AND (count($ctg) == 256)) {
+		if (($fmetric['type'] == 'TrueTypeUnicode') AND (count74($ctg) == 256)) {
 			$fmetric['type'] = 'TrueType';
 		}
 		// ---------- create php font file ----------
@@ -1363,7 +1363,7 @@ class TCPDF_FONTS {
 		// rebuild font
 		$font = '';
 		$font .= pack('N', 0x10000); // sfnt version
-		$numTables = count($table);
+		$numTables = count74($table);
 		$font .= pack('n', $numTables); // numTables
 		$entrySelector = floor(log($numTables, 2));
 		$searchRange = pow(2, $entrySelector) * 16;
@@ -1453,7 +1453,7 @@ class TCPDF_FONTS {
 		$nextk = -1;
 		$prevint = false;
 		foreach ($range as $k => $ws) {
-			$cws = count($ws);
+			$cws = count74($ws);
 			if (($k == $nextk) AND (!$prevint) AND ((!isset($ws['interval'])) OR ($cws < 4))) {
 				if (isset($range[$k]['interval'])) {
 					unset($range[$k]['interval']);
@@ -1481,9 +1481,9 @@ class TCPDF_FONTS {
 		// output data
 		$w = '';
 		foreach ($range as $k => $ws) {
-			if (count(array_count_values($ws)) == 1) {
+			if (count74(array_count_values($ws)) == 1) {
 				// interval mode is more compact
-				$w .= ' '.$k.' '.($k + count($ws) - 1).' '.$ws[0];
+				$w .= ' '.$k.' '.($k + count74($ws) - 1).' '.$ws[0];
 			} else {
 				// range mode
 				$w .= ' '.$k.' [ '.implode(' ', $ws).' ]';
@@ -1799,7 +1799,7 @@ class TCPDF_FONTS {
 			$start = 0;
 		}
 		if (strlen($end) == 0) {
-			$end = count($strarr);
+			$end = count74($strarr);
 		}
 		$string = '';
 		for ($i = $start; $i < $end; ++$i) {
@@ -1822,7 +1822,7 @@ class TCPDF_FONTS {
 			$start = 0;
 		}
 		if (strlen($end) == 0) {
-			$end = count($uniarr);
+			$end = count74($uniarr);
 		}
 		$string = '';
 		for ($i=$start; $i < $end; ++$i) {
@@ -2113,7 +2113,7 @@ class TCPDF_FONTS {
 		}
 
 		// get number of chars
-		$numchars = count($ta);
+		$numchars = count74($ta);
 
 		if ($forcertl == 'R') {
 			$pel = 1;
@@ -2199,8 +2199,8 @@ class TCPDF_FONTS {
 				}
 			} elseif ($ta[$i] == TCPDF_FONT_DATA::$uni_PDF) {
 				// X7. With each PDF, determine the matching embedding or override code. If there was a valid matching code, restore (pop) the last remembered (pushed) embedding level and directional override.
-				if (count($remember)) {
-					$last = count($remember ) - 1;
+				if (count74($remember)) {
+					$last = count74($remember ) - 1;
 					if (($remember[$last]['num'] == TCPDF_FONT_DATA::$uni_RLE) OR
 						($remember[$last]['num'] == TCPDF_FONT_DATA::$uni_LRE) OR
 						($remember[$last]['num'] == TCPDF_FONT_DATA::$uni_RLO) OR
@@ -2241,7 +2241,7 @@ class TCPDF_FONTS {
 		// 3.3.3 Resolving Weak Types
 		// Weak types are now resolved one level run at a time. At level run boundaries where the type of the character on the other side of the boundary is required, the type assigned to sor or eor is used.
 		// Nonspacing marks are now resolved based on the previous characters.
-		$numchars = count($chardata);
+		$numchars = count74($chardata);
 
 		// W1. Examine each nonspacing mark (NSM) in the level run, and change the type of the NSM to the type of the previous character. If the NSM is at the start of the level run, it will get the type of sor.
 		$prevlevel = -1; // track level changes
@@ -2604,7 +2604,7 @@ class TCPDF_FONTS {
 				}
 			}
 			$chardata = array_values($chardata2);
-			$numchars = count($chardata);
+			$numchars = count74($chardata);
 			unset($chardata2);
 			unset($arabicarr);
 			unset($laaletter);

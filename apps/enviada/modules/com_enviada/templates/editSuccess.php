@@ -506,9 +506,9 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
           <div class="col-sm-offset-3 col-sm-6">
             <?php if($com_enviada->getPrimaryKey()){ ?>
                 <?php if($permisoRadicarFirmaElectronica){ ?>
-                    <?php if($sf_user->checkPerm($currentFormBotonRadicar, $currentUser) && ($com_enviada->getEstadocomenviadaId() == 1) && (count($usuarios_firman) >= 1)){ ?>
+                    <?php if($sf_user->checkPerm($currentFormBotonRadicar, $currentUser) && ($com_enviada->getEstadocomenviadaId() == 1) && (count74($usuarios_firman) >= 1)){ ?>
                         <?php if(in_array($currentUser, $users_asignado)){ ?>
-                          <?php if((count($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman)) || ($com_enviada->getFirmaDesatendida() == 1 && count($aprobacion_ulist) == 0)){ ?>
+                          <?php if((count74($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman)) || ($com_enviada->getFirmaDesatendida() == 1 && count74($aprobacion_ulist) == 0)){ ?>
                               <button type="submit" name="save" value="Guardar Comunicaci&oacute;n" class="btn btn-success tooltip-primary" data-toggle="tooltip" data-original-title="Guardar los cambios de la comunicaci&oacute;n">Guardar Comunicaci&oacute;n</button>
                               <a data-toggle="tooltip"  class="btn btn-blue confirm-link" data-method-type = "href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_enviada', 'action' => 'radicar', 'comenviada_id' => $com_enviada->getPrimaryKey(), 'comrecibida_id' => $sf_params->get('comrecibida_id'))); ?>" href="#">
                                 <i class="fa fa-save"></i>

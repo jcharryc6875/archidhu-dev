@@ -249,7 +249,7 @@ class PHPExcel_Writer_Excel5 extends PHPExcel_Writer_Abstract implements PHPExce
 
             // check if there are any shapes for this sheet
             $filterRange = $sheet->getAutoFilter()->getRange();
-            if (count($sheet->getDrawingCollection()) == 0 && empty($filterRange)) {
+            if (count74($sheet->getDrawingCollection()) == 0 && empty($filterRange)) {
                 continue;
             }
 
@@ -405,7 +405,7 @@ class PHPExcel_Writer_Excel5 extends PHPExcel_Writer_Abstract implements PHPExce
         // any drawings in this workbook?
         $found = false;
         foreach ($this->phpExcel->getAllSheets() as $sheet) {
-            if (count($sheet->getDrawingCollection()) > 0) {
+            if (count74($sheet->getDrawingCollection()) > 0) {
                 $found = true;
                 break;
             }
@@ -434,7 +434,7 @@ class PHPExcel_Writer_Excel5 extends PHPExcel_Writer_Abstract implements PHPExce
         foreach ($this->phpExcel->getAllsheets() as $sheet) {
             $sheetCountShapes = 0; // count number of shapes (minus group shape), in sheet
 
-            if (count($sheet->getDrawingCollection()) > 0) {
+            if (count74($sheet->getDrawingCollection()) > 0) {
                 ++$countDrawings;
 
                 foreach ($sheet->getDrawingCollection() as $drawing) {

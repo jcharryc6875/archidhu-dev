@@ -236,8 +236,8 @@ class WorkflowEngine
         $incomingFlows = $this->findIncomingSequenceFlows($dom, $gatewayId);
 
         // Determinar si es divergencia (fork) o convergencia (join)
-        $isDivergence = count($outgoingFlows) > 1;
-        $isConvergence = count($incomingFlows) > 1;
+        $isDivergence = count74($outgoingFlows) > 1;
+        $isConvergence = count74($incomingFlows) > 1;
 
         if ($isDivergence) {
             // Fork: Ejecutar todos los caminos paralelos
@@ -275,7 +275,7 @@ class WorkflowEngine
             );
 
             // Continuar con el siguiente nodo
-            if (count($outgoingFlows) > 0) {
+            if (count74($outgoingFlows) > 0) {
                 $flow = $outgoingFlows[0];
                 $targetRef = $flow->getAttribute('targetRef');
                 $targetNode = $this->findNodeById($dom, $targetRef);

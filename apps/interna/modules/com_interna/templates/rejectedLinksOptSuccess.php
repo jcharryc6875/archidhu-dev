@@ -4,7 +4,7 @@
 $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 use_helper('Object','jQuery');
 ?>
-<?php if(count($devoluciones_list)){ ?>
+<?php if(count74($devoluciones_list)){ ?>
     <?php foreach($devoluciones_list as $item){ ?>
     	<li>
       <?php 

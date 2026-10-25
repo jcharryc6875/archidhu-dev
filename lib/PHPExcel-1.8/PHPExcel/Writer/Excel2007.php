@@ -295,7 +295,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
                 $objZip->addFromString('xl/worksheets/sheet' . ($i + 1) . '.xml', $this->getWriterPart('Worksheet')->writeWorksheet($this->spreadSheet->getSheet($i), $this->stringTable, $this->includeCharts));
                 if ($this->includeCharts) {
                     $charts = $this->spreadSheet->getSheet($i)->getChartCollection();
-                    if (count($charts) > 0) {
+                    if (count74($charts) > 0) {
                         foreach ($charts as $chart) {
                             $objZip->addFromString('xl/charts/chart' . ($chartCount + 1) . '.xml', $this->getWriterPart('Chart')->writeChart($chart, $this->preCalculateFormulas));
                             $chartCount++;
@@ -311,7 +311,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
                 $objZip->addFromString('xl/worksheets/_rels/sheet' . ($i + 1) . '.xml.rels', $this->getWriterPart('Rels')->writeWorksheetRelationships($this->spreadSheet->getSheet($i), ($i + 1), $this->includeCharts));
 
                 $drawings = $this->spreadSheet->getSheet($i)->getDrawingCollection();
-                $drawingCount = count($drawings);
+                $drawingCount = count74($drawings);
                 if ($this->includeCharts) {
                     $chartCount = $this->spreadSheet->getSheet($i)->getChartCount();
                 }
@@ -326,7 +326,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
                 }
 
                 // Add comment relationship parts
-                if (count($this->spreadSheet->getSheet($i)->getComments()) > 0) {
+                if (count74($this->spreadSheet->getSheet($i)->getComments()) > 0) {
                     // VML Comments
                     $objZip->addFromString('xl/drawings/vmlDrawing' . ($i + 1) . '.vml', $this->getWriterPart('Comments')->writeVMLComments($this->spreadSheet->getSheet($i)));
 
@@ -335,7 +335,7 @@ class PHPExcel_Writer_Excel2007 extends PHPExcel_Writer_Abstract implements PHPE
                 }
 
                 // Add header/footer relationship parts
-                if (count($this->spreadSheet->getSheet($i)->getHeaderFooter()->getImages()) > 0) {
+                if (count74($this->spreadSheet->getSheet($i)->getHeaderFooter()->getImages()) > 0) {
                     // VML Drawings
                     $objZip->addFromString('xl/drawings/vmlDrawingHF' . ($i + 1) . '.vml', $this->getWriterPart('Drawing')->writeVMLHeaderFooterImages($this->spreadSheet->getSheet($i)));
 

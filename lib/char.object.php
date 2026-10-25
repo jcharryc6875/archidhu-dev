@@ -62,7 +62,7 @@ class char{
 	}
 
 	public function setCorner($x,$y,$type){
-		$j = count($this->imageInfo);
+		$j = count74($this->imageInfo);
 		$this->imageInfo[$j]["x"] = $x;
 		$this->imageInfo[$j]["y"] = $y;
 		$this->imageInfo[$j]["type"] = $type;
@@ -83,14 +83,14 @@ class char{
 		
 		$res = array();
 		
-		if (count($this->imageInfo)){
+		if (count74($this->imageInfo)){
 			foreach ($this->imageInfo as $vals){
 				if ($vals[$paramName] == $value){
 					$res[] = $value;
 				}
 			}
 		}
-		if (count($res)){
+		if (count74($res)){
 			return $res;
 		}else{
 			return false;

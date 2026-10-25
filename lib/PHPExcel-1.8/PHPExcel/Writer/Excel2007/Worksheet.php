@@ -372,7 +372,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
     private function writeCols(PHPExcel_Shared_XMLWriter $objWriter = null, PHPExcel_Worksheet $pSheet = null)
     {
         // cols
-        if (count($pSheet->getColumnDimensions()) > 0) {
+        if (count74($pSheet->getColumnDimensions()) > 0) {
             $objWriter->startElement('cols');
 
             $pSheet->calculateColumnWidths();
@@ -550,7 +550,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
         // Write data validations?
         if (!empty($dataValidationCollection)) {
             $objWriter->startElement('dataValidations');
-            $objWriter->writeAttribute('count', count($dataValidationCollection));
+            $objWriter->writeAttribute('count', count74($dataValidationCollection));
 
             foreach ($dataValidationCollection as $coordinate => $dv) {
                 $objWriter->startElement('dataValidation');
@@ -651,7 +651,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
      */
     private function writeProtectedRanges(PHPExcel_Shared_XMLWriter $objWriter = null, PHPExcel_Worksheet $pSheet = null)
     {
-        if (count($pSheet->getProtectedCells()) > 0) {
+        if (count74($pSheet->getProtectedCells()) > 0) {
             // protectedRanges
             $objWriter->startElement('protectedRanges');
 
@@ -680,7 +680,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
      */
     private function writeMergeCells(PHPExcel_Shared_XMLWriter $objWriter = null, PHPExcel_Worksheet $pSheet = null)
     {
-        if (count($pSheet->getMergeCells()) > 0) {
+        if (count74($pSheet->getMergeCells()) > 0) {
             // mergeCells
             $objWriter->startElement('mergeCells');
 
@@ -768,10 +768,10 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
             $objWriter->writeAttribute('ref', str_replace('$', '', $range));
 
             $columns = $pSheet->getAutoFilter()->getColumns();
-            if (count($columns > 0)) {
+            if (count74($columns > 0)) {
                 foreach ($columns as $columnID => $column) {
                     $rules = $column->getRules();
-                    if (count($rules) > 0) {
+                    if (count74($rules) > 0) {
                         $objWriter->startElement('filterColumn');
                         $objWriter->writeAttribute('colId', $pSheet->getAutoFilter()->getColumnOffset($columnID));
 
@@ -918,8 +918,8 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
         // rowBreaks
         if (!empty($aRowBreaks)) {
             $objWriter->startElement('rowBreaks');
-            $objWriter->writeAttribute('count', count($aRowBreaks));
-            $objWriter->writeAttribute('manualBreakCount', count($aRowBreaks));
+            $objWriter->writeAttribute('count', count74($aRowBreaks));
+            $objWriter->writeAttribute('manualBreakCount', count74($aRowBreaks));
 
             foreach ($aRowBreaks as $cell) {
                 $coords = PHPExcel_Cell::coordinateFromString($cell);
@@ -936,8 +936,8 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
         // Second, write column breaks
         if (!empty($aColumnBreaks)) {
             $objWriter->startElement('colBreaks');
-            $objWriter->writeAttribute('count', count($aColumnBreaks));
-            $objWriter->writeAttribute('manualBreakCount', count($aColumnBreaks));
+            $objWriter->writeAttribute('count', count74($aColumnBreaks));
+            $objWriter->writeAttribute('manualBreakCount', count74($aColumnBreaks));
 
             foreach ($aColumnBreaks as $cell) {
                 $coords = PHPExcel_Cell::coordinateFromString($cell);
@@ -1193,7 +1193,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
     private function writeLegacyDrawing(PHPExcel_Shared_XMLWriter $objWriter = null, PHPExcel_Worksheet $pSheet = null)
     {
         // If sheet contains comments, add the relationships
-        if (count($pSheet->getComments()) > 0) {
+        if (count74($pSheet->getComments()) > 0) {
             $objWriter->startElement('legacyDrawing');
             $objWriter->writeAttribute('r:id', 'rId_comments_vml1');
             $objWriter->endElement();
@@ -1210,7 +1210,7 @@ class PHPExcel_Writer_Excel2007_Worksheet extends PHPExcel_Writer_Excel2007_Writ
     private function writeLegacyDrawingHF(PHPExcel_Shared_XMLWriter $objWriter = null, PHPExcel_Worksheet $pSheet = null)
     {
         // If sheet contains images, add the relationships
-        if (count($pSheet->getHeaderFooter()->getImages()) > 0) {
+        if (count74($pSheet->getHeaderFooter()->getImages()) > 0) {
             $objWriter->startElement('legacyDrawingHF');
             $objWriter->writeAttribute('r:id', 'rId_headerfooter_vml1');
             $objWriter->endElement();

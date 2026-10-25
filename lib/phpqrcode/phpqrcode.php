@@ -160,7 +160,7 @@
         //----------------------------------------------------------------------
         public static function binarize($frame)
         {
-            $len = count($frame);
+            $len = count74($frame);
             foreach ($frame as &$frameLine) {
                 
                 for($i=0; $i<$len; $i++) {
@@ -181,12 +181,12 @@
                 
             $eccLevel = 'L';
                 
-            if (count($mode) > 1) {
+            if (count74($mode) > 1) {
                 $eccLevel = $mode[1];
             }
                 
             $qrTab = QRcode::text($code, false, $eccLevel);
-            $size = count($qrTab);
+            $size = count74($qrTab);
                 
             $barcode_array['num_rows'] = $size;
             $barcode_array['num_cols'] = $size;
@@ -221,7 +221,7 @@
                     QRimage::png(self::binarize($frame), $fileName, 1, 0);
                 }
 				
-				$width = count($frame);
+				$width = count74($frame);
 				$bitMask = array_fill(0, $width, array_fill(0, $width, 0));
 				for ($maskNo=0; $maskNo<8; $maskNo++)
 					$mask->makeMaskNo($maskNo, $width, $frame, $bitMask, true);
@@ -247,7 +247,7 @@
         //----------------------------------------------------------------------
         public static function dumpMask($frame) 
         {
-            $width = count($frame);
+            $width = count74($frame);
             for($y=0;$y<$width;$y++) {
                 for($x=0;$x<$width;$x++) {
                     echo ord($frame[$y][$x]).',';
@@ -537,7 +537,7 @@
         
         public static function getEccSpec($version, $level, array &$spec)
         {
-            if (count($spec) < 5) {
+            if (count74($spec) < 5) {
                 $spec = array(0,0,0,0,0);
             }
 
@@ -976,7 +976,7 @@
         //----------------------------------------------------------------------
         private static function image($frame, $pixelPerPoint = 4, $outerFrame = 4) 
         {
-            $h = count($frame);
+            $h = count74($frame);
             $w = strlen($frame[0]);
             
             $imgW = $w + 2*$outerFrame;
@@ -1052,8 +1052,8 @@
         {
             $setData = array_slice($data, 0, $size);
             
-            if (count($setData) < $size) {
-                $setData = array_merge($setData, array_fill(0,$size-count($setData),0));
+            if (count74($setData) < $size) {
+                $setData = array_merge($setData, array_fill(0,$size-count74($setData),0));
             }
         
             if(!QRinput::check($mode, $size, $setData)) {
@@ -1781,7 +1781,7 @@
         //----------------------------------------------------------------------
         public function size()
         {
-            return count($this->data);
+            return count74($this->data);
         }
         
         //----------------------------------------------------------------------
@@ -2766,7 +2766,7 @@
             
                 $howManuOut = 8-(QR_FIND_FROM_RANDOM % 9);
                 for ($i = 0; $i <  $howManuOut; $i++) {
-                    $remPos = rand (0, count($checked_masks)-1);
+                    $remPos = rand (0, count74($checked_masks)-1);
                     unset($checked_masks[$remPos]);
                     $checked_masks = array_values($checked_masks);
                 }
@@ -3297,7 +3297,7 @@
                 if ($err != '')
                     QRtools::log($outfile, $err);
                 
-                $maxSize = (int)(QR_PNG_MAXIMUM_SIZE / (count($tab)+2*$this->margin));
+                $maxSize = (int)(QR_PNG_MAXIMUM_SIZE / (count74($tab)+2*$this->margin));
                 
                 QRimage::png($tab, $outfile, min(max(1, $this->size), $maxSize), $this->margin,$saveandprint);
             

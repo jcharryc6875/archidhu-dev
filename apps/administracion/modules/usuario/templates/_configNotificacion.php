@@ -4,7 +4,7 @@ $base_path = substr(sfConfig::get('base_simad'), -1) == "/" ? sfConfig::get('bas
 use_helper('Object','jQuery');
 
 $lconfig_notificaciones = UsuarioNotificacionPeer::getAllConfigNotifyUser($usuario->getPrimaryKey());
-$cantidad_registros = count($lconfig_notificaciones);
+$cantidad_registros = count74($lconfig_notificaciones);
 ?>
 <div class="row">
 	<div class="col-md-12">

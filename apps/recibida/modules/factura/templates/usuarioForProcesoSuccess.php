@@ -1,4 +1,4 @@
-<?php if($usuarios_procesos != null && count($usuarios_procesos)){ ?>
+<?php if($usuarios_procesos != null && count74($usuarios_procesos)){ ?>
 <select name="usuario_proceso" id="usuario_proceso" class="form-control input-sm required">
     <option value="">Seleccione...</option>
         <?php foreach($usuarios_procesos as $usuario):?>

@@ -538,7 +538,7 @@ class busqueda_avanzadaActions extends sfActions
 					}
 				}
 				//*******************************************************************************************************
-				for ($i = 0; $i < count($listphpnames); $i++) {
+				for ($i = 0; $i < count74($listphpnames); $i++) {
 					if ($listphpnames[$i] == $partes[2]) //si hay coincidencia, lo guarda en un array de cabezeras excel
 					{
 						if (!empty($relationTable)) {
@@ -662,7 +662,7 @@ class busqueda_avanzadaActions extends sfActions
 		$this->mensajeInternas = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
 		$this->mensajeEnviadas = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
 		$this->mensajeRecibidas = ConsultaPermisoHelper::MSG_SIN_REGISTROS;
-		if (count($param_list)) {
+		if (count74($param_list)) {
 			//**************************************COMUNICACIONES INTERNAS*************************************************
 			if (!empty($param_list['codigo_barras']) || !empty($param_list['asunto'])) {
 				$i = new Criteria();
@@ -1024,7 +1024,7 @@ class busqueda_avanzadaActions extends sfActions
 						$ag->addJoin(SubseriePeer::SERIE_ID, SeriePeer::SERIE_ID);
 						$ag->addJoin(SeriePeer::DEPENDENCIA_ID, DependenciaPeer::DEPENDENCIA_ID);
 						$subserielist_perm = $this->getPermSubseriesPorUsuarioGestion($usuariologuiado, $dependencia_conectado);
-						if (count($subserielist_perm)) {
+						if (count74($subserielist_perm)) {
 							$ctonDependencia = $ag->getNewCriterion(DependenciaPeer::DEPENDENCIA_ID, $dependencia_conectado);
 							$ctonSubserie = $ag->getNewCriterion(UnidadDocumentalPeer::SUBSERIE_ID, $subserielist_perm, Criteria::IN);
 							$ctonDependencia->addOr($ctonSubserie);

@@ -542,7 +542,7 @@ class PHPExcel_ReferenceHelper
         if (!empty($autoFilterRange)) {
             if ($pNumCols != 0) {
                 $autoFilterColumns = array_keys($autoFilter->getColumns());
-                if (count($autoFilterColumns) > 0) {
+                if (count74($autoFilterColumns) > 0) {
                     sscanf($pBefore, '%[A-Z]%d', $column, $row);
                     $columnIndex = PHPExcel_Cell::columnIndexFromString($column);
                     list($rangeStart, $rangeEnd) = PHPExcel_Cell::rangeBoundaries($autoFilterRange);
@@ -614,7 +614,7 @@ class PHPExcel_ReferenceHelper
         }
 
         // Update workbook: named ranges
-        if (count($pSheet->getParent()->getNamedRanges()) > 0) {
+        if (count74($pSheet->getParent()->getNamedRanges()) > 0) {
             foreach ($pSheet->getParent()->getNamedRanges() as $namedRange) {
                 if ($namedRange->getWorksheet()->getHashCode() == $pSheet->getHashCode()) {
                     $namedRange->setRange($this->updateCellReference($namedRange->getRange(), $pBefore, $pNumCols, $pNumRows));
@@ -838,9 +838,9 @@ class PHPExcel_ReferenceHelper
         if (strpos($pCellRange, ':') !== false || strpos($pCellRange, ',') !== false) {
             // Update range
             $range = PHPExcel_Cell::splitRange($pCellRange);
-            $ic = count($range);
+            $ic = count74($range);
             for ($i = 0; $i < $ic; ++$i) {
-                $jc = count($range[$i]);
+                $jc = count74($range[$i]);
                 for ($j = 0; $j < $jc; ++$j) {
                     if (ctype_alpha($range[$i][$j])) {
                         $r = PHPExcel_Cell::coordinateFromString($this->updateSingleCellReference($range[$i][$j].'1', $pBefore, $pNumCols, $pNumRows));

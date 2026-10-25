@@ -8,7 +8,7 @@ use_helper('jQuery');
 ?>
 <div class="row">
 	<div class="col-md-12">
-        <?php if(count($blotes) <= 0): ?>
+        <?php if(count74($blotes) <= 0): ?>
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <div class="panel-title">Lista de Comunicaciones Radicadas</div>

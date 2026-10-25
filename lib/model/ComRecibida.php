@@ -115,7 +115,7 @@ class ComRecibida extends BaseComRecibida
             }
             //**********************************************************************************************************************
             $metadata_encrypt = "";
-            for ($i = 0; $i < count($resultset); $i++) {
+            for ($i = 0; $i < count74($resultset); $i++) {
                 $metadata_encrypt .= $resultset[$i];
             }
             //**********************************************************************************************************************
@@ -161,7 +161,7 @@ class ComRecibida extends BaseComRecibida
         try {
             $duplicados_conresp = ComrecibidaDuplicadosPeer::existeDuplicadosConRespuesta($this->getPrimaryKey());
             //**********************************************************************************************************************
-            if (count($duplicados_conresp) > 0) {
+            if (count74($duplicados_conresp) > 0) {
                 if (!empty($duplicados_conresp[0]['RADICADO_COMENVIADA'])) {
                     $radicados_comrecibida = array_unique(array_map(function ($rad_comrec) {
                         return $rad_comrec['RADICADO_COMRECIBIDA'];
@@ -223,7 +223,7 @@ class ComRecibida extends BaseComRecibida
             //**************************************************************************************************
             $list_exprules = ExpedienteReglaEtiquetaPeer::getExisteRuleByTipoCom(ModulesEnable::ComRecibida, $this->getTipocomrecibidaId());
             //**************************************************************************************************
-            if (count($list_exprules) <= 0) {
+            if (count74($list_exprules) <= 0) {
                 return array('error' => false, 'message' => 'La automatización de expedientes esta deshabilitada');
             }
             //**************************************************************************************************
@@ -254,7 +254,7 @@ class ComRecibida extends BaseComRecibida
                     if ($table_origen == InteresadosPeer::TABLE_NAME) {
                         //MEJORAR ESTO PARA HACERLOS DIMINICO EN SU MAYORIA
                         $idata_relations = ComRecibidaPeer::getListIntersadosByComId($this->getPrimaryKey());
-                        if (count($idata_relations)) {
+                        if (count74($idata_relations)) {
                             $current_metadato[strtoupper($object_method)] = call_user_func(array($idata_relations[0]->getInteresados(), sprintf("get%s", $object_method)));
                         }
                     } else {
@@ -275,7 +275,7 @@ class ComRecibida extends BaseComRecibida
             }
             //**************************************************************************************************
             $iunidad_documental = UnidadDocumentalPeer::getExpedienteByTitulo($titulo_expediente);
-            if (count($iunidad_documental) > 0) {
+            if (count74($iunidad_documental) > 0) {
                 $unidad_documental = $iunidad_documental[0];
             }
             //**************************************************************************************************
@@ -320,7 +320,7 @@ class ComRecibida extends BaseComRecibida
                 foreach ($current_interesados as $row_interesado) {
                     $comlist_interesados[] = $row_interesado->getInteresadoId();
                 }
-                $params['already_interesados'] = count($comlist_interesados) ? $comlist_interesados : null;
+                $params['already_interesados'] = count74($comlist_interesados) ? $comlist_interesados : null;
                 //***********************************************************************************************
                 $response_process = UnidadDocumentalPeer::addUnidadDocumental($params);
                 //***********************************************************************************************
@@ -807,7 +807,7 @@ class ComRecibida extends BaseComRecibida
         if ($include_anexos) {
             $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
             //*****************************CREANDO LISTA DE ARCHIVOS*******************************
-            for ($j = 0; $j < count($files_adjuntos); $j++) {
+            for ($j = 0; $j < count74($files_adjuntos); $j++) {
                 $size_file = 0;
                 if (trim($files_adjuntos[$j])) {
                     $filename = basename($files_adjuntos[$j]);
@@ -867,7 +867,7 @@ class ComRecibida extends BaseComRecibida
         try {
             $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
             //*****************************CREANDO LISTA DE ARCHIVOS***********************************
-            for ($j = 0; $j < count($files_adjuntos); $j++) {
+            for ($j = 0; $j < count74($files_adjuntos); $j++) {
                 if (trim($files_adjuntos[$j])) {
                     $filename = basename(trim($files_adjuntos[$j]));
                     $xguid = simad_util::create_guid($filename);
@@ -985,7 +985,7 @@ class ComRecibida extends BaseComRecibida
         if ($is_files_old) {
             $files_adjuntos = preg_split("/[,]+/", $files_old_text, -1, PREG_SPLIT_NO_EMPTY);
             $files_text = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j < count($files_text); $j++) {
+            for ($j = 0; $j < count74($files_text); $j++) {
                 $url = ComRecibida::strpos_array($files_text[$j], $files_adjuntos);
                 if (!is_null($url)) {
                     $url_files[] = $url . ",";
@@ -1003,7 +1003,7 @@ class ComRecibida extends BaseComRecibida
             }
         } else {
             $files_adjuntos = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j <= count($files_adjuntos); $j++) {
+            for ($j = 0; $j <= count74($files_adjuntos); $j++) {
                 if (trim($files_adjuntos[$j])) {
                     $file_name = basename($files_adjuntos[$j]);
                     $filenamesource = $directorio_tmp . DIRECTORY_SEPARATOR . $file_name;
@@ -1340,7 +1340,7 @@ class ComRecibida extends BaseComRecibida
         $isError = false;
         $list_state = array();
         //********************************************************************************
-        if (count($files_new)) {
+        if (count74($files_new)) {
             foreach ($files_new as $nfile) {
                 try {
                     if (!empty($nfile)) {
@@ -1524,7 +1524,7 @@ class ComRecibida extends BaseComRecibida
             if (!in_array($this->getEstadocomrecibidaId(), array(12, 14))) {
                 $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
                 //************************************************************************************
-                for ($j = 0; $j < count($files_adjuntos); $j++) {
+                for ($j = 0; $j < count74($files_adjuntos); $j++) {
                     if (trim($files_adjuntos[$j])) {
                         try {
                             $filename = basename($files_adjuntos[$j]);

@@ -5,7 +5,7 @@ $currentUser= $sf_user->getAttribute('usuario_id', '', 'subscriber');
 use_helper('Object','jQuery');
 $required = $factura->getPrimaryKey() ? "" : "required";
 ?>
-<?php if(count($configusuarios)){ ?>
+<?php if(count74($configusuarios)){ ?>
     <select name="usuario_causador" id="usuario_causador" class="form-control input-sm usersvalidate <?php echo $required; ?>">
         <option value="">Seleccione...</option>
         <?php while($usuario = $configusuarios->fetch()){ ?>

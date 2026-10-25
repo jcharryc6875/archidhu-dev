@@ -16,7 +16,7 @@ class AutorizacionFirmaPeer extends BaseAutorizacionFirmaPeer
         //****************************************************************************************
 		$usuarios_firma = preg_split("/[,]+/",trim($str_firmausers), -1, PREG_SPLIT_NO_EMPTY);
 		//****************************************************************************************
-		if(count($usuarios_firma) == 1){
+		if(count74($usuarios_firma) == 1){
 			if($usuarios_firma[0] == $usuariologuiado) { return 1; }
 		}
 		//****************************************************************************************

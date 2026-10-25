@@ -1584,7 +1584,7 @@ class usuarioActions extends sfActions
   	}
     //***********************************************************************************************
     $userprcom = $this->getRequestParameter('tipoprocesocom_id') ? $this->getRequestParameter('tipoprocesocom_id') : null;
-    if(count($userprcom)) {
+    if(count74($userprcom)) {
       $c->addJoin(UsuarioPeer::USUARIO_ID,UsuarioProcesocomPeer::USUARIO_ID);
       if(is_array($userprcom)){
         $c->add(UsuarioProcesocomPeer::TIPOPROCESOCOM_ID,$userprcom,Criteria::IN);

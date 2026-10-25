@@ -10,7 +10,7 @@ $currentFormDeleteInteresado  = $sf_user->checkPerm("ACTO_ADMINISTRATIVO_ELIMINA
 <div class="row">
 	<div class="col-md-12">
       <?php
-	    $cantidad_registros = count($list_interesados);
+	    $cantidad_registros = count74($list_interesados);
 	    if($cantidad_registros == 0):
 	    ?>
         <div class="panel panel-primary">		      

@@ -296,7 +296,7 @@ class ComInterna extends BaseComInterna
         //*****************************************************************************************
         $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
         //*****************************CREANDO LISTA DE ARCHIVOS***********************************
-        for ($j = 0; $j < count($files_adjuntos); $j++) {
+        for ($j = 0; $j < count74($files_adjuntos); $j++) {
             $size_file = 0;
             if (trim($files_adjuntos[$j])) {
                 $filename = basename($files_adjuntos[$j]);
@@ -354,7 +354,7 @@ class ComInterna extends BaseComInterna
         try {
             $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
             //*****************************CREANDO LISTA DE ARCHIVOS***********************************
-            for ($j = 0; $j < count($files_adjuntos); $j++) {
+            for ($j = 0; $j < count74($files_adjuntos); $j++) {
                 if (trim($files_adjuntos[$j])) {
                     $filename = basename(trim($files_adjuntos[$j]));
                     $xguid = simad_util::create_guid($filename);
@@ -490,7 +490,7 @@ class ComInterna extends BaseComInterna
         if (trim($is_files_old)) {
             $files_adjuntos = preg_split("/[,]+/", $files_old_text, -1, PREG_SPLIT_NO_EMPTY);
             $files_text = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j < count($files_text); $j++) {
+            for ($j = 0; $j < count74($files_text); $j++) {
                 $url = ComInterna::strpos_array($files_text[$j], $files_adjuntos);
                 if (!is_null($url)) {
                     $url_files .= $url . ",";
@@ -510,7 +510,7 @@ class ComInterna extends BaseComInterna
             }
         } else {
             $files_adjuntos = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j <= count($files_adjuntos); $j++) {
+            for ($j = 0; $j <= count74($files_adjuntos); $j++) {
                 if (trim($files_adjuntos[$j])) {
                     $file_name = basename($files_adjuntos[$j]);
                     $filenamesource = $directorio_tmp . DIRECTORY_SEPARATOR . $file_name;
@@ -553,7 +553,7 @@ class ComInterna extends BaseComInterna
         if (trim($files_old_text)) {
             $files_adjuntos = preg_split("/[,]+/", $files_old_text, -1, PREG_SPLIT_NO_EMPTY);
             $files_text = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j < count($files_text); $j++) {
+            for ($j = 0; $j < count74($files_text); $j++) {
                 $url = ComInterna::strpos_array($files_text[$j], $files_adjuntos);
                 if (!is_null($url)) {
                     $url_files .= $url . ",";
@@ -571,7 +571,7 @@ class ComInterna extends BaseComInterna
             }
         } else {
             $files_adjuntos = preg_split("/[,]+/", $files_new, -1, PREG_SPLIT_NO_EMPTY);
-            for ($j = 0; $j <= count($files_adjuntos); $j++) {
+            for ($j = 0; $j <= count74($files_adjuntos); $j++) {
                 if (trim($files_adjuntos[$j])) {
                     $file_name = basename($files_adjuntos[$j]);
                     $filenamesource = $directorio_tmp . $file_name;
@@ -655,7 +655,7 @@ class ComInterna extends BaseComInterna
         $isError = false;
         $list_state = array();
         //********************************************************************************
-        if (count($files_new)) {
+        if (count74($files_new)) {
             foreach ($files_new as $nfile) {
                 try {
                     if (!empty($nfile)) {
@@ -811,7 +811,7 @@ class ComInterna extends BaseComInterna
             $contFirmas++;
         }
         //**************************************************************************************************
-        if (count($cargos_firmas)) {
+        if (count74($cargos_firmas)) {
             $firmas .= $this->getDataAreasOrCargosFirmas($mecanica_firmas);
             $firmas .= $this->getDataAreasOrCargosFirmas($usuario_firmas, false);
             $firmas .= $this->getDataAreasOrCargosFirmas($cargos_firmas);
@@ -979,7 +979,7 @@ class ComInterna extends BaseComInterna
             if (strpos($contenido_merge, "{[REVISOR_FMECANICA]}") !== false)
                 $revisor_fields_merge[] = "{[REVISOR_FMECANICA]}";
             //*******************************************************************************************************
-            if (count($lstrevisores) > 1) {
+            if (count74($lstrevisores) > 1) {
                 $arrayHtml = array();
                 foreach ($lstrevisores as $value) {
                     $data_list_com = array();
@@ -1276,7 +1276,7 @@ class ComInterna extends BaseComInterna
             $contFirmas++;
         }
         //**************************************************************************************************
-        if (count($cargos_firmas)) {
+        if (count74($cargos_firmas)) {
             $firmas .= $this->getDataAreasOrCargosFirmas($mecanica_firmas);
             $firmas .= $this->getDataAreasOrCargosFirmas($usuario_firmas, false);
             $firmas .= $this->getDataAreasOrCargosFirmas($cargos_firmas);
@@ -1351,7 +1351,7 @@ class ComInterna extends BaseComInterna
         if (trim($this->getAnexos()) == "") {
             if (basename($this->getRuta()) != "") {
                 $fileanexos = explode(",", $this->getRuta());
-                for ($n = 0; $n < count($fileanexos); $n++) {
+                for ($n = 0; $n < count74($fileanexos); $n++) {
                     if (trim(basename($fileanexos[$n])) != "") {
                         $anexos .= basename($fileanexos[$n]) . ',';
                     }
@@ -1460,7 +1460,7 @@ class ComInterna extends BaseComInterna
 
     public function getDataAreasOrCargosFirmas($data_str, $add_td = true)
     {
-        if (!count($data_str)) {
+        if (!count74($data_str)) {
             return '';
         }
         $fila_html = '';
@@ -1808,7 +1808,7 @@ class ComInterna extends BaseComInterna
                 $urcargo = "";
                 $urarea = "";
                 //*******************************************************************************************************
-                if (count($lstrevisores) > 1) {
+                if (count74($lstrevisores) > 1) {
                     $arrayHtml = array();
                     foreach ($lstrevisores as $value) {
                         $data_list_com = array();
@@ -2022,7 +2022,7 @@ class ComInterna extends BaseComInterna
                 //***********************************************************************************************
                 if (WsFirmaApiAndes::SERVICE_ENABLE_WS) {
                     $ulist_firma = CominternaUsuarioPeer::getAllUserFirmaDigitalObj($this->getPrimaryKey()); //FALTA VALIDAR CUANDO NO HAY USUARIOS, RESPONDE CON FIRMADO PERO EL ARCHIVO DAÑADO
-                    if (count($ulist_firma) <= 0) {
+                    if (count74($ulist_firma) <= 0) {
                         $this->setFirmadoDigital(4); //EL DOCUMENTO NO SE FIRMA DIGITAL
                         $this->save();
                         return $response_process = array('httpStatus' => 400, 'message' => 'Ninguno de los usuarios que firman la comunicaci&oacute;n tienen habilitada la firma digital');
@@ -2143,7 +2143,7 @@ class ComInterna extends BaseComInterna
                 //***********************************************************************************************
                 if ($token != null) {
                     $ulist_firma = CominternaUsuarioPeer::getAllUserFirmaDigitalObj($this->getPrimaryKey()); //FALTA VALIDAR CUANDO NO HAY USUARIOS, RESPONDE CON FIRMADO PERO EL ARCHIVO DAÑADO
-                    if (count($ulist_firma) <= 0) {
+                    if (count74($ulist_firma) <= 0) {
                         $this->setFirmadoDigital(4); //EL DOCUMENTO NO SE FIRMA DIGITAL
                         $this->save();
                         return $response_process = array('httpStatus' => 400, 'message' => 'Ninguno de los usuarios que firman la comunicaci&oacute;n tienen habilitada la firma digital');
@@ -2265,7 +2265,7 @@ class ComInterna extends BaseComInterna
             $filename   = sprintf("%s.%s", trim($this->getRadicado()), 'pdf');
             $tempdir_firma = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . md5(date("YmdGis"));
             $ulist_firma = CominternaUsuarioPeer::getAllUserFirmaDigitalObj($this->getPrimaryKey());
-            $isFirmaDigital = count($ulist_firma) ? true : false;
+            $isFirmaDigital = count74($ulist_firma) ? true : false;
             //***************************************************************************************************
             if (!empty($this->getUrlFileWord())) {
                 $file_attach = $this->generatePdfByFile($this->getUrlFileWord(), true);
@@ -2281,7 +2281,7 @@ class ComInterna extends BaseComInterna
             $storage_com = $this->getBasicUrlDigitCom($dir_raiz, $digit_dir);
             $targetpath = $storage_com['storage_path'] . DIRECTORY_SEPARATOR . $filename;
             //***************************************************************************************************
-            if (count($ulist_firma) <= 0) {
+            if (count74($ulist_firma) <= 0) {
                 $this->setFirmadoDigital(4); //EL DOCUMENTO NO SE FIRMA DIGITAL
                 $this->save();
                 if (file_exists($file_attach)) {
@@ -2450,7 +2450,7 @@ class ComInterna extends BaseComInterna
             $udestinatarios_list = preg_split("/[,]+/", $usuarios_com['destinatario'], -1, PREG_SPLIT_NO_EMPTY);
             $usuariologuiado = sfContext::getInstance()->getUser()->getAttribute('usuario_id', '', 'subscriber');
             //*************************************************************************************************
-            $destinatario_id = count($udestinatarios_list) > 0 ? $udestinatarios_list[0] : 0;
+            $destinatario_id = count74($udestinatarios_list) > 0 ? $udestinatarios_list[0] : 0;
             $firmante_id = $ufirmas_list[0];
             if (!$firmante_id) {
                 $firmante_id = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
@@ -2533,7 +2533,7 @@ class ComInterna extends BaseComInterna
             $buzon = 2;
             ComInternaPeer::initWorkflowCom($this, $destinatario_id, $firmante_id, $buzon);
             //*************************************************************************************************
-            if (count($udestinatarios_list) > 1) {
+            if (count74($udestinatarios_list) > 1) {
                 unset($udestinatarios_list[0]);
                 $objUsuarioFirmante =  UsuarioPeer::retrieveByPk($firmante_id);
                 $this->addNewBatchComInterna($udestinatarios_list, $objUsuarioFirmante, $regional, $depen_codigo);
@@ -2819,7 +2819,7 @@ class ComInterna extends BaseComInterna
             if (!in_array($this->getEstadocominternaId(), array(1, 4))) {
                 $files_adjuntos = preg_split("/[,]+/", $this->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
                 //************************************************************************************
-                for ($j = 0; $j < count($files_adjuntos); $j++) {
+                for ($j = 0; $j < count74($files_adjuntos); $j++) {
                     if (trim($files_adjuntos[$j])) {
                         try {
                             $filename = basename($files_adjuntos[$j]);

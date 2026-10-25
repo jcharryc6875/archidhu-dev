@@ -158,7 +158,7 @@ class PHPExcel_Writer_Excel5_Escher
 
                 // write the record
                 $recVer            = 0xF;
-                $recInstance    = count($this->object->getBSECollection());
+                $recInstance    = count74($this->object->getBSECollection());
                 $recType        = 0xF001;
                 $length            = strlen($innerData);
 
@@ -296,7 +296,7 @@ class PHPExcel_Writer_Excel5_Escher
                 $header = pack('vvV', $recVerInstance, $recType, $length);
 
                 // number of shapes in this drawing (including group shape)
-                $countShapes = count($this->object->getSpgrContainer()->getChildren());
+                $countShapes = count74($this->object->getSpgrContainer()->getChildren());
                 $innerData .= $header . pack('VV', $countShapes, $this->object->getLastSpId());
                 //$innerData .= $header . pack('VV', 0, 0);
 
@@ -411,7 +411,7 @@ class PHPExcel_Writer_Excel5_Escher
                     $optData = '';
 
                     $recVer            = 0x3;
-                    $recInstance    = count($this->object->getOPTCollection());
+                    $recInstance    = count74($this->object->getOPTCollection());
                     $recType        = 0xF00B;
                     foreach ($this->object->getOPTCollection() as $property => $value) {
                         $optData .= pack('vV', $property, $value);

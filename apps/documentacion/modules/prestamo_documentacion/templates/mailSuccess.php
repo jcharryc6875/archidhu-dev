@@ -5,7 +5,7 @@
 <div class="row">
 	<div class="col-md-12">        
         <?php
-	    $cantidad_registros = count($datos);
+	    $cantidad_registros = count74($datos);
 	    if($cantidad_registros == 0):
 	    ?>
         <div class="panel panel-primary">

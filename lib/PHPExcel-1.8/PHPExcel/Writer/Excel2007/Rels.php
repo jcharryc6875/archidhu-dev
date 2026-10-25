@@ -214,7 +214,7 @@ class PHPExcel_Writer_Excel2007_Rels extends PHPExcel_Writer_Excel2007_WriterPar
             $charts = array();
         }
         if (($pWorksheet->getDrawingCollection()->count() > 0) ||
-            (count($charts) > 0)) {
+            (count74($charts) > 0)) {
             $this->writeRelationship(
                 $objWriter,
                 ++$d,
@@ -256,7 +256,7 @@ class PHPExcel_Writer_Excel2007_Rels extends PHPExcel_Writer_Excel2007_WriterPar
 
         // Write comments relationship?
         $i = 1;
-        if (count($pWorksheet->getComments()) > 0) {
+        if (count74($pWorksheet->getComments()) > 0) {
             $this->writeRelationship(
                 $objWriter,
                 '_comments_vml' . $i,
@@ -274,7 +274,7 @@ class PHPExcel_Writer_Excel2007_Rels extends PHPExcel_Writer_Excel2007_WriterPar
 
         // Write header/footer relationship?
         $i = 1;
-        if (count($pWorksheet->getHeaderFooter()->getImages()) > 0) {
+        if (count74($pWorksheet->getHeaderFooter()->getImages()) > 0) {
             $this->writeRelationship(
                 $objWriter,
                 '_headerfooter_vml' . $i,

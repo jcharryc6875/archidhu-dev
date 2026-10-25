@@ -38,7 +38,7 @@ use_helper('jQuery','Object');
                 echo input_hidden_tag('facturaestado_id',$facturaestado_id);
             ?>
             
-            <?php if(count($factura_procesos)) { ?>
+            <?php if(count74($factura_procesos)) { ?>
                 <div class="form-group">
                   <!-- facturaproceso_id -->
                   <label for="lbfacturaproceso_id" class="col-sm-1 control-label">Procesos:</label>

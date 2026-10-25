@@ -54,7 +54,7 @@ switch($sf_params->get("combo_seleccionado")){
             foreach($subseries as $rs){
             	$split_name = preg_split("/[-]+/", $rs->getDescripcion(),-1, PREG_SPLIT_NO_EMPTY);
             	$sigla = "";
-            	if(count($split_name) > 1){
+            	if(count74($split_name) > 1){
             		$sigla = ucwords(mb_strtolower($split_name[1]));
             	}
             	$text = (ucwords(mb_strtolower($split_name[0])));

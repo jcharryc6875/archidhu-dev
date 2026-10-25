@@ -184,7 +184,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
                     $uidcargo_list[] = $ucom_object->getPrimaryKey();
                 }else{
                     $etapa_rol = ActoadminEtapaPeer::getEtapaByRol($value['rol_id']);
-                    for ($i=0; $i < count($value['lusuarios']); $i++){
+                    for ($i=0; $i < count74($value['lusuarios']); $i++){
                         $info_com['usuario_id'] = $value['lusuarios'][$i];
                         $info_com['cusuario_id'] =  $value['ucargos'][$i];
                         $info_com['estadocom_id'] = $estadoobject_id;
@@ -248,7 +248,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             // (executeSingComCheck) debe usar avanzarFlujoPorOrden() directamente para detectar el empate.
             return isset($resultado['ucom_next']) ? $resultado['ucom_next'] : null;
         }
-        if(!count(ActoadminEtapaPeer::getEtapasActivasOrdenadas())){
+        if(!count74(ActoadminEtapaPeer::getEtapasActivasOrdenadas())){
             return ActoAdministrativoPeer::legacySetNextUserProceso($comobject_id);
         }
         //*************************************************************************************************************
@@ -451,7 +451,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             $c->addAscendingOrderByColumn(ActoadministrativoUsuarioPeer::ORDEN_EJECUCION);
             $pendientes = ActoadministrativoUsuarioPeer::doSelect($c);
             //*********************************************************************************************************
-            if(!count($pendientes)){
+            if(!count74($pendientes)){
                 // no quedan mas ordenes pendientes configurados: se cierra el proceso, igual que el motor de etapas.
                 $ucom_next = ActoAdministrativoPeer::getNextUserComByProceso($comobject_id,1);
                 if($ucom_next != null){ $ucom_next->setEstaAsignada(1); $ucom_next->save(); }
@@ -469,12 +469,12 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             // ($ucom_current != null). Si es la asignación inicial (nadie ha actuado todavía, p.ej. al
             // guardar el acto por primera vez) no hay quién elija todavía: se asigna automáticamente
             // al primero para no dejar el documento sin ningún responsable.
-            if(count($candidatos) > 1 && empty($usuario_destino_id) && $ucom_current != null){
+            if(count74($candidatos) > 1 && empty($usuario_destino_id) && $ucom_current != null){
                 return array('status' => 'empate', 'candidatos' => $candidatos, 'ucom_current' => $ucom_current);
             }
             //*********************************************************************************************************
             $ucom_next = null;
-            if(count($candidatos) > 1){
+            if(count74($candidatos) > 1){
                 foreach ($candidatos as $candidato) {
                     if($candidato->getUsuarioId() == $usuario_destino_id){ $ucom_next = $candidato; break; }
                 }
@@ -492,7 +492,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             $ucom_next->save();
             //*********************************************************************************************************
             if($ucom_current != null){
-                $observacion = count($candidatos) > 1 ? ('Elegido entre '.count($candidatos).' usuarios del mismo orden: '.$ucom_next->getUsuario()->getNombreAll()) : null;
+                $observacion = count74($candidatos) > 1 ? ('Elegido entre '.count74($candidatos).' usuarios del mismo orden: '.$ucom_next->getUsuario()->getNombreAll()) : null;
                 ActoAdministrativoPeer::cerrarPasoYRegistrarBitacora($comobject_id,$ucom_current,false,$observacion);
             }
             //*********************************************************************************************************
@@ -635,7 +635,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$pkobj_id);
             $c->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID,$rol_id);
             $c->add(ActoadministrativoUsuarioPeer::ESTA_APROBADO,0);
-            if(count($excludePks)){ $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVOUSUARIO_ID,$excludePks,Criteria::NOT_IN); }
+            if(count74($excludePks)){ $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVOUSUARIO_ID,$excludePks,Criteria::NOT_IN); }
             return ActoadministrativoUsuarioPeer::doSelectOne($c);
         } catch (PropelException $th) {
             return null;
@@ -647,7 +647,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
     public static function deleteUserCargoNotIn($pkcom_id = 0,$lcargos_current = array())
     {
         try{
-            if(empty($pkcom_id) || !count($lcargos_current) || !is_array($lcargos_current)){
+            if(empty($pkcom_id) || !count74($lcargos_current) || !is_array($lcargos_current)){
                 return null;
             }
             //*******************************************************************************************************
@@ -782,9 +782,9 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$pkobj_id);
             if($rol_id > 0){ $c->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID,$rol_id); }
             $list_user = ActoadministrativoUsuarioPeer::doSelect($c);
-            if(count($list_user) === 1)
+            if(count74($list_user) === 1)
                 return $list_user[0];
-            elseif(count($list_user) === 0)
+            elseif(count74($list_user) === 0)
                 return null;
             else
                 return $list_user;

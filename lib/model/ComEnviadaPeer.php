@@ -189,7 +189,7 @@ class ComEnviadaPeer extends BaseComEnviadaPeer
             $url_files = $files_old_text;
         	$files_adjuntos = preg_split("/[,]+/",$files_old_text, -1, PREG_SPLIT_NO_EMPTY);            
         	$files_text = preg_split("/[,]+/",$files_new, -1, PREG_SPLIT_NO_EMPTY);
-        	for($j=0; $j < count($files_text); $j++){
+        	for($j=0; $j < count74($files_text); $j++){
     			$file_name = basename($files_text[$j]);
     			$filenamesource = $directorio_tmp . $file_name;
     			$filenametarget = $directorio_final . $file_name;
@@ -204,7 +204,7 @@ class ComEnviadaPeer extends BaseComEnviadaPeer
         else
         {
         	$files_adjuntos = preg_split("/[,]+/",$files_new, -1, PREG_SPLIT_NO_EMPTY);
-        	for($j=0; $j <= count($files_adjuntos); $j++){
+        	for($j=0; $j <= count74($files_adjuntos); $j++){
         		if(trim($files_adjuntos[$j])){
         			$file_name = basename($files_adjuntos[$j]);
         			$filenamesource = $directorio_tmp . basename($files_adjuntos[$j]);
@@ -607,7 +607,7 @@ class ComEnviadaPeer extends BaseComEnviadaPeer
     {
         if(!empty($comenviada_id) && !empty($usuarios_str)){
             $arr_users = is_array($usuarios_str) ? $usuarios_str : preg_split("/[,]+/",$usuarios_str, -1, PREG_SPLIT_NO_EMPTY);
-            if(!count($arr_users)){ return false; }
+            if(!count74($arr_users)){ return false; }
             //*********************************************************************************************
             $conexion = Propel::getConnection();
             $consulta = "DELETE FROM %s WHERE %s =".$comenviada_id." AND %s NOT IN(".implode(",",$arr_users).") AND %s <> 1";
@@ -623,7 +623,7 @@ class ComEnviadaPeer extends BaseComEnviadaPeer
     public static function borrarEnviadaUsuariosEdit($com_enviadaId,$usuariosArr)
     {     
         $arrUsuarios=explode(',',$usuariosArr);
-        $cont = count($arrUsuarios);
+        $cont = count74($arrUsuarios);
         $usuariosIn = "";
         for($i=0;  $i < ($cont-1); $i++){
             if($i == 0){
@@ -715,7 +715,7 @@ class ComEnviadaPeer extends BaseComEnviadaPeer
 		$nulog = false;
         //**********************************************************************************
 		try {
-			if(!empty($numero_resolucion) && count($list_nuids)){
+			if(!empty($numero_resolucion) && count74($list_nuids)){
 				$c = new Criteria();
 				$c->addJoin(ComEnviadaPeer::COMENVIADA_ID,EnviadaInteresadosPeer::COMENVIADA_ID);
 				$c->addJoin(EnviadaInteresadosPeer::INTERESADO_ID,InteresadosPeer::INTERESADO_ID);
@@ -735,7 +735,7 @@ class ComEnviadaPeer extends BaseComEnviadaPeer
                         $list_com[] = $object[0];
                     }
                     //**********************************************************************                    
-                    $results = count($list_com) ? implode(",",$list_com) : 0;
+                    $results = count74($list_com) ? implode(",",$list_com) : 0;
                 }else{
                     $results = ComEnviadaPeer::doCount($c);
                 }

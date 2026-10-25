@@ -371,8 +371,8 @@ class automatizacion_unidaddocActions extends sfActions
             $autotipodocumental_id = !empty(trim($post_parameters['autotipodocumental_id'])) ? trim($post_parameters['autotipodocumental_id']) : null;
             $texto_base = !empty(trim($post_parameters['texto_base'])) ? trim($post_parameters['texto_base']) : null;
             $separator_text = !empty(trim($post_parameters['separator_text'])) ? trim($post_parameters['separator_text']) : null;
-            $auto_exp_etiqueta = count($post_parameters['auto_exp_etiqueta']) ? $post_parameters['auto_exp_etiqueta'] : null;
-            $auto_metaetiquetas = count($post_parameters['etiquetas_orden']) ? preg_split("/[,]/", $post_parameters['etiquetas_orden'], -1, PREG_SPLIT_NO_EMPTY) : null;
+            $auto_exp_etiqueta = count74($post_parameters['auto_exp_etiqueta']) ? $post_parameters['auto_exp_etiqueta'] : null;
+            $auto_metaetiquetas = count74($post_parameters['etiquetas_orden']) ? preg_split("/[,]/", $post_parameters['etiquetas_orden'], -1, PREG_SPLIT_NO_EMPTY) : null;
             $texto_compuesto = !empty(trim($post_parameters['texto_compuesto'])) ? trim($post_parameters['texto_compuesto']) : null;
             //*******************************************************************************************************
             $expediente_reglas->setSubserieId($subserie_id);
@@ -450,7 +450,7 @@ class automatizacion_unidaddocActions extends sfActions
         $nombre_interno = str_replace(' ','',ucwords($nombre_etiqueta));
         //*******************************************************************************************************
         $str_metadato = preg_split("/[.]/",$modulo_metadato,-1,PREG_SPLIT_NO_EMPTY);
-        if(count($str_metadato) != 2){
+        if(count74($str_metadato) != 2){
             $this->getUser()->setFlash('messages_error', 'Error al descomponer el metadato de origen');
             $this->redirect($this->getRequest()->getScriptName() . '/automatizacion_unidaddoc/newEtiqueta?modulo_id=' . $modulo_id);
         }

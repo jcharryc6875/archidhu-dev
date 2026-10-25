@@ -75,7 +75,7 @@ class ComrecibidaUsuarioPeer extends BaseComrecibidaUsuarioPeer
 	    $c = new Criteria();
         $c->add(ComRecibidaPeer::MARCA,$marcausuario_id);
         $marca  = ComRecibidaPeer::doSelect($c);
-        simad_util::writetolog($log_dir,'Total registros => '.count($marca));
+        simad_util::writetolog($log_dir,'Total registros => '.count74($marca));
         foreach ($marca as $com_recibida) {
             $c2 = new Criteria();
             $c2->add(WebserviceLogPeer::TIPO_OPERACION,'%'.$com_recibida->getRadicado().'%',Criteria::LIKE);

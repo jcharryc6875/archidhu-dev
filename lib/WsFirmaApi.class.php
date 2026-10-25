@@ -197,7 +197,7 @@ class WsFirmaApiGse
             $firmaVisible = $imagefirma != null ? true : false;
             $imagefirma = $imagefirma != null ? $imagefirma : '';
             //$ubicacionFirma = count($ubicacionFirma) > 0 ? $ubicacionFirma : array('x' => 460,'y' => 660,'w' => 120,'h' => 40);
-			$ubicacionFirma = count($ubicacionFirma) > 0 ? $ubicacionFirma : array('x' => 0,'y' => 680,'w' => 40,'h' => 100);
+			$ubicacionFirma = count74($ubicacionFirma) > 0 ? $ubicacionFirma : array('x' => 0,'y' => 680,'w' => 40,'h' => 100);
             //********************************************************************************************************************
             $postSign = array();
             if(array_key_exists('x',$ubicacionFirma)){ $postSign['x'] = $ubicacionFirma['x']; }else{ $postSign['x'] = 0; }
@@ -789,7 +789,7 @@ class WsFirmaApiAndes
             $params_api['firmaVisible'] = 'false';
             if($firma_visible){
                 //--ubicacion 400,700,170,60
-                $ubicacionFirma = count($ubicacionFirma) ? $ubicacionFirma : array(5,640,40,120);
+                $ubicacionFirma = count74($ubicacionFirma) ? $ubicacionFirma : array(5,640,40,120);
                 $params_api['firmaVisible'] = 'true';
                 $params_api['ubicacionImagen'] = implode(",", $ubicacionFirma);
                 //$params_api['tamanoFuenteFirma'] = 5;

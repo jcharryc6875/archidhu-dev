@@ -38,7 +38,7 @@ use_helper('Object','jQuery','UserComponent');
                 echo input_hidden_tag('tipoprocesocom_id',$tipoprocesocom_id);
             ?>
             
-            <?php if(count($tipoprocesos_com)) { ?>
+            <?php if(count74($tipoprocesos_com)) { ?>
                 <div class="form-group">
                   <!-- facturaproceso_id -->
                   <label for="lbfacturaproceso_id" class="col-sm-1 control-label">Proceso:</label>

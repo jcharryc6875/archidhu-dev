@@ -409,7 +409,7 @@ class acto_administrativoActions extends sfActions
     $this->users_asignado = $usuario_asigando;
     $this->firmas_desatendida = $firmas_desatendida;
     $this->tipoprocesocom_id = $object_asignado != null ? $object_asignado->getTipoprocesocomId() : 0;
-    $this->aprobacion_count = count($aprob_urlist);
+    $this->aprobacion_count = count74($aprob_urlist);
     $this->destinatariosIds = $destinatariosIds;
     $this->cargousuarioIdDestinos = $cargousuarioIdDestinos;
     $this->udestinarios_names = $udestinarios_names;
@@ -1181,7 +1181,7 @@ class acto_administrativoActions extends sfActions
     }
     //*******************************************************************************************
     $this->getResponse()->setContentType('application/json');
-    $response_info = array('status' => (count($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'warnings' => $warnings, 'comIdLote' => $idLote);
+    $response_info = array('status' => (count74($elist_msg) ? 400 : 200), 'message' => $elist_msg, 'warnings' => $warnings, 'comIdLote' => $idLote);
     return $this->renderText(json_encode($response_info));
   }
 
@@ -1262,7 +1262,7 @@ class acto_administrativoActions extends sfActions
     }
     //*******************************************************************************************
     $migrations_list = ComMigmasivoPeer::getListComByComLote($comIdLote, 'PENDIENTE VALIDAR');
-    if (empty($migrations_list) || count($migrations_list) <= 0) {
+    if (empty($migrations_list) || count74($migrations_list) <= 0) {
       $this->getResponse()->setContentType('application/json');
       $response_info = array('status' => 400, 'message' => 'Error, el listado de registros esta vacio, intente de nuevo');
       return $this->renderText(json_encode($response_info));
@@ -1710,7 +1710,7 @@ class acto_administrativoActions extends sfActions
     }
     //***************************************************************************************************
     $aprob_urlist = ActoAdministrativoPeer::getListUncheckApro($acto_administrativo->getPrimaryKey());
-    if (count($aprob_urlist) <= 1 && in_array($object_asignado->getUsuarioId(), $aprob_urlist)) {
+    if (count74($aprob_urlist) <= 1 && in_array($object_asignado->getUsuarioId(), $aprob_urlist)) {
       $this->permisoRadicarFirmaElectronica = 1;
     }
     //***************************************************************************************************
@@ -1826,7 +1826,7 @@ class acto_administrativoActions extends sfActions
       }
       //*****************************************************************************************************
       if ($ordenMaximo !== null) {
-        $ultimoEsSoloFirmantes = count($rolesEnOrdenMaximo) > 0;
+        $ultimoEsSoloFirmantes = count74($rolesEnOrdenMaximo) > 0;
         foreach ($rolesEnOrdenMaximo as $rol_id) {
           if ($rol_id != 2) {
             $ultimoEsSoloFirmantes = false;
@@ -2352,7 +2352,7 @@ class acto_administrativoActions extends sfActions
       $list_users['str_copiasusers'] = trim($this->getRequestParameter('copiaInternaId'));
       $list_users['str_ucargoscopias'] = trim($this->getRequestParameter('cargousuarioIdCopias'));
       //*********************************************************************************************************
-      if (count($list_interesado) > 0 && count($list_destinatario) > 0) {
+      if (count74($list_interesado) > 0 && count74($list_destinatario) > 0) {
         $this->getResponse()->setContentType('application/json');
         $response_info = array('status' => 405, 'message' => 'No se permite enviar interesados y destinatarios, debe seleccionar una sola opcion');
         return $this->renderText(json_encode($response_info));
@@ -2489,7 +2489,7 @@ class acto_administrativoActions extends sfActions
       if (!$isNewActoAdm) {
         $rol_ids_flujo = ActoadminEtapaPeer::getRolesFlujoConfiguradoODefault();
         $ids_previos_aprobados = ActoAdministrativoPeer::getListUncheckApro($acto_administrativo->getPrimaryKey(), 1, $rol_ids_flujo);
-        if (count($ids_previos_aprobados)) {
+        if (count74($ids_previos_aprobados)) {
           $usuario_editor = UsuarioPeer::retrieveByPk($usuariologuiado);
           $usuarios_previos = array();
           foreach ($ids_previos_aprobados as $id_previo) {
@@ -2538,12 +2538,12 @@ class acto_administrativoActions extends sfActions
         }
       }
       //*********************************************************************************************************
-      if (count($list_interesado)) {
-        for ($index = 0; $index < count($list_interesado); $index++) {
+      if (count74($list_interesado)) {
+        for ($index = 0; $index < count74($list_interesado); $index++) {
           ActoadministraInteresadoPeer::addNewInteresadoByComId($acto_administrativo->getPrimaryKey(), $list_interesado[$index]);
         }
         //*******************************************************************************************************
-        if (count($list_interesado)) {
+        if (count74($list_interesado)) {
           ActoadministraInteresadoPeer::deleteByComIdNotExist($acto_administrativo->getPrimaryKey(), $list_interesado);
         }
       } else {

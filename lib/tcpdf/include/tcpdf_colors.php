@@ -254,7 +254,7 @@ class TCPDF_COLORS {
 		$color = strtolower($color);
 		if (isset(self::$spotcolor[$color])) {
 			if (!isset($spotc[$name])) {
-				$i = (1 + count($spotc));
+				$i = (1 + count74($spotc));
 				$spotc[$name] = array('C' => self::$spotcolor[$color][0], 'M' => self::$spotcolor[$color][1], 'Y' => self::$spotcolor[$color][2], 'K' => self::$spotcolor[$color][3], 'name' => self::$spotcolor[$color][4], 'i' => $i);
 			}
 			return $spotc[self::$spotcolor[$color][4]];
@@ -415,7 +415,7 @@ class TCPDF_COLORS {
 	public static function getColorStringFromArray($c) {
 		$c = array_values($c);
 		$color = '[';
-		switch (count($c)) {
+		switch (count74($c)) {
 			case 4: {
 				// CMYK
 				$color .= sprintf('%F %F %F %F', (max(0, min(100, floatval($c[0]))) / 100), (max(0, min(100, floatval($c[1]))) / 100), (max(0, min(100, floatval($c[2]))) / 100), (max(0, min(100, floatval($c[3]))) / 100));

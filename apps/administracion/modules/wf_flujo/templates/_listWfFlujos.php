@@ -10,7 +10,7 @@ use_helper('jQuery');
 ?>
 <div class="col-md-5" id="<?php echo md5('strflujos');?>">
     <?php        
-    $cantidad_registros = count($wf_flujos);
+    $cantidad_registros = count74($wf_flujos);
     if($cantidad_registros == 0):
     ?>
         <div class="panel panel-gradient">

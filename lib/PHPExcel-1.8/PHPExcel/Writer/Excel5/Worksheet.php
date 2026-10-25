@@ -256,7 +256,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             $this->lastColumnIndex = 255;
         }
 
-        $this->countCellStyleXfs = count($phpSheet->getParent()->getCellStyleXfCollection());
+        $this->countCellStyleXfs = count74($phpSheet->getParent()->getCellStyleXfCollection());
     }
 
     /**
@@ -362,7 +362,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // Write the COLINFO records if they exist
         if (!empty($this->columnInfo)) {
-            $colcount = count($this->columnInfo);
+            $colcount = count74($this->columnInfo);
             for ($i = 0; $i < $colcount; ++$i) {
                 $this->writeColinfo($this->columnInfo[$i]);
             }
@@ -539,7 +539,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $firstCell = $explodes[0];
 
         // extract last cell, e.g. 'B6'
-        if (count($explodes) == 1) {
+        if (count74($explodes) == 1) {
             $lastCell = $firstCell;
         } else {
             $lastCell = $explodes[1];
@@ -1406,7 +1406,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $selectedCells = $this->phpSheet->getSelectedCells();
         $selectedCells = PHPExcel_Cell::splitRange($this->phpSheet->getSelectedCells());
         $selectedCells = $selectedCells[0];
-        if (count($selectedCells) == 2) {
+        if (count74($selectedCells) == 2) {
             list($first, $last) = $selectedCells;
         } else {
             $first = $selectedCells[0];
@@ -1464,7 +1464,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
     private function writeMergedCells()
     {
         $mergeCells = $this->phpSheet->getMergeCells();
-        $countMergeCells = count($mergeCells);
+        $countMergeCells = count74($mergeCells);
 
         if ($countMergeCells == 0) {
             return;
@@ -1594,7 +1594,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         foreach ($this->phpSheet->getProtectedCells() as $range => $password) {
             // number of ranges, e.g. 'A1:B3 C20:D25'
             $cellRanges = explode(' ', $range);
-            $cref = count($cellRanges);
+            $cref = count74($cellRanges);
 
             $recordData = pack(
                 'vvVVvCVvVv',
@@ -1706,7 +1706,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $x       = isset($panes[1]) ? $panes[1] : null;
         $rwTop   = isset($panes[2]) ? $panes[2] : null;
         $colLeft = isset($panes[3]) ? $panes[3] : null;
-        if (count($panes) > 4) { // if Active pane was received
+        if (count74($panes) > 4) { // if Active pane was received
             $pnnAct = $panes[4];
         } else {
             $pnnAct = null;
@@ -2073,7 +2073,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
         // Calculate the maximum column outline level. The equivalent calculation
         // for the row outline level is carried out in writeRow().
-        $colcount = count($this->columnInfo);
+        $colcount = count74($this->columnInfo);
         for ($i = 0; $i < $colcount; ++$i) {
             $col_level = max($this->columnInfo[$i][5], $col_level);
         }
@@ -2170,7 +2170,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             }
 
             $record  = 0x001b;               // Record identifier
-            $cbrk    = count($hbreaks);       // Number of page breaks
+            $cbrk    = count74($hbreaks);       // Number of page breaks
             $length  = 2 + 6 * $cbrk;      // Bytes to follow
 
             $header  = pack("vv", $record, $length);
@@ -2197,7 +2197,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             }
 
             $record  = 0x001a;               // Record identifier
-            $cbrk    = count($vbreaks);       // Number of page breaks
+            $cbrk    = count74($vbreaks);       // Number of page breaks
             $length  = 2 + 6 * $cbrk;      // Bytes to follow
 
             $header  = pack("vv", $record, $length);
@@ -2691,7 +2691,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 
             // split the Escher stream
             $spOffsets[0] = 0;
-            $nm = count($spOffsets) - 1; // number of shapes excluding first shape
+            $nm = count74($spOffsets) - 1; // number of shapes excluding first shape
             for ($i = 1; $i <= $nm; ++$i) {
                 // MSODRAWING record
                 $record = 0x00EC;            // Record identifier
@@ -2781,7 +2781,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
             $objId  = 0xFFFFFFFF;  // Object identifier of drop down arrow object, or -1 if not visible
 
             $header = pack('vv', $record, $length);
-            $data   = pack('vVVVV', $grbit, $horPos, $verPos, $objId, count($dataValidationCollection));
+            $data   = pack('vVVVV', $grbit, $horPos, $verPos, $objId, count74($dataValidationCollection));
             $this->append($header.$data);
 
             // DATAVALIDATION records
@@ -3059,7 +3059,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         // $szValue1 : size of the formula data for first value or formula
         // $szValue2 : size of the formula data for second value or formula
         $arrConditions = $conditional->getConditions();
-        $numConditions = sizeof($arrConditions);
+        $numConditions = count74($arrConditions);
         if ($numConditions == 1) {
             $szValue1 = ($arrConditions[0] <= 65535 ? 3 : 0x0000);
             $szValue2 = 0x0000;
@@ -4231,7 +4231,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
         $cellRange = pack('vvvv', $numRowMin-1, $numRowMax-1, $numColumnMin-1, $numColumnMax-1);
 
         $header      = pack('vv', $record, $length);
-        $data      = pack('vv', count($arrConditional), $needRedraw);
+        $data      = pack('vv', count74($arrConditional), $needRedraw);
         $data     .= $cellRange;
         $data     .= pack('v', 0x0001);
         $data     .= $cellRange;

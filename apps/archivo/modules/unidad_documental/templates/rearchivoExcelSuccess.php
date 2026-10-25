@@ -51,7 +51,7 @@
 </table>
 <br/>
 <?php
-$cantidad_registros = count($contenido);
+$cantidad_registros = count74($contenido);
 if($cantidad_registros != 0){
 ?>
 <table cellspacing="2" cellpadding="3" width="100%" align="center" border="1">

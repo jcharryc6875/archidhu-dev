@@ -139,6 +139,6 @@ class PHPExcel_Shared_TimeZone
             $transitions = self::getTimezoneTransitions($objTimezone, $timestamp);
         }
 
-        return (count($transitions) > 0) ? $transitions[0]['offset'] : 0;
+        return (count74($transitions) > 0) ? $transitions[0]['offset'] : 0;
     }
 }

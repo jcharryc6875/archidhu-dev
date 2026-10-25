@@ -15,7 +15,7 @@ use_helper('Object','jQuery','UserComponent');
                 <div class="panel-title">
                     <h5>
                         Comentarios del Documento
-                        <span class="badge badge-danger"><?php echo count($com_interna->getCominternaDocnotas()) ?></span>
+                        <span class="badge badge-danger"><?php echo count74($com_interna->getCominternaDocnotas()) ?></span>
                     </h5>
                 </div>
             </div>

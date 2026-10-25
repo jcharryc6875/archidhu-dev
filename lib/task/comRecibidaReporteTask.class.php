@@ -66,7 +66,7 @@ EOF;
 
         try {
             $response = EstadisticaPeer::generatePendingReport($datesToProcess['start_date'], $datesToProcess['end_date']);
-            $count = count($response);
+            $count = count74($response);
             $this->logSection('recibida_reporte', "  -> {$count} procesos realizados");
         } catch (Exception $e) {
             $this->logSection('error', "  -> Error: " . $e->getMessage(), null, 'ERROR');

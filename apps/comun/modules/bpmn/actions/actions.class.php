@@ -160,7 +160,7 @@ class bpmnActions extends sfActions
             return $this->renderText(json_encode([
                 'success' => true,
                 'tasks' => $result,
-                'total' => count($result)
+                'total' => count74($result)
             ]));
         } catch (Exception $e) {
             return $this->renderText(json_encode([
@@ -248,7 +248,7 @@ class bpmnActions extends sfActions
             return $this->renderText(json_encode([
                 'success' => true,
                 'versions' => $result,
-                'total' => count($result)
+                'total' => count74($result)
             ]));
         } catch (Exception $e) {
             return $this->renderText(json_encode([
@@ -652,7 +652,7 @@ class bpmnActions extends sfActions
             return $this->renderText(json_encode([
                 'success' => true,
                 'tasks' => $result,
-                'total' => count($result)
+                'total' => count74($result)
             ]));
         } catch (Exception $e) {
             return $this->renderText(json_encode([
@@ -810,7 +810,7 @@ class bpmnActions extends sfActions
 
             $response['success'] = true;
             $response['message'] = 'Tarea completada correctamente';
-            $response['uploaded_files'] = count($attachmentIds);
+            $response['uploaded_files'] = count74($attachmentIds);
             $response['attachments'] = $attachmentIds;
 
             return $this->renderJSON($response);
@@ -948,13 +948,13 @@ class bpmnActions extends sfActions
 
             $taskIds = json_decode($taskIdsJson, true);
 
-            if (!is_array($taskIds) || count($taskIds) === 0) {
+            if (!is_array($taskIds) || count74($taskIds) === 0) {
                 throw new Exception('Lista de tareas inválida');
             }
 
             // Limitar cantidad de tareas por lote
             $maxTasks = 50;
-            if (count($taskIds) > $maxTasks) {
+            if (count74($taskIds) > $maxTasks) {
                 throw new Exception("Máximo $maxTasks tareas por lote");
             }
 
@@ -1024,13 +1024,13 @@ class bpmnActions extends sfActions
 
             $taskIds = json_decode($taskIdsJson, true);
 
-            if (!is_array($taskIds) || count($taskIds) === 0) {
+            if (!is_array($taskIds) || count74($taskIds) === 0) {
                 throw new Exception('Lista de tareas inválida');
             }
 
             // Limitar cantidad de tareas por lote
             $maxTasks = 50;
-            if (count($taskIds) > $maxTasks) {
+            if (count74($taskIds) > $maxTasks) {
                 throw new Exception("Máximo $maxTasks tareas por lote");
             }
 
@@ -1475,7 +1475,7 @@ class bpmnActions extends sfActions
 
             return $this->renderJSON([
                 'attachments' => $attachmentsData,
-                'total' => count($attachmentsData)
+                'total' => count74($attachmentsData)
             ]);
         } catch (Exception $e) {
             return $this->renderError($e->getMessage());
@@ -1876,7 +1876,7 @@ class bpmnActions extends sfActions
             'total_completed' => $totalCompleted,
             'total_failed' => $totalFailed,
             'completion_rate' => $totalStarted > 0 ? ($totalCompleted / $totalStarted) * 100 : 0,
-            'avg_duration_overall' => !empty($durations) ? array_sum($durations) / count($durations) : 0
+            'avg_duration_overall' => !empty($durations) ? array_sum($durations) / count74($durations) : 0
         ];
     }
 
@@ -1966,8 +1966,8 @@ class bpmnActions extends sfActions
 
         // Calcular estadísticas
         $totalDuration = array_sum(array_column($results, 'duration'));
-        $avgDuration = $totalDuration / count($results);
-        $successful = count(array_filter($results, function ($r) {
+        $avgDuration = $totalDuration / count74($results);
+        $successful = count74(array_filter($results, function ($r) {
             return $r['status'] === 'completed';
         }));
 

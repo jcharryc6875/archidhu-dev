@@ -44,6 +44,7 @@ all:
     default_culture:        en_US
     charset:                utf-8
     prototype_web_dir:      /sf/prototype
+    standard_helpers:       [Partial, Cache, Form, Object, Validation]
 #    default_culture:        es_ES
 #    available:              true        # Enable the whole application. Switch to off to redirect all requests to the unavailable module and action.
 #

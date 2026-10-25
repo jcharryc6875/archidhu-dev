@@ -13,7 +13,7 @@ $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 <div class="row">
 	<div class="col-md-12">
       <?php
-	    $cantidad_registros = count($ilist_comenviadas);
+	    $cantidad_registros = count74($ilist_comenviadas);
 	    if($cantidad_registros == 0)
       {
         ?>

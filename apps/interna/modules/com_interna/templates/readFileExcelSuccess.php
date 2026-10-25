@@ -6,7 +6,7 @@
 <div class="row">
 	<div class="col-md-12">
 		<?php
-		$cantidad_registros = count($sheetData);
+		$cantidad_registros = count74($sheetData);
 		?>
 		<div id="tablelist" >
 			<?php	    

@@ -269,7 +269,7 @@ abstract class BCGBarcode {
      */
     public function removeLabel(BCGLabel $label) {
         $remove = -1;
-        $c = count($this->labels);
+        $c = count74($this->labels);
         for ($i = 0; $i < $c; $i++) {
             if ($this->labels[$i] === $label) {
                 $remove = $i;

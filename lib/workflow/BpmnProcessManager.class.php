@@ -250,7 +250,7 @@ class BpmnProcessManager
     private static function hasFormFieldChanges($oldFields, $newFields)
     {
         // Diferente cantidad de campos
-        if (count($oldFields) !== count($newFields)) {
+        if (count74($oldFields) !== count74($newFields)) {
             return true;
         }
 

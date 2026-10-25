@@ -47,10 +47,10 @@ $ultima_transicion = $wf_instancia_bitacora_last->getWfactividadtransicionId();
     		<ul class="nav nav-tabs bordered"><!-- available classes "right-aligned" -->
                 <li class="active"><a href="#v-execute" data-toggle="tab"><span class="glyphicon glyphicon-repeat"></span> Acciones</a></li>
     			<li><a href="#v-home" data-toggle="tab"><span class="glyphicon glyphicon-list"></span> Bit&aacute;cora</a></li>
-                <?php if(count($wf_variables)){ ?>
+                <?php if(count74($wf_variables)){ ?>
                     <li><a href="#v-vars" data-toggle="tab"><span class="glyphicon glyphicon-import"></span> Variables</a></li>
                 <?php } ?>
-                <?php if(count($wf_imagen_instancias)){ ?>
+                <?php if(count74($wf_imagen_instancias)){ ?>
                     <li><a href="#v-files" data-toggle="tab"><span class="glyphicon glyphicon-paperclip"></span> Anexos</a></li>
                 <?php } ?>    			
     		</ul>
@@ -62,12 +62,12 @@ $ultima_transicion = $wf_instancia_bitacora_last->getWfactividadtransicionId();
     			<div class="tab-pane" id="v-home"><!-- Bitacora -->
     				<?php include_partial("bitacoraData",array('parametros'=>$parametros,'pager'=>$pager,'directorio_raiz'=>$directorio_raiz,'directorio_adj'=>$directorio_adj,'directorio_alias'=>$directorio_alias,'format_digit_img'=>$format_digit_img)); ?>				
     			</div>
-                <?php if(count($wf_variables)){ ?>
+                <?php if(count74($wf_variables)){ ?>
         			<div class="tab-pane" id="v-vars"> <!-- Variables -->
         				<?php include_partial("variableList",array('wf_variables'=>$wf_variables)); ?>
         			</div>
                 <?php } ?>
-                <?php if(count($wf_imagen_instancias)){ ?> <!-- Adjuntos -->
+                <?php if(count74($wf_imagen_instancias)){ ?> <!-- Adjuntos -->
         			<div class="tab-pane" id="v-files">
         				<?php include_partial("imageList",array('wf_imagen_instancias'=>$wf_imagen_instancias)); ?>
         			</div>

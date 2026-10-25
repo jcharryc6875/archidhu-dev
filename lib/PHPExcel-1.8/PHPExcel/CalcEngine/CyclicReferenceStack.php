@@ -41,7 +41,7 @@ class PHPExcel_CalcEngine_CyclicReferenceStack
      */
     public function count()
     {
-        return count($this->stack);
+        return count74($this->stack);
     }
 
     /**

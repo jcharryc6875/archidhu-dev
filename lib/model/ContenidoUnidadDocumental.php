@@ -552,7 +552,7 @@ class ContenidoUnidadDocumental extends BaseContenidoUnidadDocumental
 			//***************************************************************************************************************************
 			if (!empty($origendoc_group)) {
 				$soportedoc_id = $unidad_documental->getSoporteunidaddocumentalId();
-				if (count($origendoc_group) === 1) {
+				if (count74($origendoc_group) === 1) {
 					if (array_search('Electrónico', $origendoc_group) !== false) {
 						$soportedoc_id = 1; //ELECTRONICO
 					} elseif (array_search('Digitalizado', $origendoc_group) !== false) {
@@ -562,13 +562,13 @@ class ContenidoUnidadDocumental extends BaseContenidoUnidadDocumental
 					} else {
 						$soportedoc_id = 5; //HIBRIDO
 					}
-				} elseif (count(array_uintersect($origendoc_group, array('Digitalizado', 'Fisico'), "strcasecmp")) == 2) {
+				} elseif (count74(array_uintersect($origendoc_group, array('Digitalizado', 'Fisico'), "strcasecmp")) == 2) {
 					$soportedoc_id = 5; //HIBRIDO
-				} elseif (count(array_uintersect($origendoc_group, array('Electrónico', 'Fisico'), "strcasecmp")) == 2) {
+				} elseif (count74(array_uintersect($origendoc_group, array('Electrónico', 'Fisico'), "strcasecmp")) == 2) {
 					$soportedoc_id = 5; //HIBRIDO
-				} elseif (count(array_uintersect($origendoc_group, array('Electrónico', 'Digitalizado')), "strcasecmp") == 2) {
+				} elseif (count74(array_uintersect($origendoc_group, array('Electrónico', 'Digitalizado')), "strcasecmp") == 2) {
 					$soportedoc_id = 5; //HIBRIDO
-				} elseif (count(array_uintersect($origendoc_group, array('Digitalizado', 'Electrónico'), "strcasecmp")) == 2) {
+				} elseif (count74(array_uintersect($origendoc_group, array('Digitalizado', 'Electrónico'), "strcasecmp")) == 2) {
 					$soportedoc_id = 5; //HIBRIDO
 				}
 				//***************************************************************************************************************************

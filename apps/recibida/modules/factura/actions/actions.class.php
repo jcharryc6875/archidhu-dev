@@ -211,7 +211,7 @@ class facturaActions extends sfActions
             $objfactura = FacturaPeer::retrieveByPk($factura_id);
             if(trim($rptadd)){
                 //*****************************************************************************************
-				if(count($files)){
+				if(count74($files)){
 					$files_url = implode(",",$files);
 					$objfactura->setRuta($objfactura->getRuta().','.$files_url);
 					$objfactura->save();
@@ -905,7 +905,7 @@ JOIN FORMA_RECEPCION FRF ON (FRF.FORMARECEPCION_ID=F.FORMARECEPCION_ID)
 	while($object = $ilist->fetch()){
       $results[] = $object[0];
       //if(count($results) == $max_query || $iterator == $ilist->getRecordCount()){
-	  if(count($results)){
+	  if(count74($results)){
         $updc = "UPDATE %s SET  %s = $usuariologuiado WHERE %s IN (".implode(",",$results).");";
         $updc = sprintf($updc, FacturaPeer::TABLE_NAME, FacturaPeer::MARCA,FacturaPeer::FACTURA_ID);
         $this->row_affects += FacturaPeer::executeCustomQueryData($updc);
@@ -1398,7 +1398,7 @@ JOIN FORMA_RECEPCION FRF ON (FRF.FORMARECEPCION_ID=F.FORMARECEPCION_ID)
 			}
 		}
         //************************************************************************
-        if(count($files)){
+        if(count74($files)){
 		  $factura->setRuta($factura->getRuta().','.implode(",",$files));
         }
 	}    	
@@ -2349,7 +2349,7 @@ JOIN FORMA_RECEPCION FRF ON (FRF.FORMARECEPCION_ID=F.FORMARECEPCION_ID)
 		if($is_files_old){
 			$files_adjuntos = preg_split("/[,]+/",$files_old_text, -1, PREG_SPLIT_NO_EMPTY);
 			$files_text = preg_split("/[,]+/",$files_new, -1, PREG_SPLIT_NO_EMPTY);
-			for($j=0; $j < count($files_text); $j++){
+			for($j=0; $j < count74($files_text); $j++){
 				$url = $this->strpos_array($files_text[$j], $files_adjuntos);
 				if(!is_null($url)){
 					$url_files .= $url . ",";
@@ -2367,7 +2367,7 @@ JOIN FORMA_RECEPCION FRF ON (FRF.FORMARECEPCION_ID=F.FORMARECEPCION_ID)
 			}
 		}else{
 			$files_adjuntos = preg_split("/[,]+/",$files_new, null, PREG_SPLIT_NO_EMPTY);
-			for($j=0; $j <= count($files_adjuntos); $j++){
+			for($j=0; $j <= count74($files_adjuntos); $j++){
 				if(trim($files_adjuntos[$j])){
 					$file_name = basename($files_adjuntos[$j]);
 					$filenamesource = $directorio_tmp . basename($files_adjuntos[$j]);

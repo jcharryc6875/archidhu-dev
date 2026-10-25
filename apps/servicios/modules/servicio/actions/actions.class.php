@@ -151,14 +151,14 @@ class servicioActions extends sfActions
         $c = new Criteria();        
         if(trim($this->getRequestParameter('idServicio1'))){
           $list_servicios =  preg_split("/[,]+/",trim($this->getRequestParameter('idServicio1')), -1, PREG_SPLIT_NO_EMPTY);
-          if(count($list_servicios)){
+          if(count74($list_servicios)){
             $c->add(ServicioPeer::SERVICIO_ID,$list_servicios,Criteria::IN);
           }else{
             $c->add(ServicioPeer::SERVICIO_ID,0);
           }
         }elseif(trim($cadSolicitudes)){
             $list_servicios =  preg_split("/[,]+/",trim($cadSolicitudes), -1, PREG_SPLIT_NO_EMPTY);
-            if(count($list_servicios)){
+            if(count74($list_servicios)){
                 $c->add(ServicioPeer::SERVICIO_ID,$list_servicios,Criteria::IN);
             }else{
                 $c->add(ServicioPeer::SERVICIO_ID,0);
@@ -236,9 +236,9 @@ class servicioActions extends sfActions
             $htmlCuerpo .= '<tr><th style="height:80px; font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.$servicio->getPrimaryKey().'</th>';
             $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.$servicio->getRadicado().'</td>';
             $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.$servicio->getUsuario()->getFullNombre().'</td>';
-            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;">'.(count($destinatario) ? implode(";",$destinatario) : "&nbsp;").'</td>';
-            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;">'.(count($direccion) ? implode(";",$direccion) : "&nbsp;").'</td>';
-            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.(count($ciudad_text) ? implode(";",$ciudad_text) : "&nbsp;").'</td>';
+            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;">'.(count74($destinatario) ? implode(";",$destinatario) : "&nbsp;").'</td>';
+            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;">'.(count74($direccion) ? implode(";",$direccion) : "&nbsp;").'</td>';
+            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.(count74($ciudad_text) ? implode(";",$ciudad_text) : "&nbsp;").'</td>';
             $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.($servicio->getTipoServicio()->getDescripcion()).'</td>';
             $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-top: none;">'.($servicio->getDetalle()).' => Fecha_Solicitud => '.substr($servicio->getFechaCreacion(),0,10).'</td>';
             $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-left: none;border-top: none;">&nbsp;</td>';
@@ -382,7 +382,7 @@ class servicioActions extends sfActions
         //*************************************************************************************
         if ($this->getRequestParameter('servicio_id')) {
             $str_serviccios = preg_split("/[,]+/", $this->getRequestParameter('servicio_id'));
-            if(count($str_serviccios) > 1){
+            if(count74($str_serviccios) > 1){
 	           $c->add(ServicioPeer::SERVICIO_ID, $str_serviccios, Criteria::IN);
             }else{
                $c->add(ServicioPeer::SERVICIO_ID, $this->getRequestParameter('servicio_id'));
@@ -759,7 +759,7 @@ class servicioActions extends sfActions
                 return $this->redirect($this->getRequest()->getScriptName().'/servicio/create?cod_msg=1');
             }else{
                 $list_interesado = preg_split("/[,]+/", trim($this->getRequestParameter('idUserInteresados')));
-                for($index = 0; $index < count($list_interesado); $index++) {
+                for($index = 0; $index < count74($list_interesado); $index++) {
                     $isAddInteresado = ServicioInteresadosPeer::addNewInteresadoByComId($servicio->getPrimaryKey(),$list_interesado[$index]);
                 }
                 //***********************************************************************************
@@ -903,7 +903,7 @@ class servicioActions extends sfActions
 		$servicio_anterior = clone $servicio;
 		//*******************************************************************************
         $arrDes = preg_split("/[,]+/",trim($this->getRequestParameter('idEntidad')),-1, PREG_SPLIT_NO_EMPTY); 
-		$iterador = count($arrDes) - 1;
+		$iterador = count74($arrDes) - 1;
 		for($i=0; $i < $iterador; $i++){
 			$serv = $servicio->copy();
 	        $serv->setUsuarioId($usuariologuiado);
@@ -1034,7 +1034,7 @@ class servicioActions extends sfActions
                 //***********************************************************************************
                 $this->intesadosIds = implode(",",$list_inteIds);
                 $this->intesadosNames = implode(",",$list_names);
-                $this->viewCheckInters = count($list_inteIds) > 1 ? true : false;
+                $this->viewCheckInters = count74($list_inteIds) > 1 ? true : false;
 				$this->tipo_envio = 0;
                 //**********************************************************************************
 				break;
@@ -1066,7 +1066,7 @@ class servicioActions extends sfActions
                 $this->intesadosIds = implode(",",$list_inteIds);
                 $this->intesadosNames = implode(",",$list_names);
                 $this->intesadosEmails = implode(";",$list_emails);
-                $this->viewCheckInters = count($list_inteIds) > 1 ? true : false;
+                $this->viewCheckInters = count74($list_inteIds) > 1 ? true : false;
 				$this->servicio = $com_enviada;
 				$this->tipo_envio = $com_enviada->getTipoEnvio();
                 //*************************************************************************************
@@ -1092,7 +1092,7 @@ class servicioActions extends sfActions
                 $this->intesadosIds = implode(",",$list_inteIds);
                 $this->intesadosNames = implode(",",$list_names);
                 $this->intesadosEmails = implode(";",$list_emails);
-                $this->viewCheckInters = count($list_inteIds) > 1 ? true : false;
+                $this->viewCheckInters = count74($list_inteIds) > 1 ? true : false;
                 $this->servicio = $acto_administrativo;
                 //*************************************************************************************
                 break;
@@ -1541,7 +1541,7 @@ class servicioActions extends sfActions
                 return $this->redirect($this->getRequest()->getScriptName().'/servicio/create?cod_msg=1');
             }else{
                 $list_interesado = preg_split("/[,]+/", trim($this->getRequestParameter('idUserInteresados')));
-                for($index = 0; $index < count($list_interesado); $index++) {
+                for($index = 0; $index < count74($list_interesado); $index++) {
                     $isAddInteresado = ServicioInteresadosPeer::addNewInteresadoByComId($servicio->getPrimaryKey(),$list_interesado[$index]);
                 }
                 //**************************************************************************************

@@ -59,7 +59,7 @@ use_helper('Object');
             </div>
           </div>
 		  </hr>
-		  <?php if(count($sf_request->getErrors())){ ?>
+		  <?php if(count74($sf_request->getErrors())){ ?>
 			  <div class="alert alert-danger">
 				<p><strong>Opps!</strong> Corrija los siguientes errores y vualva a intentar:</p>
 				<ul>

@@ -333,7 +333,7 @@ class PHPExcel_Calculation_Database
 
         // Return
         $colData = self::getFilteredColumn($database, $field, $criteria);
-        if (count($colData) > 1) {
+        if (count74($colData) > 1) {
             return PHPExcel_Calculation_Functions::NaN();
         }
 

@@ -354,7 +354,7 @@ class PHPExcel_Worksheet_AutoFilter_Column
         if (isset($this->ruleset[$pIndex])) {
             unset($this->ruleset[$pIndex]);
             //    If we've just deleted down to a single rule, then reset And/Or joining to Or
-            if (count($this->ruleset) <= 1) {
+            if (count74($this->ruleset) <= 1) {
                 $this->setJoin(self::AUTOFILTER_COLUMN_JOIN_OR);
             }
         }

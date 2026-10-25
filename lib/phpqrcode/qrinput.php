@@ -39,8 +39,8 @@
         {
             $setData = array_slice($data, 0, $size);
             
-            if (count($setData) < $size) {
-                $setData = array_merge($setData, array_fill(0,$size-count($setData),0));
+            if (count74($setData) < $size) {
+                $setData = array_merge($setData, array_fill(0,$size-count74($setData),0));
             }
         
             if(!QRinput::check($mode, $size, $setData)) {

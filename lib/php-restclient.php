@@ -144,7 +144,7 @@ class RestClient implements Iterator, ArrayAccess {
             $curlopt[CURLOPT_USERPWD] = sprintf("%s:%s", 
                 $client->options['username'], $client->options['password']);
         
-        if(count($client->options['headers']) || count($headers)){
+        if(count74($client->options['headers']) || count74($headers)){
             $curlopt[CURLOPT_HTTPHEADER] = [];
             $headers = array_merge($client->options['headers'], $headers);
             foreach($headers as $key => $values){
@@ -219,7 +219,7 @@ class RestClient implements Iterator, ArrayAccess {
         do {
             if(strlen(trim($line)) == 0){
                 // Since we tokenize on \n, use the remaining \r to detect empty lines.
-                if(count($headers) > 0) break; // Must be the newline after headers, move on to response body
+                if(count74($headers) > 0) break; // Must be the newline after headers, move on to response body
             }
             elseif(strpos($line, 'HTTP') === 0){
                 // One or more HTTP status lines

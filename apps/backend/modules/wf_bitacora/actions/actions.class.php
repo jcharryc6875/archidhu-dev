@@ -84,7 +84,7 @@ class wf_bitacoraActions extends sfActions
     $this->esta_abierta=true;
     $this->esta_abierta=$myIfz->getEstaAbiertaInstancia($instancia_id);
     
-    if( count($this->consulta)==0 ){
+    if( count74($this->consulta)==0 ){
 		//cerrarla pues NO tiene mas transiciones...
 		$myIfz->cierraInstanciaIncondicionalmente($instancia_id);
 		

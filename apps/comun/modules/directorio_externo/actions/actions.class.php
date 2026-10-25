@@ -540,7 +540,7 @@ class directorio_externoActions extends sfActions
   {
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     $tmparrDirectorio = array_diff($arrDirOriginal,$arrayDirHist);
-    if(count($tmparrDirectorio) > 0){        
+    if(count74($tmparrDirectorio) > 0){        
         $directorio_externo_hist = new DirectorioExternoHist();
         $directorio_externo_hist->setDirectorioexternoId($arrayDirHist["DirectorioexternoId"]);
         $directorio_externo_hist->setUsuarioId($usuariologuiado);

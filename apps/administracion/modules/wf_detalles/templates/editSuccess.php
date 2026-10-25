@@ -70,7 +70,7 @@ use_helper('Object','jQuery');
                         </div>
         			</div>
         		</div>
-                <?php if(count($lista_wf_transiciones)) { ?>
+                <?php if(count74($lista_wf_transiciones)) { ?>
             		<div class="col-sm-2">
             			<div class="form-group">
             				<!-- Permisos acciones -->

@@ -34,10 +34,10 @@ use_helper('jQuery');
                         <?php foreach ($chunks as $index => $chunk) { ?>
                             <tr data-id="<?php echo implode(',', $chunk); ?>">
                                 <td class="text-center"><?php echo $index + 1; ?></td>
-                                <td class="text-center"><?php echo $first; ?> al <?php echo $first + count($chunk) - 1; ?></td>
+                                <td class="text-center"><?php echo $first; ?> al <?php echo $first + count74($chunk) - 1; ?></td>
                                 <td class="descarga-estado text-center">Pendiente</td>
                             </tr>
-                            <?php $first += count($chunk); ?>
+                            <?php $first += count74($chunk); ?>
                         <?php } ?>
                     </tbody>
                 </table>

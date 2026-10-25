@@ -59,7 +59,7 @@ class EmailSyncManager
             }
         }
         
-        Logger::info("Procesando " . count($messageItems) . " mensajes nuevos");
+        Logger::info("Procesando " . count74($messageItems) . " mensajes nuevos");
         
         // Procesar en lotes paralelos
         if (!empty($messageItems)) {
@@ -111,7 +111,7 @@ class ParallelProcessor
     
     private function processWithForking($messages, $account) 
     {
-        $chunks = array_chunk($messages, ceil(count($messages) / $this->maxConcurrency));
+        $chunks = array_chunk($messages, ceil(count74($messages) / $this->maxConcurrency));
         
         $processes = [];
         foreach ($chunks as $chunk) {
@@ -144,7 +144,7 @@ class ParallelProcessor
     
     private function processSequential($messages, $account) 
     {
-        Logger::info("Procesando secuencialmente " . count($messages) . " mensajes");
+        Logger::info("Procesando secuencialmente " . count74($messages) . " mensajes");
         $this->processChunk($messages, $account);
     }
     
@@ -366,7 +366,7 @@ class ProcessedMessagesCache
     
     private static function maintainCacheSize() 
     {
-        if (count(self::$cache) > self::$maxCacheSize) {
+        if (count74(self::$cache) > self::$maxCacheSize) {
             // Eliminar elementos antiguos
             self::$cache = array_slice(self::$cache, -5000, null, true);
         }

@@ -96,6 +96,6 @@ class cartelera_informativaActions extends sfActions
     $pager->setPage($this->getRequestParameter('page', 1));
     $pager->init();
     $this->pager = $pager;
-    $this->parametros = count($params) ? '&a=1&' . http_build_query($params) : '&a=1';
+    $this->parametros = count74($params) ? '&a=1&' . http_build_query($params) : '&a=1';
   }
 }

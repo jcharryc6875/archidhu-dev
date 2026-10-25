@@ -20,7 +20,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
   <div class="col-md-12">
     <!-- Contenedor Pagina -->
     <div class="panel panel-gradient" data-collapsed="0">
-      <?php if (count($sf_request->getErrors())): ?>
+      <?php if (count74($sf_request->getErrors())): ?>
         <div class="alert alert-danger">
             <p><strong>Opps!</strong> Los datos introducidos no son correctos.
             Por favor, corrija los siguientes errores y vuelva a enviar el formulario:</p>
@@ -130,7 +130,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
         </div>
 
         <div class="form-group">                    
-          <?php if(count($wf_tipocom)){ ?>
+          <?php if(count74($wf_tipocom)){ ?>
             <!-- Tr&aacute;mite -->
             <label for="lbtramite" class="col-sm-1 control-label">Tr&aacute;mite<span class="ctrlreq">(*)</span>:</label>
             <div class="col-sm-5">            

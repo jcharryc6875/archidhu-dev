@@ -464,7 +464,7 @@ class PHPExcel_Calculation_LookupRef
     {
         $chooseArgs = func_get_args();
         $chosenEntry = PHPExcel_Calculation_Functions::flattenArray(array_shift($chooseArgs));
-        $entryCount = count($chooseArgs) - 1;
+        $entryCount = count74($chooseArgs) - 1;
 
         if (is_array($chosenEntry)) {
             $chosenEntry = array_shift($chosenEntry);
@@ -519,7 +519,7 @@ class PHPExcel_Calculation_LookupRef
         }
 
         //    lookup_array should not be empty
-        $lookupArraySize = count($lookup_array);
+        $lookupArraySize = count74($lookup_array);
         if ($lookupArraySize <= 0) {
             return PHPExcel_Calculation_Functions::NA();
         }
@@ -610,7 +610,7 @@ class PHPExcel_Calculation_LookupRef
         $rowKeys = array_keys($arrayValues);
         $columnKeys = @array_keys($arrayValues[$rowKeys[0]]);
 
-        if ($columnNum > count($columnKeys)) {
+        if ($columnNum > count74($columnKeys)) {
             return PHPExcel_Calculation_Functions::VALUE();
         } elseif ($columnNum == 0) {
             if ($rowNum == 0) {
@@ -632,7 +632,7 @@ class PHPExcel_Calculation_LookupRef
             return $returnArray;
         }
         $columnNum = $columnKeys[--$columnNum];
-        if ($rowNum > count($rowKeys)) {
+        if ($rowNum > count74($rowKeys)) {
             return PHPExcel_Calculation_Functions::VALUE();
         } elseif ($rowNum == 0) {
             return $arrayValues[$columnNum];
@@ -708,7 +708,7 @@ class PHPExcel_Calculation_LookupRef
         } else {
             $f = array_keys($lookup_array);
             $firstRow = array_pop($f);
-            if ((!is_array($lookup_array[$firstRow])) || ($index_number > count($lookup_array[$firstRow]))) {
+            if ((!is_array($lookup_array[$firstRow])) || ($index_number > count74($lookup_array[$firstRow]))) {
                 return PHPExcel_Calculation_Functions::REF();
             } else {
                 $columnKeys = array_keys($lookup_array[$firstRow]);
@@ -771,7 +771,7 @@ class PHPExcel_Calculation_LookupRef
         } else {
             $f = array_keys($lookup_array);
             $firstRow = array_pop($f);
-            if ((!is_array($lookup_array[$firstRow])) || ($index_number > count($lookup_array[$firstRow]))) {
+            if ((!is_array($lookup_array[$firstRow])) || ($index_number > count74($lookup_array[$firstRow]))) {
                 return PHPExcel_Calculation_Functions::REF();
             } else {
                 $columnKeys = array_keys($lookup_array[$firstRow]);
@@ -824,29 +824,29 @@ class PHPExcel_Calculation_LookupRef
         if (!is_array($lookup_vector)) {
             return PHPExcel_Calculation_Functions::NA();
         }
-        $lookupRows = count($lookup_vector);
+        $lookupRows = count74($lookup_vector);
         $l = array_keys($lookup_vector);
         $l = array_shift($l);
-        $lookupColumns = count($lookup_vector[$l]);
+        $lookupColumns = count74($lookup_vector[$l]);
         if ((($lookupRows == 1) && ($lookupColumns > 1)) || (($lookupRows == 2) && ($lookupColumns != 2))) {
             $lookup_vector = self::TRANSPOSE($lookup_vector);
-            $lookupRows = count($lookup_vector);
+            $lookupRows = count74($lookup_vector);
             $l = array_keys($lookup_vector);
-            $lookupColumns = count($lookup_vector[array_shift($l)]);
+            $lookupColumns = count74($lookup_vector[array_shift($l)]);
         }
 
         if (is_null($result_vector)) {
             $result_vector = $lookup_vector;
         }
-        $resultRows = count($result_vector);
+        $resultRows = count74($result_vector);
         $l = array_keys($result_vector);
         $l = array_shift($l);
-        $resultColumns = count($result_vector[$l]);
+        $resultColumns = count74($result_vector[$l]);
         if ((($resultRows == 1) && ($resultColumns > 1)) || (($resultRows == 2) && ($resultColumns != 2))) {
             $result_vector = self::TRANSPOSE($result_vector);
-            $resultRows = count($result_vector);
+            $resultRows = count74($result_vector);
             $r = array_keys($result_vector);
-            $resultColumns = count($result_vector[array_shift($r)]);
+            $resultColumns = count74($result_vector[array_shift($r)]);
         }
 
         if ($lookupRows == 2) {

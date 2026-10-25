@@ -260,7 +260,7 @@ class EnviadaUsuarioPeer extends BaseEnviadaUsuarioPeer
                     $ucargo_list[] = $ucom_object;
                     $uidcargo_list[] = $ucom_object->getPrimaryKey();
                 } else {
-                    for ($i = 0; $i < count($value['lusuarios']); $i++) {
+                    for ($i = 0; $i < count74($value['lusuarios']); $i++) {
                         $info_com['usuario_id'] = $value['lusuarios'][$i];
                         $info_com['cusuario_id'] =  $value['ucargos'][$i];
                         $info_com['estadocom_id'] = $estadocomenviada_id;
@@ -398,7 +398,7 @@ class EnviadaUsuarioPeer extends BaseEnviadaUsuarioPeer
             $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $pkcom_id);
             $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, $rol_id);
             $c->add(EnviadaUsuarioPeer::FIRMA_APRUEBA, 0);
-            if (count($excludePks)) {
+            if (count74($excludePks)) {
                 $c->add(EnviadaUsuarioPeer::ENVIADAUSUARIO_ID, $excludePks, Criteria::NOT_IN);
             }
             return EnviadaUsuarioPeer::doSelectOne($c);
@@ -491,9 +491,9 @@ class EnviadaUsuarioPeer extends BaseEnviadaUsuarioPeer
             }
             //return EnviadaUsuarioPeer::doSelectOne($c);
             $list_user = EnviadaUsuarioPeer::doSelect($c);
-            if (count($list_user) === 1)
+            if (count74($list_user) === 1)
                 return $list_user[0];
-            elseif (count($list_user) === 0)
+            elseif (count74($list_user) === 0)
                 return null;
             else
                 return $list_user;
@@ -519,7 +519,7 @@ class EnviadaUsuarioPeer extends BaseEnviadaUsuarioPeer
     public static function deleteUserCargoNotIn($pkcom_id = 0, $lcargos_current = array())
     {
         try {
-            if (empty($pkcom_id) || !count($lcargos_current) || !is_array($lcargos_current)) {
+            if (empty($pkcom_id) || !count74($lcargos_current) || !is_array($lcargos_current)) {
                 return null;
             }
             //*******************************************************************************************************
@@ -569,7 +569,7 @@ class EnviadaUsuarioPeer extends BaseEnviadaUsuarioPeer
         $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, $rol_ids, Criteria::IN);
         $c->add(EnviadaUsuarioPeer::ESTA_ASIGNADA, 1, Criteria::NOT_EQUAL);
         $c->add(EnviadaUsuarioPeer::FIRMA_APRUEBA, 1);
-        if (count($notInUser)) {
+        if (count74($notInUser)) {
             $c->add(EnviadaUsuarioPeer::USUARIO_ID, $notInUser, Criteria::NOT_IN);
         }
         //*******************************************************************************

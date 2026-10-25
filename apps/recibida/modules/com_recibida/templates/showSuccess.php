@@ -84,7 +84,7 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                 </div>
                 <div class="col-md-12">
                     <?php
-                    if (count($radicados_comrecibida)) {
+                    if (count74($radicados_comrecibida)) {
                     ?>
                         <div class="btn-group">
                             <a class="dropdown-toggle" data-toggle="dropdown">
@@ -107,7 +107,7 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                         </div>
 
                         <?php
-                        if (isset($radicados_comenviada) && count($radicados_comenviada)) {
+                        if (isset($radicados_comenviada) && count74($radicados_comenviada)) {
                         ?>
                             <div class="btn-group" style="margin-left: 30px;">
                                 <a class="dropdown-toggle" data-toggle="dropdown">
@@ -140,10 +140,10 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                 <div class="tabs-vertical-env">
                     <ul class="nav nav-tabs bordered"><!-- available classes "right-aligned" -->
                         <li class="<?php echo $switcher_1; ?>"><a data-toggle="tab" href="#data"><span class="glyphicon glyphicon-import"></span>&nbsp;Detalles</a></li>
-                        <?php if (count($list_interesados)) { ?>
+                        <?php if (count74($list_interesados)) { ?>
                             <li><a data-toggle="tab" href="#listinteresados"><span class="glyphicon glyphicon-list"></span>&nbsp;Lista Interesados</a></li>
                         <?php } ?>
-                        <?php if (count($lista_servicios)) { ?>
+                        <?php if (count74($lista_servicios)) { ?>
                             <li><a data-toggle="tab" href="#listservicioscom"><span class="glyphicon glyphicon-list"></span>&nbsp;Servicios Relacionados</a></li>
                         <?php } ?>
                         <li><a data-toggle="tab" href="#listbitacora"><span class="glyphicon glyphicon-list"></span>&nbsp;Bitacora Proceso</a></li>
@@ -164,7 +164,7 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                             </li>
                         <?php } ?>
 
-                        <?php if ($displayRespuestas || count($ilist_comenviadas)) { ?>
+                        <?php if ($displayRespuestas || count74($ilist_comenviadas)) { ?>
                             <li <?php echo empty($switcher_2) == null ? 'class="active"' : ""; ?>><a data-toggle="tab" href="#listrespuestas"><span class="glyphicon glyphicon-list"></span>&nbsp;Respuestas</a></li>
                         <?php } ?>
                     </ul>
@@ -316,7 +316,7 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                                         </div>
                                         <div class="col-sm-7">
                                             <div class="btn-group">
-                                                <?php if (count($ilist_comenviadas) > 0) { ?>
+                                                <?php if (count74($ilist_comenviadas) > 0) { ?>
                                                     <a class="dropdown-toggle" data-toggle="dropdown">
                                                         <?php
                                                         echo image_tag($estado_icono, array('width' => "25", 'height' => "25", 'align' => "middle", 'class' => 'tooltip-primary', 'data-toggle' => 'tooltip', 'data-original-title' => ucwords(mb_strtolower($estado_alt))));
@@ -633,7 +633,7 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                             <?php } ?>
                         </div>
                         <!-- listado de interesados -->
-                        <?php if (count($list_interesados)) { ?>
+                        <?php if (count74($list_interesados)) { ?>
                             <div id="listinteresados" class="tab-pane">
                                 <?php
                                 include_partial('listInteresados', array('list_interesados' => $list_interesados));
@@ -641,7 +641,7 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                             </div>
                         <?php } ?>
                         <!-- listado de servicios -->
-                        <?php if (count($lista_servicios)) { ?>
+                        <?php if (count74($lista_servicios)) { ?>
                             <div id="listservicioscom" class="tab-pane">
                                 <?php
                                 include_partial('listServiciosCom', array('list_servicios' => $lista_servicios));
@@ -659,7 +659,7 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                             <div class="tab-pane" id="docmodaltrigger" style="height: 100vh !important;"></div>
                         <?php } ?>
 
-                        <?php if ($displayRespuestas || count($ilist_comenviadas)) { ?>
+                        <?php if ($displayRespuestas || count74($ilist_comenviadas)) { ?>
                             <!-- pestaña Respuestas -->
                             <div class="<?php echo 'tab-pane ' . $switcher_2; ?>" id="listrespuestas">
                                 <?php

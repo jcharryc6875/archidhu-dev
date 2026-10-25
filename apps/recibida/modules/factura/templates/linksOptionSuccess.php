@@ -4,7 +4,7 @@
 $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 use_helper('Object','jQuery');
 ?>
-<?php if(count($devoluciones_list)){ ?>
+<?php if(count74($devoluciones_list)){ ?>
     <?php foreach($devoluciones_list as $item){ ?>
     	<li>
             <a href="#" onclick="javascript:jQuery.OpenModalSIMAD('<?php echo url_for('factura/reasignarAct?factura_id='.$factura->getPrimaryKey().'&facturaestado_id='.$item->getFaestadodestinoId().'&facturaproceso_id='.$item->getFaprocesodestinoId()); ?>','800','600');">

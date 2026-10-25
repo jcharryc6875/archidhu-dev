@@ -8,7 +8,7 @@ $base_path = sfConfig::get('base_simad');
 <div class="row">
 	<div class="col-md-12">
         <?php
-	    $cantidad_registros = count($factura_vitacoras);
+	    $cantidad_registros = count74($factura_vitacoras);
 	    if($cantidad_registros == 0):
 	    ?>
         <div class="panel panel-primary">		      

@@ -23,7 +23,7 @@ class DescartePorSubseriePeer extends BaseDescartePorSubseriePeer
 	}
 
 	public static function addNewDescarteBySubserie($pksDelete = array(), $subserie_id = 0){
-        if(count($pksDelete) > 0){
+        if(count74($pksDelete) > 0){
             $rows_affected = DescartePorSubseriePeer::removeRolByUsuario($pksDelete,$subserie_id);
             //**********************************************************************************************
             foreach ($pksDelete as $objectId) {

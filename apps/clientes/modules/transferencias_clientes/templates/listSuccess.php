@@ -35,7 +35,7 @@
  Lista Transferencias Clientes          
 </caption>
  <?php
-$cantidad_registros = count($pager->getResults());
+$cantidad_registros = count74($pager->getResults());
 if($cantidad_registros != 0){
 ?>        
 <tr>

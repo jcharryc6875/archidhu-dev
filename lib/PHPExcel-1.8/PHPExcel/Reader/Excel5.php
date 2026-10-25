@@ -1144,7 +1144,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                             //        Bar!$A$1:$IV$2
                             $explodes = explode('!', $range);    // FIXME: what if sheetname contains exclamation mark?
                             $sheetName = trim($explodes[0], "'");
-                            if (count($explodes) == 2) {
+                            if (count74($explodes) == 2) {
                                 if (strpos($explodes[1], ':') === false) {
                                     $explodes[1] = $explodes[1] . ':' . $explodes[1];
                                 }
@@ -1172,13 +1172,13 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                             //        Sheet!$A$1:$B$65536
                             //        Sheet!$A$1:$IV$2
                             $explodes = explode('!', $range);
-                            if (count($explodes) == 2) {
+                            if (count74($explodes) == 2) {
                                 if ($docSheet = $this->phpExcel->getSheetByName($explodes[0])) {
                                     $extractedRange = $explodes[1];
                                     $extractedRange = str_replace('$', '', $extractedRange);
 
                                     $coordinateStrings = explode(':', $extractedRange);
-                                    if (count($coordinateStrings) == 2) {
+                                    if (count74($coordinateStrings) == 2) {
                                         list($firstColumn, $firstRow) = PHPExcel_Cell::coordinateFromString($coordinateStrings[0]);
                                         list($lastColumn, $lastRow) = PHPExcel_Cell::coordinateFromString($coordinateStrings[1]);
 
@@ -1199,7 +1199,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 // Extract range
                 $explodes = explode('!', $definedName['formula']);
 
-                if (count($explodes) == 2) {
+                if (count74($explodes) == 2) {
                     if (($docSheet = $this->phpExcel->getSheetByName($explodes[0])) ||
                         ($docSheet = $this->phpExcel->getSheetByName(trim($explodes[0], "'")))) {
                         $extractedRange = $explodes[1];
@@ -2344,7 +2344,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
             } else {
                 // we read all cell XF records
                 $this->phpExcel->addCellXf($objStyle);
-                $this->mapCellXfIndex[$this->xfIndex] = count($this->phpExcel->getCellXfCollection()) - 1;
+                $this->mapCellXfIndex[$this->xfIndex] = count74($this->phpExcel->getCellXfCollection()) - 1;
             }
 
             // update XF index for when we read next record
@@ -3701,7 +3701,7 @@ class PHPExcel_Reader_Excel5 extends PHPExcel_Reader_Abstract implements PHPExce
                 // then we should treat as rich text
                 $richText = new PHPExcel_RichText();
                 $charPos = 0;
-                $sstCount = count($this->sst[$index]['fmtRuns']);
+                $sstCount = count74($this->sst[$index]['fmtRuns']);
                 for ($i = 0; $i <= $sstCount; ++$i) {
                     if (isset($fmtRuns[$i])) {
                         $text = PHPExcel_Shared_String::Substring($this->sst[$index]['value'], $charPos, $fmtRuns[$i]['charPos'] - $charPos);

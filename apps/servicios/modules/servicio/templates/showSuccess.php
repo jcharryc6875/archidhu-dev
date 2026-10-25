@@ -50,7 +50,7 @@ $lista_srvanexos = ServicioPeer::getAnexoServicios($servicio->getPrimaryKey());
 			  Detalles solicitud de servicio (<strong><?php echo $servicio->getRadicado() ?></strong>)
 			</div>
 		</div>
-		<?php if(count($msglist)){ ?>
+		<?php if(count74($msglist)){ ?>
 			<div class="alert alert-warning" style="margin-bottom: 5px !important;padding: 8px !important;">
 				<?php foreach ($msglist as $info) { echo "<p><strong>Mensaje: </strong>".$info."</p>"; } ?>
 			</div>
@@ -144,13 +144,13 @@ $lista_srvanexos = ServicioPeer::getAnexoServicios($servicio->getPrimaryKey());
 			<div class="tabs-vertical-env">
                 <ul class="nav nav-tabs bordered"><!-- available classes "right-aligned" -->
             		<li class="active"><a data-toggle="tab" href="#data"><span class="glyphicon glyphicon-import">Informaci&oacute;n Servicio</a></li>
-					<?php if(count($lista_interesados)){ ?>
+					<?php if(count74($lista_interesados)){ ?>
                         <li><a data-toggle="tab" href="#listinteresados"><span class="glyphicon glyphicon-list"></span>&nbsp;Lista Interesados</a></li>
                     <?php } ?>
             		
 					<li><a data-toggle="tab" href="#servbitacora"><span class="glyphicon glyphicon-list"></span> B&iacute;tacora Servicio</a></li>
 					
-					<?php if(count($lista_srvanexos)){ ?>
+					<?php if(count74($lista_srvanexos)){ ?>
 						<li><a data-toggle="tab" href="#servicioanexos"><span class="glyphicon glyphicon-picture"></span> Anexos Servicio</a></li>
 					<?php } ?>
             	</ul>
@@ -291,7 +291,7 @@ $lista_srvanexos = ServicioPeer::getAnexoServicios($servicio->getPrimaryKey());
 								</div>
 							<?php } ?>
 							
-							<?php if(count($servicio->getAsignarServicios())){ ?>
+							<?php if(count74($servicio->getAsignarServicios())){ ?>
 								<div class="row">                    
 									<div class="col-sm-12">
 										<div class="panel panel-info">
@@ -358,7 +358,7 @@ $lista_srvanexos = ServicioPeer::getAnexoServicios($servicio->getPrimaryKey());
 						</div>
 					</div>
 					<!-- listado de interesados -->
-                    <?php if(count($lista_interesados)){ ?>
+                    <?php if(count74($lista_interesados)){ ?>
                         <div id="listinteresados" class="tab-pane">
                             <?php 
                                 include_partial('listInteresados',array('list_interesados'=>$lista_interesados)); 
@@ -373,7 +373,7 @@ $lista_srvanexos = ServicioPeer::getAnexoServicios($servicio->getPrimaryKey());
                         ?>                    
                     </div>
 
-					<?php if(count($lista_srvanexos)){ ?>
+					<?php if(count74($lista_srvanexos)){ ?>
 						<!-- listado de imagenes -->
 						<div id="servicioanexos" class="tab-pane">
 							<?php 

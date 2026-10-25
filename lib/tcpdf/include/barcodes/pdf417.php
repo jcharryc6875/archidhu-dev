@@ -546,7 +546,7 @@ class PDF417 {
 			array_shift($codewords);
 		}
 		// count number of codewords
-		$numcw = count($codewords);
+		$numcw = count74($codewords);
 		if ($numcw > 925) {
 			// reached maximum data codeword capacity
 			return false;
@@ -583,7 +583,7 @@ class PDF417 {
 				$macrocw[] = 922;
 			}
 			// update total codewords
-			$numcw += count($macrocw);
+			$numcw += count74($macrocw);
 		}
 		// set error correction level
 		$ecl = $this->getErrorCorrectionLevel($ecl, $numcw);
@@ -837,7 +837,7 @@ class PDF417 {
 						$prevtxtseq = substr($prevseq, $txtoffset, ($txtseq[1] - $txtoffset));
 						if (strlen($prevtxtseq) > 0) {
 							// add BYTE sequence
-							if ((strlen($prevtxtseq) == 1) AND ((count($sequence_array) > 0) AND ($sequence_array[(count($sequence_array) - 1)][0] == 900))) {
+							if ((strlen($prevtxtseq) == 1) AND ((count74($sequence_array) > 0) AND ($sequence_array[(count74($sequence_array) - 1)][0] == 900))) {
 								$sequence_array[] = array(913, $prevtxtseq);
 							} elseif ((strlen($prevtxtseq) % 6) == 0) {
 								$sequence_array[] = array(924, $prevtxtseq);
@@ -910,7 +910,7 @@ class PDF417 {
 						}
 					}
 				}
-				$txtarrlen = count($txtarr);
+				$txtarrlen = count74($txtarr);
 				if (($txtarrlen % 2) != 0) {
 					// add padding
 					$txtarr[] = 29;

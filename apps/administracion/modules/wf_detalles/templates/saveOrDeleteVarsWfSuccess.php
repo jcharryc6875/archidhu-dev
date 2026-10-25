@@ -14,7 +14,7 @@ use_helper('Object','jQuery');
     <!-- Contenedor Contenido Formulario-->
     <div class="panel-body">
         <?php
-	    $cantidad_registros = count($listVarsActByTransicion);
+	    $cantidad_registros = count74($listVarsActByTransicion);
 	    if($cantidad_registros == 0):
 	    ?>
             <div class="alert alert-default"><strong>No existen Registros</strong>, Intente con diferentes filtros de consulta.</div>                           

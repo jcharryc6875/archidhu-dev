@@ -45,7 +45,7 @@ function component_remitente_multiple($element_id, $idhidenuser,$options = array
     $form_group = isset($options['formgroup']) ? $options['formgroup'] : true;
     //***************************************************************************************
     $term_list = null;
-    for($i=0; $i < count($values_uid); $i++){
+    for($i=0; $i < count74($values_uid); $i++){
         $remitente = DirectorioExternoPeer::retrieveByPK($values_uid[$i]);
         $text_name = "";$nuid_text = "";
         if($remitente != null){

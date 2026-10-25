@@ -7,7 +7,7 @@ $base_path = sfConfig::get('base_simad');
 $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 ?>
 
-<?php if (count($ldocument_version) == 0): ?>
+<?php if (count74($ldocument_version) == 0): ?>
     <div class="alert alert-default doc-version-compact-empty"><strong>No hay versiones disponibles</strong>.</div>
 <?php else: ?>
     <div class="doc-version-compact-list">

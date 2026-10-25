@@ -104,7 +104,7 @@ class PHPExcel_Writer_Excel2007_ContentTypes extends PHPExcel_Writer_Excel2007_W
         $chart = 1;
         for ($i = 0; $i < $sheetCount; ++$i) {
             $drawings = $pPHPExcel->getSheet($i)->getDrawingCollection();
-            $drawingCount = count($drawings);
+            $drawingCount = count74($drawings);
             $chartCount = ($includeCharts) ? $pPHPExcel->getSheet($i)->getChartCount() : 0;
 
             //    We need a drawing relationship for the worksheet if we have either drawings or charts
@@ -122,7 +122,7 @@ class PHPExcel_Writer_Excel2007_ContentTypes extends PHPExcel_Writer_Excel2007_W
 
         // Comments
         for ($i = 0; $i < $sheetCount; ++$i) {
-            if (count($pPHPExcel->getSheet($i)->getComments()) > 0) {
+            if (count74($pPHPExcel->getSheet($i)->getComments()) > 0) {
                 $this->writeOverrideContentType($objWriter, '/xl/comments' . ($i + 1) . '.xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml');
             }
         }
@@ -162,7 +162,7 @@ class PHPExcel_Writer_Excel2007_ContentTypes extends PHPExcel_Writer_Excel2007_W
         }
         $sheetCount = $pPHPExcel->getSheetCount();
         for ($i = 0; $i < $sheetCount; ++$i) {
-            if (count($pPHPExcel->getSheet()->getHeaderFooter()->getImages()) > 0) {
+            if (count74($pPHPExcel->getSheet()->getHeaderFooter()->getImages()) > 0) {
                 foreach ($pPHPExcel->getSheet()->getHeaderFooter()->getImages() as $image) {
                     if (!isset( $aMediaContentTypes[strtolower($image->getExtension())])) {
                         $aMediaContentTypes[strtolower($image->getExtension())] = $this->getImageMimeType($image->getPath());

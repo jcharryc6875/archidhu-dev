@@ -39,7 +39,7 @@ use_helper('Object','jQuery');
         </form>
       </div>
       <?php 
-    	if(count($wf_actividades)){ include_partial('actividadesList', array('wf_actividades' => $wf_actividades)); } 
+    	if(count74($wf_actividades)){ include_partial('actividadesList', array('wf_actividades' => $wf_actividades)); } 
 	  ?>
     </div>
   </div>

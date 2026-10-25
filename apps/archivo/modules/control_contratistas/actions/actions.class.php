@@ -120,7 +120,7 @@ class control_contratistasActions extends sfActions
     /**************************************************************************************************************/
     $objestado_civil = array();
     $piezas = preg_split("/[;]+/",$str_eciviles,-1, PREG_SPLIT_NO_EMPTY);
-    for($j =0 ; $j < count($piezas); $j++){
+    for($j =0 ; $j < count74($piezas); $j++){
        $estados_civiles[$piezas[$j]] = $piezas[$j];
     }
     /**************************************************************************************************************/
@@ -160,7 +160,7 @@ class control_contratistasActions extends sfActions
     /**************************************************************************************************************/
     $objestado_civil = array();
     $piezas = preg_split("/[;]+/",$str_eciviles,-1, PREG_SPLIT_NO_EMPTY);
-    for($j =0 ; $j < count($piezas); $j++){
+    for($j =0 ; $j < count74($piezas); $j++){
        $objestado_civil[$piezas[$j]] = $piezas[$j];
     }
     $this->estados_civiles = $objestado_civil;

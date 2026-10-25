@@ -1462,7 +1462,7 @@ class PHPExcel_Calculation_Financial
         $values                = PHPExcel_Calculation_Functions::flattenArray($values);
         $finance_rate        = PHPExcel_Calculation_Functions::flattenSingleValue($finance_rate);
         $reinvestment_rate    = PHPExcel_Calculation_Functions::flattenSingleValue($reinvestment_rate);
-        $n = count($values);
+        $n = count74($values);
 
         $rr = 1.0 + $reinvestment_rate;
         $fr = 1.0 + $finance_rate;
@@ -1566,7 +1566,7 @@ class PHPExcel_Calculation_Financial
 
         // Calculate
         $rate = array_shift($aArgs);
-        for ($i = 1; $i <= count($aArgs); ++$i) {
+        for ($i = 1; $i <= count74($aArgs); ++$i) {
             // Is it a numeric value?
             if (is_numeric($aArgs[$i - 1])) {
                 $returnValue += $aArgs[$i - 1] / pow(1 + $rate, $i);
@@ -2149,7 +2149,7 @@ class PHPExcel_Calculation_Financial
         $values = PHPExcel_Calculation_Functions::flattenArray($values);
         $dates  = PHPExcel_Calculation_Functions::flattenArray($dates);
         $guess  = PHPExcel_Calculation_Functions::flattenSingleValue($guess);
-        if (count($values) != count($dates)) {
+        if (count74($values) != count74($dates)) {
             return PHPExcel_Calculation_Functions::NaN();
         }
 
@@ -2225,8 +2225,8 @@ class PHPExcel_Calculation_Financial
         }
         $values    = PHPExcel_Calculation_Functions::flattenArray($values);
         $dates    = PHPExcel_Calculation_Functions::flattenArray($dates);
-        $valCount = count($values);
-        if ($valCount != count($dates)) {
+        $valCount = count74($values);
+        if ($valCount != count74($dates)) {
             return PHPExcel_Calculation_Functions::NaN();
         }
         if ((min($values) > 0) || (max($values) < 0)) {

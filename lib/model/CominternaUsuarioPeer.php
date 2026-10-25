@@ -31,7 +31,7 @@ class CominternaUsuarioPeer extends BaseCominternaUsuarioPeer
         $c->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID,$rol_ids,Criteria::IN);
         $c->add(CominternaUsuarioPeer::ESTA_ASIGNADA,1,Criteria::NOT_EQUAL);
         $c->add(CominternaUsuarioPeer::CHECK_APROBACION,1);
-        if(count($notInUser)){ $c->add(CominternaUsuarioPeer::USUARIO_ID,$notInUser,Criteria::NOT_IN);  }
+        if(count74($notInUser)){ $c->add(CominternaUsuarioPeer::USUARIO_ID,$notInUser,Criteria::NOT_IN);  }
         //*******************************************************************************
         $c->clearSelectColumns();
         $c->addSelectColumn(UsuarioPeer::USUARIO_ID);
@@ -114,7 +114,7 @@ class CominternaUsuarioPeer extends BaseCominternaUsuarioPeer
             $c->add(CominternaUsuarioPeer::COMINTERNA_ID,$pkcom_id);
             $c->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID,$rol_id);
             $c->add(CominternaUsuarioPeer::CHECK_APROBACION,0);
-            if(count($excludePks)){ $c->add(CominternaUsuarioPeer::COMINTERNAUSUARIO_ID,$excludePks,Criteria::NOT_IN); }
+            if(count74($excludePks)){ $c->add(CominternaUsuarioPeer::COMINTERNAUSUARIO_ID,$excludePks,Criteria::NOT_IN); }
 			$c->addAscendingOrderByColumn(CominternaUsuarioPeer::COMINTERNAUSUARIO_ID);
             return CominternaUsuarioPeer::doSelectOne($c);
         } catch (\Throwable $th) {
@@ -199,7 +199,7 @@ class CominternaUsuarioPeer extends BaseCominternaUsuarioPeer
             $cargo_radicador = CargoUsuarioPeer::getCargoUsuarioByIdUser($usuario_radicador,true);
             //*****************************************************************************************************
             $list_users = array();
-            if(count($usuarios_destino) == 1){
+            if(count74($usuarios_destino) == 1){
                 $list_users['usuario_destino'] = array('usuario_id' => $usuarios_destino[0], 'cargousuarioId' => $ucargos_destino[0], 'rol_id' => 4);
             }else{
                 $list_users['usuarios_destinatarios'] = array('lusuarios' => $usuarios_destino, 'ucargos' => $ucargos_destino, 'rol_id' => 4);
@@ -229,7 +229,7 @@ class CominternaUsuarioPeer extends BaseCominternaUsuarioPeer
                     $ucargo_list[] = $ucom_interna;
                     $uidcargo_list[] = $ucom_interna->getPrimaryKey();
                 }else{
-                    for ($i=0; $i < count($value['lusuarios']); $i++){ 
+                    for ($i=0; $i < count74($value['lusuarios']); $i++){ 
                         $info_com['usuario_id'] = $value['lusuarios'][$i];
                         $info_com['cusuario_id'] =  $value['ucargos'][$i];
                         $info_com['estadocom_id'] = $estadocominterna_id;
@@ -391,7 +391,7 @@ class CominternaUsuarioPeer extends BaseCominternaUsuarioPeer
     public static function deleteUserCargoNotIn($pkcom_id = 0,$lcargos_current = array())
     {
         try{
-            if(empty($pkcom_id) || !count($lcargos_current) || !is_array($lcargos_current)){
+            if(empty($pkcom_id) || !count74($lcargos_current) || !is_array($lcargos_current)){
                 return null;
             }
             //*******************************************************************************************************

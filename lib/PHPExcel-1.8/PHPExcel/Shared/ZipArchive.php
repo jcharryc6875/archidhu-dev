@@ -110,7 +110,7 @@ class PHPExcel_Shared_ZipArchive
         $fileName = strtolower($fileName);
 
         $list = $this->zip->listContent();
-        $listCount = count($list);
+        $listCount = count74($list);
         $index = -1;
         for ($i = 0; $i < $listCount; ++$i) {
             if (strtolower($list[$i]["filename"]) == $fileName ||

@@ -922,7 +922,7 @@ class wf_instancia_bitacoraActions extends sfActions
         }
     }
     //*********************************************************************************************
-    if(count($pks)){
+    if(count74($pks)){
         $sql = "UPDATE %s  SET  %s = ".($wf_ejecutado)." WHERE %s IN (".implode(',',$pks).");";     
     	$sql = sprintf($sql, ComrecibidaUsuarioPeer::TABLE_NAME, ComrecibidaUsuarioPeer::WF_EJECUTADO, ComrecibidaUsuarioPeer::COMRECIBIDAUSUARIO_ID);    
     	$sentencia = $conexion->prepare($sql);
@@ -956,7 +956,7 @@ class wf_instancia_bitacoraActions extends sfActions
         }
     }
     //*********************************************************************************************
-    if(count($pks)){
+    if(count74($pks)){
         $sql = "UPDATE %s  SET  %s = ".($wf_ejecutado)." WHERE %s IN (".implode(',',$pks).");";     
     	$sql = sprintf($sql, CominternaUsuarioPeer::TABLE_NAME, CominternaUsuarioPeer::WF_EJECUTADO, CominternaUsuarioPeer::COMINTERNAUSUARIO_ID);    
     	$sentencia = $conexion->prepare($sql);
@@ -967,7 +967,7 @@ class wf_instancia_bitacoraActions extends sfActions
   public function UpdateAllWfEjecutadoByRolComRecibida($comrecibida_id,$usuarios_array,$wf_ejecutado,$rol_id = array(2,3)){
     $conexion = Propel::getConnection();		
     //*********************************************************************************************
-    if(trim($comrecibida_id) && $wf_ejecutado >= 0 && count($usuarios_array)){
+    if(trim($comrecibida_id) && $wf_ejecutado >= 0 && count74($usuarios_array)){
         $sql = "UPDATE %s SET %s =".($wf_ejecutado)." WHERE %s=".$comrecibida_id." AND %s IN (".implode(",",$rol_id).") AND %s IN(".implode(",",$usuarios_array).")";     
         $sql = sprintf($sql, ComrecibidaUsuarioPeer::TABLE_NAME, ComrecibidaUsuarioPeer::WF_EJECUTADO, ComrecibidaUsuarioPeer::COMRECIBIDA_ID, ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID, ComrecibidaUsuarioPeer::USUARIO_ID);            
         $sentencia = $conexion->prepare($sql);

@@ -563,7 +563,7 @@ class contenido_documentalActions extends sfActions
 		if (trim($contenido_unidad_documental->getRuta())) {
 			//obtener la extension del archivo adjunto
 			$files = preg_split("/[,]+/", $contenido_unidad_documental->getRuta(), -1, PREG_SPLIT_NO_EMPTY);
-			if (count($files)) {
+			if (count74($files)) {
 				$this->datos_archivo = pathinfo($files[0]);
 				$this->formato_adjunto  = str_replace(",", "", mb_strtolower($this->datos_archivo["extension"])); //enviamos la extension del archivo adjunto
 			}
@@ -814,7 +814,7 @@ class contenido_documentalActions extends sfActions
 		$nombre_file = str_replace(",", "", basename($url_files));
 		$ruta_file = "";
 		/********************************************************************************/
-		for ($j = 0; $j < count($archivos_upload); $j++) {
+		for ($j = 0; $j < count74($archivos_upload); $j++) {
 			if ($archivos_upload[$j] != "" && str_replace(",", "", $archivos_upload[$j]) != $nombre_file) {
 				$ruta_file .=  $archivos_upload[$j] . "/";
 			}
@@ -1638,7 +1638,7 @@ class contenido_documentalActions extends sfActions
 				$ruta_archivo = $ruta_archivo.$strspe.implode(",",$new_files);
 			}*/
 			//***************************************************************************************************************************
-			$contenido_unidad_documental->setRuta((count($new_files) ? implode(",", $new_files) : null));
+			$contenido_unidad_documental->setRuta((count74($new_files) ? implode(",", $new_files) : null));
 			$contenido_unidad_documental->setSizeFile($szfile);
 			$contenido_unidad_documental->setFormatFile(strtoupper($exfile));
 			$contenido_unidad_documental->setPathAbsolute($path_absolute);
@@ -1685,7 +1685,7 @@ class contenido_documentalActions extends sfActions
 				}
 			}
 			//***************************************************************************************************************************
-			if (count($nfiles_process)) {
+			if (count74($nfiles_process)) {
 				$response_sign = $contenido_unidad_documental->addFileProcessOcrAndSign($nfiles_process);
 				if ($response_sign['httpStatus'] == 200) {
 					$message_info[] = $response_sign['message'];
@@ -1695,7 +1695,7 @@ class contenido_documentalActions extends sfActions
 				}
 			}
 			//***************************************************************************************************************************
-			if (count($message_info) > 0) {
+			if (count74($message_info) > 0) {
 				$this->getUser()->setFlash('messages_info', implode(",", $message_info));
 			}
 			//***************************************************************************************************************************
@@ -1718,7 +1718,7 @@ class contenido_documentalActions extends sfActions
 			//return $this->redirect($redirect_url);
 		}
 		//*******************************************************************************************************************************
-		if (count($nfiles_process)) {
+		if (count74($nfiles_process)) {
 			$response_sign = $contenido_unidad_documental->addFileProcessOcrAndSign($nfiles_process);
 			if ($response_sign['httpStatus'] == 200) {
 				$this->getUser()->setFlash('messages_info', $response_sign['message']);

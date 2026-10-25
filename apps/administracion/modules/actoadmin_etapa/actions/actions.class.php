@@ -116,7 +116,7 @@ class actoadmin_etapaActions extends sfActions
     $ordenIds = $request->getParameter('orden_ids');
     //*********************************************************************************************************
     try {
-      if (is_array($ordenIds) && count($ordenIds) > 0) {
+      if (is_array($ordenIds) && count74($ordenIds) > 0) {
         $con = Propel::getConnection(ActoadminEtapaPeer::DATABASE_NAME);
         $con->beginTransaction();
         try {

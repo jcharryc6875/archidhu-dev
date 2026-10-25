@@ -100,7 +100,7 @@ class BCGDrawPNG extends BCGDraw {
             $meters = (int)($this->dpi * 39.37007874);
 
             $found = -1;
-            $c = count($chunks);
+            $c = count74($chunks);
             for($i = 0; $i < $c; $i++) {
                 // We already have a pHYs
                 if($chunks[$i]['chunk'] === 'pHYs') {
@@ -137,7 +137,7 @@ class BCGDrawPNG extends BCGDraw {
     }
 
     private function internalSetC(&$bin, &$chunks) {
-        if (count($chunks) >= 2 && $chunk[0]['chunk'] = 'IHDR') {
+        if (count74($chunks) >= 2 && $chunk[0]['chunk'] = 'IHDR') {
             $firstPart = substr($bin, 0, 33);
             $secondPart = substr($bin, 33);
             $cr = pack('H*', '0000004C74455874436F707972696768740047656E657261746564207769746820426172636F64652047656E657261746F7220666F722050485020687474703A2F2F7777772E626172636F64657068702E636F6D597F70B8');

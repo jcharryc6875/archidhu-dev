@@ -63,7 +63,7 @@ class EnviadaInteresadosPeer extends BaseEnviadaInteresadosPeer
         try{
             $conexion = Propel::getConnection();
             //***************************************************************************************
-            if(count($listpkinteresados)){
+            if(count74($listpkinteresados)){
                 $query = "DELETE %s WHERE  %s NOT IN( ".implode(",",$listpkinteresados).") AND %s = ".$pkcom;
             }else{
                 $query = "DELETE %s WHERE  %s NOT IN(-1) AND %s = ".$pkcom;

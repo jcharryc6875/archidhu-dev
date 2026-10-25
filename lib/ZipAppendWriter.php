@@ -122,7 +122,7 @@ class ZipAppendWriter
 		$writer = new self($dir);
 		$entries = $writer->readIndex();
 		$part = $dir . DIRECTORY_SEPARATOR . self::PART_FILE;
-		$count = count($entries);
+		$count = count74($entries);
 		$ok = $count > 0 && is_file($part) && $writer->open();
 		if ($ok) {
 			fseek($writer->handle, 0, SEEK_END);
@@ -155,7 +155,7 @@ class ZipAppendWriter
 		$lines = is_file($index) ? file($index, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : array();
 		foreach ($lines as $line) {
 			$parts = explode("\t", $line);
-			if (count($parts) == 6) {
+			if (count74($parts) == 6) {
 				$entries[] = array('name' => base64_decode($parts[0]), 'crc' => (int) $parts[1], 'size' => (int) $parts[2],
 					'offset' => (int) $parts[3], 'time' => (int) $parts[4], 'date' => (int) $parts[5]);
 			}

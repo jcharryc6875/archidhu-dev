@@ -51,7 +51,7 @@ class BCGcode11 extends BCGBarcode1D {
 
         // Checksum
         $this->calculateChecksum();
-        $c = count($this->checksumValue);
+        $c = count74($this->checksumValue);
         for ($i = 0; $i < $c; $i++) {
             $this->drawChar($im, $this->code[$this->checksumValue[$i]], true);
         }
@@ -163,7 +163,7 @@ class BCGcode11 extends BCGBarcode1D {
 
         if ($this->checksumValue !== false) {
             $ret = '';
-            $c = count($this->checksumValue);
+            $c = count74($this->checksumValue);
             for ($i = 0; $i < $c; $i++) {
                 $ret .= $this->keys[$this->checksumValue[$i]];
             }

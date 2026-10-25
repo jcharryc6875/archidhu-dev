@@ -7,7 +7,7 @@ $currentUser = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 ?>
 
 <div class="col-md-12" style="padding: 0px;">
-    <?php if (count($ldocument_version) == 0): ?>
+    <?php if (count74($ldocument_version) == 0): ?>
         <div class="panel panel-primary">
             <div class="panel-body">
                 <div class="alert alert-default"><strong>No hay versiones disponibles</strong>.</div>

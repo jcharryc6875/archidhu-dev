@@ -8,7 +8,7 @@ $usuariologuiado = $sf_user->getAttribute('usuario_id','', 'subscriber');
 use_helper('jQuery');
 ?>
 
-<?php if(count($list_gestion) <= 0): ?>
+<?php if(count74($list_gestion) <= 0): ?>
     <div class="panel panel-primary">
         <div class="panel-body">
             <?php $mensajeVacio = isset($mensajeListaVacia) && $mensajeListaVacia ? $mensajeListaVacia : ConsultaPermisoHelper::MSG_SIN_REGISTROS; ?>

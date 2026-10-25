@@ -129,7 +129,7 @@ use_helper('Object','jQuery');
     </div>
     
     <?php $rolCom = UsuarioPeer::getUsuarioPocesoComListText($usuario->getPrimaryKey()); ?>
-    <?php if(count($rolCom)){ ?>
+    <?php if(count74($rolCom)){ ?>
         <div class="row">
             <div class="col-sm-6">
                 <div class="col-sm-4"><p><strong>Rol Comunicaciones:</strong></p></div>
@@ -143,7 +143,7 @@ use_helper('Object','jQuery');
     <?php } ?>
 
     <?php $perfiles_usuario = UsuarioPeer::getPerfilesByUsuarioId($usuario->getPrimaryKey()); ?>
-    <?php if(count($perfiles_usuario)){ ?>
+    <?php if(count74($perfiles_usuario)){ ?>
         <div class="row">
             <div class="col-sm-6">
                 <div class="col-sm-4"><p><strong>Perfiles:</strong></p></div>
