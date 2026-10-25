@@ -36,7 +36,30 @@ class ProjectConfiguration extends sfProjectConfiguration
 {
   public function setup()
   {
-    sfYaml::setSpecVersion('1.1');
+	// Consola: el generador de Propel no incluye sus dependencias (espera el classmap de Composer)
+    if (PHP_SAPI === 'cli') {
+      $propelGenerador = dirname(__FILE__).'/../data/sf1.5/lib/plugins/sfPropelORMPlugin/lib/vendor/propel/generator/lib';
+      spl_autoload_register(function ($clase) use ($propelGenerador) {
+        static $mapa = null;
+        if (null === $mapa) {
+          $mapa = array();
+          if (is_dir($propelGenerador)) {
+            $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($propelGenerador, FilesystemIterator::SKIP_DOTS));
+            foreach ($it as $archivo) {
+              if ('php' === strtolower($archivo->getExtension())) {
+                $mapa[strtolower($archivo->getBasename('.php'))] = $archivo->getPathname();
+              }
+            }
+          }
+        }
+        $k = strtolower($clase);
+        if (isset($mapa[$k])) {
+          require_once $mapa[$k];
+        }
+      });
+    }
+    //****************************************************************************
+	sfYaml::setSpecVersion('1.1');
     $this->enablePlugins('sfPropelORMPlugin', 'sfCompat10Plugin', 'sfPropelAdmin10Plugin');
     //****************************************************************************
     require_once(sfConfig::get('sf_lib_dir') . '/SqlServerSessionHandler.php');
