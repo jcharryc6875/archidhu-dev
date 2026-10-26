@@ -88,7 +88,7 @@ use_helper('Object','jQuery');
           <label for="lbDescripcion" class="col-sm-1 control-label">Descripci&oacute;n(*):</label>
           <div class="col-sm-7">
             <?php
-                echo object_input_tag($plantillas_com, 'getDescripcion', array('related_class' => 'PlantillasCom','data-validate'=>'maxlength[50]', 'class'=>'form-control input-sm required'));
+                echo object_input_tag($plantillas_com, 'getDescripcion', array('related_class' => 'PlantillasCom','data-validate'=>'maxlength[150]', 'class'=>'form-control input-sm required'));
             ?>
           </div>
         </div>

@@ -1108,7 +1108,7 @@ propel:
     DEPENDENCIA_ID: { phpName: DependenciaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: DEPENDENCIA, foreignReference: DEPENDENCIA_ID }
     MODULO_ID: { phpName: ModuloId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: MODULO, foreignReference: MODULO_ID }
     REGIONAL_ID: { phpName: RegionalId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: REGIONAL, foreignReference: REGIONAL_ID }
-    DESCRIPCION: { phpName: Descripcion, type: VARCHAR, size: '50', required: false }
+    DESCRIPCION: { phpName: Descripcion, type: VARCHAR, size: '150', required: false }
     ES_ACTUAL: { phpName: EsActual, type: BOOLEAN, size: '1', required: false }
     CODIGO: { phpName: Codigo, type: VARCHAR, size: '30', required: false }
     CONTENTS: { phpName: Contents, type: LONGVARCHAR, size: '2147483647', required: false }
