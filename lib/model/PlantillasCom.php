@@ -33,6 +33,9 @@ class PlantillasCom extends BasePlantillasCom {
 		// Make sure that parent constructor is always invoked, since that
 		// is where any default values for this object are set.
 		parent::__construct();
+		// Propel interpreta el default ((1)) del schema como 0 (distinto del DEFAULT 1 de la tabla): asi, guardar
+		// una plantilla nueva sin editor (0) no marcaba la columna como modificada y la base la dejaba en 1.
+		$this->usa_editor = 1;
 	}
 	
 	function __toString(){		
