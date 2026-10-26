@@ -1730,3 +1730,17 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
 .tplcom-label-izq { text-align: left !important; }
 .tplcom-ayuda { margin-left: 4px; color: #00a0d1; font-size: 16px; cursor: help; vertical-align: middle; }
 .tplcom-ayuda:hover { color: #0079a1; }
+
+/* Tooltip de ayuda de la plantilla: se pinta en el body para no heredar el ancho de la etiqueta */
+.tooltip.tplcom-tooltip { opacity: 1; }
+.tooltip.tplcom-tooltip .tooltip-inner { max-width: 300px; padding: 8px 12px; background: #053e52 !important; color: #fff !important; font-size: 12px; line-height: 1.4; text-align: left; white-space: normal; word-wrap: normal; word-break: normal; }
+.tooltip.tplcom-tooltip.right .tooltip-arrow { border-right-color: #053e52 !important; }
+.tooltip.tplcom-tooltip.top .tooltip-arrow { border-top-color: #053e52 !important; }
+.tooltip.tplcom-tooltip.bottom .tooltip-arrow { border-bottom-color: #053e52 !important; }
+.tooltip.tplcom-tooltip.left .tooltip-arrow { border-left-color: #053e52 !important; }
+
+/* Copiar etiqueta al portapapeles: el icono siempre es visible */
+.tplcom-acordeon .list-group-item { position: relative; padding-right: 36px; }
+.tplcom-copiar { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; padding: 0; border: 1px solid #cfd8dc; border-radius: 3px; background: #fff; color: #5f7a89; font-size: 13px; line-height: 20px; text-align: center; cursor: pointer; }
+.tplcom-copiar:hover, .tplcom-copiar:focus { border-color: #1b6d8f; color: #1b6d8f; outline: none; }
+.tplcom-copiar.tplcom-copiado { border-color: #2e8b57; background: #2e8b57; color: #fff; }

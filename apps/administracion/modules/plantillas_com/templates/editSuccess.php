@@ -96,7 +96,7 @@ use_helper('Object','jQuery');
         <div class="form-group">
           <!-- Habilitar editor de texto -->
           <label for="usa_editor" class="col-sm-1 control-label tplcom-word-section">Habilitar editor de texto:
-            <span class="tplcom-ayuda tooltip-primary" data-toggle="tooltip" data-placement="right" data-original-title="Si lo deshabilita, la plantilla se crea con un documento Word que usted debe tener elaborado."><i class="entypo-info-circled"></i></span>
+            <span class="tplcom-ayuda" data-toggle="tooltip" data-placement="right" data-container="body" data-template='<div class="tooltip tplcom-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>' data-original-title="Si lo deshabilita, la plantilla se crea con un documento Word que usted debe tener elaborado."><i class="entypo-info-circled"></i></span>
           </label>
           <div class="col-sm-1 tplcom-word-section">
             <?php echo checkbox_tag('usa_editor', 1, $plantillas_com->isNew() ? true : (bool) $plantillas_com->getUsaEditor(), array('class' => 'form-control input-sm icheck')); ?>

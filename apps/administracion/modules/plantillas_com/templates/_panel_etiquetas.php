@@ -21,6 +21,7 @@
                 <ul class="list-group">
                   <?php foreach ($variables as $variable): ?>
                     <li class="list-group-item">
+                      <button type="button" class="tplcom-copiar" data-etiqueta="{[<?php echo $variable['clave'] ?>]}" title="Copiar etiqueta" aria-label="Copiar etiqueta"><i class="entypo-docs"></i></button>
                       <code class="tplcom-etiqueta-clave">{[<?php echo $variable['clave'] ?>]}</code>
                       <span class="tplcom-etiqueta-desc"><?php echo $variable['descripcion'] ?></span>
                     </li>

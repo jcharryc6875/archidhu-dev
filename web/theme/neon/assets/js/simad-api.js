@@ -3457,6 +3457,37 @@ jQuery(document).ready(function ($) {
 		jQuery(document).on('change', '#plantillascom_id, #tipocominterna_id', aplicarModoEditorPlantilla);
 	}
 
+	// UARIV-202609: copia la etiqueta al portapapeles (API moderna en https, execCommand como respaldo)
+	function copiarAlPortapapeles(texto) {
+		var resultado = jQuery.Deferred();
+		if (navigator.clipboard && window.isSecureContext) {
+			navigator.clipboard.writeText(texto).then(resultado.resolve, resultado.reject);
+		} else {
+			var campo = jQuery('<textarea readonly></textarea>').css({ position: 'fixed', top: 0, left: 0, opacity: 0 }).val(texto).appendTo('body');
+			campo[0].select();
+			var copiado = false;
+			try { copiado = document.execCommand('copy'); } catch (err) { copiado = false; }
+			campo.remove();
+			if (copiado) { resultado.resolve(); } else { resultado.reject(); }
+		}
+		return resultado.promise();
+	}
+	jQuery('body').on('click', '.tplcom-copiar', function () {
+		var boton = jQuery(this);
+		var icono = boton.find('i');
+		var etiqueta = String(boton.data('etiqueta'));
+		copiarAlPortapapeles(etiqueta).done(function () {
+			boton.addClass('tplcom-copiado');
+			icono.removeClass('entypo-docs').addClass('entypo-check');
+			if (typeof toastr !== 'undefined') { toastr.success('Etiqueta copiada: ' + etiqueta); }
+			setTimeout(function () {
+				boton.removeClass('tplcom-copiado');
+				icono.removeClass('entypo-check').addClass('entypo-docs');
+			}, 1500);
+		}).fail(function () {
+			if (typeof toastr !== 'undefined') { toastr.error('No fue posible copiar la etiqueta, cópiela manualmente.'); }
+		});
+	});
 	// UARIV-202609: Word de la plantilla. Se carga a una carpeta temporal y se pasa a la definitiva al guardar.
 	function mostrarMensajeDocx(tipo, texto, lista) {
 		var caja = jQuery('#tplcom-docx-msg').removeClass('alert-success alert-danger tplcom-oculto').addClass(tipo).text(texto);
