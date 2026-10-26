@@ -50,7 +50,7 @@ $byProcess = $globalMetrics['by_process'];
                 <i class="fas fa-play-circle"></i>
             </div>
             <div class="kpi-content">
-                <h3><?php echo number_format((int)$global['total_instances']) ?></h3>
+                <h3><?php echo number_format74((int)$global['total_instances']) ?></h3>
                 <p>Instancias Totales</p>
                 <div class="trend up"><i class="fas fa-arrow-up"></i> Últimos 30 días</div>
             </div>
@@ -61,7 +61,7 @@ $byProcess = $globalMetrics['by_process'];
                 <i class="fas fa-check-circle"></i>
             </div>
             <div class="kpi-content">
-                <h3><?php echo number_format((int)$global['completed']) ?></h3>
+                <h3><?php echo number_format74((int)$global['completed']) ?></h3>
                 <p>Completadas</p>
                 <?php
                 $rate = $global['total_instances'] > 0
@@ -77,7 +77,7 @@ $byProcess = $globalMetrics['by_process'];
                 <i class="fas fa-spinner"></i>
             </div>
             <div class="kpi-content">
-                <h3><?php echo number_format((int)$global['running']) ?></h3>
+                <h3><?php echo number_format74((int)$global['running']) ?></h3>
                 <p>En Ejecución</p>
                 <div class="trend">Actualmente activas</div>
             </div>
@@ -88,7 +88,7 @@ $byProcess = $globalMetrics['by_process'];
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
             <div class="kpi-content">
-                <h3><?php echo number_format((int)$global['failed']) ?></h3>
+                <h3><?php echo number_format74((int)$global['failed']) ?></h3>
                 <p>Fallidas</p>
                 <div class="trend down">Requieren atención</div>
             </div>
@@ -267,7 +267,7 @@ $byProcess = $globalMetrics['by_process'];
                 <i class="fas fa-check-double"></i>
             </div>
             <div class="kpi-content">
-                <h3><?php echo number_format($completedStats['total']) ?></h3>
+                <h3><?php echo number_format74($completedStats['total']) ?></h3>
                 <p>Total Completados</p>
                 <div class="trend">Últimos registros</div>
             </div>
@@ -278,7 +278,7 @@ $byProcess = $globalMetrics['by_process'];
                 <i class="fas fa-clock"></i>
             </div>
             <div class="kpi-content">
-                <h3><?php echo number_format($completedStats['on_time']) ?></h3>
+                <h3><?php echo number_format74($completedStats['on_time']) ?></h3>
                 <p>A Tiempo</p>
                 <?php
                 $onTimeRate = $completedStats['total'] > 0
@@ -296,7 +296,7 @@ $byProcess = $globalMetrics['by_process'];
                 <i class="fas fa-exclamation-circle"></i>
             </div>
             <div class="kpi-content">
-                <h3><?php echo number_format($completedStats['delayed']) ?></h3>
+                <h3><?php echo number_format74($completedStats['delayed']) ?></h3>
                 <p>Con Retrasos</p>
                 <?php
                 $delayedRate = $completedStats['total'] > 0
@@ -312,7 +312,7 @@ $byProcess = $globalMetrics['by_process'];
                 <i class="fas fa-hourglass-half"></i>
             </div>
             <div class="kpi-content">
-                <h3><?php echo number_format($completedStats['avg_duration'], 1) ?>h</h3>
+                <h3><?php echo number_format74($completedStats['avg_duration'], 1) ?>h</h3>
                 <p>Duración Promedio</p>
                 <div class="trend">Por workflow</div>
             </div>
@@ -376,7 +376,7 @@ $byProcess = $globalMetrics['by_process'];
                                 </span>
                                 <?php if ($metrics['avg_task_duration']): ?>
                                     <div style="font-size: 10px; color: #999; margin-top: 2px;">
-                                        ~<?php echo number_format($metrics['avg_task_duration'], 1) ?>h/tarea
+                                        ~<?php echo number_format74($metrics['avg_task_duration'], 1) ?>h/tarea
                                     </div>
                                 <?php endif; ?>
                             </td>

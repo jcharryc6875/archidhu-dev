@@ -15,7 +15,7 @@
             <i class="fas fa-project-diagram"></i>
         </div>
         <div class="metric-content">
-            <div class="metric-value"><?php echo number_format($metrics['total_instances']) ?></div>
+            <div class="metric-value"><?php echo number_format74($metrics['total_instances']) ?></div>
             <div class="metric-label">Total Instancias</div>
             <?php if ($metrics['first_instance_date']): ?>
                 <div class="metric-detail">
@@ -30,7 +30,7 @@
             <i class="fas fa-check-circle"></i>
         </div>
         <div class="metric-content">
-            <div class="metric-value"><?php echo number_format($metrics['completed']) ?></div>
+            <div class="metric-value"><?php echo number_format74($metrics['completed']) ?></div>
             <div class="metric-label">Completadas</div>
             <div class="metric-detail">
                 <?php
@@ -48,7 +48,7 @@
             <i class="fas fa-hourglass-half"></i>
         </div>
         <div class="metric-content">
-            <div class="metric-value"><?php echo number_format($metrics['in_progress']) ?></div>
+            <div class="metric-value"><?php echo number_format74($metrics['in_progress']) ?></div>
             <div class="metric-label">En Progreso</div>
             <div class="metric-detail">
                 <?php
@@ -66,7 +66,7 @@
             <i class="fas fa-times-circle"></i>
         </div>
         <div class="metric-content">
-            <div class="metric-value"><?php echo number_format($metrics['rejected']) ?></div>
+            <div class="metric-value"><?php echo number_format74($metrics['rejected']) ?></div>
             <div class="metric-label">Rechazadas</div>
             <div class="metric-detail">
                 <?php

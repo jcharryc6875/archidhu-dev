@@ -204,11 +204,11 @@ use_helper('Date', 'Object', 'jQuery', 'UserComponent');
                         <div class="comparison-values">
                             <div class="value-item">
                                 <span class="label">Real:</span>
-                                <span class="value"><?php echo number_format($realMetrics['total_instances']) ?></span>
+                                <span class="value"><?php echo number_format74($realMetrics['total_instances']) ?></span>
                             </div>
                             <div class="value-item">
                                 <span class="label">Simulación:</span>
-                                <span class="value"><?php echo number_format($simulationMetrics['total_instances']) ?></span>
+                                <span class="value"><?php echo number_format74($simulationMetrics['total_instances']) ?></span>
                             </div>
                         </div>
                     </div>

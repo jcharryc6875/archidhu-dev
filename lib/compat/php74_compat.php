@@ -58,3 +58,37 @@ if (!function_exists('implode74')) {
         return '';
     }
 }
+
+if (!function_exists('number_format74')) {
+    /**
+     * number_format() con el comportamiento de PHP 7.4.
+     *
+     * PHP 8 lanza TypeError cuando el número es un texto no numérico ("", "abc").
+     * PHP 7.4:
+     *   - texto numérico ("1500", ".50", " 12")  -> se formatea
+     *   - texto con número inicial ("12abc")      -> notice y usa 12
+     *   - null / booleano                          -> 0 / 1
+     *   - texto no numérico, arreglo u objeto      -> warning y null
+     * Aquí ese último caso devuelve '' en lugar de null (mismo resultado al imprimir).
+     *
+     * @param mixed $num
+     */
+    function number_format74($num, $decimals = 0, $dec_point = '.', $thousands_sep = ','): string
+    {
+        if (is_string($num)) {
+            if (!is_numeric($num)) {
+                if (!preg_match('/^\s*[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?/', $num, $m)) {
+                    return '';
+                }
+                $num = $m[0];
+            }
+            $num = (float) $num;
+        } elseif ($num === null || is_bool($num)) {
+            $num = (float) $num;
+        } elseif (!is_int($num) && !is_float($num)) {
+            return '';
+        }
+
+        return number_format($num, (int) $decimals, (string) $dec_point, (string) $thousands_sep);
+    }
+}

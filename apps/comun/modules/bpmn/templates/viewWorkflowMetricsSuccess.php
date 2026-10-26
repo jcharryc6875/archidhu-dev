@@ -73,7 +73,7 @@ $met = $metrics;
         <?php if ($met['avg_task_duration']): ?>
             <div class="metric-card info">
                 <div class="icon"><i class="fas fa-clock"></i></div>
-                <div class="value"><?php echo number_format($met['avg_task_duration'], 1) ?>h</div>
+                <div class="value"><?php echo number_format74($met['avg_task_duration'], 1) ?>h</div>
                 <div class="label">Promedio por Tarea</div>
             </div>
         <?php endif; ?>
