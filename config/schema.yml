@@ -1105,20 +1105,21 @@ propel:
   PLANTILLAS_COM:
     _attributes: { phpName: PlantillasCom, idMethod: native }
     PLANTILLASCOM_ID: { phpName: PlantillascomId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }
-    MODULO_ID: { phpName: ModuloId, type: INTEGER, size: '4', scale: '0', required: true }
+    DEPENDENCIA_ID: { phpName: DependenciaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: DEPENDENCIA, foreignReference: DEPENDENCIA_ID }
+    MODULO_ID: { phpName: ModuloId, type: INTEGER, size: '4', scale: '0', required: true, foreignTable: MODULO, foreignReference: MODULO_ID }
+    REGIONAL_ID: { phpName: RegionalId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: REGIONAL, foreignReference: REGIONAL_ID }
     DESCRIPCION: { phpName: Descripcion, type: VARCHAR, size: '50', required: false }
     ES_ACTUAL: { phpName: EsActual, type: BOOLEAN, size: '1', required: false }
     CODIGO: { phpName: Codigo, type: VARCHAR, size: '30', required: false }
     CONTENTS: { phpName: Contents, type: LONGVARCHAR, size: '2147483647', required: false }
     NOMBRE: { phpName: Nombre, type: VARCHAR, size: '50', required: false }
-    REGIONAL_ID: { phpName: RegionalId, type: INTEGER, size: '4', scale: '0', required: false }
     SUBORIGENID: { phpName: Suborigenid, type: INTEGER, size: '4', scale: '0', required: false }
     USE_HEADERS: { phpName: UseHeaders, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
     IMAGE_MEMBRETE: { phpName: ImageMembrete, type: VARCHAR, size: '80', required: false }
     USE_MEMBRETE: { phpName: UseMembrete, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
-    DEPENDENCIA_ID: { phpName: DependenciaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: DEPENDENCIA, foreignReference: DEPENDENCIA_ID }
+    GENERA_SERVICIO: { phpName: GeneraServicio, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
+    FIRMA_DESATENDIDA: { phpName: FirmaDesatendida, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
     USA_EDITOR: { phpName: UsaEditor, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((1)) }
-    USE_MEMBRETE: { phpName: UseMembrete, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
     URL_DOCX: { phpName: UrlDocx, type: VARCHAR, size: '500', required: false }
     DOCX_NOMBRE: { phpName: DocxNombre, type: VARCHAR, size: '255', required: false }
     _indexes: { PK_PLANTILLAS_COM: [PLANTILLASCOM_ID] }
