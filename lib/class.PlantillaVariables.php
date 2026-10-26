@@ -76,14 +76,15 @@ class PlantillaVariables
 
     /**
      * Devuelve las etiquetas que no existen para el módulo, sin repetidos y respetando el orden.
-     * Acepta el sufijo "#n" que PHPWord añade al duplicar bloques o filas.
+     * Acepta el sufijo "#n" que PHPWord añade al duplicar bloques o filas y la "/" inicial
+     * con la que se cierra un bloque repetible ({[/BLOQUE_FIRMAS]}).
      */
     public static function getDesconocidas(array $etiquetas, $moduloId): array
     {
         $validas = self::getClaves($moduloId);
         $desconocidas = array();
         foreach ($etiquetas as $etiqueta) {
-            $clave = preg_replace('/#\d+$/', '', trim((string) $etiqueta));
+            $clave = preg_replace('/^\/|#\d+$/', '', trim((string) $etiqueta));
             if ($clave !== '' && !in_array($clave, $validas, true) && !in_array($clave, $desconocidas, true)) {
                 $desconocidas[] = $clave;
             }

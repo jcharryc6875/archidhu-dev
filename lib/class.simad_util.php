@@ -3963,7 +3963,7 @@ class simad_util
     }
 
     /**
-     * Extrae las etiquetas {[CLAVE]} de un DOCX (cuerpo, encabezados, pies, notas),
+     * Extrae las etiquetas {[CLAVE]} de un DOCX (cuerpo, encabezados y pies),
      * incluso cuando Word las parte en varios runs. No modifica el archivo.
      * @param string $docxPath ruta absoluta al documento de word
      * @return string[] claves sin repetir, en orden de aparición (el texto raro entre llaves
@@ -3984,7 +3984,8 @@ class simad_util
             }
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $nombre = (string) $zip->getNameIndex($i);
-                if (!preg_match('#^word/(document|header\d*|footer\d*|footnotes|endnotes)\.xml$#', $nombre)) {
+                // Mismas partes que reemplaza DocxPlaceholderUtil (cuerpo, header1-10, footer1-10)
+                if (!preg_match('#^word/(document|(header|footer)([1-9]|10))\.xml$#', $nombre)) {
                     continue;
                 }
                 $xml = $zip->getFromIndex($i);

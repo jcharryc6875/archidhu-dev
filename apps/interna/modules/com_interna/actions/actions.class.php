@@ -3735,7 +3735,7 @@ class com_internaActions extends sfActions
         $contenido = $this->getRequestParameter('contenido');
         // UARIV-202609: con una plantilla sin editor el documento sale solo del Word de la plantilla
         $plantilla_com = $com_interna->getTipoComInterna() ? $com_interna->getTipoComInterna()->getPlantillasCom() : null;
-        $forzar_word = !$this->getRequestParameter('cominterna_id') && $plantilla_com && !$plantilla_com->getUsaEditor();
+        $forzar_word = $com_interna->isNew() && $plantilla_com && !$plantilla_com->getUsaEditor();
         $com_interna->setContenido($forzar_word ? null : $this->cleanStringTable($contenido));
         $com_interna->setRadicado("Sin Radicar");
         $com_interna->setEsCopia(0);
