@@ -396,7 +396,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
               <?php if ($permisoRadicarFirmaElectronica) { ?>
                 <?php if ($sf_user->checkPerm($currentFormBotonRadicar, $currentUser) && ($acto_administrativo->getEstadoactoadministrativoId() == 1) && (count74($usuarios_firman) >= 1)) { ?>
                   <?php if (in_array($currentUser, $users_asignado)) { ?>
-                    <?php if ((count74($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman)) || (count74($aprobacion_ulist) == 0)) { ?>
+                    <?php if (!$hayAprobacionesPendientes && ((count74($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman)) || (count74($aprobacion_ulist) == 0))) { ?>
                       <button type="button" name="saveActoAdm" id="saveActoAdm" value="save" class="btn btn-success tooltip-primary" data-toggle="tooltip" data-original-title="Guardar los cambios del registro actual">Guardar Registro</button>
                       <a class="btn btn-info tooltip-primary" data-toggle="tooltip" data-original-title="Firmar y generar el acto administrativo" href="<?php echo url_for('acto_administrativo/radicar?actoadministrativo_id=' . $acto_administrativo->getPrimaryKey()); ?>">Firmar y Generar</a>
                     <?php } elseif (in_array($currentUser, $users_aprueban) || in_array($currentUser, $users_asignado)) {

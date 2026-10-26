@@ -410,6 +410,7 @@ class acto_administrativoActions extends sfActions
     $this->firmas_desatendida = $firmas_desatendida;
     $this->tipoprocesocom_id = $object_asignado != null ? $object_asignado->getTipoprocesocomId() : 0;
     $this->aprobacion_count = count74($aprob_urlist);
+    $this->hayAprobacionesPendientes = count74(ActoAdministrativoPeer::getAprobacionesPendientesPrevias($acto_administrativo->getPrimaryKey())) > 0;
     $this->destinatariosIds = $destinatariosIds;
     $this->cargousuarioIdDestinos = $cargousuarioIdDestinos;
     $this->udestinarios_names = $udestinarios_names;
@@ -1729,6 +1730,7 @@ class acto_administrativoActions extends sfActions
     }
     //***************************************************************************************************
     $this->aprobacion_ulist = $aprob_urlist;
+    $this->hayAprobacionesPendientes = count74(ActoAdministrativoPeer::getAprobacionesPendientesPrevias($acto_administrativo->getPrimaryKey())) > 0;
     $this->intesadosIds = $list_inteIds;
     $this->intesadosNames = $listint_names;
     $this->usuario = $usuario;
@@ -2035,6 +2037,12 @@ class acto_administrativoActions extends sfActions
       return $this->redirect($this->getRequest()->getScriptName() . '/acto_administrativo/edit?actoadministrativo_id=' . $acto_administrativo->getPrimaryKey());
     }
     //***************************************************************************************************************
+    // No se firma ni radica mientras falten aprobaciones previas (gestion/revision)
+    if (count74(ActoAdministrativoPeer::getAprobacionesPendientesPrevias($acto_administrativo->getPrimaryKey()))) {
+      $this->getUser()->setFlash('error', 'No es posible firmar y generar el acto administrativo: hay aprobaciones pendientes de revisión o gestión.');
+      return $this->redirect($this->getRequest()->getScriptName() . '/acto_administrativo/edit?actoadministrativo_id=' . $acto_administrativo->getPrimaryKey());
+    }
+    //***************************************************************************************************************
     $firmante_id = $acto_administrativo->getFirstUsurioFirma($acto_administrativo->getPrimaryKey());
     if (!$firmante_id) {
       $firmante_id = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
@@ -2069,7 +2077,10 @@ class acto_administrativoActions extends sfActions
     ActoAdministrativoPeer::updateEstadosObj($acto_administrativo->getPrimaryKey());
     ActoAdministrativoPeer::updateAproFirmaObjAll($acto_administrativo->getPrimaryKey());
     ActoAdministrativoPeer::updateAproObjAllProcess($acto_administrativo->getPrimaryKey(), $usuariologuiado);
-    ActoAdministrativoPeer::AsignarUserDestinoByPk($acto_administrativo->getPrimaryKey());
+    // Destinatario interno: queda asignado a el; externo (sin usuario destinatario): queda asignado al ultimo firmante
+    if (ActoAdministrativoPeer::AsignarUserDestinoByPk($acto_administrativo->getPrimaryKey()) == null) {
+      ActoAdministrativoPeer::asignarUltimoFirmante($acto_administrativo->getPrimaryKey(), $usuariologuiado);
+    }
     //***************************************************************************************************************
     if ($ucom_firmante != null) {
       $etapa_firmante_id = $ucom_firmante->getActoadminetapaId();

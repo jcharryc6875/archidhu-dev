@@ -248,6 +248,9 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             // (executeSingComCheck) debe usar avanzarFlujoPorOrden() directamente para detectar el empate.
             return isset($resultado['ucom_next']) ? $resultado['ucom_next'] : null;
         }
+        // Aprobaciones previas pendientes (p.ej. revisor agregado en la edicion) nunca se saltan
+        $ucom_pendiente = ActoAdministrativoPeer::reasignarAPendientePrevio($comobject_id);
+        if($ucom_pendiente != null){ return $ucom_pendiente; }
         if(!count74(ActoadminEtapaPeer::getEtapasActivasOrdenadas())){
             return ActoAdministrativoPeer::legacySetNextUserProceso($comobject_id);
         }
@@ -721,19 +724,116 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
         }
     }
 
+    /**
+     * Asigna el acto a todos los destinatarios internos (usuarios con rol destinatario). Retorna la
+     * lista de destinatarios asignados, o null si no hay ninguno (destinatario externo).
+     */
     public static function AsignarUserDestinoByPk($pkcom_id,$urolpk_id = 6, $uestadopk_id = 6, $esta_asignada = 1){
         try {
-            if(!empty($info_com['pkcom_id'])){
-                $ucom_object = ActoadministrativoUsuarioPeer::getUserActoAdmByRol($pkcom_id,$urolpk_id);
-                if($ucom_object != null){
-                    $ucom_object->setEstadoactoadministrativoId($uestadopk_id);
-                    $ucom_object->setFechaAsigna(date("Y-m-d G:i:s"));
-                    $ucom_object->setEstaAsignada($esta_asignada);
-                    $ucom_object->save();
-                }
-                //**************************************************************************************************
-                return $ucom_object;
+            if(empty($pkcom_id)){ return null; }
+            //**************************************************************************************************
+            $c = new Criteria();
+            $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$pkcom_id);
+            $c->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID,$urolpk_id);
+            $destinatarios = ActoadministrativoUsuarioPeer::doSelect($c);
+            foreach ($destinatarios as $ucom_object) {
+                $ucom_object->setEstadoactoadministrativoId($uestadopk_id);
+                $ucom_object->setFechaAsigna(date("Y-m-d G:i:s"));
+                $ucom_object->setEstaAsignada($esta_asignada);
+                $ucom_object->save();
             }
+            //**************************************************************************************************
+            return count74($destinatarios) ? $destinatarios : null;
+        } catch (PropelException $th) {
+            return null;
+        } catch (\Exception $th) {
+            return null;
+        } catch (\Throwable $th) {
+            return null;
+        }
+    }
+
+    /**
+     * Deja asignado el acto al firmante que radica (o, si ese usuario no tiene fila de firma, al
+     * ultimo firmante). Se usa cuando el destinatario es externo y no hay un usuario interno a quien asignarlo.
+     */
+    public static function asignarUltimoFirmante($pkcom_id, $usuario_id = 0)
+    {
+        try {
+            $c = new Criteria();
+            $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$pkcom_id);
+            $c->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID,2);
+            $c->addDescendingOrderByColumn(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVOUSUARIO_ID);
+            $firmantes = ActoadministrativoUsuarioPeer::doSelect($c);
+            $ufirmante = null;
+            foreach ($firmantes as $ufirma) {
+                if($ufirmante == null){ $ufirmante = $ufirma; }
+                if($ufirma->getUsuarioId() == $usuario_id){ $ufirmante = $ufirma; break; }
+            }
+            if($ufirmante == null){ return null; }
+            //**************************************************************************************************
+            $ufirmante->setFechaAsigna(date("Y-m-d G:i:s"));
+            $ufirmante->setEstaAsignada(1);
+            $ufirmante->save();
+            return $ufirmante;
+        } catch (PropelException $th) {
+            return null;
+        } catch (\Exception $th) {
+            return null;
+        } catch (\Throwable $th) {
+            return null;
+        }
+    }
+
+    /**
+     * Participantes de gestion/revision (los roles del flujo distintos de creador y firma) que aun no
+     * han aprobado. Mientras existan, el acto no puede firmarse ni radicarse. Ordenados gestor -> revisor.
+     */
+    public static function getAprobacionesPendientesPrevias($pkobj_id)
+    {
+        try {
+            $roles = array_values(array_diff(ActoadminEtapaPeer::getRolesFlujoConfiguradoODefault(array(3,4)), array(1,2,5,6,7)));
+            if(!count74($roles)){ return array(); }
+            //**************************************************************************************************
+            $c = new Criteria();
+            $c->add(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,$pkobj_id);
+            $c->add(ActoadministrativoUsuarioPeer::ESTA_APROBADO,0);
+            $c->add(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID,$roles,Criteria::IN);
+            $c->addDescendingOrderByColumn(ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID);
+            $c->addAscendingOrderByColumn(ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVOUSUARIO_ID);
+            return ActoadministrativoUsuarioPeer::doSelect($c);
+        } catch (PropelException $th) {
+            return array();
+        } catch (\Exception $th) {
+            return array();
+        } catch (\Throwable $th) {
+            return array();
+        }
+    }
+
+    /**
+     * Si quien tiene el acto esta en la etapa de firma y todavia hay aprobaciones previas pendientes
+     * (p.ej. un revisor agregado durante la edicion), en vez de cerrar el flujo se asigna al primer
+     * pendiente; el firmante conserva su firma pendiente. Retorna el participante asignado o null.
+     */
+    public static function reasignarAPendientePrevio($comobject_id)
+    {
+        try {
+            $ucom_current = ActoAdministrativoPeer::getCurrentUserAsignado($comobject_id);
+            if($ucom_current == null || $ucom_current->getRolusuarioactoadministvoId() != 2){ return null; }
+            //**************************************************************************************************
+            $pendientes = ActoAdministrativoPeer::getAprobacionesPendientesPrevias($comobject_id);
+            if(!count74($pendientes)){ return null; }
+            //**************************************************************************************************
+            $ucom_next = $pendientes[0];
+            $ucom_next->setFechaAsigna(date("Y-m-d G:i:s"));
+            $ucom_next->setEstaAsignada(1);
+            $ucom_next->setFechaAprobacion(null);
+            $ucom_next->save();
+            //**************************************************************************************************
+            $ucom_current->setEstaAsignada(0);
+            $ucom_current->save();
+            return $ucom_next;
         } catch (PropelException $th) {
             return null;
         } catch (\Exception $th) {
