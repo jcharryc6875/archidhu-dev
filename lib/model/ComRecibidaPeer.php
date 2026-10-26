@@ -588,12 +588,12 @@ class ComRecibidaPeer extends BaseComRecibidaPeer
             $consulta .= sprintf(" JOIN %s ON %s = %s", ComrecibidaUsuarioPeer::TABLE_NAME, ComRecibidaPeer::COMRECIBIDA_ID, ComrecibidaUsuarioPeer::COMRECIBIDA_ID);
             $consulta .= sprintf(" WHERE %s = %s ",ComRecibidaPeer::ESTADODIGITALIZACION_ID, $status);
             $consulta .= sprintf(" AND %s = 1 AND %s = %s ",ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID, ComrecibidaUsuarioPeer::USUARIO_ID,$usuariologuiado);
-			$consulta .= sprintf(" AND %s NOT IN(%s)",ComRecibidaPeer::ESTADOCOMRECIBIDA_ID,implode(",",$statuscom));
+			$consulta .= sprintf(" AND %s NOT IN(%s)",ComRecibidaPeer::ESTADOCOMRECIBIDA_ID,implode74(",",$statuscom));
         }else{
 			$consulta = sprintf("SELECT COUNT(DISTINCT %s) AS total FROM %s WITH (NOLOCK)", ComRecibidaPeer::COMRECIBIDA_ID,ComRecibidaPeer::TABLE_NAME);
 			$consulta .= sprintf(" JOIN %s ON %s = %s", ComrecibidaUsuarioPeer::TABLE_NAME, ComRecibidaPeer::COMRECIBIDA_ID, ComrecibidaUsuarioPeer::COMRECIBIDA_ID);
 			$consulta .= " WHERE %s = ".$status;
-			$consulta .= sprintf(" AND %s NOT IN(%s)",ComRecibidaPeer::ESTADOCOMRECIBIDA_ID,implode(",",$statuscom));
+			$consulta .= sprintf(" AND %s NOT IN(%s)",ComRecibidaPeer::ESTADOCOMRECIBIDA_ID,implode74(",",$statuscom));
             $consulta = sprintf($consulta, ComRecibidaPeer::ESTADODIGITALIZACION_ID);
         }
         //************************************************************************************
@@ -623,7 +623,7 @@ class ComRecibidaPeer extends BaseComRecibidaPeer
         if(count74($urolComIn) && is_numeric($comrecibida_id) && is_numeric($newestado)){
             try{
                 $conexion = Propel::getConnection();
-                $query = "UPDATE %s SET %s = ".$newestado." WHERE %s IN (".implode(",",$urolComIn).") AND %s = ".$comrecibida_id;
+                $query = "UPDATE %s SET %s = ".$newestado." WHERE %s IN (".implode74(",",$urolComIn).") AND %s = ".$comrecibida_id;
                 $query = sprintf($query, ComrecibidaUsuarioPeer::TABLE_NAME, ComrecibidaUsuarioPeer::ESTADOCOMRECIBIDA_ID,ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID,ComrecibidaUsuarioPeer::COMRECIBIDA_ID);
                 $sentencia = $conexion->prepare($query);
                 $sentencia->execute();
@@ -638,7 +638,7 @@ class ComRecibidaPeer extends BaseComRecibidaPeer
         if(count74($urolComIn) && is_numeric($comrecibida_id)){
             try{
                 $conexion = Propel::getConnection();
-                $query = "UPDATE %s SET %s = '".date("Y-m-d G:i:s")."' WHERE %s IN (".implode(",",$urolComIn).") AND %s = ".$comrecibida_id." AND %s = ".$isAsignado;
+                $query = "UPDATE %s SET %s = '".date("Y-m-d G:i:s")."' WHERE %s IN (".implode74(",",$urolComIn).") AND %s = ".$comrecibida_id." AND %s = ".$isAsignado;
                 $query = sprintf($query, ComrecibidaUsuarioPeer::TABLE_NAME, ComrecibidaUsuarioPeer::FECHA_ASIGNA,ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID,ComrecibidaUsuarioPeer::COMRECIBIDA_ID,ComrecibidaUsuarioPeer::ESTA_ASIGNADA);
                 $sentencia = $conexion->prepare($query);
                 $sentencia->execute();

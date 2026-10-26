@@ -877,7 +877,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 $isError = true;
             }
             //********************************************************************************
-            $this->setRuta(implode(",", $current_files));
+            $this->setRuta(implode74(",", $current_files));
             $this->save();
         } catch (PropelException $ex) {
             $isError = true;
@@ -1038,10 +1038,10 @@ class ActoAdministrativo extends BaseActoAdministrativo
                 $destino_list[] = $usuario_com->getUsuarioId();
             }
             //**************************************************************************
-            $list_users['firmas'] = $isArray ? $firmas_list : implode(",", $firmas_list);
-            $list_users['revisores'] = $isArray ? $revisa_list : implode(",", $revisa_list);
-            $list_users['gestores'] = $isArray ? $gestiona_list : implode(",", $gestiona_list);
-            $list_users['destino'] = $isArray ? $destino_list : implode(",", $destino_list);
+            $list_users['firmas'] = $isArray ? $firmas_list : implode74(",", $firmas_list);
+            $list_users['revisores'] = $isArray ? $revisa_list : implode74(",", $revisa_list);
+            $list_users['gestores'] = $isArray ? $gestiona_list : implode74(",", $gestiona_list);
+            $list_users['destino'] = $isArray ? $destino_list : implode74(",", $destino_list);
         }
         //******************************************************************************
         return $list_users;
@@ -1700,7 +1700,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //$sustituciones[6] = isset($actlist_users['revisores_names']) ? $actlist_users['revisores_names'][0] : "";
         if (isset($actlist_users['revisores_names'])) {
             if (is_array($actlist_users['revisores_names']) && count74($actlist_users['revisores_names']) > 1) {
-                $sustituciones[6] = implode("<br><br>", $actlist_users['revisores_names']);
+                $sustituciones[6] = implode74("<br><br>", $actlist_users['revisores_names']);
             } else {
                 $sustituciones[6] = $actlist_users['revisores_names'][0];
             }
@@ -1711,7 +1711,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //$sustituciones[7] = isset($actlist_users['gestores_names']) ? $actlist_users['gestores_names'][0] : "";
         if (isset($actlist_users['gestores_names'])) {
             if (is_array($actlist_users['gestores_names']) && count74($actlist_users['gestores_names']) > 1) {
-                $sustituciones[7] = implode("<br><br>", $actlist_users['gestores_names']);
+                $sustituciones[7] = implode74("<br><br>", $actlist_users['gestores_names']);
             } else {
                 $sustituciones[7] = $actlist_users['gestores_names'][0];
             }
@@ -1730,7 +1730,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //$sustituciones[15] = isset($list_urevisor['cargo_revisor']) ? $list_urevisor['cargo_revisor'] : "";
         if (isset($list_urevisor['cargo_revisor'])) {
             if (is_array($list_urevisor['cargo_revisor']) && count74($list_urevisor['cargo_revisor']) > 1) {
-                $sustituciones[15] = implode("<br><br>", $list_urevisor['cargo_revisor']);
+                $sustituciones[15] = implode74("<br><br>", $list_urevisor['cargo_revisor']);
             } else {
                 $sustituciones[15] = $list_urevisor['cargo_revisor'][0];
             }
@@ -1741,7 +1741,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //$sustituciones[16] = isset($list_urevisor['dependencia_revisor']) ? $list_urevisor['dependencia_revisor'] : "";
         if (isset($list_urevisor['dependencia_revisor'])) {
             if (is_array($list_urevisor['dependencia_revisor']) && count74($list_urevisor['dependencia_revisor']) > 1) {
-                $sustituciones[16] = implode("<br><br>", $list_urevisor['dependencia_revisor']);
+                $sustituciones[16] = implode74("<br><br>", $list_urevisor['dependencia_revisor']);
             } else {
                 $sustituciones[16] = $list_urevisor['dependencia_revisor'][0];
             }
@@ -1752,7 +1752,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //$sustituciones[17] = isset($list_urevisor['fmecanica_revisor']) ? $list_urevisor['fmecanica_revisor'] : "";
         if (isset($list_urevisor['fmecanica_revisor'])) {
             if (is_array($list_urevisor['fmecanica_revisor']) && count74($list_urevisor['fmecanica_revisor']) > 1) {
-                $sustituciones[17] = implode("<br><br>", $list_urevisor['fmecanica_revisor']);
+                $sustituciones[17] = implode74("<br><br>", $list_urevisor['fmecanica_revisor']);
             } else {
                 $sustituciones[17] = $list_urevisor['fmecanica_revisor'][0];
             }
@@ -1763,7 +1763,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //$sustituciones[18] = isset($list_ugestor['cargo_gestor']) ? $list_ugestor['cargo_gestor'] : "";
         if (isset($list_ugestor['cargo_gestor'])) {
             if (is_array($list_ugestor['cargo_gestor']) && count74($list_ugestor['cargo_gestor']) > 1) {
-                $sustituciones[18] = implode("<br><br>", $list_ugestor['cargo_gestor']);
+                $sustituciones[18] = implode74("<br><br>", $list_ugestor['cargo_gestor']);
             } else {
                 $sustituciones[18] = $list_ugestor['cargo_gestor'][0];
             }
@@ -1774,7 +1774,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //$sustituciones[19] = isset($list_ugestor['dependencia_gestor']) ? $list_ugestor['dependencia_gestor'] : "";
         if (isset($list_ugestor['dependencia_gestor'])) {
             if (is_array($list_ugestor['dependencia_gestor']) && count74($list_ugestor['dependencia_gestor']) > 1) {
-                $sustituciones[19] = implode("<br><br>", $list_ugestor['dependencia_gestor']);
+                $sustituciones[19] = implode74("<br><br>", $list_ugestor['dependencia_gestor']);
             } else {
                 $sustituciones[19] = $list_ugestor['dependencia_gestor'][0];
             }
@@ -1785,7 +1785,7 @@ class ActoAdministrativo extends BaseActoAdministrativo
         //$sustituciones[20] = isset($list_ugestor['fmecanica_gestor']) ? $list_ugestor['fmecanica_gestor'] : "";
         if (isset($list_ugestor['fmecanica_gestor'])) {
             if (is_array($list_ugestor['fmecanica_gestor']) && count74($list_ugestor['fmecanica_gestor']) > 1) {
-                $sustituciones[20] = implode("<br><br>", $list_ugestor['fmecanica_gestor']);
+                $sustituciones[20] = implode74("<br><br>", $list_ugestor['fmecanica_gestor']);
             } else {
                 $sustituciones[20] = $list_ugestor['fmecanica_gestor'][0];
             }

@@ -393,7 +393,7 @@ class Servicio extends BaseServicio
 				$this->setObsDevolucion(trim($bitacora_text));
 			}
 			//************************************************************************************************
-			return array('error' => $isAnyError, 'message' => implode("|",$message_list));
+			return array('error' => $isAnyError, 'message' => implode74("|",$message_list));
 		} catch (PropelException $th) {
 			$baseMail->writetolog("Error al enviar el correo electronico => ".$th->getMessage());
 			return array('error' => true, 'message' => "Error al enviar el correo electronico => {$th->getMessage()}");
@@ -586,7 +586,7 @@ class Servicio extends BaseServicio
 			);
 			$params_service['body'] = str_replace($patrones, $sustituciones, $bodyEmail);
 			//***********************************************************************************************
-			$emails        = implode(',', $email_all);
+			$emails        = implode74(',', $email_all);
 			$response_data = $ws_api->enviarCorreoCertificado(
 				$this->getRadicado(),
 				$emails,
@@ -1449,7 +1449,7 @@ class Servicio extends BaseServicio
 			//********************************************************************************************************
 			$this->save();
 			//********************************************************************************************************
-			return array('isError' => $isError, 'code' => $codeResp, 'message' => implode(",",$message));
+			return array('isError' => $isError, 'code' => $codeResp, 'message' => implode74(",",$message));
 		} catch (PropelException $th) {
 			return array('isError' => true, 'code' => 400, 'message' => $th->getMessage());
 		} catch (\Exception $th) {

@@ -103,7 +103,7 @@ abstract class sfCrudGenerator extends sfGenerator
       $params[] = "$callee('".sfInflector::underscore($pk->getPhpName())."')";
     }
 
-    return implode(",\n".str_repeat(' ', max(0, $indent - strlen($this->singularName.$this->className))), $params);
+    return implode74(",\n".str_repeat(' ', max(0, $indent - strlen($this->singularName.$this->className))), $params);
   }
 
   /**
@@ -122,7 +122,7 @@ abstract class sfCrudGenerator extends sfGenerator
       $params[] = sprintf("\$request->getParameter('%s')", sfInflector::underscore($pk->getPhpName()));
     }
 
-    return implode(",\n".str_repeat(' ', max(0, $indent - strlen($this->singularName.$this->className))), $params);
+    return implode74(",\n".str_repeat(' ', max(0, $indent - strlen($this->singularName.$this->className))), $params);
   }
 
   /**
@@ -139,7 +139,7 @@ abstract class sfCrudGenerator extends sfGenerator
       $method_params[] = "\$$fieldName = '$fieldName'";
     }
 
-    return implode(', ', $method_params);
+    return implode74(', ', $method_params);
   }
 
   /**
@@ -160,7 +160,7 @@ abstract class sfCrudGenerator extends sfGenerator
       $test_pks[] = sprintf("\$this->getRequestParameter(%s) === null", $fieldNameAsArgument ? "\$$fieldName" : "'".$fieldName."'");
     }
 
-    return implode("\n     || ", $test_pks);
+    return implode74("\n     || ", $test_pks);
   }
 
   /**
@@ -177,7 +177,7 @@ abstract class sfCrudGenerator extends sfGenerator
       $retrieve_params[] = "\$this->getRequestParameter(\$$fieldName)";
     }
 
-    return implode(",\n".str_repeat(' ', max(0, 45 - strlen($this->singularName.$this->className))), $retrieve_params);
+    return implode74(",\n".str_repeat(' ', max(0, 45 - strlen($this->singularName.$this->className))), $retrieve_params);
   }
 
   /**
@@ -276,7 +276,7 @@ abstract class sfCrudGenerator extends sfGenerator
       }
     }
 
-    return implode(".'&", $params);
+    return implode74(".'&", $params);
   }
 
   /**
@@ -294,7 +294,7 @@ abstract class sfCrudGenerator extends sfGenerator
       $params[] = $this->getColumnGetter($pk, true, $prefix);
     }
 
-    return implode(' && ', $params);
+    return implode74(' && ', $params);
   }
 
   /**

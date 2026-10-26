@@ -104,7 +104,7 @@ if($position>0){
     }    
     //lista de imagenes anteriores a $position
     if($arreglo_imagenes){
-       $lista_imagenes1=implode(",", $arreglo_imagenes);
+       $lista_imagenes1=implode74(",", $arreglo_imagenes);
     }else {
        $lista_imagenes1="0";
     }
@@ -160,7 +160,7 @@ if($position>0){
                $arreglo_imagenes[$i]=$i;
            }    
            if($arreglo_imagenes){
-               $lista_imagenes1=implode(",", $arreglo_imagenes);
+               $lista_imagenes1=implode74(",", $arreglo_imagenes);
            }else{
                $lista_imagenes1="0";
            }

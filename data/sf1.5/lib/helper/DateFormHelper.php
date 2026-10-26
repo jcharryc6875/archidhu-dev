@@ -346,7 +346,7 @@ function select_date_tag($name, $value = null, $options = array(), $html_options
     }
   }
 
-  return implode($date_seperator, $tags);
+  return implode74($date_seperator, $tags);
 }
 
 /**
@@ -654,7 +654,7 @@ function select_time_tag($name, $value = null, $options = array(), $html_options
     $tags[] = select_second_tag($second_name, _parse_value_for_date($value, 'second', 's'), $options + $include_custom_second, $html_options);
   }
 
-  $time = implode($time_seperator, $tags);
+  $time = implode74($time_seperator, $tags);
 
   if ($_12hour_time)
   {

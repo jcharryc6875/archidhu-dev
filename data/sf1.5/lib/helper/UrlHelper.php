@@ -451,7 +451,7 @@ function mail_to($email, $name = '', $options = [], $default_value = [])
     foreach ($default_tmp as $key => $value) {
         $default[] = urlencode($key).'='.urlencode($value);
     }
-    $options = count74($default) ? '?'.implode('&', $default) : '';
+    $options = count74($default) ? '?'.implode74('&', $default) : '';
 
     if (isset($html_options['encode']) && $html_options['encode']) {
         unset($html_options['encode']);

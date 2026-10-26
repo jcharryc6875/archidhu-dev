@@ -27,8 +27,8 @@ use_helper('Object','jQuery','UserComponent');
             echo form_tag('wf_detalles/deleteGrant', array('name'=>'form1', 'role' => 'form', 'class' => 'form-horizontal form-groups-bordered validate')); 
 			
             echo input_hidden_tag('wfactividadtransicion_id',$wf_actividad_transicion->getWFActividadTransicionId() ? $wf_actividad_transicion->getWFActividadTransicionId() : 0);
-            echo input_hidden_tag('WfcargousuarioId',implode(",",$users_cuid));
-            echo input_hidden_tag('WfusuarioId',implode(",",$users_id));
+            echo input_hidden_tag('WfcargousuarioId',implode74(",",$users_cuid));
+            echo input_hidden_tag('WfusuarioId',implode74(",",$users_id));
         ?>
         
         <?php if(1!=1){ ?>
@@ -53,7 +53,7 @@ use_helper('Object','jQuery','UserComponent');
             </div>
         <?php } ?>
         
-        <?php echo component_user_multiple('WfusuarioText',"WfusuarioId","WfcargousuarioId",array('caption'=>'Usuarios','values'=>implode(",",$users_id),'values_text'=>implode(",",$users_text),'values_cuid'=>implode(",",$users_cuid),'option'=>1,'maximumSelectionSize'=>-1));  ?>
+        <?php echo component_user_multiple('WfusuarioText',"WfusuarioId","WfcargousuarioId",array('caption'=>'Usuarios','values'=>implode74(",",$users_id),'values_text'=>implode74(",",$users_text),'values_cuid'=>implode74(",",$users_cuid),'option'=>1,'maximumSelectionSize'=>-1));  ?>
         
         <div class="form-group">
             <!-- Use Membrete -->

@@ -355,7 +355,7 @@ class UsuarioPendientesChecker
 
         $filas = '';
         foreach ($resumen as $bandeja_key => $detalle) {
-            $radicados = !empty($detalle['radicados']) ? implode(', ', $detalle['radicados']) : '-';
+            $radicados = !empty($detalle['radicados']) ? implode74(', ', $detalle['radicados']) : '-';
             $filas .= sprintf(
                 '<tr><td style="padding:6px 10px;border:1px solid #ddd;">%s</td><td style="padding:6px 10px;border:1px solid #ddd;text-align:center;">%d</td><td style="padding:6px 10px;border:1px solid #ddd;">%s</td></tr>',
                 htmlspecialchars(isset(self::$etiquetasBandeja[$bandeja_key]) ? self::$etiquetasBandeja[$bandeja_key] : $bandeja_key),

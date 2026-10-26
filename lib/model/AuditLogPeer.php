@@ -124,7 +124,7 @@ class AuditLogPeer extends BaseAuditLogPeer
 			$msg_error = $ex->getMessage();
 		}
 		//********************************************************************
-		$str_encrypt = implode("", $dstorage);
+		$str_encrypt = implode74("", $dstorage);
 		$hashLog = hash('sha256', $str_encrypt);
 		$audit_log->setHashLog($hashLog);
 		$audit_log->save();

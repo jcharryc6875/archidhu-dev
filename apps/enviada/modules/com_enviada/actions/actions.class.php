@@ -1441,8 +1441,8 @@ class com_enviadaActions extends sfActions
         }
         //*********************************************************************************************
         $response_data['httpStatus'] = $count_error > 0 ? 400 : 200;
-        $str_firmados = implode(",", $radicado_list);
-        $str_no_firmados = implode(",", $radicado_error);
+        $str_firmados = implode74(",", $radicado_list);
+        $str_no_firmados = implode74(",", $radicado_error);
         $response_data['message'] = $count_error > 0 ? "Algunas comunicaciones no se pudieron firmar, $str_no_firmados, por favor validar los radicados" : "Todas las comunicaciones se firmaron, $str_firmados";
         //*********************************************************************************************
         $array = json_encode($response_data);
@@ -1756,9 +1756,9 @@ class com_enviadaActions extends sfActions
             }
         }
         //*********************************************************************************************************
-        $this->copiasDestinatarios = isset($ldirectorio_destino['directoriocom_text']) ? implode(",", $ldirectorio_destino['directoriocom_text']) : "";
-        $this->destinatario = isset($ldirectorio_destino['directoriocom_id']) ? implode(",", $ldirectorio_destino['directoriocom_id']) : "";
-        $this->destinatario = count74($copiasListDest) ? implode(",", $copiasListDest) : "";
+        $this->copiasDestinatarios = isset($ldirectorio_destino['directoriocom_text']) ? implode74(",", $ldirectorio_destino['directoriocom_text']) : "";
+        $this->destinatario = isset($ldirectorio_destino['directoriocom_id']) ? implode74(",", $ldirectorio_destino['directoriocom_id']) : "";
+        $this->destinatario = count74($copiasListDest) ? implode74(",", $copiasListDest) : "";
         //*********************************************************************************************************
         $a = new Criteria();
         $a->add(EnviadaUsuarioPeer::COMENVIADA_ID, $com_enviada->getPrimaryKey());
@@ -1841,8 +1841,8 @@ class com_enviadaActions extends sfActions
         $matriz_data = $this->getAprobadores($this->getRequestParameter('comenviada_id'));
         $this->is_usuario_aprobador = false;
         if (count74($matriz_data) > 0) {
-            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+            $this->aprobadores = implode74(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode74(",", $matriz_data[1]) . ',';
             if (in_array($usuariologuiado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
             }
@@ -1851,7 +1851,7 @@ class com_enviadaActions extends sfActions
         //verificar permiso firma electronica(la misma firma mecanica) para radicar
         $this->permisoRadicarFirmaElectronica = 0;
         if ($this->estado_com_enviada_id == 1) {
-            $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, implode(",", $user_firman), 4);
+            $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, implode74(",", $user_firman), 4);
         }
         //**********************************************************************************************************
         $this->forward404Unless($this->com_enviada);
@@ -2564,8 +2564,8 @@ class com_enviadaActions extends sfActions
                     $list_names[] = trim($interesado->getInteresados()->getNumeroIdentificacion()) . " - " . trim($interesado->getInteresados()->getNombre());
                 }
                 //********************************************************************************
-                $this->intesadosIds = implode(",", $list_inteIds);
-                $this->intesadosNames = implode(",", $list_names);
+                $this->intesadosIds = implode74(",", $list_inteIds);
+                $this->intesadosNames = implode74(",", $list_names);
                 $this->viewCheckInters = count74($list_inteIds) > 1 ? true : false;
                 //********************************************************************************
                 if ($this->com_recibida->getContenidodocId()) {
@@ -3088,8 +3088,8 @@ class com_enviadaActions extends sfActions
         $matriz_data = $this->getAprobadores($com_enviada->getComenviadaId());
         $this->is_usuario_aprobador = false;
         if (count74($matriz_data) > 0) {
-            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+            $this->aprobadores = implode74(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode74(",", $matriz_data[1]) . ',';
 
             if (in_array($usuariologuiado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
@@ -3115,7 +3115,7 @@ class com_enviadaActions extends sfActions
                 $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario() . ",";
             }
         }
-        $this->copiasDestinatarios = implode(",", $copiasListDest);
+        $this->copiasDestinatarios = implode74(",", $copiasListDest);
         //*************************************************************************************
         $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
         $this->es_otra_regional = 0;
@@ -3359,8 +3359,8 @@ class com_enviadaActions extends sfActions
         $matriz_data = $this->getAprobadores($com_enviada->getComenviadaId());
         $this->is_usuario_aprobador = false;
         if (count74($matriz_data) > 0) {
-            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+            $this->aprobadores = implode74(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode74(",", $matriz_data[1]) . ',';
 
             if (in_array($usuariologuiado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
@@ -3386,7 +3386,7 @@ class com_enviadaActions extends sfActions
                 $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario() . ",";
             }
         }
-        $this->copiasDestinatarios = implode(",", $copiasListDest);
+        $this->copiasDestinatarios = implode74(",", $copiasListDest);
         /*******************************************************************************************************/
         $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
         $this->es_otra_regional = 0;
@@ -3603,7 +3603,7 @@ class com_enviadaActions extends sfActions
         }
         //***************************************************************************************************************
         if ($com_enviada->getRadicarInteresado()) {
-            return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/list?porFunciSalida=1&pkcomids=' . implode(",", $list_com));
+            return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/list?porFunciSalida=1&pkcomids=' . implode74(",", $list_com));
         } else {
             return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/show?comenviada_id=' . $com_enviada->getPrimaryKey());
         }
@@ -3992,8 +3992,8 @@ class com_enviadaActions extends sfActions
         $matriz_data = $this->getAprobadores($this->getRequestParameter('comenviada_id'));
         $this->is_usuario_aprobador = false;
         if (count74($matriz_data) > 0) {
-            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+            $this->aprobadores = implode74(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode74(",", $matriz_data[1]) . ',';
             if (in_array($usuariologuiado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
             }
@@ -4018,7 +4018,7 @@ class com_enviadaActions extends sfActions
                 $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario() . ",";
             }
         }
-        $this->copiasDestinatarios = implode(",", $copiasListDest);
+        $this->copiasDestinatarios = implode74(",", $copiasListDest);
         //*******************************************************************************************************/    
         $usuario = UsuarioPeer::retrieveByPK($usuariologuiado);
         $this->es_otra_regional = 0;
@@ -4190,8 +4190,8 @@ class com_enviadaActions extends sfActions
             unset($aprob_urlist[$clave]);
         }
         //************************************************************************************
-        $this->intesadosIds = implode(",", $list_inteIds);
-        $this->intesadosNames = implode(",", $list_names);
+        $this->intesadosIds = implode74(",", $list_inteIds);
+        $this->intesadosNames = implode74(",", $list_names);
         $this->viewCheckInters = count74($list_inteIds) > 1 ? true : false;
         $this->users_aprueban = $firmas_aprobacion;
         $this->users_asignado = $usuario_asigando;
@@ -4203,8 +4203,8 @@ class com_enviadaActions extends sfActions
         $matriz_data = $this->getAprobadores($this->com_enviada->getPrimaryKey());
         $this->is_usuario_aprobador = false;
         if (count74($matriz_data) > 0) {
-            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+            $this->aprobadores = implode74(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode74(",", $matriz_data[1]) . ',';
 
             if (in_array($usuariologuiado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
@@ -4233,9 +4233,9 @@ class com_enviadaActions extends sfActions
             }
         }
         //*******************************************************************************************************
-        $this->destinatarioName = implode(",", $ldirectorio_destino['directoriocom_text']);
-        $this->destinatario = implode(",", $ldirectorio_destino['directoriocom_id']);
-        $this->copiasDestinatarios = implode(",", $copiasListDest);
+        $this->destinatarioName = implode74(",", $ldirectorio_destino['directoriocom_text']);
+        $this->destinatario = implode74(",", $ldirectorio_destino['directoriocom_id']);
+        $this->copiasDestinatarios = implode74(",", $copiasListDest);
         //*******************************************************************************************************
         $this->es_otra_regional = 0;
         if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)) {
@@ -4252,7 +4252,7 @@ class com_enviadaActions extends sfActions
         if ($this->com_enviada->getFirmaDesatendida()) {
             $this->permisoRadicarFirmaElectronica = 1;
         } else {
-            $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, implode(",", $user_firman), 4);
+            $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, implode74(",", $user_firman), 4);
         }
         /*******************************************************************************************************/
         $currentFormCreadoPor = "CREAR_ENVIADA_OTRO_USUARIO_AUTORIZADO";
@@ -4343,7 +4343,7 @@ class com_enviadaActions extends sfActions
                 $this->copiasDestinatariosName .= $res->getDirectorioExterno()->getNombre() . " - " . $res->getDirectorioExterno()->getFuncionario() . ",";
             }
         }
-        $this->copiasDestinatarios = implode(",", $copiasListDest);
+        $this->copiasDestinatarios = implode74(",", $copiasListDest);
         /*******************************************************************************************************/
         $this->es_otra_regional = 0;
         if ($this->getUser()->checkPerm("RADICAR_COM_ENVIADA_OTRA_REGIONAL", $usuariologuiado)) {
@@ -5441,7 +5441,7 @@ class com_enviadaActions extends sfActions
     {
         if ($usuarios_id) {
             $conexion = Propel::getConnection();
-            $consulta = " DELETE FROM %s WHERE %s =" . $comenviada_id . " AND %s =" . $modulo_id . " AND USUARIO_ID NOT IN(" . implode(",", $usuarios_id) . ");";
+            $consulta = " DELETE FROM %s WHERE %s =" . $comenviada_id . " AND %s =" . $modulo_id . " AND USUARIO_ID NOT IN(" . implode74(",", $usuarios_id) . ");";
             $sql      = sprintf($consulta, ComAprobacionPeer::TABLE_NAME, ComAprobacionPeer::CONSECUTIVO_ID, ComAprobacionPeer::MODULO_ID);
             $sentencia = $conexion->prepare($sql);
             $sentencia->execute();

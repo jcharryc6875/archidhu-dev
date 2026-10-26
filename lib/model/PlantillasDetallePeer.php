@@ -43,6 +43,6 @@ class PlantillasDetallePeer extends BasePlantillasDetallePeer {
             $html_data[] = $item->getHtmlData();
         }
         //*************************************************************************
-        return implode("<br>",$html_data);
+        return implode74("<br>",$html_data);
     }
 } // PlantillasDetallePeer

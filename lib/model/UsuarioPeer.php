@@ -202,7 +202,7 @@ class UsuarioPeer extends BaseUsuarioPeer
 		}
 		//************************************************************************************
 		$conexion = Propel::getConnection();
-		$consulta = "SELECT COUNT(%s) AS number_reg FROM %s WHERE %s IN (".implode(",",$usuarios_firma).") AND %s = ".$useFirmaElectronica;
+		$consulta = "SELECT COUNT(%s) AS number_reg FROM %s WHERE %s IN (".implode74(",",$usuarios_firma).") AND %s = ".$useFirmaElectronica;
 		$consulta = sprintf($consulta, UsuarioPeer::USUARIO_ID, UsuarioPeer::TABLE_NAME,UsuarioPeer::USUARIO_ID, UsuarioPeer::USE_FIRMA_ELECTRONICA);
 		//echo $consulta;exit;
 		//************************************************************************************
@@ -231,7 +231,7 @@ class UsuarioPeer extends BaseUsuarioPeer
 		}
 		//************************************************************************************
 		$conexion = Propel::getConnection();
-		$consulta = "SELECT COUNT(%s) AS number_reg FROM %s WHERE %s IN (".implode(",",$usuarios_firma).") AND %s = ".$useFirmaDesatendida;
+		$consulta = "SELECT COUNT(%s) AS number_reg FROM %s WHERE %s IN (".implode74(",",$usuarios_firma).") AND %s = ".$useFirmaDesatendida;
 		$consulta = sprintf($consulta, UsuarioPeer::USUARIO_ID, UsuarioPeer::TABLE_NAME,UsuarioPeer::USUARIO_ID, UsuarioPeer::FIRMA_DESATENDIDA);
 		//************************************************************************************
 		$sentencia = $conexion->prepare($consulta);

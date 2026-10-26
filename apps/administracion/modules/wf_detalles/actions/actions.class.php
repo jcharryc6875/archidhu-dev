@@ -667,7 +667,7 @@ class wf_detallesActions extends sfActions
         }
         //*******************************************************************
         if(count74($wat_active)){                
-            $consulta = "DELETE FROM %s WHERE %s NOT IN(".implode(",",$wat_active).") AND %s = ".$wat_id.";";
+            $consulta = "DELETE FROM %s WHERE %s NOT IN(".implode74(",",$wat_active).") AND %s = ".$wat_id.";";
             $consulta = sprintf($consulta,WfActividadtransicionUsuarioPeer::TABLE_NAME,WfActividadtransicionUsuarioPeer::WFACTIVIDADTRANSICIONUSUARIO_ID,WfActividadtransicionUsuarioPeer::WFACTIVIDADTRANSICION_ID);
         }else{
             $consulta = "DELETE FROM %s WHERE %s = ".$wat_id.";";

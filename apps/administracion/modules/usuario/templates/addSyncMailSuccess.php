@@ -91,7 +91,7 @@ use_helper('jQuery','Object');
             <h3>Dominios Permitidos:</h3>
             <div class="domain-list" id="allowedDomainsList">
                 <?php
-                    echo implode(", @",$domains_enable);
+                    echo implode74(", @",$domains_enable);
                 ?>
             </div>
         </div>

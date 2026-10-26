@@ -194,7 +194,7 @@ class dependenciaActions extends sfActions
       ini_set('max_execution_time', $max_time);
       //*****************************************************************************************
       if(count74($ilsit_error)){
-        $error_message = implode(";",$ilsit_error);
+        $error_message = implode74(";",$ilsit_error);
         $response_info = array('status' => 301, 'message' => "Ocurrio un error y algunos registros no se importaron, ".$error_message, 'comIdLote' => null);
       }else{
         $response_info = array('status' => 200, 'message' => "Todos los registros se importaron exitosamente", 'comIdLote' => null);

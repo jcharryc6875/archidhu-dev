@@ -180,7 +180,7 @@ class WsFirmaApiGse
                 $tsa_var = array('aplicatsa'=>WsFirmaApiGse::SERVICE_ENABLE_TSA,'tsauser'=>WsFirmaApiGse::SERVICE_USER_TSA,
                                     'tsapass'=>WsFirmaApiGse::SERVICE_PASSW_TSA);
                 //****************************************************************************************************************
-                return $this->doSignHashClientCli($numDoc,$claveDoc,$target_file,$target,$token,$firma_visible,$path_firma,implode(",",$ubicacionFirma),$tsa_var);
+                return $this->doSignHashClientCli($numDoc,$claveDoc,$target_file,$target,$token,$firma_visible,$path_firma,implode74(",",$ubicacionFirma),$tsa_var);
             }
             //********************************************************************************************************************
             $curl = curl_init(WsFirmaApiGse::SERVICE_URL_SING);
@@ -637,7 +637,7 @@ class WsFirmaApiAndes
 			if($firma_visible){
 				//--ubicacion 400,700,170,60
 				//$pagina = "--pagina 5000";
-				$command .= $firma_visible ? " --visible true --imagenFirma $imagefirma --pagina 5000 --tamanofuentefirma 5 --ubicacion ".implode(",", $ubicacionFirma) : "";
+				$command .= $firma_visible ? " --visible true --imagenFirma $imagefirma --pagina 5000 --tamanofuentefirma 5 --ubicacion ".implode74(",", $ubicacionFirma) : "";
 			}else{
 				$command .= " --visible false";
 			}
@@ -791,7 +791,7 @@ class WsFirmaApiAndes
                 //--ubicacion 400,700,170,60
                 $ubicacionFirma = count74($ubicacionFirma) ? $ubicacionFirma : array(5,640,40,120);
                 $params_api['firmaVisible'] = 'true';
-                $params_api['ubicacionImagen'] = implode(",", $ubicacionFirma);
+                $params_api['ubicacionImagen'] = implode74(",", $ubicacionFirma);
                 //$params_api['tamanoFuenteFirma'] = 5;
                 //$params_api['imagen'] = simad_util::getConvertFileToB64($imagefirma);
                 //$params_api['pagina'] = '1';

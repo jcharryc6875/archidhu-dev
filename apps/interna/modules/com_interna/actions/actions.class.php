@@ -1718,12 +1718,12 @@ class com_internaActions extends sfActions
         $this->list_users = $list_users;
         $this->aprobacion_ulist = $aprob_urlist;
         $this->aprobacion_count = count74($aprob_urlist);
-        $this->destinatarios = implode(",", $usuarios_destino);
+        $this->destinatarios = implode74(",", $usuarios_destino);
         //*************************************************************************************************
         //verificar permiso firma electronica(la misma firma mecanica) para radicar
         $this->permisoRadicarFirmaElectronica = 0;
         if ($this->estadocominterna_id == 1) {
-            $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, implode(",", $usuarios_firman), 2);
+            $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, implode74(",", $usuarios_firman), 2);
         }
         //*************************************************************************************************
         $this->forward404Unless($this->com_interna);
@@ -3204,8 +3204,8 @@ class com_internaActions extends sfActions
         $matriz_data = $this->getAprobadores($this->getRequestParameter('cominterna_id'));
         $this->is_usuario_aprobador = false;
         if (count74($matriz_data) > 0) {
-            $this->aprobadores = implode(",", $matriz_data[0]) . ',';
-            $this->aprobadores_name = implode(",", $matriz_data[1]) . ',';
+            $this->aprobadores = implode74(",", $matriz_data[0]) . ',';
+            $this->aprobadores_name = implode74(",", $matriz_data[1]) . ',';
 
             if (in_array($usuariologueado, $matriz_data[0])) {
                 $this->is_usuario_aprobador = true;
@@ -4571,7 +4571,7 @@ class com_internaActions extends sfActions
     {
         if ($usuarios_id) {
             $conexion = Propel::getConnection();
-            $consulta = " DELETE FROM %s WHERE %s =" . $cominterna_id . " AND %s =" . $modulo_id . " AND USUARIO_ID NOT IN(" . implode(",", $usuarios_id) . ");";
+            $consulta = " DELETE FROM %s WHERE %s =" . $cominterna_id . " AND %s =" . $modulo_id . " AND USUARIO_ID NOT IN(" . implode74(",", $usuarios_id) . ");";
             $sql      = sprintf($consulta, ComAprobacionPeer::TABLE_NAME, ComAprobacionPeer::CONSECUTIVO_ID, ComAprobacionPeer::MODULO_ID);
             $sentencia = $conexion->prepare($sql);
             $sentencia->execute();
@@ -4817,7 +4817,7 @@ class com_internaActions extends sfActions
                     $c->addJoin(ComInternaPeer::COMINTERNA_ID, CominternaUsuarioPeer::COMINTERNA_ID);
                     $c->add(CominternaUsuarioPeer::USUARIO_ID, $usuariologuiado);
                 }
-                $this->user_id = implode(",", $arrIds);
+                $this->user_id = implode74(",", $arrIds);
             } else {
                 $c->addJoin(ComInternaPeer::COMINTERNA_ID, CominternaUsuarioPeer::COMINTERNA_ID);
             }

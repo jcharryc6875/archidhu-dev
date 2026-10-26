@@ -124,7 +124,7 @@ function end_if_javascript()
 function array_or_string_for_javascript($option)
 {
     if (is_array($option)) {
-        return "['".implode('\',\'', $option)."']";
+        return "['".implode74('\',\'', $option)."']";
     }
     if (is_string($option) && "'" != $option[0]) {
         return "'{$option}'";
@@ -151,7 +151,7 @@ function options_for_javascript($options)
     }
     sort($opts);
 
-    return '{'.implode(', ', $opts).'}';
+    return '{'.implode74(', ', $opts).'}';
 }
 
 /**

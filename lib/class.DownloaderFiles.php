@@ -453,7 +453,7 @@ class DescargadorArchivos {
                     $segmento = str_replace('%2F', '/', $segmento); // Mantener barras
                 }
             }
-            $parsed['path'] = implode('/', $segmentos);
+            $parsed['path'] = implode74('/', $segmentos);
         }
         
         // Reconstruir URL
@@ -927,7 +927,7 @@ class DescargadorArchivos {
         if (!$this->getValidFormatFile($fileName)) {
             return [
                 'success' => false,
-                'error' => 'Tipo de archivo no permitido, extensiones permitidas: ' . implode(', ', $this->extensionesPermitidas)
+                'error' => 'Tipo de archivo no permitido, extensiones permitidas: ' . implode74(', ', $this->extensionesPermitidas)
             ];
         }
         //********************************************************************************************************

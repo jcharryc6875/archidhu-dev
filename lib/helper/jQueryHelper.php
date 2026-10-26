@@ -855,5 +855,5 @@ function _options_for_javascript($options)
   }
   sort($opts);
 
-  return '{'.join(', ', $opts).'}';
+  return '{'.implode74(', ', $opts).'}';
 }

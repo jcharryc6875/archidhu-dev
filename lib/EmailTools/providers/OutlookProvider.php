@@ -479,7 +479,7 @@ class OutlookProvider extends EmailCoreProvider  {
                     
                     // Si es un array, concatenar
                     if (is_array($bodyParts)) {
-                        $body = implode("\n", $bodyParts);
+                        $body = implode74("\n", $bodyParts);
                     } else {
                         $body = $bodyParts;
                     }
@@ -495,7 +495,7 @@ class OutlookProvider extends EmailCoreProvider  {
                         $bodyParts = $message->getTextBody();
                         
                         if (is_array($bodyParts)) {
-                            $body = implode("\n", $bodyParts);
+                            $body = implode74("\n", $bodyParts);
                         } else {
                             $body = $bodyParts;
                         }
@@ -574,13 +574,13 @@ class OutlookProvider extends EmailCoreProvider  {
             // Primero intentar texto plano directo
             if ($message->hasTextBody()) {
                 $textBody = $message->getTextBody();
-                $texto = is_array($textBody) ? implode("\n", $textBody) : $textBody;
+                $texto = is_array($textBody) ? implode74("\n", $textBody) : $textBody;
             }
             
             // Si no hay texto plano, extraer de HTML
             if (empty($texto) && $message->hasHTMLBody()) {
                 $htmlBody = $message->getHTMLBody();
-                $html = is_array($htmlBody) ? implode("\n", $htmlBody) : $htmlBody;
+                $html = is_array($htmlBody) ? implode74("\n", $htmlBody) : $htmlBody;
                 
                 // Convertir HTML a texto plano
                 $texto = $this->htmlATextoPlano($html);

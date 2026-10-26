@@ -75,12 +75,12 @@
             new Chart(timelineCtx<?php echo ucfirst($prefix) ?>.getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: [<?php echo implode(',', array_map(function ($d) {
+                    labels: [<?php echo implode74(',', array_map(function ($d) {
                                     return "'" . $d['month'] . "'";
                                 }, $timelineData)) ?>],
                     datasets: [{
                             label: 'Total Instancias',
-                            data: [<?php echo implode(',', array_map(function ($d) {
+                            data: [<?php echo implode74(',', array_map(function ($d) {
                                         return $d['total'];
                                     }, $timelineData)) ?>],
                             borderColor: '#007bff',
@@ -90,7 +90,7 @@
                         },
                         {
                             label: 'Completadas',
-                            data: [<?php echo implode(',', array_map(function ($d) {
+                            data: [<?php echo implode74(',', array_map(function ($d) {
                                         return $d['completed'];
                                     }, $timelineData)) ?>],
                             borderColor: '#28a745',
@@ -100,7 +100,7 @@
                         },
                         {
                             label: 'Rechazadas',
-                            data: [<?php echo implode(',', array_map(function ($d) {
+                            data: [<?php echo implode74(',', array_map(function ($d) {
                                         return $d['rejected'];
                                     }, $timelineData)) ?>],
                             borderColor: '#dc3545',

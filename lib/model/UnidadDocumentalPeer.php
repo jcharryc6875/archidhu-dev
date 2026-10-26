@@ -674,10 +674,10 @@ class UnidadDocumentalPeer extends BaseUnidadDocumentalPeer
 				}
 			}
 			//******************************************************************************************************
-			$array_dependencia_string = implode(', ', $array_dependencia);
-			$array_serie_string = implode(', ', $array_serie);
-			$array_subserie_string = implode(', ', $array_subserie);
-			$array_udocumental_string = implode(', ', $array_udocumental);
+			$array_dependencia_string = implode74(', ', $array_dependencia);
+			$array_serie_string = implode74(', ', $array_serie);
+			$array_subserie_string = implode74(', ', $array_subserie);
+			$array_udocumental_string = implode74(', ', $array_udocumental);
 			//******************************************DIRECTORIO DE LA PLANTILLAS*********************************
 			$dir_plantilla = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR;
 			//****************************************NOMBRES DE LAS PLANTILLAS*************************************

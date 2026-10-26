@@ -212,7 +212,7 @@ class facturaActions extends sfActions
             if(trim($rptadd)){
                 //*****************************************************************************************
 				if(count74($files)){
-					$files_url = implode(",",$files);
+					$files_url = implode74(",",$files);
 					$objfactura->setRuta($objfactura->getRuta().','.$files_url);
 					$objfactura->save();
 				}
@@ -658,9 +658,9 @@ ORDER BY  ".FactUsuarioDestinoPeer::FACTURAVITACORA_ID." DESC LIMIT 1) AS UDESTI
 	}
     //******************************************************************************************
     $custom_query = $select_clause;
-    $custom_query .= implode(" ",$from_clause);    
-    $custom_query .= implode(" ",$join_cluuse);
-    $custom_query .= implode(" ",$where_cluuse);
+    $custom_query .= implode74(" ",$from_clause);    
+    $custom_query .= implode74(" ",$join_cluuse);
+    $custom_query .= implode74(" ",$where_cluuse);
     $custom_query .= $sql;
     $custom_query .= $orderby_clause;
     //******************************************************************************************
@@ -906,7 +906,7 @@ JOIN FORMA_RECEPCION FRF ON (FRF.FORMARECEPCION_ID=F.FORMARECEPCION_ID)
       $results[] = $object[0];
       //if(count($results) == $max_query || $iterator == $ilist->getRecordCount()){
 	  if(count74($results)){
-        $updc = "UPDATE %s SET  %s = $usuariologuiado WHERE %s IN (".implode(",",$results).");";
+        $updc = "UPDATE %s SET  %s = $usuariologuiado WHERE %s IN (".implode74(",",$results).");";
         $updc = sprintf($updc, FacturaPeer::TABLE_NAME, FacturaPeer::MARCA,FacturaPeer::FACTURA_ID);
         $this->row_affects += FacturaPeer::executeCustomQueryData($updc);
         $results = array();
@@ -1399,7 +1399,7 @@ JOIN FORMA_RECEPCION FRF ON (FRF.FORMARECEPCION_ID=F.FORMARECEPCION_ID)
 		}
         //************************************************************************
         if(count74($files)){
-		  $factura->setRuta($factura->getRuta().','.implode(",",$files));
+		  $factura->setRuta($factura->getRuta().','.implode74(",",$files));
         }
 	}    	
 	//********************************************************************************************
@@ -1542,7 +1542,7 @@ JOIN FORMA_RECEPCION FRF ON (FRF.FORMARECEPCION_ID=F.FORMARECEPCION_ID)
   		}
   	}
   	//*********************************************************************************************
-  	$factura->setRuta(implode(",", $newurl));
+  	$factura->setRuta(implode74(",", $newurl));
   	$factura->save();
     //*********************************************************************************************
     FacturaPeer::addAuditActionImage($factura->getPrimaryKey(),$filenamedel);

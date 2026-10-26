@@ -60,7 +60,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
 
         <div class="form-group">
           <?php
-              echo component_remitente_multiple('directorioexterno',"directorioexterno_id",array('caption'=>'Remitente<span class="ctrlreq">(**)</span>','formgroup'=>false, 'coldivwidth'=>'col-sm-7', 'class'=>'form-control input-sm requiredXorEmptySelect2 required', 'buttontitle'=>'Buscar','values'=>implode(',',$idRemitenteUser),'values_text'=>implode(',',$textRemitenteUser),'option'=>1,'maximumSelectionSize'=>1));
+              echo component_remitente_multiple('directorioexterno',"directorioexterno_id",array('caption'=>'Remitente<span class="ctrlreq">(**)</span>','formgroup'=>false, 'coldivwidth'=>'col-sm-7', 'class'=>'form-control input-sm requiredXorEmptySelect2 required', 'buttontitle'=>'Buscar','values'=>implode74(',',$idRemitenteUser),'values_text'=>implode74(',',$textRemitenteUser),'option'=>1,'maximumSelectionSize'=>1));
           ?>
           <!-- Consecutivo de Origen -->
           <label for="lbConsecutivoOrigen" class="col-sm-1 control-label">Num oficio / radicado del remitente:</label>
@@ -73,7 +73,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
 
         <div class="form-group">
           <?php
-              echo component_interesados_multiple('paraUserInt',"idUserInteresados",array('caption'=>'Interesados<span class="ctrlreq">(**)</span>', 'formgroup'=>false, 'coldivwidth'=>'col-sm-7', 'class'=>'form-control input-sm requiredXorEmptySelect2 required', 'buttontitle'=>'Buscar','values'=>implode(',',$idUserInteresados),'values_text'=>implode(',',$textUserInteresados),'option'=>1,'maximumSelectionSize'=>-1));
+              echo component_interesados_multiple('paraUserInt',"idUserInteresados",array('caption'=>'Interesados<span class="ctrlreq">(**)</span>', 'formgroup'=>false, 'coldivwidth'=>'col-sm-7', 'class'=>'form-control input-sm requiredXorEmptySelect2 required', 'buttontitle'=>'Buscar','values'=>implode74(',',$idUserInteresados),'values_text'=>implode74(',',$textUserInteresados),'option'=>1,'maximumSelectionSize'=>-1));
           ?>
           <!-- Usar Membrete -->
           <label for="lbradByInt" class="col-sm-1 control-label">Radicado por Interesado:</label>

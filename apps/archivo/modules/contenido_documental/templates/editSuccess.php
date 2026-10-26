@@ -184,7 +184,7 @@ use_helper('Object','jQuery');
 										),array('data-original-title'=>'Visualizar este adjunto', 'class' => 'tooltip-primary', 'data-toggle' => 'tooltip', 'data-placement' => 'top')
 									);
 								}
-                                echo input_hidden_tag('ruta',implode(",",$active_files));
+                                echo input_hidden_tag('ruta',implode74(",",$active_files));
                                 $json_files = json_encode($json_data);
                             ?>                          
     	             	</div>

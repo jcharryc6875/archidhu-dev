@@ -130,7 +130,7 @@ class EnviadaUsuarioPeer extends BaseEnviadaUsuarioPeer
     {
         try {
             $conexion = Propel::getConnection();
-            $consulta = "UPDATE %s set  %s = 0, %s = '" . date("Y-m-d G:i:s") . "', %s = 1 WHERE %s = " . $comenviada_id . " AND %s = " . $isAsigned . " AND %s IN (" . implode(",", $roles_ids) . ");";
+            $consulta = "UPDATE %s set  %s = 0, %s = '" . date("Y-m-d G:i:s") . "', %s = 1 WHERE %s = " . $comenviada_id . " AND %s = " . $isAsigned . " AND %s IN (" . implode74(",", $roles_ids) . ");";
             $sql      = sprintf(
                 $consulta,
                 EnviadaUsuarioPeer::TABLE_NAME,
@@ -154,7 +154,7 @@ class EnviadaUsuarioPeer extends BaseEnviadaUsuarioPeer
     {
         try {
             $conexion = Propel::getConnection();
-            $consulta = "UPDATE %s set  %s = 0, %s = '" . date("Y-m-d G:i:s") . "', %s = 1 WHERE %s = " . $comenviada_id . " AND %s IN (" . implode(",", $roles_ids) . ");";
+            $consulta = "UPDATE %s set  %s = 0, %s = '" . date("Y-m-d G:i:s") . "', %s = 1 WHERE %s = " . $comenviada_id . " AND %s IN (" . implode74(",", $roles_ids) . ");";
             $sql      = sprintf(
                 $consulta,
                 EnviadaUsuarioPeer::TABLE_NAME,
@@ -525,7 +525,7 @@ class EnviadaUsuarioPeer extends BaseEnviadaUsuarioPeer
             //*******************************************************************************************************
             $conexion = Propel::getConnection();
             $consulta = "DELETE FROM %s WHERE %s = " . $pkcom_id . " AND %s NOT IN(%s)";
-            $sql = sprintf($consulta, EnviadaUsuarioPeer::TABLE_NAME, EnviadaUsuarioPeer::COMENVIADA_ID, EnviadaUsuarioPeer::ENVIADAUSUARIO_ID, implode(",", $lcargos_current));
+            $sql = sprintf($consulta, EnviadaUsuarioPeer::TABLE_NAME, EnviadaUsuarioPeer::COMENVIADA_ID, EnviadaUsuarioPeer::ENVIADAUSUARIO_ID, implode74(",", $lcargos_current));
             $sentencia = $conexion->prepare($sql);
             $sentencia->execute();
         } catch (\Throwable $th) {

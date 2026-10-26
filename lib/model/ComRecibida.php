@@ -464,7 +464,7 @@ class ComRecibida extends BaseComRecibida
                 }
                 //****************************************************************************************
                 $list_users['firmas'] = array();
-                $list_users['copias'] = implode(",", $copias_list);
+                $list_users['copias'] = implode74(",", $copias_list);
             }
         } catch (PropelException $ex) {
             //$response_process['message'] = 'Ocurrio un error interno en el servidor';
@@ -506,7 +506,7 @@ class ComRecibida extends BaseComRecibida
             }
         }
         //******************************************************************************
-        $list_users['copias'] = implode(",", $copias_list);
+        $list_users['copias'] = implode74(",", $copias_list);
         $list_users['eventos_list'] = $evento_list;
         //******************************************************************************
         return $list_users;
@@ -1018,7 +1018,7 @@ class ComRecibida extends BaseComRecibida
             }
         }
         //********************************************************************************
-        return implode(",", $url_files);
+        return implode74(",", $url_files);
     }
 
     public function moveDigitFile($filedigit, $overwrite = false, $isFullPath = false)
@@ -1375,7 +1375,7 @@ class ComRecibida extends BaseComRecibida
             $isError = true;
         }
         //********************************************************************************
-        $this->setRuta(implode(",", $current_files));
+        $this->setRuta(implode74(",", $current_files));
         $this->save();
         //********************************************************************************
         return array('isError' => $isError, 'list_state' => $list_state);

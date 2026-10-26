@@ -135,7 +135,7 @@ EOF;
                     1,
                     $acto_administrativo->getEstadoactoadministrativoId(),
                     ActoadminEtapaBitacoraPeer::ACCION_PURGA_VERSIONES,
-                    'Depuración automática: se eliminaron ' . implode(' y ', $partes) . " por política de retención de {$dias_retencion} días."
+                    'Depuración automática: se eliminaron ' . implode74(' y ', $partes) . " por política de retención de {$dias_retencion} días."
                 );
             }
         }

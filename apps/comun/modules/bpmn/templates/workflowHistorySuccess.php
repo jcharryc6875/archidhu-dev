@@ -43,7 +43,7 @@ function formatDurationHelper($seconds)
     if ($days > 0) $parts[] = $days . 'd';
     if ($hours > 0) $parts[] = $hours . 'h';
     if ($mins > 0) $parts[] = $mins . 'm';
-    return implode(' ', $parts) ?: '< 1m';
+    return implode74(' ', $parts) ?: '< 1m';
 }
 
 ?>

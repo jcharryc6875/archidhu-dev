@@ -399,7 +399,7 @@ class BpmnEmailService
             if ($diff->d > 0) $parts[] = $diff->d . ' días';
             if ($diff->h > 0) $parts[] = $diff->h . ' horas';
             if ($diff->i > 0) $parts[] = $diff->i . ' minutos';
-            $duration = implode(', ', $parts) ?: 'Menos de 1 minuto';
+            $duration = implode74(', ', $parts) ?: 'Menos de 1 minuto';
         }
 
         $html = '

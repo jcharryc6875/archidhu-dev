@@ -68,7 +68,7 @@ class VeraPDFWrapper
             }else{
                 exec($command, $output, $return_code);
                 //Unir la salida en una sola cadena
-                $output_text = implode("\n", $output);
+                $output_text = implode74("\n", $output);
 
                 // Verificar si el comando falló
                 if ($return_code !== 0 && $return_code !== 1) {

@@ -135,7 +135,7 @@ use_helper('Object','jQuery');
                 <div class="col-sm-4"><p><strong>Rol Comunicaciones:</strong></p></div>
                 <div class="col-sm-8">
                     <p>
-                        <?php echo implode(",",$rolCom); ?>
+                        <?php echo implode74(",",$rolCom); ?>
                     </p>
                 </div>
             </div>						
@@ -149,7 +149,7 @@ use_helper('Object','jQuery');
                 <div class="col-sm-4"><p><strong>Perfiles:</strong></p></div>
                 <div class="col-sm-8">
                     <p>
-                        <?php echo implode(",",$perfiles_usuario); ?>
+                        <?php echo implode74(",",$perfiles_usuario); ?>
                     </p>
                 </div>
             </div>						

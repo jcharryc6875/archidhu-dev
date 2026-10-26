@@ -49,6 +49,7 @@ Thumbs.db
 # Configuración e instrucciones de Claude AI
 .claude/
 CLAUDE.md
+php82-count-fix.php
 
 # Archivos comprimidos
 *.zip

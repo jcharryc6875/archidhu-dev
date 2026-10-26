@@ -45,7 +45,7 @@ class ComEnviadaPeer extends BaseComEnviadaPeer
             return false;
         } 
         //********************************************************************
-        $str_encrypt = implode("",$dstorage);
+        $str_encrypt = implode74("",$dstorage);
         $hashLog = hash('sha256', $str_encrypt);
         
         return $hashLog;
@@ -610,7 +610,7 @@ class ComEnviadaPeer extends BaseComEnviadaPeer
             if(!count74($arr_users)){ return false; }
             //*********************************************************************************************
             $conexion = Propel::getConnection();
-            $consulta = "DELETE FROM %s WHERE %s =".$comenviada_id." AND %s NOT IN(".implode(",",$arr_users).") AND %s <> 1";
+            $consulta = "DELETE FROM %s WHERE %s =".$comenviada_id." AND %s NOT IN(".implode74(",",$arr_users).") AND %s <> 1";
             $sql      = sprintf($consulta,EnviadaUsuarioPeer::TABLE_NAME,EnviadaUsuarioPeer::COMENVIADA_ID,EnviadaUsuarioPeer::USUARIO_ID,EnviadaUsuarioPeer::FIRMA_APRUEBA);
             $sentencia = $conexion->prepare($sql);
             $sentencia->execute();
@@ -735,7 +735,7 @@ class ComEnviadaPeer extends BaseComEnviadaPeer
                         $list_com[] = $object[0];
                     }
                     //**********************************************************************                    
-                    $results = count74($list_com) ? implode(",",$list_com) : 0;
+                    $results = count74($list_com) ? implode74(",",$list_com) : 0;
                 }else{
                     $results = ComEnviadaPeer::doCount($c);
                 }

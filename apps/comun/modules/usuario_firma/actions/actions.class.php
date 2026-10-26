@@ -72,9 +72,9 @@ class usuario_firmaActions extends sfActions
       $term_list[] = array("cid" => $list_data[1], "id" => $list_data[0], "text" => utf8_encode($nombre_cargo), "img" => $img);
     }
     //************************************************************************************************/
-    $main_data['id'] = implode(",", $users_ids);
-    $main_data['cid'] = implode(",", $cusers_ids);
-    $main_data['utext'] = implode(",", $users_text);
+    $main_data['id'] = implode74(",", $users_ids);
+    $main_data['cid'] = implode74(",", $cusers_ids);
+    $main_data['utext'] = implode74(",", $users_text);
     $data_json = json_encode($term_list);
     //************************************************************************************************/
     $this->getResponse()->setContentType('application/json');

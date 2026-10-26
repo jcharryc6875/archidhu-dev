@@ -99,7 +99,7 @@ use_helper('jQuery');
 								foreach($descarte_asignado as  $descarte_por_subserie){
 									$all_descartes[] = $descarte_por_subserie->getDescarteFinalSubserie();
 								} 
-								echo implode(",",$all_descartes);
+								echo implode74(",",$all_descartes);
 								?>                        
 							</p>
 						</div>

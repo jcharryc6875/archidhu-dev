@@ -244,7 +244,7 @@ class IMAPProvider extends EmailCoreProvider {
             }
         }
         
-        return trim(implode("\n", $cleanLines));
+        return trim(implode74("\n", $cleanLines));
     }
 
     // Función para detectar headers MIME
@@ -400,7 +400,7 @@ class IMAPProvider extends EmailCoreProvider {
             }
         }
         
-        $result = implode("\n", $cleanLines);
+        $result = implode74("\n", $cleanLines);
         
         // Si el resultado está muy vacío, usar limpieza básica
         if (strlen(trim(strip_tags($result))) < 20) {
@@ -461,7 +461,7 @@ class IMAPProvider extends EmailCoreProvider {
             }
         }
         
-        $result = implode("\n", $cleanLines);
+        $result = implode74("\n", $cleanLines);
         
         // Si aún no tenemos tags HTML, envolver el contenido
         if (stripos($result, '<html') === false && stripos($result, '<body') === false) {

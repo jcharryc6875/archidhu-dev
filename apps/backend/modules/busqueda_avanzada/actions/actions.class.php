@@ -397,7 +397,7 @@ class busqueda_avanzadaActions extends sfActions
 			http_response_code(400);
 			exit();
 		}
-		$this->string_resultado = implode(';', $checkSelected);
+		$this->string_resultado = implode74(';', $checkSelected);
 		$this->usuario_reporte_id = !empty($this->getRequestParameter('usuario_reporte_id')) ? trim($this->getRequestParameter('usuario_reporte_id')) : null;
 	}
 

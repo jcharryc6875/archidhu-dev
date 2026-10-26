@@ -2770,7 +2770,7 @@ class bpmnActions extends sfActions
 
             // Guardar usuarios asignados
             if (isset($config['assignee_users']) && is_array($config['assignee_users'])) {
-                $taskConfig->setAssigneeUsers(implode(',', $config['assignee_users']));
+                $taskConfig->setAssigneeUsers(implode74(',', $config['assignee_users']));
             }
 
             // Guardar variables personalizadas

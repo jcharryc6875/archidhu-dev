@@ -148,7 +148,7 @@ class DirectorioExternoPeer extends BaseDirectorioExternoPeer
         if(!trim($fields['CIUDAD'])){ $msgerror[] =  "El nombre de la ciudad del remitente es un campo obligatorio"; }
         if(!trim($fields['TIPO_IDENTIFICACION'])){ $msgerror[] =  "El tipo de identifiación del remitente es un campo obligatorio"; }
         //************************************************************************************
-        return array('IsValid' => (!count74($msgerror) ? true : false), 'MsgError' => implode(";", $msgerror));
+        return array('IsValid' => (!count74($msgerror) ? true : false), 'MsgError' => implode74(";", $msgerror));
         //return array('IsValid' => (!count($msgerror) ? true : false), 'MsgError' => 'Error en info del remitente');
     }
 }

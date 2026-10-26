@@ -19,7 +19,7 @@
     		echo "</select>";
             echo '</div>';
             echo '</div>';
-            echo input_hidden_tag('allusuarios_id',implode(",",$usuarios_id_transicion));
+            echo input_hidden_tag('allusuarios_id',implode74(",",$usuarios_id_transicion));
         }
     }
     

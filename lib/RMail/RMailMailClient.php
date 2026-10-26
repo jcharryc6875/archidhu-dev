@@ -272,7 +272,7 @@ class RMailMailClient
 
         $payload = [
             'From'        => $message->from,
-            'To'          => implode(',', $message->to),
+            'To'          => implode74(',', $message->to),
             'Subject'     => $message->subject,
             'Body'        => $message->body,
             'Options'     => $options,
@@ -280,11 +280,11 @@ class RMailMailClient
         ];
 
         if (!empty($message->cc)) {
-            $payload['Cc'] = implode(',', $message->cc);
+            $payload['Cc'] = implode74(',', $message->cc);
         }
 
         if (!empty($message->bcc)) {
-            $payload['Bcc'] = implode(',', $message->bcc);
+            $payload['Bcc'] = implode74(',', $message->bcc);
         }
 
         if (!empty($message->attachments)) {

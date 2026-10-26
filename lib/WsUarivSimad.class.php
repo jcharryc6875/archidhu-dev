@@ -2079,8 +2079,8 @@ class WsSimadUariv
 		}
 		//*********************************************************************************************
 		$response_data['httpStatus'] = $count_error > 0 ? 400 : 200;
-		$str_firmados = implode(",", $radicado_list);
-		$str_no_firmados = implode(",", $radicado_error);
+		$str_firmados = implode74(",", $radicado_list);
+		$str_no_firmados = implode74(",", $radicado_error);
 		$response_data['message'] = $count_error > 0 ? "Algunas comunicaciones no se pudieron firmar, $str_no_firmados, por favor validar los radicados" : "Todas las comunicaciones se firmaron, $str_firmados";
 		//************************************************************************************************************************
 		return true;
@@ -2127,7 +2127,7 @@ class WsSimadUariv
 					}
 				}
 				//***********************************************************************
-				$email_interesado = implode(";", $coll_emailinteresados);
+				$email_interesado = implode74(";", $coll_emailinteresados);
 				$dependencia_id = $com_enviada->getDependenciaId();
 				$usuario_firma = EnviadaUsuarioPeer::getUserComByRol($com_enviada->getPrimaryKey(), 2);
 				//$userorigen_id = $usuario_firma->getUsuario()->getUsuarioId();
@@ -2195,8 +2195,8 @@ class WsSimadUariv
 		}
 		//*********************************************************************************************
 		$response_data['httpStatus'] = $count_error > 0 ? 400 : 200;
-		$str_firmados = implode(",", $radicado_list);
-		$str_no_firmados = implode(",", $radicado_error);
+		$str_firmados = implode74(",", $radicado_list);
+		$str_no_firmados = implode74(",", $radicado_error);
 		$response_data['message'] = $count_error > 0 ? "Algunas comunicaciones no se pudieron firmar, $str_no_firmados, por favor validar los radicados" : "Todas las comunicaciones se firmaron, $str_firmados";
 		//************************************************************************************************************************
 		return true;

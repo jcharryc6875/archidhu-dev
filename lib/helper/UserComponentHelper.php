@@ -238,7 +238,7 @@ function component_upload_file($options = array(), $values_text = "", $stored_in
     $int_maxupload = preg_replace('/[^0-9]/', '', $max_upload);
     //***************************************************************************************
     $html = '
-    <input type="hidden" id="' . $stored_input . '" name="' . $stored_input . '" value="' . implode(",", $values_text) . '" />
+    <input type="hidden" id="' . $stored_input . '" name="' . $stored_input . '" value="' . implode74(",", $values_text) . '" />
     <div class="dropzone dz-clickable dz-default dz-file-preview" id="' . $element_id . '" multiple="multiple" >
         <div class="dz-message">
             <h2><i class="glyphicon glyphicon-cloud-upload"></i><br/>Arrastre archivos aqui!</h2>o haga clic para seleccionar (' . $max_upload . ')

@@ -100,24 +100,24 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
         <div class="form-group">
           <?php
           $class_required = count74($destinatariosIds) <= 0 ? " requiredXorMaxOneSelect2 required" : " requiredXorMaxOneSelect2";
-          echo input_hidden_tag('idUserInteresados', implode(",", $intesadosIds));
-          echo component_interesados_multiple('paraUserInt', "idUserInteresados", array('class' => 'form-control input-sm composer-group vinlinescomint' . $class_required, 'placeholder' => 'Digite interesado(s)', 'caption' => 'Interesados<span class="ctrlreq">(**)</span>', 'formgroup' => false, 'coldivwidth' => 'col-sm-10', 'buttontitle' => 'Buscar Interesado', 'values' => implode(",", $intesadosIds), 'values_text' => implode(",", $intesadosNames), 'option' => 1, 'maximumSelectionSize' => -1));
+          echo input_hidden_tag('idUserInteresados', implode74(",", $intesadosIds));
+          echo component_interesados_multiple('paraUserInt', "idUserInteresados", array('class' => 'form-control input-sm composer-group vinlinescomint' . $class_required, 'placeholder' => 'Digite interesado(s)', 'caption' => 'Interesados<span class="ctrlreq">(**)</span>', 'formgroup' => false, 'coldivwidth' => 'col-sm-10', 'buttontitle' => 'Buscar Interesado', 'values' => implode74(",", $intesadosIds), 'values_text' => implode74(",", $intesadosNames), 'option' => 1, 'maximumSelectionSize' => -1));
           ?>
         </div>
 
         <div class="form-group">
           <?php
           $class_required = count74($intesadosIds) <= 0 ? " requiredXorMaxOneSelect2 required" : " requiredXorMaxOneSelect2";
-          echo input_hidden_tag('destinatariosIds', implode(",", $destinatariosIds));
-          echo input_hidden_tag('cargousuarioIdDestinos', implode(",", $cargousuarioIdDestinos));
-          echo component_user_multiple('paraUserDestinos', "destinatariosIds", "cargousuarioIdDestinos", array('class' => 'form-control input-sm sl strdestcom' . $class_required, 'url' => 'usuario_firma/selectUserSearching', 'formgroup' => false, 'placeholder' => 'Seleccione usuario destino del acto administrativo', 'caption' => 'Destinario<span class="ctrlreq">(**)</span>', 'coldivwidth' => 'col-sm-10', 'buttontitle' => 'Asignar Destinatario', 'values' => implode(",", $destinatariosIds), 'values_text' => implode(",", $udestinarios_names), 'values_cuid' => implode(",", $cargousuarioIdDestinos), 'option' => 1, 'maximumSelectionSize' => 1));
+          echo input_hidden_tag('destinatariosIds', implode74(",", $destinatariosIds));
+          echo input_hidden_tag('cargousuarioIdDestinos', implode74(",", $cargousuarioIdDestinos));
+          echo component_user_multiple('paraUserDestinos', "destinatariosIds", "cargousuarioIdDestinos", array('class' => 'form-control input-sm sl strdestcom' . $class_required, 'url' => 'usuario_firma/selectUserSearching', 'formgroup' => false, 'placeholder' => 'Seleccione usuario destino del acto administrativo', 'caption' => 'Destinario<span class="ctrlreq">(**)</span>', 'coldivwidth' => 'col-sm-10', 'buttontitle' => 'Asignar Destinatario', 'values' => implode74(",", $destinatariosIds), 'values_text' => implode74(",", $udestinarios_names), 'values_cuid' => implode74(",", $cargousuarioIdDestinos), 'option' => 1, 'maximumSelectionSize' => 1));
           ?>
         </div>
 
         <?php
-        echo input_hidden_tag('copiaInternaId', implode(",", $copiaInternaId));
-        echo input_hidden_tag('cargousuarioIdCopias', implode(",", $cargousuarioIdCopias));
-        echo component_user_multiple('copiaUser', "copiaInternaId", "cargousuarioIdCopias", array('url' => 'usuario_firma/selectUserSearching', 'caption' => 'Copias Internas', 'buttontitle' => 'Asignar Copias', 'values' => implode(",", $copiaInternaId), 'values_text' => implode(",", $copiaInternaName), 'values_cuid' => implode(",", $cargousuarioIdCopias), 'option' => 1, 'maximumSelectionSize' => -1));
+        echo input_hidden_tag('copiaInternaId', implode74(",", $copiaInternaId));
+        echo input_hidden_tag('cargousuarioIdCopias', implode74(",", $cargousuarioIdCopias));
+        echo component_user_multiple('copiaUser', "copiaInternaId", "cargousuarioIdCopias", array('url' => 'usuario_firma/selectUserSearching', 'caption' => 'Copias Internas', 'buttontitle' => 'Asignar Copias', 'values' => implode74(",", $copiaInternaId), 'values_text' => implode74(",", $copiaInternaName), 'values_cuid' => implode74(",", $cargousuarioIdCopias), 'option' => 1, 'maximumSelectionSize' => -1));
         ?>
 
         <div class="form-group">
@@ -288,7 +288,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
                 }
               }
             }
-            echo input_hidden_tag('ruta', implode(",", $active_files));
+            echo input_hidden_tag('ruta', implode74(",", $active_files));
             $json_files = json_encode($json_data);
             ?>
           </div>
@@ -337,21 +337,21 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
 
         <?php
         $autfirma = $permisoFirmaOtroAutorizado ? 1 : 0;
-        echo input_hidden_tag('firmanteId', implode(",", $usuarios_firman));
-        echo input_hidden_tag('cargousuarioIdFirma', implode(",", $cargousuarioIdFirma));
-        echo component_user_multiple('firmaUser', "firmanteId", "cargousuarioIdFirma", array('class' => 'form-control input-sm sl required', 'url' => 'usuario_firma/selectUserSearching', 'bytipoprocesocom' => 5, 'modulo_id' => 4, 'autfirma' => $autfirma, 'caption' => 'Firma(s)<span class="ctrlreq">(*)</span>', 'coldivwidth' => 'col-sm-10', 'buttontitle' => 'Asignar Firma', 'values' => implode(",", $usuarios_firman), 'values_text' => implode(",", $ufirman_names), 'values_cuid' => implode(",", $cargousuarioIdFirma), 'option' => 1, 'maximumSelectionSize' => -1));
+        echo input_hidden_tag('firmanteId', implode74(",", $usuarios_firman));
+        echo input_hidden_tag('cargousuarioIdFirma', implode74(",", $cargousuarioIdFirma));
+        echo component_user_multiple('firmaUser', "firmanteId", "cargousuarioIdFirma", array('class' => 'form-control input-sm sl required', 'url' => 'usuario_firma/selectUserSearching', 'bytipoprocesocom' => 5, 'modulo_id' => 4, 'autfirma' => $autfirma, 'caption' => 'Firma(s)<span class="ctrlreq">(*)</span>', 'coldivwidth' => 'col-sm-10', 'buttontitle' => 'Asignar Firma', 'values' => implode74(",", $usuarios_firman), 'values_text' => implode74(",", $ufirman_names), 'values_cuid' => implode74(",", $cargousuarioIdFirma), 'option' => 1, 'maximumSelectionSize' => -1));
         ?>
 
         <?php
-        echo input_hidden_tag('gestorUserId', implode(",", $gestorUserId));
-        echo input_hidden_tag('cargousuarioIdGestor', implode(",", $cargousuarioIdGestor));
-        echo component_user_multiple('gestorUserText', "gestorUserId", "cargousuarioIdGestor", array('url' => 'usuario_firma/selectUserSearching', 'bytipoprocesocom' => 3, 'caption' => 'Gestor', 'buttontitle' => 'Buscar', 'coldivwidth' => 'col-sm-10', 'values' => implode(",", $gestorUserId), 'values_text' => implode(",", $gestor_name), 'values_cuid' => implode(",", $cargousuarioIdGestor), 'option' => 1, 'maximumSelectionSize' => -1));
+        echo input_hidden_tag('gestorUserId', implode74(",", $gestorUserId));
+        echo input_hidden_tag('cargousuarioIdGestor', implode74(",", $cargousuarioIdGestor));
+        echo component_user_multiple('gestorUserText', "gestorUserId", "cargousuarioIdGestor", array('url' => 'usuario_firma/selectUserSearching', 'bytipoprocesocom' => 3, 'caption' => 'Gestor', 'buttontitle' => 'Buscar', 'coldivwidth' => 'col-sm-10', 'values' => implode74(",", $gestorUserId), 'values_text' => implode74(",", $gestor_name), 'values_cuid' => implode74(",", $cargousuarioIdGestor), 'option' => 1, 'maximumSelectionSize' => -1));
         ?>
 
         <?php
-        echo input_hidden_tag('revisorUserId', implode(",", $revisorUserId));
-        echo input_hidden_tag('cargousuarioIdRevisor', implode(",", $cargousuarioIdRevisor));
-        echo component_user_multiple('revisorUserText', "revisorUserId", "cargousuarioIdRevisor", array('url' => 'usuario_firma/selectUserSearching', 'bytipoprocesocom' => 4, 'caption' => 'Revisor', 'buttontitle' => 'Buscar', 'coldivwidth' => 'col-sm-10', 'values' => implode(",", $revisorUserId), 'values_text' => implode(",", $revisor_name), 'values_cuid' => implode(",", $cargousuarioIdRevisor), 'option' => 1, 'maximumSelectionSize' => -1));
+        echo input_hidden_tag('revisorUserId', implode74(",", $revisorUserId));
+        echo input_hidden_tag('cargousuarioIdRevisor', implode74(",", $cargousuarioIdRevisor));
+        echo component_user_multiple('revisorUserText', "revisorUserId", "cargousuarioIdRevisor", array('url' => 'usuario_firma/selectUserSearching', 'bytipoprocesocom' => 4, 'caption' => 'Revisor', 'buttontitle' => 'Buscar', 'coldivwidth' => 'col-sm-10', 'values' => implode74(",", $revisorUserId), 'values_text' => implode74(",", $revisor_name), 'values_cuid' => implode74(",", $cargousuarioIdRevisor), 'option' => 1, 'maximumSelectionSize' => -1));
         ?>
 
         <?php if (1 != 1) { ?>

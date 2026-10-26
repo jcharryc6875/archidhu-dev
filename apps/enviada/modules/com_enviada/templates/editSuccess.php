@@ -44,7 +44,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
           echo input_hidden_tag('directorioexterno_id',$destinatario);
           echo input_hidden_tag('copiasDirectorioexterno_id',$copiasDestinatarios);
           echo input_hidden_tag('copiaInternaId',$copiaInterna);//copiasUsuarioId
-          echo input_hidden_tag('firmanteId',implode(",",$usuarios_firman));//firmasUsuarioId;
+          echo input_hidden_tag('firmanteId',implode74(",",$usuarios_firman));//firmasUsuarioId;
           echo input_hidden_tag('cargousuarioIdCopias',$cargousuarioIdCopias);
           echo input_hidden_tag('cargousuarioIdFirma',$cargousuarioIdFirma);
           echo input_hidden_tag('aprobadoresId',$aprobadores);//aprobadores;
@@ -341,7 +341,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
                         }
                     }
                 }
-                echo input_hidden_tag('ruta',implode(",",$active_files));
+                echo input_hidden_tag('ruta',implode74(",",$active_files));
                 $json_files = json_encode($json_data);
             ?>
           </div>

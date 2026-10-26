@@ -65,7 +65,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
     {
         try {
             $conexion = Propel::getConnection();
-            $consulta = "UPDATE %s set  %s = 0, %s = '".date("Y-m-d G:i:s")."', %s = 1 WHERE %s = ".$objectpk_id." AND %s IN (".implode(",",$roles_ids).");";
+            $consulta = "UPDATE %s set  %s = 0, %s = '".date("Y-m-d G:i:s")."', %s = 1 WHERE %s = ".$objectpk_id." AND %s IN (".implode74(",",$roles_ids).");";
             $sql = sprintf($consulta, ActoadministrativoUsuarioPeer::TABLE_NAME, ActoadministrativoUsuarioPeer::ESTA_ASIGNADA,ActoadministrativoUsuarioPeer::FECHA_APROBACION,
                     ActoadministrativoUsuarioPeer::ESTA_APROBADO,ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID);
             $sentencia = $conexion->prepare($sql);
@@ -84,7 +84,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
     {
         try {
             $conexion = Propel::getConnection();
-            $consulta = "UPDATE %s set  %s = 0, %s = '".date("Y-m-d G:i:s")."', %s = 1 WHERE %s = ".$objectpk_id." AND %s = ".$usuario_id." AND %s IN (".implode(",",$roles_ids).");";
+            $consulta = "UPDATE %s set  %s = 0, %s = '".date("Y-m-d G:i:s")."', %s = 1 WHERE %s = ".$objectpk_id." AND %s = ".$usuario_id." AND %s IN (".implode74(",",$roles_ids).");";
             $sql = sprintf($consulta, ActoadministrativoUsuarioPeer::TABLE_NAME, ActoadministrativoUsuarioPeer::ESTA_ASIGNADA,ActoadministrativoUsuarioPeer::FECHA_APROBACION,
                     ActoadministrativoUsuarioPeer::ESTA_APROBADO,ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,ActoadministrativoUsuarioPeer::USUARIO_ID,
                     ActoadministrativoUsuarioPeer::ROLUSUARIOACTOADMINISTVO_ID);
@@ -653,7 +653,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             //*******************************************************************************************************
             $conexion = Propel::getConnection();
             $consulta = "DELETE FROM %s WHERE %s = ".$pkcom_id." AND %s NOT IN(%s)";
-            $sql = sprintf($consulta,ActoadministrativoUsuarioPeer::TABLE_NAME,ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVOUSUARIO_ID,implode(",",$lcargos_current));
+            $sql = sprintf($consulta,ActoadministrativoUsuarioPeer::TABLE_NAME,ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVO_ID,ActoadministrativoUsuarioPeer::ACTOADMINISTRATIVOUSUARIO_ID,implode74(",",$lcargos_current));
             $sentencia = $conexion->prepare($sql);
             $sentencia->execute();
         } catch (PropelException $th) {
@@ -826,7 +826,7 @@ class ActoAdministrativoPeer extends BaseActoAdministrativoPeer
             return false;
         } 
         //********************************************************************
-        $str_encrypt = implode("",$dstorage);
+        $str_encrypt = implode74("",$dstorage);
         $hashLog = hash('sha256', $str_encrypt);
         
         return $hashLog;

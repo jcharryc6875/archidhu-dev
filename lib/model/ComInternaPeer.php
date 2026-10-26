@@ -548,7 +548,7 @@ class ComInternaPeer extends BaseComInternaPeer
             return false;
         }
         //********************************************************************
-        $str_encrypt = implode("", $dstorage);
+        $str_encrypt = implode74("", $dstorage);
         $hashLog = hash('sha256', $str_encrypt);
 
         return $hashLog;

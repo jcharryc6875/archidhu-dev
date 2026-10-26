@@ -107,7 +107,7 @@ class ZipAppendWriter
 		fwrite($this->handle, self::localHeader($name, $mtime, $crc, $size));
 		fseek($this->handle, 0, SEEK_END);
 		list($time, $date) = self::dosTime($mtime);
-		$line = implode("\t", array(base64_encode($name), $crc, $size, $offset, $time, $date)) . "\n";
+		$line = implode74("\t", array(base64_encode($name), $crc, $size, $offset, $time, $date)) . "\n";
 		return file_put_contents($this->dir . DIRECTORY_SEPARATOR . self::INDEX_FILE, $line, FILE_APPEND) !== false;
 	}
 

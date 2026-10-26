@@ -236,9 +236,9 @@ class servicioActions extends sfActions
             $htmlCuerpo .= '<tr><th style="height:80px; font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.$servicio->getPrimaryKey().'</th>';
             $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.$servicio->getRadicado().'</td>';
             $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.$servicio->getUsuario()->getFullNombre().'</td>';
-            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;">'.(count74($destinatario) ? implode(";",$destinatario) : "&nbsp;").'</td>';
-            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;">'.(count74($direccion) ? implode(";",$direccion) : "&nbsp;").'</td>';
-            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.(count74($ciudad_text) ? implode(";",$ciudad_text) : "&nbsp;").'</td>';
+            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;">'.(count74($destinatario) ? implode74(";",$destinatario) : "&nbsp;").'</td>';
+            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;">'.(count74($direccion) ? implode74(";",$direccion) : "&nbsp;").'</td>';
+            $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.(count74($ciudad_text) ? implode74(";",$ciudad_text) : "&nbsp;").'</td>';
             $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-right: none;border-top: none;" align="center">'.($servicio->getTipoServicio()->getDescripcion()).'</td>';
             $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-top: none;">'.($servicio->getDetalle()).' => Fecha_Solicitud => '.substr($servicio->getFechaCreacion(),0,10).'</td>';
             $htmlCuerpo .= '<td style="font-size:7.0pt;border:solid windowtext 1.0pt; border-left: none;border-top: none;">&nbsp;</td>';
@@ -1032,8 +1032,8 @@ class servicioActions extends sfActions
                     $list_emails[] =  $interesado->getInteresados()->getEmail();
                 }
                 //***********************************************************************************
-                $this->intesadosIds = implode(",",$list_inteIds);
-                $this->intesadosNames = implode(",",$list_names);
+                $this->intesadosIds = implode74(",",$list_inteIds);
+                $this->intesadosNames = implode74(",",$list_names);
                 $this->viewCheckInters = count74($list_inteIds) > 1 ? true : false;
 				$this->tipo_envio = 0;
                 //**********************************************************************************
@@ -1063,9 +1063,9 @@ class servicioActions extends sfActions
                     $list_emails[] =  $interesado->getInteresados()->getEmail();
                 }
                 //*************************************************************************************
-                $this->intesadosIds = implode(",",$list_inteIds);
-                $this->intesadosNames = implode(",",$list_names);
-                $this->intesadosEmails = implode(";",$list_emails);
+                $this->intesadosIds = implode74(",",$list_inteIds);
+                $this->intesadosNames = implode74(",",$list_names);
+                $this->intesadosEmails = implode74(";",$list_emails);
                 $this->viewCheckInters = count74($list_inteIds) > 1 ? true : false;
 				$this->servicio = $com_enviada;
 				$this->tipo_envio = $com_enviada->getTipoEnvio();
@@ -1089,9 +1089,9 @@ class servicioActions extends sfActions
                     $list_emails[] =  $interesado->getInteresados()->getEmail();
                 }
                 //*************************************************************************************
-                $this->intesadosIds = implode(",",$list_inteIds);
-                $this->intesadosNames = implode(",",$list_names);
-                $this->intesadosEmails = implode(";",$list_emails);
+                $this->intesadosIds = implode74(",",$list_inteIds);
+                $this->intesadosNames = implode74(",",$list_names);
+                $this->intesadosEmails = implode74(";",$list_emails);
                 $this->viewCheckInters = count74($list_inteIds) > 1 ? true : false;
                 $this->servicio = $acto_administrativo;
                 //*************************************************************************************

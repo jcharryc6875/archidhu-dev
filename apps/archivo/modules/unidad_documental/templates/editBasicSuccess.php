@@ -123,8 +123,8 @@ $cantidad_registros=0;
         </div>
                 
         <?php
-            echo input_hidden_tag('idUserInteresados',implode(",",$pkInteresados));
-            echo component_interesados_multiple('paraUserInt',"idUserInteresados",array('toptext' =>true,'placeholder'=>'Digite interesado(s)', 'caption'=>'Interesados', 'formgroup'=>false, 'coldivwidth'=>'col-sm-10', 'class'=>'form-control input-sm composer-group', 'buttontitle'=>'Buscar','values'=>implode(",",$pkInteresados),'values_text'=>$namesInteresados,'option'=>1,'maximumSelectionSize'=>-1));
+            echo input_hidden_tag('idUserInteresados',implode74(",",$pkInteresados));
+            echo component_interesados_multiple('paraUserInt',"idUserInteresados",array('toptext' =>true,'placeholder'=>'Digite interesado(s)', 'caption'=>'Interesados', 'formgroup'=>false, 'coldivwidth'=>'col-sm-10', 'class'=>'form-control input-sm composer-group', 'buttontitle'=>'Buscar','values'=>implode74(",",$pkInteresados),'values_text'=>$namesInteresados,'option'=>1,'maximumSelectionSize'=>-1));
         ?>
 
         <div class="row">

@@ -268,7 +268,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
                 }
               }
             }
-            echo input_hidden_tag('ruta', implode(",", $active_files));
+            echo input_hidden_tag('ruta', implode74(",", $active_files));
             $json_files = json_encode($json_data);
             ?>
           </div>

@@ -68,7 +68,7 @@ class ActoadministraInteresadoPeer extends BaseActoadministraInteresadoPeer
             $conexion = Propel::getConnection();
             //***************************************************************************************
             if(count74($listpkinteresados)){
-                $query = "DELETE %s WHERE  %s NOT IN( ".implode(",",$listpkinteresados).") AND %s = ".$pkobject;
+                $query = "DELETE %s WHERE  %s NOT IN( ".implode74(",",$listpkinteresados).") AND %s = ".$pkobject;
             }else{
                 $query = "DELETE %s WHERE  %s NOT IN(-1) AND %s = ".$pkobject;
             }

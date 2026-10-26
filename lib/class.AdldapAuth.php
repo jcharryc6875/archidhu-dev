@@ -106,7 +106,7 @@ class AdldapAuth
             "[%s] %s | Host: %s | Error: %s | Trace: %s\n",
             date('Y-m-d H:i:s'),
             $mensaje,
-            implode(',', $this->config['hosts'] ?? ['N/A']),
+            implode74(',', $this->config['hosts'] ?? ['N/A']),
             $e->getMessage(),
             $e->getTraceAsString()
         );

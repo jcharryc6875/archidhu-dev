@@ -141,7 +141,7 @@ $wdg = new wf_widgets();
                                             <p><strong>Remitente(s):</strong></p>
                                         </div>
                                         <div class="col-sm-8">
-                                            <p><?php echo implode(",", $firmantes_name); ?></p>
+                                            <p><?php echo implode74(",", $firmantes_name); ?></p>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -323,7 +323,7 @@ $wdg = new wf_widgets();
                                                 <p><strong>Copia Para:</strong></p>
                                             </div>
                                             <div class="col-sm-7">
-                                                <p><?php echo implode(",", $usuarios_copia) ?></p>
+                                                <p><?php echo implode74(",", $usuarios_copia) ?></p>
                                             </div>
                                         </div>
                                     </div>

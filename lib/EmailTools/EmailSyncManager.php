@@ -231,7 +231,7 @@ class MessageProcessor
         foreach ($addresses as $address) {
             $formatted[] = $address->mail . ($address->personal ? " ({$address->personal})" : '');
         }
-        return implode(', ', $formatted);
+        return implode74(', ', $formatted);
     }
     
     private function extractBody($message) 

@@ -62,7 +62,7 @@ class ServicioInteresadosPeer extends BaseServicioInteresadosPeer
 	{
         try{
             $conexion = Propel::getConnection();
-            $query = "DELETE %s WHERE  %s NOT IN( ".implode(",",$listpkinteresados).") AND %s = ".$pkcom;
+            $query = "DELETE %s WHERE  %s NOT IN( ".implode74(",",$listpkinteresados).") AND %s = ".$pkcom;
             $query = sprintf($query, ServicioInteresadosPeer::TABLE_NAME, ServicioInteresadosPeer::INTERESADO_ID, ServicioInteresadosPeer::SERVICIO_ID);
             $sentencia = $conexion->prepare($query);
             $sentencia->execute();

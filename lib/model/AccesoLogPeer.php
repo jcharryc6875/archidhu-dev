@@ -70,7 +70,7 @@ class AccesoLogPeer extends BaseAccesoLogPeer
             $msg_error = $ex->getMessage();       
         }
         //********************************************************************
-        $str_encrypt = implode("",$dstorage);
+        $str_encrypt = implode74("",$dstorage);
         $hashLog = hash('sha256', $str_encrypt);
         $access_log->setHashLog($hashLog);
         $access_log->save();

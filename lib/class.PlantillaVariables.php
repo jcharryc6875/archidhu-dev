@@ -103,7 +103,7 @@ class PlantillaVariables
         }, $desconocidas);
 
         return 'El documento Word tiene etiquetas que no corresponden a las variables del sistema: '
-            . implode(', ', $etiquetas) . '. Corríjalas y vuelva a cargarlo.';
+            . implode74(', ', $etiquetas) . '. Corríjalas y vuelva a cargarlo.';
     }
 
     private static function cargar(): array

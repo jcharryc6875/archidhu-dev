@@ -41,7 +41,7 @@ class ContenidoUnidadDocumental extends BaseContenidoUnidadDocumental
 		$dstorage[] = $this->getPathRelative();
 		$dstorage[] = $this->getOrdenContenido();
 		//********************************************************************
-		$str_encrypt = implode("", $dstorage);
+		$str_encrypt = implode74("", $dstorage);
 		return sha1($str_encrypt);
 	}
 

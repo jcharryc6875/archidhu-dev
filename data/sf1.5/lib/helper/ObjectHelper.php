@@ -179,7 +179,7 @@ function _get_options_from_objects($objects, $text_method = null, $key_method = 
         $first = false;
       }
 
-      $key   = $multi_primary_keys ? implode('/', $tmp_object->$key_method()) : $tmp_object->$key_method();
+      $key   = $multi_primary_keys ? implode74('/', $tmp_object->$key_method()) : $tmp_object->$key_method();
       $value = $tmp_object->$methodToCall();
 
       $select_options[$key] = $value;
@@ -275,7 +275,7 @@ function _convert_method_to_name($method, &$options)
   {
     if (is_array($method))
     {
-      $name = implode('-',$method[1]);
+      $name = implode74('-',$method[1]);
     }
     else
     {

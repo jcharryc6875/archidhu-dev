@@ -26,3 +26,35 @@ if (!function_exists('count74')) {
         return $value === null ? 0 : 1;
     }
 }
+
+if (!function_exists('implode74')) {
+    /**
+     * implode() / join() con el comportamiento de PHP 7.4.
+     *
+     * PHP 8 lanza TypeError cuando el arreglo no es un arreglo (por ejemplo null) y cuando
+     * los argumentos van en el orden antiguo implode($arreglo, $separador). PHP 7.4:
+     *   - implode($arreglo)                -> une sin separador
+     *   - implode($separador, $arreglo)    -> forma normal
+     *   - implode($arreglo, $separador)    -> orden antiguo, aceptado
+     *   - cualquier otro caso              -> warning y null
+     * Aquí ese último caso devuelve '' en lugar de null: al imprimir o concatenar el
+     * resultado es el mismo, y evita avisos de "null" en funciones que esperan texto.
+     *
+     * @param mixed $a
+     * @param mixed $b
+     */
+    function implode74($a, $b = null): string
+    {
+        if (func_num_args() < 2) {
+            return is_array($a) ? implode($a) : '';
+        }
+        if (is_array($b)) {
+            return implode(is_array($a) ? '' : (string) $a, $b);
+        }
+        if (is_array($a)) {
+            return implode((string) $b, $a);
+        }
+
+        return '';
+    }
+}

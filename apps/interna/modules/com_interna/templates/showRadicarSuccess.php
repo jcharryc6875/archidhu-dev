@@ -203,7 +203,7 @@ use_helper('Object','jQuery','UserComponent');
     					</div>
                         <div class="col-sm-6">
     						<div class="col-sm-5"><p><strong>Copia Para:</strong></p></div>
-    						<div class="col-sm-7"><p><?php echo implode(",",$usuarios_copia); ?></p></div>
+    						<div class="col-sm-7"><p><?php echo implode74(",",$usuarios_copia); ?></p></div>
     					</div>
     				</div>
                 <?php } ?>

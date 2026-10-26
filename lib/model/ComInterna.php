@@ -107,8 +107,8 @@ class ComInterna extends BaseComInterna
                 $list_users['destinatario'] = $usuario_com->getUsuario()->getNombreAll();
             }
             //**************************************************************************
-            $list_users['firmas'] = implode(",", $firmas_list);
-            $list_users['copias'] = implode(",", $copias_list);
+            $list_users['firmas'] = implode74(",", $firmas_list);
+            $list_users['copias'] = implode74(",", $copias_list);
         }
         //******************************************************************************
         return $list_users;
@@ -260,9 +260,9 @@ class ComInterna extends BaseComInterna
                 $destinatarios_list[] = $usuario_com->getUsuarioId();
             }
             //**************************************************************************
-            $list_users['firmas'] = $isArray ? $firmas_list : implode(",", $firmas_list);
-            $list_users['copias'] = $isArray ? $copias_list : implode(",", $copias_list);
-            $list_users['destinatario'] = $isArray ? $destinatarios_list : implode(",", $destinatarios_list);
+            $list_users['firmas'] = $isArray ? $firmas_list : implode74(",", $firmas_list);
+            $list_users['copias'] = $isArray ? $copias_list : implode74(",", $copias_list);
+            $list_users['destinatario'] = $isArray ? $destinatarios_list : implode74(",", $destinatarios_list);
         }
         //******************************************************************************
         return $list_users;
@@ -690,7 +690,7 @@ class ComInterna extends BaseComInterna
             $isError = true;
         }
         //********************************************************************************
-        $this->setRuta(implode(",", $current_files));
+        $this->setRuta(implode74(",", $current_files));
         $this->save();
         //********************************************************************************
         return array('isError' => $isError, 'list_state' => $list_state);

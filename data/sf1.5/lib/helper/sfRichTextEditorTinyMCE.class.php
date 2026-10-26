@@ -78,7 +78,7 @@ class sfRichTextEditorTinyMCE extends sfRichTextEditor
       }
 
       $tinymce_options .= '  content_css: "'.$css_path.'",'."\n";
-      $tinymce_options .= '  theme_advanced_styles: "'.implode(';', $styles).'"'."\n";
+      $tinymce_options .= '  theme_advanced_styles: "'.implode74(';', $styles).'"'."\n";
       $style_selector   = 'styleselect,separator,';
     }
 

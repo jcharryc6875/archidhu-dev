@@ -563,7 +563,7 @@ class WorkflowInstancePeer extends BaseWorkflowInstancePeer
             if ($diff->d > 0) $parts[] = $diff->d . 'd';
             if ($diff->h > 0) $parts[] = $diff->h . 'h';
             if ($diff->i > 0) $parts[] = $diff->i . 'm';
-            $metrics['duration_formatted'] = implode(' ', $parts) ?: '<1m';
+            $metrics['duration_formatted'] = implode74(' ', $parts) ?: '<1m';
         }
 
         // Obtener todas las tareas
@@ -741,7 +741,7 @@ class WorkflowInstancePeer extends BaseWorkflowInstancePeer
             if ($diff->d > 0) $parts[] = $diff->d . 'd';
             if ($diff->h > 0) $parts[] = $diff->h . 'h';
             if ($diff->i > 0) $parts[] = $diff->i . 'm';
-            $metrics['duration_formatted'] = implode(' ', $parts) ?: '<1m';
+            $metrics['duration_formatted'] = implode74(' ', $parts) ?: '<1m';
 
             $metrics['completion_date'] = $task->getFechaCompletado();
         }
@@ -763,7 +763,7 @@ class WorkflowInstancePeer extends BaseWorkflowInstancePeer
                         if ($diff->d > 0) $parts[] = $diff->d . 'd';
                         if ($diff->h > 0) $parts[] = $diff->h . 'h';
                         if ($diff->i > 0) $parts[] = $diff->i . 'm';
-                        $metrics['delay_formatted'] = implode(' ', $parts) . ' antes';
+                        $metrics['delay_formatted'] = implode74(' ', $parts) . ' antes';
                     }
                 } else {
                     $metrics['on_time'] = false;
@@ -776,7 +776,7 @@ class WorkflowInstancePeer extends BaseWorkflowInstancePeer
                     if ($diff->d > 0) $parts[] = $diff->d . 'd';
                     if ($diff->h > 0) $parts[] = $diff->h . 'h';
                     if ($diff->i > 0) $parts[] = $diff->i . 'm';
-                    $metrics['delay_formatted'] = implode(' ', $parts) . ' retraso';
+                    $metrics['delay_formatted'] = implode74(' ', $parts) . ' retraso';
                 }
             }
         }

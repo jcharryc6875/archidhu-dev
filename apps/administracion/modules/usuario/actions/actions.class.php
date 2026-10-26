@@ -1588,7 +1588,7 @@ class usuarioActions extends sfActions
       $c->addJoin(UsuarioPeer::USUARIO_ID,UsuarioProcesocomPeer::USUARIO_ID);
       if(is_array($userprcom)){
         $c->add(UsuarioProcesocomPeer::TIPOPROCESOCOM_ID,$userprcom,Criteria::IN);
-        $this->parametros.="&tipoprocesocom_id=".implode(",",$userprcom);
+        $this->parametros.="&tipoprocesocom_id=".implode74(",",$userprcom);
       }elseif(is_string($userprcom)){
         $c->add(UsuarioProcesocomPeer::TIPOPROCESOCOM_ID,explode(",",$userprcom),Criteria::IN);
         $this->parametros.="&tipoprocesocom_id=".$userprcom;

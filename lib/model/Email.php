@@ -56,7 +56,7 @@ class Email extends BaseEmail
             $ebody_data = str_replace("{[#EMAIL_DESTINATARIOS#]}", mb_convert_encoding($this->getEmailDestino(),'UTF-8'), $ebody_data);
             $ebody_data = str_replace("{[#EMAIL_COPIAS#]}", mb_convert_encoding($this->getEmailCopia(),'UTF-8'), $ebody_data);
             $ebody_data = str_replace("{[#EMAIL_ASUNTO#]}", mb_convert_encoding($this->getAsunto(),'UTF-8'), $ebody_data);
-            $ebody_data = str_replace("{[#EMAIL_ADJUNTOS#]}", implode(", ",$ilist_attach), $ebody_data);
+            $ebody_data = str_replace("{[#EMAIL_ADJUNTOS#]}", implode74(", ",$ilist_attach), $ebody_data);
             $ebody_data = str_replace("{[#BODY_EMAIL#]}", mb_convert_encoding($this->getContenido(),'UTF-8'), $ebody_data);
             //****************************************************************************************************
             file_put_contents($target_data,mb_convert_encoding($ebody_data,'UTF-8'));

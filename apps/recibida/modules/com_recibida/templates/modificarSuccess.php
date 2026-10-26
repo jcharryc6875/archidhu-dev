@@ -84,8 +84,8 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
             $cintereados_text[] = $interesado_row['interesado_nombre'];
           }
 
-          echo input_hidden_tag('idUserInteresados',implode(",",$cintereados_ids));
-          echo component_interesados_multiple('paraUserInt',"idUserInteresados",array('caption'=>'Interesados', 'formgroup'=>false, 'coldivwidth'=>'col-sm-10', 'class'=>'form-control input-sm fillone', 'buttontitle'=>'Buscar','values'=>implode(",",$cintereados_ids),'values_text'=>implode(",",$cintereados_text),'option'=>1,'maximumSelectionSize'=>-1));  
+          echo input_hidden_tag('idUserInteresados',implode74(",",$cintereados_ids));
+          echo component_interesados_multiple('paraUserInt',"idUserInteresados",array('caption'=>'Interesados', 'formgroup'=>false, 'coldivwidth'=>'col-sm-10', 'class'=>'form-control input-sm fillone', 'buttontitle'=>'Buscar','values'=>implode74(",",$cintereados_ids),'values_text'=>implode74(",",$cintereados_text),'option'=>1,'maximumSelectionSize'=>-1));  
         ?>
       </div>
 
@@ -216,7 +216,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
                                       }
                                   }
                               }
-                              echo input_hidden_tag('archivo',implode(",",$active_files));
+                              echo input_hidden_tag('archivo',implode74(",",$active_files));
                               $json_files = json_encode($json_data);
                           ?>
                       </div>

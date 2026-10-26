@@ -2247,7 +2247,7 @@ class com_recibidaActions extends sfActions
     $this->com_recibida = $com_recibida;
     $this->user = $usuario_asignado;
     $this->pkusuario_asignado = $pkusuario_asignado;
-    $this->tempCopia = implode(",", $user_copia);
+    $this->tempCopia = implode74(",", $user_copia);
   }
 
   public function executeShowRadicar()
@@ -2298,8 +2298,8 @@ class com_recibidaActions extends sfActions
       $list_names[] = trim($interesado->getInteresados()->getNumeroIdentificacion()) . " - " . trim($interesado->getInteresados()->getNombre());
     }
     //**************************************************************************************************
-    $this->intesadosIds = implode(",", $list_inteIds);
-    $this->intesadosNames = implode(",", $list_names);
+    $this->intesadosIds = implode74(",", $list_inteIds);
+    $this->intesadosNames = implode74(",", $list_names);
     $this->com_recibida = $com_recibida;
     $this->forward404Unless($this->com_recibida);
   }
@@ -2622,7 +2622,7 @@ class com_recibidaActions extends sfActions
       return $this->renderText(json_encode(array('httpStatus' => 400, 'message' => 'Ocurrio un error al generar el archivo')));
     }
     //*********************************************************************************************
-    return $this->renderText(json_encode(array('httpStatus' => 200, 'message' => 'Radicados procesados', 'added' => $result['found'], 'omitted' => $result['missing'], 'pending' => implode(',', $result['pending']))));
+    return $this->renderText(json_encode(array('httpStatus' => 200, 'message' => 'Radicados procesados', 'added' => $result['found'], 'omitted' => $result['missing'], 'pending' => implode74(',', $result['pending']))));
   }
 
   /**
@@ -2858,7 +2858,7 @@ class com_recibidaActions extends sfActions
             if (!copy($tmpfile, $file_sticker)) {
               $this->message_stamp = '';
               $msgerror[] = "Ocurrio un error con el archivo y no pudo adjuntar a los radicados";
-              return $this->redirect($this->getRequest()->getScriptName() . '/com_recibida/digitAttach?msgerror=' . implode(";", $msgerror) . '&message_stamp=' . $this->message_stamp);
+              return $this->redirect($this->getRequest()->getScriptName() . '/com_recibida/digitAttach?msgerror=' . implode74(";", $msgerror) . '&message_stamp=' . $this->message_stamp);
             }
           }
           //**************************************************************************************************
@@ -2906,7 +2906,7 @@ class com_recibidaActions extends sfActions
       }
     }
     //*************************************************************************************************
-    return $this->redirect($this->getRequest()->getScriptName() . '/com_recibida/digitAttach?msgerror=' . implode(";", $msgerror) . '&message_stamp=' . $this->message_stamp);
+    return $this->redirect($this->getRequest()->getScriptName() . '/com_recibida/digitAttach?msgerror=' . implode74(";", $msgerror) . '&message_stamp=' . $this->message_stamp);
   }
 
   public function executeDigitAttach()
@@ -3075,7 +3075,7 @@ class com_recibidaActions extends sfActions
         if (trim($com_recibida->getRuta())) {
           $currentfiles = preg_split("/[,]+/", trim($com_recibida->getRuta()), -1, PREG_SPLIT_NO_EMPTY);
           $currentfiles[] = $strfiles;
-          $com_recibida->setRuta(implode(",", $currentfiles));
+          $com_recibida->setRuta(implode74(",", $currentfiles));
         } else {
           $com_recibida->setRuta($strfiles);
         }
@@ -3731,7 +3731,7 @@ class com_recibidaActions extends sfActions
       }
     }
     //*********************************************************************************************
-    $qurl = count74($mailErrorMsg) ? '&msgmail=' . implode(",", $mailErrorMsg) : '';
+    $qurl = count74($mailErrorMsg) ? '&msgmail=' . implode74(",", $mailErrorMsg) : '';
     //*******************************************************************************************
     if ($isAddInteresado || $com_recibida->getDirectorioexternoId()) {
       //if(!$this->getRequestParameter('radicado')){ //ComRecibidaPeer::envioEmail($com_recibida->getPrimaryKey(),$usuario_destino); }
@@ -4383,7 +4383,7 @@ class com_recibidaActions extends sfActions
           $c->add(ComrecibidaUsuarioPeer::USUARIO_ID, $usuariologuiado);
         }
         //***********************************************************************************
-        $user_id = implode(",", $arrIds);
+        $user_id = implode74(",", $arrIds);
       } else { //cuando no tiene permiso de listar todas y la consulta es por los buzones
         $c->addJoin(ComRecibidaPeer::COMRECIBIDA_ID, ComrecibidaUsuarioPeer::COMRECIBIDA_ID);
         $c->add(ComrecibidaUsuarioPeer::USUARIO_ID, $usuariologuiado);

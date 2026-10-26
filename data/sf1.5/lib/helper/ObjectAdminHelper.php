@@ -171,7 +171,7 @@ function object_admin_check_list($object, $method, $options = array(), $callback
       // multi primary key handling
       if (is_array($relatedPrimaryKey))
       {
-        $relatedPrimaryKeyHtmlId = implode('/', $relatedPrimaryKey);
+        $relatedPrimaryKeyHtmlId = implode74('/', $relatedPrimaryKey);
       }
       else
       {

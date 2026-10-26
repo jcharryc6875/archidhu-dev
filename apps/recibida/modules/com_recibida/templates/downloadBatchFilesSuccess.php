@@ -32,7 +32,7 @@ use_helper('jQuery');
                     <tbody>
                         <?php $first = 1; ?>
                         <?php foreach ($chunks as $index => $chunk) { ?>
-                            <tr data-id="<?php echo implode(',', $chunk); ?>">
+                            <tr data-id="<?php echo implode74(',', $chunk); ?>">
                                 <td class="text-center"><?php echo $index + 1; ?></td>
                                 <td class="text-center"><?php echo $first; ?> al <?php echo $first + count74($chunk) - 1; ?></td>
                                 <td class="descarga-estado text-center">Pendiente</td>

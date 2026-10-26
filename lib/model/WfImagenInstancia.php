@@ -48,7 +48,7 @@ class WfImagenInstancia extends BaseWfImagenInstancia
             }
             //********************************************************************************
             if(count74($ruta_archivo)){
-                $str_files = implode(",",$ruta_archivo);
+                $str_files = implode74(",",$ruta_archivo);
             }
             //********************************************************************************
         }

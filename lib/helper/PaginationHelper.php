@@ -29,7 +29,7 @@ function pager_navigation($pager, $uri, $parametros)
           $links[] = "<li>".link_to_unless($page == $pager->getPage(), $page, $uri.$page.$parametros)."</li>";
         endif;
     }
-    $navigation .= join('  ', $links);
+    $navigation .= implode74('  ', $links);
  
     // Next and last page
     if ($pager->getPage() != $pager->getLastPage()){
@@ -83,7 +83,7 @@ function pager_navigation_async($pager, $uri, $parametros, $elupdate = 'table-pa
           ),array('class'=>'btn btn-white btn-sm tooltip-primary','data-toggle'=>'tooltip', 'data-original-title'=>'Pagina '.$page)).'</li>';
         endif;
     }
-    $navigation .= join('  ', $links);
+    $navigation .= implode74('  ', $links);
  
     // Next and last page
     if ($pager->getPage() != $pager->getLastPage()){

@@ -630,7 +630,7 @@ class contenido_documentalActions extends sfActions
 			}
 		}
 		//*******************************************************************************************************************
-		$contenido_unidad_documental->setRuta(implode(",", $newurl));
+		$contenido_unidad_documental->setRuta(implode74(",", $newurl));
 		$contenido_unidad_documental->save();
 		//*******************************************************************************************************************
 		$response_info['status'] = 200;
@@ -657,7 +657,7 @@ class contenido_documentalActions extends sfActions
 			}
 		}
 		//*******************************************************************************************************************
-		$contenido_unidad_documental->setRuta(implode(",", $newurl));
+		$contenido_unidad_documental->setRuta(implode74(",", $newurl));
 		$contenido_unidad_documental->save();
 		//*******************************************************************************************************************
 		AuditLogPeer::guardarAuditoriaLite("ContenidoUnidadDocumental", $contdoc_anterior, $contenido_unidad_documental, ModulesEnable::Archivo, $unidad_documental->getCodigoBarras(), $usuariologuiado);
@@ -1638,7 +1638,7 @@ class contenido_documentalActions extends sfActions
 				$ruta_archivo = $ruta_archivo.$strspe.implode(",",$new_files);
 			}*/
 			//***************************************************************************************************************************
-			$contenido_unidad_documental->setRuta((count74($new_files) ? implode(",", $new_files) : null));
+			$contenido_unidad_documental->setRuta((count74($new_files) ? implode74(",", $new_files) : null));
 			$contenido_unidad_documental->setSizeFile($szfile);
 			$contenido_unidad_documental->setFormatFile(strtoupper($exfile));
 			$contenido_unidad_documental->setPathAbsolute($path_absolute);
@@ -1696,7 +1696,7 @@ class contenido_documentalActions extends sfActions
 			}
 			//***************************************************************************************************************************
 			if (count74($message_info) > 0) {
-				$this->getUser()->setFlash('messages_info', implode(",", $message_info));
+				$this->getUser()->setFlash('messages_info', implode74(",", $message_info));
 			}
 			//***************************************************************************************************************************
 			return $this->redirect($redirect_url);
@@ -2137,7 +2137,7 @@ class contenido_documentalActions extends sfActions
 		//***************************************************************************************************
 		if ($new_files) {
 			$unique_files = array_unique($new_files);
-			$ruta_files = implode(",", $unique_files);
+			$ruta_files = implode74(",", $unique_files);
 			if (trim($ruta_files)) {
 				$target_contenido->setRuta($ruta_files . ',');
 				$target_contenido->save();

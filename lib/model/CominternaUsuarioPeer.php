@@ -397,7 +397,7 @@ class CominternaUsuarioPeer extends BaseCominternaUsuarioPeer
             //*******************************************************************************************************
             $conexion = Propel::getConnection();
             $consulta = "DELETE FROM %s WHERE %s = ".$pkcom_id." AND %s NOT IN(%s)";
-            $sql = sprintf($consulta,CominternaUsuarioPeer::TABLE_NAME,CominternaUsuarioPeer::COMINTERNA_ID,CominternaUsuarioPeer::COMINTERNAUSUARIO_ID,implode(",",$lcargos_current));
+            $sql = sprintf($consulta,CominternaUsuarioPeer::TABLE_NAME,CominternaUsuarioPeer::COMINTERNA_ID,CominternaUsuarioPeer::COMINTERNAUSUARIO_ID,implode74(",",$lcargos_current));
             $sentencia = $conexion->prepare($sql);
             $sentencia->execute();
         } catch (\Throwable $th) {
@@ -426,7 +426,7 @@ class CominternaUsuarioPeer extends BaseCominternaUsuarioPeer
     {
         try {
             $conexion = Propel::getConnection();
-            $consulta = "UPDATE %s SET  %s = 0, %s = '".date("Y-m-d G:i:s")."', %s = 1 WHERE %s = ".$cominterna_id." AND %s IN (".implode(",",$roles_ids).") AND %s != 1;";
+            $consulta = "UPDATE %s SET  %s = 0, %s = '".date("Y-m-d G:i:s")."', %s = 1 WHERE %s = ".$cominterna_id." AND %s IN (".implode74(",",$roles_ids).") AND %s != 1;";
             $sql      = sprintf($consulta, CominternaUsuarioPeer::TABLE_NAME, CominternaUsuarioPeer::ESTA_ASIGNADA,CominternaUsuarioPeer::FECHA_APROBACION,CominternaUsuarioPeer::CHECK_APROBACION,
                             CominternaUsuarioPeer::COMINTERNA_ID,CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID,CominternaUsuarioPeer::CHECK_APROBACION);
             $sentencia = $conexion->prepare($sql);

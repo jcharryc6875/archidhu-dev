@@ -233,7 +233,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'El punto de radicacion ' . implode(",", $coll_error) . ' no existe en el SGDEA');
+                return array('isError' => true, 'message' => 'El punto de radicacion ' . implode74(",", $coll_error) . ' no existe en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'El punto de radicacion son validos');
         } catch (\Throwable $th) {
@@ -273,7 +273,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'El campo priodidad ' . implode(",", $coll_error) . ' no existe en el SGDEA');
+                return array('isError' => true, 'message' => 'El campo priodidad ' . implode74(",", $coll_error) . ' no existe en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'El campo priodidad son validos');
         } catch (\Throwable $th) {
@@ -313,7 +313,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'La forma de recepcion ' . implode(",", $coll_error) . ' no existe en el SGDEA');
+                return array('isError' => true, 'message' => 'La forma de recepcion ' . implode74(",", $coll_error) . ' no existe en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'La forma de recepcion son validos');
         } catch (\Throwable $th) {
@@ -353,7 +353,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'El tipo de tramite ' . implode(",", $coll_error) . ' no existe en el SGDEA');
+                return array('isError' => true, 'message' => 'El tipo de tramite ' . implode74(",", $coll_error) . ' no existe en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'El tipo de tramite son validos');
         } catch (\Throwable $th) {
@@ -393,7 +393,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'El tipo de servicio ' . implode(",", $coll_error) . ' no existe en el SGDEA');
+                return array('isError' => true, 'message' => 'El tipo de servicio ' . implode74(",", $coll_error) . ' no existe en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los tipos de servicio son validos');
         } catch (\Throwable $th) {
@@ -433,7 +433,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'Las dependencias con codigo ' . implode(",", $coll_error) . ' no existen en el SGDEA');
+                return array('isError' => true, 'message' => 'Las dependencias con codigo ' . implode74(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Las dependencias enviadas son validos');
         } catch (\Throwable $th) {
@@ -481,7 +481,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'Las dependencias con codigo ' . implode(",", $coll_error) . ' no existen en el SGDEA');
+                return array('isError' => true, 'message' => 'Las dependencias con codigo ' . implode74(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Las dependencias enviadas son validos');
         } catch (\Throwable $th) {
@@ -522,7 +522,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'Las plantillas con nombre ' . implode(",", $coll_error) . ' no existen en el SGDEA');
+                return array('isError' => true, 'message' => 'Las plantillas con nombre ' . implode74(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Las plantillas enviadas son validas');
         } catch (\Throwable $th) {
@@ -562,7 +562,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'Los radicados de entrada ' . implode(",", $coll_error) . ' no existen en el SGDEA');
+                return array('isError' => true, 'message' => 'Los radicados de entrada ' . implode74(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los radicados de entrada enviados son validos');
         } catch (\Throwable $th) {
@@ -602,7 +602,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'Los numero de expediente ' . implode(",", $coll_error) . ' no existen en el SGDEA');
+                return array('isError' => true, 'message' => 'Los numero de expediente ' . implode74(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los expedientes enviados son validos');
         } catch (\Throwable $th) {
@@ -642,7 +642,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'Los tipos documentales ' . implode(",", $coll_error) . ' no existen en el SGDEA');
+                return array('isError' => true, 'message' => 'Los tipos documentales ' . implode74(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los tipos documentales enviados son validos');
         } catch (\Throwable $th) {
@@ -682,7 +682,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'Los tipos documentales ' . implode(",", $coll_error) . ' no existen en el SGDEA');
+                return array('isError' => true, 'message' => 'Los tipos documentales ' . implode74(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los tipos documentales enviados son validos');
         } catch (\Throwable $th) {
@@ -837,7 +837,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'Los interesados con numero identificacion ' . implode(",", $coll_error) . ' no existen en el SGDEA');
+                return array('isError' => true, 'message' => 'Los interesados con numero identificacion ' . implode74(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los interesados enviados son validos');
         } catch (PropelException $th) {
@@ -929,7 +929,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'Los terceros con numero identificacion ' . implode(",", $coll_error) . ' no existen en el SGDEA');
+                return array('isError' => true, 'message' => 'Los terceros con numero identificacion ' . implode74(",", $coll_error) . ' no existen en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los terceros enviados son validos');
         } catch (PropelException $th) {
@@ -982,7 +982,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $coll_error = array_diff($coll_firmas, $firmas_list);
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'El destinatario con numero de identificacion ' . implode(",", $coll_error) . ' no existen o presentan alguna novedad con la cuenta en el SGDEA');
+                return array('isError' => true, 'message' => 'El destinatario con numero de identificacion ' . implode74(",", $coll_error) . ' no existen o presentan alguna novedad con la cuenta en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'El destinatario enviado son validos');
         } catch (\Throwable $th) {
@@ -1032,7 +1032,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             $coll_error = array_diff($coll_firmas, $firmas_list);
             //******************************************************************************
             if (count74($coll_error))
-                return array('isError' => true, 'message' => 'Los firmantes con numero de identificacion ' . implode(",", $coll_error) . ' no existen o presentan alguna novedad con la cuenta en el SGDEA');
+                return array('isError' => true, 'message' => 'Los firmantes con numero de identificacion ' . implode74(",", $coll_error) . ' no existen o presentan alguna novedad con la cuenta en el SGDEA');
             else
                 return array('isError' => false, 'message' => 'Los firmantes enviados son validos');
         } catch (\Throwable $th) {
@@ -1084,7 +1084,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
             }
             //******************************************************************************
             if (count74($coll_warning))
-                return array('isError' => true, 'message' => 'El usuario firmante con identificaci&oacute;n ' . implode(", ", $coll_warning) . ' no tiene habilitada la firma desatendida, puede continuar con el proceso pero el registro quedar&aacute; en borrador y se enviar&aacute; al usuario firmante para que se radiquen los registros manualmente');
+                return array('isError' => true, 'message' => 'El usuario firmante con identificaci&oacute;n ' . implode74(", ", $coll_warning) . ' no tiene habilitada la firma desatendida, puede continuar con el proceso pero el registro quedar&aacute; en borrador y se enviar&aacute; al usuario firmante para que se radiquen los registros manualmente');
             else
                 return array('isError' => false, 'message' => 'Los firmantes tienen la firma desatendida habilitada');
         } catch (\Throwable $th) {
@@ -1621,7 +1621,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                     }
                     //******************************************************************
                     if (empty(trim($servicio->getEmailDestino()))) {
-                        $servicio->setEmailDestino(implode(";", $email_interesado));
+                        $servicio->setEmailDestino(implode74(";", $email_interesado));
                         $servicio->save();
                     }
                     //******************************************************************
@@ -1891,7 +1891,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                         }
                     }
                     //**************************************************************************
-                    $email_interesado = implode(";", $coll_emailinteresados);
+                    $email_interesado = implode74(";", $coll_emailinteresados);
                     //**************************************************************************
                     $estaAsignada = 1;
                     ComEnviadaPeer::insertaEnviadaUsuarios($usuario_origen->getUsuarioId(), $com_enviada->getPrimaryKey(), 1, $cargouser_origen->getPrimaryKey(), $estado_enviada, 1);
@@ -2622,7 +2622,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 }
                 //******************************************************************************
                 if (count74($msg_firma)) {
-                    return array('status' => 400, 'message' => 'Error Firma Digital, el radicado se genero, pero el documento no se pudo firmar,' . implode(",", $msg_firma));
+                    return array('status' => 400, 'message' => 'Error Firma Digital, el radicado se genero, pero el documento no se pudo firmar,' . implode74(",", $msg_firma));
                 }
             } catch (PropelException $th) {
                 $row->setEstadoMigracion('ERROR RADICANDO');

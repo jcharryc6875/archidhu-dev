@@ -622,7 +622,7 @@ $switcher_2 = ($displayRespFirst != null) ? 'active' : '';
                                                         }
                                                     }
                                                 }
-                                                echo input_hidden_tag('archivo', implode(",", $active_files));
+                                                echo input_hidden_tag('archivo', implode74(",", $active_files));
                                                 $json_files = json_encode($json_data);
                                                 ?>
                                             </div>

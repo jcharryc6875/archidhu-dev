@@ -228,26 +228,26 @@ class control_contratistasActions extends sfActions
     $libreta_militar[] = $request->getParameter('numero_militar') ? trim($request->getParameter('numero_militar')) : "undefined";
     $libreta_militar[] = $request->getParameter('distrito') ? trim($request->getParameter('distrito')) : "undefined";
     $libreta_militar[] = $request->getParameter('clase_libreta');
-    $control_contratistas->setLibretaMilitar(implode("$$",$libreta_militar));    
+    $control_contratistas->setLibretaMilitar(implode74("$$",$libreta_militar));    
     //***********************************************************************************************************
     $direccion_envio = array();
     $direccion_envio[] = $request->getParameter('direccion_envio') ? trim($request->getParameter('direccion_envio')) : "undefined";
     $direccion_envio[] = $request->getParameter('municipio_envio') ? trim($request->getParameter('municipio_envio')) : "undefined";
     $direccion_envio[] = $request->getParameter('dpto_envio') ? trim($request->getParameter('dpto_envio')) : "undefined";
-    $control_contratistas->setDireccionEnvio(implode("$$",$direccion_envio));
+    $control_contratistas->setDireccionEnvio(implode74("$$",$direccion_envio));
     //***********************************************************************************************************
     $educacion_basica = array();
     $educacion_basica[] = $request->getParameter('primaria') ? '1' : '0';
     $educacion_basica[] = $request->getParameter('secundaria') ? '1' : '0';
     $educacion_basica[] = $request->getParameter('media') ? '1' : '0';
     $educacion_basica[] = trim($request->getParameter('titulo_obtenido'));    
-    $control_contratistas->setEducacionBasica(implode("$$",$educacion_basica));
+    $control_contratistas->setEducacionBasica(implode74("$$",$educacion_basica));
     //***********************************************************************************************************
     $educacion_superior = array();
     $educacion_superior[] = $request->getParameter('modalidad') ? trim($request->getParameter('modalidad')) : "undefined";
     $educacion_superior[] = $request->getParameter('semestres_aprobados') ? trim($request->getParameter('semestres_aprobados')) : "0";
     $educacion_superior[] = $request->getParameter('esta_graduado');
-    $control_contratistas->setEducacionSuperior(implode("$$",$educacion_superior));
+    $control_contratistas->setEducacionSuperior(implode74("$$",$educacion_superior));
     //***********************************************************************************************************
     $control_contratistas->setFechaGradoBasica($request->getParameter('fecha_grado_basica') ? $request->getParameter('fecha_grado_basica') : null);
     $control_contratistas->setTituloUniversitario(trim($request->getParameter('titulo_universitario')));
@@ -266,7 +266,7 @@ class control_contratistasActions extends sfActions
     $experiencia_laboral[] = $request->getParameter('timeses') ? trim($request->getParameter('timeses')) : "0";
     $experiencia_laboral[] = $request->getParameter('sumanos') ? trim($request->getParameter('sumanos')) : "0";
     $experiencia_laboral[] = $request->getParameter('summeses') ? trim($request->getParameter('summeses')) : "0";
-    $control_contratistas->setExperienciaLaboral(implode("$$",$experiencia_laboral));
+    $control_contratistas->setExperienciaLaboral(implode74("$$",$experiencia_laboral));
     //***********************************************************************************************************
     $control_contratistas->save();
     //***********************************************************************************************************

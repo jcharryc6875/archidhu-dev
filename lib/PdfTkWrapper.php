@@ -36,7 +36,7 @@ class PdfTkWrapper {
         }
 
         // Crear el comando pdftk para fusionar archivos
-        $input = implode(' ', $inputFiles);
+        $input = implode74(' ', $inputFiles);
         $command = "{$this->path} $input cat output $outputFile";
 
         try {

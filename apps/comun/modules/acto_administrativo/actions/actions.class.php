@@ -417,7 +417,7 @@ class acto_administrativoActions extends sfActions
     //verificar permiso firma electronica(la misma firma mecanica) para radicar
     $this->permisoRadicarFirmaElectronica = 0;
     if ($this->estado_acto_id == 1) {
-      $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, implode(",", $user_firman), 4);
+      $this->permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, implode74(",", $user_firman), 4);
     }
     //**********************************************************************************************************
     // Configuración de orden de ejecución y permiso de edición por

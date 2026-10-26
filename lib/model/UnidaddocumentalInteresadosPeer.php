@@ -62,7 +62,7 @@ class UnidaddocumentalInteresadosPeer extends BaseUnidaddocumentalInteresadosPee
 	{
         try{
             $conexion = Propel::getConnection();
-            $query = "DELETE %s WHERE  %s NOT IN( ".implode(",",$listpkinteresados).") AND %s = ".$pkcom;
+            $query = "DELETE %s WHERE  %s NOT IN( ".implode74(",",$listpkinteresados).") AND %s = ".$pkcom;
             $query = sprintf($query, UnidaddocumentalInteresadosPeer::TABLE_NAME, UnidaddocumentalInteresadosPeer::INTERESADO_ID, UnidaddocumentalInteresadosPeer::UNIDADDOCUMENTAL_ID);
             $sentencia = $conexion->prepare($query);
             $sentencia->execute();

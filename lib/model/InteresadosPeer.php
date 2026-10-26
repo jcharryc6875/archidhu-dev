@@ -458,7 +458,7 @@ class InteresadosPeer extends BaseInteresadosPeer
                 $msgerror[] = "La ciudad de origen del interesado no fue encontrada en el SGDEA";
             }
             //************************************************************************************
-            $allmsg = implode(";", $msgerror);
+            $allmsg = implode74(";", $msgerror);
             //************************************************************************************
             return array('IsValid' => (!count74($msgerror) ? true : false), 'MsgError' => $allmsg);
         } catch (PropelException $ex) {

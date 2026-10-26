@@ -2480,12 +2480,12 @@ class simad_util
 
         $sql = sprintf(
             "SELECT %s\nFROM %s",
-            implode(",\n       ", $selectFields),
+            implode74(",\n       ", $selectFields),
             $baseTable
         );
 
         if (!empty($joinClauses)) {
-            $sql .= "\n" . implode("\n", $joinClauses);
+            $sql .= "\n" . implode74("\n", $joinClauses);
         }
 
         return [
@@ -3246,7 +3246,7 @@ class simad_util
                 }
             }
         }
-        return implode(DIRECTORY_SEPARATOR, $parts);
+        return implode74(DIRECTORY_SEPARATOR, $parts);
     }
 
     //Función robusta para verificar existencia de archivos con rutas largas en Windows/IIS
@@ -3944,8 +3944,8 @@ class simad_util
                     return trim($e->message);
                 }, libxml_get_errors());
                 libxml_clear_errors();
-                error_log(implode(' | ', $errs));
-                throw new RuntimeException("document.xml error de sintaxis: " . implode(' | ', $errs));
+                error_log(implode74(' | ', $errs));
+                throw new RuntimeException("document.xml error de sintaxis: " . implode74(' | ', $errs));
             }
             //******************************************************************************************
             $zip->deleteName('word/document.xml');
@@ -4407,7 +4407,7 @@ class simad_util
                     return trim($e->message);
                 }, libxml_get_errors());
                 libxml_clear_errors();
-                throw new RuntimeException("XML inválido en $partPath: " . implode(' | ', $errs));
+                throw new RuntimeException("XML inválido en $partPath: " . implode74(' | ', $errs));
             }
             $zip->deleteName($partPath);
             $zip->addFromString($partPath, $xml);
