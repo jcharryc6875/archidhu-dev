@@ -194,6 +194,13 @@ class plantillas_comActions extends sfActions
     $token = trim((string) $request->getParameter('docx_temp'));
     if ($token !== '') {
       $temporal = PlantillasCom::getDocxTempPath($token);
+      if ($plantilla->getUsaEditor()) {
+        // El usuario volvió a habilitar el editor: el Word que cargó antes ya no aplica
+        if ($temporal !== null) {
+          unlink($temporal);
+        }
+        return null;
+      }
       if ($temporal === null) {
         return 'El documento Word cargado ya no está disponible, cárguelo de nuevo.';
       }
