@@ -1702,9 +1702,12 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
 }
 
 /* UARIV-202609: panel de etiquetas de plantillas */
-.tplcom-etiquetas { display: none; max-height: 420px; overflow-y: auto; }
+.tplcom-etiquetas { display: none; max-height: 480px; overflow-y: auto; }
 .tplcom-etiquetas .table { margin-bottom: 0; font-size: 12px; }
-.tplcom-etiquetas-grupo th { background: #f5f5f5; }
+.tplcom-etiquetas .table > tbody > tr > td { padding: 6px 10px; color: #333; background: #fff; border-top: 1px solid #ebebeb; }
+.tplcom-etiquetas .table > tbody > tr.tplcom-etiquetas-grupo > th { padding: 6px 10px; background: #e9f2f8; color: #1b6d8f; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: .5px; border-top: 1px solid #d6e6ef; }
+.tplcom-etiqueta-clave { display: inline-block; padding: 1px 6px; background: #f1f3f5; color: #c7254e; font-size: 12px; border-radius: 3px; word-break: break-all; }
+.tplcom-etiqueta-desc { display: block; margin-top: 2px; color: #666; font-size: 11px; line-height: 1.3; }
 
 .tplcom-oculto { display: none; }
 .tplcom-word-section { display: none; }
