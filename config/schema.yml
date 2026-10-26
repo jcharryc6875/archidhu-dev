@@ -1117,9 +1117,8 @@ propel:
     IMAGE_MEMBRETE: { phpName: ImageMembrete, type: VARCHAR, size: '80', required: false }
     USE_MEMBRETE: { phpName: UseMembrete, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
     DEPENDENCIA_ID: { phpName: DependenciaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: DEPENDENCIA, foreignReference: DEPENDENCIA_ID }
-    GENERA_SERVICIO: { phpName: GeneraServicio, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
-    FIRMA_DESATENDIDA: { phpName: FirmaDesatendida, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
     USA_EDITOR: { phpName: UsaEditor, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((1)) }
+    USE_MEMBRETE: { phpName: UseMembrete, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
     URL_DOCX: { phpName: UrlDocx, type: VARCHAR, size: '500', required: false }
     DOCX_NOMBRE: { phpName: DocxNombre, type: VARCHAR, size: '255', required: false }
     _indexes: { PK_PLANTILLAS_COM: [PLANTILLASCOM_ID] }
@@ -2424,7 +2423,6 @@ propel:
     FECHA_MAXIMA_RESPUESTA: { phpName: FechaMaximaRespuesta, type: TIMESTAMP, size: '16', scale: '3', required: false }
     MARCA_VINCULACION: { phpName: MarcaVinculacion, type: BOOLEAN, size: '1', required: false }
     REQUIERE_RESPUESTA: { phpName: RequiereRespuesta, type: BOOLEAN, size: '1', required: false }
-    OBS_NO_RESPUESTA: { phpName: ObsNoRespuesta, type: VARCHAR, size: '900', required: false }
     IS_CREATE_WORD: { phpName: IsCreateWord, type: BOOLEAN, size: '1', required: false }
     URL_FILE_WORD: { phpName: UrlFileWord, type: VARCHAR, size: '200', required: false }
     TAM_FUENTE_LETRA: { phpName: TamFuenteLetra, type: INTEGER, size: '4', scale: '0', required: false }
@@ -2438,6 +2436,7 @@ propel:
     TIPO_DOCUMENTAL_COD: { phpName: TipoDocumentalCod, type: VARCHAR, size: '20', required: false }
     FIRMA_DESATENDIDA: { phpName: FirmaDesatendida, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
     DIR_DIGIT: { phpName: DirDigit, type: VARCHAR, size: '150', required: false }
+    OBS_NO_RESPUESTA: { phpName: ObsNoRespuesta, type: VARCHAR, size: '900', required: false }
     _indexes: { IX_COM_INTERNA_DEPENDENCIA_ID: [DEPENDENCIA_ID], IX_COM_INTERNA_EMPRESA_MENSAJERIA_ID: [EMPRESA_MENSAJERIA_ID], IX_COM_INTERNA_ESTADOCOMINTERNA_ID: [ESTADOCOMINTERNA_ID], IX_COM_INTERNA_ESTADODIGITALIZACION_ID: [ESTADODIGITALIZACION_ID], IX_COM_INTERNA_FECHA_CREACION: [FECHA_CREACION], IX_COM_INTERNA_PERIODO_ID: [PERIODO_ID], IX_COM_INTERNA_REGIONAL_ID: [REGIONAL_ID], IX_COM_INTERNA_TIPOCOMINTERNA_ID: [TIPOCOMINTERNA_ID], PK_COM_INTERNA: [COMINTERNA_ID] }
   WEBSERVICE_LOG:
     _attributes: { phpName: WebserviceLog, idMethod: native }
@@ -2544,8 +2543,6 @@ propel:
     DESTINO_COMRECIBIDA: { phpName: DestinoComrecibida, type: VARCHAR, size: '50', required: false }
     FECHA_DOCUMENTO: { phpName: FechaDocumento, type: TIMESTAMP, size: '16', scale: '3', required: false }
     MARCA_VINCULACION: { phpName: MarcaVinculacion, type: BOOLEAN, size: '1', required: false, defaultValue: ((0)) }
-    REQUIERE_RESPUESTA: { phpName: RequiereRespuesta, type: BOOLEAN, size: '1', required: false }
-    OBS_NO_RESPUESTA: { phpName: ObsNoRespuesta, type: VARCHAR, size: '900', required: false }
     NUM_ANEXOS: { phpName: NumAnexos, type: INTEGER, size: '4', scale: '0', required: false }
     NUMERO_FUD: { phpName: NumeroFud, type: VARCHAR, size: '100', required: false }
     NUMERO_PROCESO: { phpName: NumeroProceso, type: VARCHAR, size: '250', required: false }
@@ -2556,6 +2553,8 @@ propel:
     RESPTA_INTEGRACION: { phpName: ResptaIntegracion, type: VARCHAR, size: '500', required: false }
     DIR_DIGIT: { phpName: DirDigit, type: VARCHAR, size: '150', required: false }
     TIPO_LANEXO: { phpName: TipoLanexo, type: VARCHAR, size: '150', required: false }
+    REQUIERE_RESPUESTA: { phpName: RequiereRespuesta, type: BOOLEAN, size: '1', required: false }
+    OBS_NO_RESPUESTA: { phpName: ObsNoRespuesta, type: VARCHAR, size: '900', required: false }
     _indexes: { IX_COM_RECIBIDA_ASUNTO: [ASUNTO], IX_COM_RECIBIDA_CIUDAD_ID: [CIUDAD_ID], IX_COM_RECIBIDA_CODIGO_REEN_RESP: [CODIGO_REEN_RESP], IX_COM_RECIBIDA_COM_ENVIADA: [COMENVIADA_ID], IX_COM_RECIBIDA_COMENVIADA_ID: [COMENVIADA_ID], IX_COM_RECIBIDA_DEPENDENCIA_ID: [DEPENDENCIA_ID], IX_COM_RECIBIDA_DIRECTORIOEXTERNO_ID: [DIRECTORIOEXTERNO_ID], IX_COM_RECIBIDA_EMPRESA_MENSAJERIA_ID: [EMPRESA_MENSAJERIA_ID], IX_COM_RECIBIDA_ESTADOCOMRECIBIDA_ID: [ESTADOCOMRECIBIDA_ID], IX_COM_RECIBIDA_ESTADODIGITALIZACION_ID: [ESTADODIGITALIZACION_ID], IX_COM_RECIBIDA_FECHA_CREACION: [FECHA_CREACION], IX_COM_RECIBIDA_FORMARECEPCION_ID: [FORMARECEPCION_ID], IX_COM_RECIBIDA_GUIA: [GUIA], IX_COM_RECIBIDA_INSTANCIA: [INSTANCIA], IX_COM_RECIBIDA_MARCA: [MARCA], IX_COM_RECIBIDA_NUMERO_RADICACION: [NUMERO_RADICACION], IX_COM_RECIBIDA_PERIODO_ID: [PERIODO_ID], IX_COM_RECIBIDA_RADICADO_ORIGEN: [RADICADO_ORIGEN], IX_COM_RECIBIDA_REGIONAL_ID: [REGIONAL_ID], IX_COM_RECIBIDA_TIPOCOMRECIBIDA_ID: [TIPOCOMRECIBIDA_ID], PK_COM_RECIBIDA: [COMRECIBIDA_ID] }
   FORMA_RECEPCION:
     _attributes: { phpName: FormaRecepcion, idMethod: native }
