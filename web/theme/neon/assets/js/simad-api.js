@@ -3457,6 +3457,31 @@ jQuery(document).ready(function ($) {
 		jQuery(document).on('change', '#plantillascom_id, #tipocominterna_id', aplicarModoEditorPlantilla);
 	}
 
+	// UARIV-202609: ayuda de etiquetas disponibles (popover) en los formularios de comunicaciones y actos
+	jQuery('body').on('click', '.tplcom-ayuda-etiquetas', function (event) {
+		event.stopPropagation();
+		var boton = jQuery(this);
+		if (!boton.data('bs.popover')) {
+			boton.popover({
+				html: true, container: 'body', placement: 'bottom', trigger: 'manual',
+				title: 'Etiquetas disponibles para su plantilla',
+				template: '<div class="popover tplcom-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+				content: function () { return jQuery(boton.data('contenido')).html(); }
+			});
+		}
+		jQuery('.tplcom-ayuda-etiquetas').not(boton).popover('hide');
+		boton.popover('toggle');
+	});
+	jQuery(document).on('click', function (event) {
+		if (jQuery(event.target).closest('.tplcom-popover, .tplcom-ayuda-etiquetas').length === 0) {
+			jQuery('.tplcom-ayuda-etiquetas').each(function () { if (jQuery(this).data('bs.popover')) { jQuery(this).popover('hide'); } });
+		}
+	});
+	jQuery(document).on('keydown', function (event) {
+		if (event.which === 27) {
+			jQuery('.tplcom-ayuda-etiquetas').each(function () { if (jQuery(this).data('bs.popover')) { jQuery(this).popover('hide'); } });
+		}
+	});
 	// UARIV-202609: copia la etiqueta al portapapeles (API moderna en https, execCommand como respaldo)
 	function copiarAlPortapapeles(texto) {
 		var resultado = jQuery.Deferred();

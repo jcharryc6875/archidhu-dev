@@ -2315,6 +2315,8 @@ class ComEnviada extends BaseComEnviada
                     'RADICADO_COM' => trim($this->getRadicado()),
                     'ANEXOS_COM' => trim($this->getAnexos()),
                     'VIGENCIA_COM' => $this->getFechaCreacion("Y"),
+                    'VIGENCIA_DIA' => $this->getFechaCreacion("j"),
+                    'VIGENCIA_MES' => simad_util::getNombreMes((int) $this->getFechaCreacion("n")),
                     'AREA_CODIGO_COM' => $this->getDependencia()->getCodigo(),
                     'RADICADOR_NOMBRE' => $userscom_data['nombre_radicador'],
                     'RADICADOR_AREA' => $userscom_data['area_uradicador'],

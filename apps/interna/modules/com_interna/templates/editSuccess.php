@@ -15,7 +15,7 @@ $useFirmaDesatendida = $sf_user->checkPerm($currentFormSingAuto, $currentUser);
 $comarchived_required = $com_interna->getPrimaryKey() ? ($com_interna->getTipocominternaId() != 1 ? "required" : "") : "required";
 $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
 
-use_helper('Object', 'jQuery', 'UserComponent');
+use_helper('Object', 'jQuery', 'UserComponent', 'PlantillaEtiquetas');
 ?>
 <!-- Imported scripts on this page -->
 <script src="<?php echo $path_theme; ?>/assets/js/typeahead.min.js"></script>
@@ -214,6 +214,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
             <?php if (pathinfo($com_interna->getUrlFileWord(), PATHINFO_EXTENSION) == "docx") { ?>
               <a class="btn btn-default btn-icon" data-toggle="tooltip" data-original-title="Descargar Plantilla" target="_blank" href="<?php echo url_for('com_interna/downloadTplByWord?cominterna_id=' . $com_interna->getPrimaryKey());; ?>"><i class="entypo-down"></i>Descargar Plantilla</a>
             <?php } ?>
+            <?php echo plantilla_etiquetas_ayuda(ModulesEnable::ComInterna); ?>
           </div>
         <?php } ?>
 

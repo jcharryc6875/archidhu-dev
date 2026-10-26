@@ -11,6 +11,8 @@
     { "clave": "RADICADO_COM", "grupo": "Comunicación", "descripcion": "Número de radicado", "tipo": "texto", "modulos": [2, 4, 17] },
     { "clave": "ANEXOS_COM", "grupo": "Comunicación", "descripcion": "Anexos", "tipo": "texto", "modulos": [2, 4, 17] },
     { "clave": "VIGENCIA_COM", "grupo": "Comunicación", "descripcion": "Año de creación", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "VIGENCIA_DIA", "grupo": "Comunicación", "descripcion": "Día de creación (ej. 18)", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "VIGENCIA_MES", "grupo": "Comunicación", "descripcion": "Mes de creación en letras (ej. octubre)", "tipo": "texto", "modulos": [2, 4, 17] },
     { "clave": "AREA_CODIGO_COM", "grupo": "Comunicación", "descripcion": "Código de la dependencia", "tipo": "texto", "modulos": [2, 4, 17] },
     { "clave": "CODEBAR_COM", "grupo": "Comunicación", "descripcion": "Código de barras o QR del radicado", "tipo": "imagen", "modulos": [2, 4, 17] },
 

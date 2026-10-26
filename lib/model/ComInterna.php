@@ -1750,6 +1750,8 @@ class ComInterna extends BaseComInterna
                     'FIRMAS_DEPENDENCIA' => $ufarea,
                     'FIRMAS_REGIONAL' => $ufregional,
                     'VIGENCIA_COM' => $this->getFechaCreacion("Y"),
+                    'VIGENCIA_DIA' => $this->getFechaCreacion("j"),
+                    'VIGENCIA_MES' => simad_util::getNombreMes((int) $this->getFechaCreacion("n")),
                     'AREA_CODIGO_COM' => $this->getDependencia()->getCodigo(),
                     'RADICADOR_NOMBRE' => $userscom_data['nombre_radicador'],
                     'RADICADOR_DEPENDENCIA' => $userscom_data['area_uradicador'],

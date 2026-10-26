@@ -18,7 +18,7 @@ $useFirmaDigital = $sf_user->checkPerm($currentFormoSingStamp, $currentUser);
 $useFirmaDesatendida = $sf_user->checkPerm($currentFormSingAuto, $currentUser);
 $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
 
-use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesComponent');
+use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesComponent','PlantillaEtiquetas');
 ?>
 <!-- Imported scripts on this page -->    	
 <script src="<?php echo $path_theme; ?>assets/js/typeahead.min.js"></script>
@@ -35,6 +35,9 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
         <div class="panel-title">Crear Comunicaci&oacute;n Externa Enviada</div>
       </div>
 
+      <?php if ($sf_user->hasFlash('error')): ?>
+        <div class="alert alert-danger"><?php echo $sf_user->getFlash('error') ?></div>
+      <?php endif ?>
       <!-- Contenedor Contenido Formulario-->
       <div class="panel-body">
         <?php 
@@ -294,6 +297,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
               <?php if(pathinfo($com_enviada->getUrlFileWord(),PATHINFO_EXTENSION) == "docx"){ ?>
                 <a class="btn btn-default btn-icon" data-toggle="tooltip" data-original-title="Descargar Plantilla" target="_blank" href="<?php echo $base_path; ?>enviada.php/com_enviada/downloadTplByWord?comenviada_id=<?php echo $com_enviada->getPrimaryKey(); ?>"><i class="entypo-down"></i>Descargar Plantilla</a>
               <?php } ?>
+              <?php echo plantilla_etiquetas_ayuda(ModulesEnable::ComEnviada); ?>
           </div>
         <?php } ?>
 
@@ -509,7 +513,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
                 <?php if($permisoRadicarFirmaElectronica){ ?>
                     <?php if($sf_user->checkPerm($currentFormBotonRadicar, $currentUser) && ($com_enviada->getEstadocomenviadaId() == 1) && (count74($usuarios_firman) >= 1)){ ?>
                         <?php if(in_array($currentUser, $users_asignado)){ ?>
-                          <?php if((count74($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman)) || ($com_enviada->getFirmaDesatendida() == 1 && count74($aprobacion_ulist) == 0)){ ?>
+                          <?php if(!$hayAprobacionesPendientes && ((count74($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman)) || ($com_enviada->getFirmaDesatendida() == 1 && count74($aprobacion_ulist) == 0))){ ?>
                               <button type="submit" name="save" value="Guardar Comunicaci&oacute;n" class="btn btn-success tooltip-primary" data-toggle="tooltip" data-original-title="Guardar los cambios de la comunicaci&oacute;n">Guardar Comunicaci&oacute;n</button>
                               <a data-toggle="tooltip"  class="btn btn-blue confirm-link" data-method-type = "href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_enviada', 'action' => 'radicar', 'comenviada_id' => $com_enviada->getPrimaryKey(), 'comrecibida_id' => $sf_params->get('comrecibida_id'))); ?>" href="#">
                                 <i class="fa fa-save"></i>

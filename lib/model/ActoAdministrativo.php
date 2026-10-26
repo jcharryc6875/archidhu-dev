@@ -554,6 +554,8 @@ class ActoAdministrativo extends BaseActoAdministrativo
                     'RADICADO_COM' => trim($this->getRadicadoCompuesto()),
                     'ANEXOS_COM' => trim($this->getAnexos()),
                     'VIGENCIA_COM' => $this->getFechaCreacion("Y"),
+                    'VIGENCIA_DIA' => $this->getFechaCreacion("j"),
+                    'VIGENCIA_MES' => simad_util::getNombreMes((int) $this->getFechaCreacion("n")),
                     'AREA_CODIGO_COM' => $this->getDependencia()->getCodigo(),
                     'UPROYECTA_NOMBRE' => $actlist_users['creador'],
                     'UPROYECTA_CARGO' => $actlist_users['cargo_creador'],

@@ -17,7 +17,7 @@ $useFirmaDesatendida = $sf_user->checkPerm($currentFormSingAuto, $currentUser);
 $useDocumentRadicar = $sf_user->checkPerm($currentFormCreateDoc, $currentUser);
 $useUsarPdf = $sf_user->checkPerm($currentFormUsarPdf, $currentUser);
 
-use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
+use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent', 'PlantillaEtiquetas');
 ?>
 <!-- Imported scripts on this page -->
 <script src="<?php echo $path_theme; ?>assets/js/typeahead.min.js"></script>
@@ -42,6 +42,9 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
         </div>
       <?php } ?>
 
+      <?php if ($sf_user->hasFlash('error')): ?>
+        <div class="alert alert-danger"><?php echo $sf_user->getFlash('error') ?></div>
+      <?php endif ?>
       <!-- Contenedor Contenido Formulario-->
       <div class="panel-body">
         <?php
@@ -200,6 +203,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent');
             <?php if (pathinfo($acto_administrativo->getUrlFileWord(), PATHINFO_EXTENSION) == "docx") { ?>
               <a class="btn btn-default btn-icon" data-toggle="tooltip" data-original-title="Descargar Plantilla" target="_blank" href="<?php echo url_for('acto_administrativo/downloadTplByWord?actoadministrativo_id=' . $acto_administrativo->getPrimaryKey());; ?>"><i class="entypo-down"></i>Descargar Plantilla</a>
             <?php } ?>
+            <?php echo plantilla_etiquetas_ayuda(ModulesEnable::ActosAdministrativos); ?>
           </div>
           <?php if (count74($wordVersions) >= 2) { ?>
             <div class="form-group">

@@ -108,7 +108,7 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
                 <?php if(($permisoRadicarFirmaElectronica || ($aprobacion_count <= 1)) && ($com_enviada->getEstadocomenviadaId() == 1)){ ?>
                     <?php if($sf_user->checkPerm("COM_ENVIADA_RADICAR", $currentUser) && ($com_enviada->getEstadocomenviadaId() == 1) && count74($usuarios_firman) >= 1){ ?>
                         <?php if(in_array($currentUser, $users_asignado)){ ?>
-                            <?php if(count74($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman) || ($com_enviada->getFirmaDesatendida() == 1 && count74($aprobacion_ulist) == 0)){ ?>
+                            <?php if(!$hayAprobacionesPendientes && (count74($users_aprueban) <= 1 && in_array($currentUser, $usuarios_firman) || ($com_enviada->getFirmaDesatendida() == 1 && count74($aprobacion_ulist) == 0))){ ?>
                                 <li>
                                     <a data-toggle="tooltip"  class="confirm-link" data-method-type = "href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_enviada', 'action' => 'radicar', 'comenviada_id' => $com_enviada->getPrimaryKey())); ?>" href="#">
                                         <i class="fa fa-save" id="pr_alineo_02"></i>
@@ -123,7 +123,7 @@ $submit_time = $sf_user->getAttribute('submit_time', '', 'subscriber');
                                     </a> 
                                 </li>
                             <?php } ?> 
-                        <?php }elseif((count74($users_aprueban) == 0 && in_array($currentUser, $users_asignado))){ ?>
+                        <?php }elseif((count74($users_aprueban) == 0 && in_array($currentUser, $users_asignado) && !$hayAprobacionesPendientes)){ ?>
                             <li>
                                 <a data-toggle="tooltip"  class="confirm-link" data-method-type = "href" data-original-title="Radicar esta comunicaci&oacute;n" data-submit_time="<?php echo $submit_time; ?>" data-endpoint="<?php echo url_for(array('module' => 'com_enviada', 'action' => 'radicar', 'comenviada_id' => $com_enviada->getPrimaryKey())); ?>" href="#">
                                     <i class="fa fa-save"></i>

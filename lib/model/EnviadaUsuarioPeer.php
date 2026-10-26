@@ -298,6 +298,11 @@ class EnviadaUsuarioPeer extends BaseEnviadaUsuarioPeer
     public static function setNextUserProceso($comobject_id, $snext_user = false)
     {
         try {
+            // Las aprobaciones previas pendientes (gestion/revision) nunca se saltan
+            $ucom_pendiente = EnviadaUsuarioPeer::reasignarAPendientePrevio($comobject_id);
+            if ($ucom_pendiente != null) {
+                return $ucom_pendiente;
+            }
             $ucom_current = EnviadaUsuarioPeer::getCurrentUserAsignado($comobject_id);
             //*********************************************************************************************************
             if ($ucom_current == null) {
@@ -378,6 +383,56 @@ class EnviadaUsuarioPeer extends BaseEnviadaUsuarioPeer
         }
     }
 
+    /**
+     * Participantes de gestion (rol 5) y revision (rol 4) que aun no han aprobado. Mientras existan, la
+     * comunicacion no puede firmarse ni radicarse. Ordenados gestor -> revisor.
+     */
+    public static function getAprobacionesPendientesPrevias($pkcom_id)
+    {
+        try {
+            $c = new Criteria();
+            $c->add(EnviadaUsuarioPeer::COMENVIADA_ID, $pkcom_id);
+            $c->add(EnviadaUsuarioPeer::FIRMA_APRUEBA, 0);
+            $c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, array(4, 5), Criteria::IN);
+            $c->addDescendingOrderByColumn(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID);
+            $c->addAscendingOrderByColumn(EnviadaUsuarioPeer::ENVIADAUSUARIO_ID);
+            return EnviadaUsuarioPeer::doSelect($c);
+        } catch (\Throwable $th) {
+            return array();
+        }
+    }
+
+    /**
+     * Si quien tiene la comunicacion esta en la etapa de firma y todavia hay aprobaciones previas pendientes,
+     * en vez de avanzar se asigna al primer pendiente; el firmante conserva su firma pendiente.
+     * Retorna el participante asignado o null.
+     */
+    public static function reasignarAPendientePrevio($comobject_id)
+    {
+        try {
+            $ucom_current = EnviadaUsuarioPeer::getCurrentUserAsignado($comobject_id);
+            if ($ucom_current == null || $ucom_current->getRoluscomenviadaId() != 2) {
+                return null;
+            }
+            //*********************************************************************************************************
+            $pendientes = EnviadaUsuarioPeer::getAprobacionesPendientesPrevias($comobject_id);
+            if (!count74($pendientes)) {
+                return null;
+            }
+            //*********************************************************************************************************
+            $ucom_next = $pendientes[0];
+            $ucom_next->setFechaAsigna(date("Y-m-d G:i:s"));
+            $ucom_next->setEstaAsignada(1);
+            $ucom_next->setFechaAprueba(null);
+            $ucom_next->save();
+            //*********************************************************************************************************
+            $ucom_current->setEstaAsignada(0);
+            $ucom_current->save();
+            return $ucom_next;
+        } catch (\Throwable $th) {
+            return null;
+        }
+    }
     public static function getCurrentUserAsignado($pkcom_id, $esta_asignada = 1)
     {
         try {

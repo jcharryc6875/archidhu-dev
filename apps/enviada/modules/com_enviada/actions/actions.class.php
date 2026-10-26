@@ -1836,6 +1836,7 @@ class com_enviadaActions extends sfActions
         $this->firmas_desatendida = $firmas_desatendida;
         $this->tipoprocesocom_id = $object_asignado != null ? $object_asignado->getTipoprocesocomId() : 0;
         $this->aprobacion_ulist = $aprob_urlist;
+        $this->hayAprobacionesPendientes = count74(EnviadaUsuarioPeer::getAprobacionesPendientesPrevias($this->com_enviada->getPrimaryKey())) > 0;
         $this->aprobacion_count = count74($this->aprobacion_ulist);
         //**********************************************************************************************************
         $matriz_data = $this->getAprobadores($this->getRequestParameter('comenviada_id'));
@@ -2603,6 +2604,7 @@ class com_enviadaActions extends sfActions
         }
         //****************************************************************************************
         $this->usuarios_firman = array();
+        $this->hayAprobacionesPendientes = false;
         $this->firmante_name = "";
         $this->cargousuarioIdFirma = "";
         $this->gestorUserId = "";
@@ -3521,6 +3523,12 @@ class com_enviadaActions extends sfActions
         $com_enviada_anterior = clone $com_enviada;
         $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
         //***************************************************************************************************************
+        // No se firma ni radica mientras falten aprobaciones previas (gestion/revision), con o sin firma desatendida
+        if (count74(EnviadaUsuarioPeer::getAprobacionesPendientesPrevias($com_enviada->getPrimaryKey()))) {
+            $this->getUser()->setFlash('error', 'No es posible firmar y radicar la comunicación: hay aprobaciones pendientes de revisión o gestión.');
+            return $this->redirect($this->getRequest()->getScriptName() . '/com_enviada/edit?comenviada_id=' . $com_enviada->getPrimaryKey());
+        }
+        //***************************************************************************************************************
         if ($com_enviada->getFirmaDesatendida() == 0) {
             $usuarios_com = $com_enviada->getUsuariosListComIds();
             $permisoRadicarFirmaElectronica = AutorizacionFirmaPeer::validateFirmaElectronica($usuariologuiado, $usuarios_com['firmas'], 4);
@@ -4199,6 +4207,7 @@ class com_enviadaActions extends sfActions
         $this->firmas_desatendida = $firmas_desatendida;
         $this->tipoprocesocom_id = $object_asignado != null ? $object_asignado->getTipoprocesocomId() : 0;
         $this->aprobacion_ulist = $aprob_urlist;
+        $this->hayAprobacionesPendientes = count74(EnviadaUsuarioPeer::getAprobacionesPendientesPrevias($this->com_enviada->getPrimaryKey())) > 0;
         //*******************************************************************************************************
         $matriz_data = $this->getAprobadores($this->com_enviada->getPrimaryKey());
         $this->is_usuario_aprobador = false;
