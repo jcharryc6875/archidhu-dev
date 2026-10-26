@@ -90,6 +90,14 @@ class PlantillasCom extends BasePlantillasCom {
 		return $real;
 	}
 
+	/**
+	 * Etiquetas {[X]} del Word que no existen como variable del modulo de la plantilla.
+	 * @throws RuntimeException si el archivo no es un Word legible
+	 */
+	public function getEtiquetasDesconocidasDocx($docxPath){
+		return PlantillaVariables::getDesconocidas(simad_util::extractPlaceholdersFromDocx($docxPath), $this->getModuloId());
+	}
+
 	public function hasDocxBase(){
 		return $this->getDocxBasePath() !== null;
 	}

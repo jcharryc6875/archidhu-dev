@@ -306,6 +306,19 @@ class com_internaActions extends sfActions
                             $this->getRequest()->setError("attachs", 'El documento de word no es el asociado a esta comunicación');
                             $this->forward('com_interna', 'uploadTemplate');
                         }
+                        //*****************************************************************************
+                        // UARIV-202609: las etiquetas del Word deben existir como variables del sistema
+                        try {
+                            $etiquetas_desconocidas = $com_interna->getTipoComInterna()->getPlantillasCom()->getEtiquetasDesconocidasDocx($fullpath);
+                            $error_etiquetas = count74($etiquetas_desconocidas) > 0 ? PlantillaVariables::getMensajeDesconocidas($etiquetas_desconocidas) : null;
+                        } catch (RuntimeException $e) {
+                            $error_etiquetas = $e->getMessage();
+                        }
+                        if ($error_etiquetas !== null) {
+                            unlink($fullpath);
+                            $this->getRequest()->setError("attachs", $error_etiquetas);
+                            $this->forward('com_interna', 'uploadTemplate');
+                        }
                     } else {
                         $com_interna->setIsCreateWord(ResponseDocTypeCom::Pdf);
                     }

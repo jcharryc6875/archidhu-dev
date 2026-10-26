@@ -92,6 +92,19 @@ class PlantillaVariables
         return $desconocidas;
     }
 
+    /**
+     * Texto para mostrar al usuario cuando un Word trae etiquetas que el sistema no reconoce.
+     */
+    public static function getMensajeDesconocidas(array $desconocidas): string
+    {
+        $etiquetas = array_map(function ($clave) {
+            return '{[' . $clave . ']}';
+        }, $desconocidas);
+
+        return 'El documento Word tiene etiquetas que no corresponden a las variables del sistema: '
+            . implode(', ', $etiquetas) . '. Corríjalas y vuelva a cargarlo.';
+    }
+
     private static function cargar(): array
     {
         if (self::$catalogo !== null) {
