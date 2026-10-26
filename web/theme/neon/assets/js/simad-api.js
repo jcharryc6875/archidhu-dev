@@ -3410,17 +3410,23 @@ jQuery(document).ready(function ($) {
 		window.open(url + '?version_a_id=' + encodeURIComponent(version_a_id) + '&version_b_id=' + encodeURIComponent(version_b_id), '_blank');
 	});
 
-	// UARIV-202609: panel de etiquetas de la plantilla, filtrado por el módulo seleccionado
+	// UARIV-202609: panel de etiquetas y modo de la plantilla (editor de texto o Word) según el módulo seleccionado
+	function aplicarModoWordPlantilla() {
+		var admite = jQuery.inArray(String(jQuery('form[name="form1"] #modulo_id').val()), ['2', '4', '17']) !== -1;
+		jQuery('.tplcom-word-section').toggle(admite);
+		// Sin editor solo aplica donde se admite Word; en los demás módulos el editor siempre está activo
+		jQuery('form[name="form1"]').toggleClass('tplcom-modo-word', admite && !jQuery('#usa_editor').prop('checked'));
+	}
 	function mostrarEtiquetasPlantilla() {
 		var modulo = jQuery('form[name="form1"] #modulo_id').val();
 		var panel = jQuery('.tplcom-etiquetas').hide().filter('[data-modulo="' + modulo + '"]').show();
 		jQuery('.tplcom-etiquetas-ayuda').toggle(panel.length === 0);
-		// Editor y Word base solo aplican a interna (2), enviada (4) y actos administrativos (17)
-		jQuery('.tplcom-word-section').toggle(jQuery.inArray(String(modulo), ['2', '4', '17']) !== -1);
+		aplicarModoWordPlantilla();
 	}
 	if (jQuery('.tplcom-etiquetas-ayuda, .tplcom-word-section').length) {
 		mostrarEtiquetasPlantilla();
 		jQuery('body').on('change', 'form[name="form1"] #modulo_id', mostrarEtiquetasPlantilla);
+		jQuery('body').on('change ifChanged', '#usa_editor', aplicarModoWordPlantilla);
 	}
 
 	// UARIV-202609: plantillas sin editor de texto. Oculta el editor y fuerza "Respuesta Word" mientras
@@ -3450,7 +3456,7 @@ jQuery(document).ready(function ($) {
 		jQuery(document).on('change', '#plantillascom_id, #tipocominterna_id', aplicarModoEditorPlantilla);
 	}
 
-	// UARIV-202609: carga, reemplazo y borrado del Word base de la plantilla
+	// UARIV-202609: Word de la plantilla. Se carga a una carpeta temporal y se pasa a la definitiva al guardar.
 	function mostrarMensajeDocx(tipo, texto, lista) {
 		var caja = jQuery('#tplcom-docx-msg').removeClass('alert-success alert-danger tplcom-oculto').addClass(tipo).text(texto);
 		if (lista && lista.length) {
@@ -3459,12 +3465,38 @@ jQuery(document).ready(function ($) {
 			caja.append(ul);
 		}
 	}
-	function actualizarEstadoDocx(nombre) {
-		jQuery('#tplcom-docx-nombre').text(nombre || '');
-		jQuery('.tplcom-docx-tiene').toggleClass('tplcom-oculto', !nombre);
-		jQuery('.tplcom-docx-vacio').toggleClass('tplcom-oculto', !!nombre);
+	function aplicarDocxCargado(token, nombre) {
+		// Si ya había otro documento temporal sin guardar, se descarta
+		var anterior = jQuery('#docx_temp').val();
+		if (anterior && anterior !== token) {
+			jQuery.post(jQuery('#tplcom-docx').data('url-discard'), { docx_temp: anterior });
+		}
+		jQuery('#docx_temp').val(token);
+		jQuery('#docx_nombre').val(nombre);
+		jQuery('#tplcom-docx-nombre').text(nombre);
+		jQuery('.tplcom-docx-vacio').addClass('tplcom-oculto');
+		jQuery('.tplcom-docx-pendiente').removeClass('tplcom-oculto');
+		jQuery('.tplcom-docx-descargar').addClass('tplcom-oculto');
+		jQuery('#btn_docx_cargar').text('Cambiar documento');
 	}
-	jQuery('body').on('click', '#btn_docx_cargar', function () {
+	jQuery('body').on('click', '#btn_docx_confirmar', function () {
+		var caja = jQuery('#tplcom-docx-confirm');
+		var pendiente = caja.data('pendiente');
+		if (!pendiente) { return; }
+
+		aplicarDocxCargado(pendiente.token, pendiente.nombre);
+		caja.addClass('tplcom-oculto').removeData('pendiente');
+		mostrarMensajeDocx('alert-success', 'Documento Word cargado con etiquetas sin reconocer. Guarde la plantilla para aplicarlo.');
+	});
+	jQuery('body').on('click', '#btn_docx_descartar', function () {
+		var caja = jQuery('#tplcom-docx-confirm');
+		var pendiente = caja.data('pendiente');
+		if (pendiente) {
+			jQuery.post(jQuery('#tplcom-docx').data('url-discard'), { docx_temp: pendiente.token });
+		}
+		caja.addClass('tplcom-oculto').removeData('pendiente');
+		mostrarMensajeDocx('alert-success', 'Documento descartado.');
+	});	jQuery('body').on('click', '#btn_docx_cargar', function () {
 		jQuery('#docx_file').trigger('click');
 	});
 	jQuery('body').on('change', '#docx_file', function () {
@@ -3472,13 +3504,19 @@ jQuery(document).ready(function ($) {
 		if (!input.files || !input.files.length) { return; }
 		var cont = jQuery('#tplcom-docx');
 		var datos = new FormData();
-		datos.append('plantillascom_id', cont.data('plantilla'));
+		datos.append('modulo_id', jQuery('form[name="form1"] #modulo_id').val());
 		datos.append('docx_file', input.files[0]);
 		jQuery.ajax({
 			url: cont.data('url-upload'), type: 'POST', data: datos, processData: false, contentType: false, dataType: 'json'
 		}).done(function (r) {
-			if (r.status === 200) {
-				actualizarEstadoDocx(r.nombre);
+			if (r.status === 200 && r.desconocidas && r.desconocidas.length) {
+				// El usuario decide si usa el documento con etiquetas desconocidas o lo descarta
+				jQuery('#tplcom-docx-msg').addClass('tplcom-oculto');
+				var lista = jQuery('#tplcom-docx-desconocidas').empty();
+				jQuery.each(r.desconocidas, function (i, clave) { lista.append(jQuery('<li></li>').text('{[' + clave + ']}')); });
+				jQuery('#tplcom-docx-confirm').data('pendiente', { token: r.token, nombre: r.nombre }).removeClass('tplcom-oculto');
+			} else if (r.status === 200) {
+				aplicarDocxCargado(r.token, r.nombre);
 				mostrarMensajeDocx('alert-success', r.message);
 			} else {
 				mostrarMensajeDocx('alert-danger', r.message, r.desconocidas);
@@ -3489,21 +3527,13 @@ jQuery(document).ready(function ($) {
 			jQuery(input).val('');
 		});
 	});
-	jQuery('body').on('click', '#btn_docx_quitar', function () {
-		if (!window.confirm('¿Desea quitar el documento Word de esta plantilla?')) { return; }
-		var cont = jQuery('#tplcom-docx');
-		jQuery.ajax({
-			url: cont.data('url-remove'), type: 'POST', data: { plantillascom_id: cont.data('plantilla') }, dataType: 'json'
-		}).done(function (r) {
-			if (r.status === 200) {
-				actualizarEstadoDocx('');
-				mostrarMensajeDocx('alert-success', r.message);
-			} else {
-				mostrarMensajeDocx('alert-danger', r.message);
-			}
-		}).fail(function () {
-			mostrarMensajeDocx('alert-danger', 'No fue posible eliminar el documento, intente nuevamente.');
-		});
+	// Con el editor deshabilitado es obligatorio tener un Word (el ya guardado o uno recién cargado)
+	jQuery('body').on('submit', 'form[name="form1"]', function (event) {
+		if (!jQuery(this).hasClass('tplcom-modo-word')) { return; }
+		if (!jQuery('#docx_temp').val() && String(jQuery('#tplcom-docx').data('tiene-docx')) !== '1') {
+			event.preventDefault();
+			mostrarMensajeDocx('alert-danger', 'Con el editor de texto deshabilitado debe cargar la plantilla en Word.');
+		}
 	});
 });
 

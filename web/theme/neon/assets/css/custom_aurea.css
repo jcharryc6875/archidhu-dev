@@ -1714,3 +1714,8 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
 #tplcom-docx-msg ul { margin: 6px 0 0; padding-left: 18px; }
 
 .tplcom-sin-editor-activo .tmpresponse { display: none !important; }
+
+/* UARIV-202609: la plantilla sin editor de texto trabaja con un documento Word */
+.tplcom-word-upload { display: none; }
+.tplcom-modo-word .tplcom-word-upload { display: block; }
+.tplcom-modo-word .tplcom-solo-editor { display: none !important; }

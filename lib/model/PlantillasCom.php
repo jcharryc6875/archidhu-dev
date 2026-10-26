@@ -95,11 +95,46 @@ class PlantillasCom extends BasePlantillasCom {
 	 * @throws RuntimeException si el archivo no es un Word legible
 	 */
 	public function getEtiquetasDesconocidasDocx($docxPath){
-		return PlantillaVariables::getDesconocidas(simad_util::extractPlaceholdersFromDocx($docxPath), $this->getModuloId());
+		$desconocidas = PlantillaVariables::getDesconocidas(simad_util::extractPlaceholdersFromDocx($docxPath), $this->getModuloId());
+		// Las etiquetas que el administrador confirmo al cargar el Word base de la plantilla no cuentan como error
+		if(count($desconocidas) > 0 && $this->hasDocxBase()){
+			$aprobadas = PlantillaVariables::getDesconocidas(simad_util::extractPlaceholdersFromDocx($this->getDocxBasePath()), $this->getModuloId());
+			$desconocidas = array_values(array_diff($desconocidas, $aprobadas));
+		}
+		return $desconocidas;
 	}
 
+	/**
+	 * Modulos cuyas plantillas pueden trabajar con un documento Word en lugar del editor de texto.
+	 */
+	public static function admiteWord($modulo_id){
+		return in_array((int)$modulo_id, array(ModulesEnable::ComInterna, ModulesEnable::ComEnviada, ModulesEnable::ActosAdministrativos), true);
+	}
+
+	/**
+	 * Carpeta temporal (misma raiz, fuera de web/) donde queda el Word cargado hasta que se guarda la plantilla.
+	 */
+	public static function getDocxTempDir(){
+		return simad_util::createPath(self::getDocxStorageDir() . DIRECTORY_SEPARATOR . 'tmp');
+	}
+
+	/**
+	 * Ruta del Word temporal identificado por $token (nombre generado al cargarlo); null si no es valido o no existe.
+	 */
+	public static function getDocxTempPath($token){
+		$token = trim((string)$token);
+		if(!preg_match('/^[a-f0-9]{32}\.docx$/', $token)){
+			return null;
+		}
+		$path = self::getDocxTempDir() . DIRECTORY_SEPARATOR . $token;
+		return is_file($path) ? $path : null;
+	}
+
+	/**
+	 * El Word base solo se usa cuando la plantilla tiene deshabilitado el editor de texto.
+	 */
 	public function hasDocxBase(){
-		return $this->getDocxBasePath() !== null;
+		return !$this->getUsaEditor() && $this->getDocxBasePath() !== null;
 	}
 
 	/**

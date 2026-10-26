@@ -184,6 +184,34 @@ class plantillas_comActions extends sfActions
   	}
   }
 
+  /**
+   * Valida el Word de la plantilla segun el estado del editor y pasa el cargado de la carpeta temporal a la definitiva.
+   * El Word anterior no se borra: la plantilla solo deja de apuntar a el.
+   * @return string|null mensaje de error, o null si todo esta bien
+   */
+  private function aplicarDocxPlantilla(PlantillasCom $plantilla, $request)
+  {
+    $token = trim((string) $request->getParameter('docx_temp'));
+    if ($token !== '') {
+      $temporal = PlantillasCom::getDocxTempPath($token);
+      if ($temporal === null) {
+        return 'El documento Word cargado ya no está disponible, cárguelo de nuevo.';
+      }
+      $definitivo = PlantillasCom::getDocxStorageDir() . DIRECTORY_SEPARATOR . bin2hex(random_bytes(16)) . '.docx';
+      if (!rename($temporal, $definitivo)) {
+        return 'No se pudo guardar el documento Word de la plantilla.';
+      }
+      $nombre = mb_substr(basename(str_replace('\\', '/', trim((string) $request->getParameter('docx_nombre')))), 0, 255);
+      $plantilla->setUrlDocx($definitivo);
+      $plantilla->setDocxNombre($nombre !== '' ? $nombre : null);
+    }
+    //**********************************************************************************************************
+    if (!$plantilla->getUsaEditor() && $plantilla->getDocxBasePath() === null) {
+      return 'Con el editor de texto deshabilitado debe cargar la plantilla en Word.';
+    }
+
+    return null;
+  }
   public function executeUpdate($request)
   {
     //$this->verificaPrilegio("plantillas_com/edit");
@@ -211,7 +239,14 @@ class plantillas_comActions extends sfActions
     $plantillas_com->setUseMembrete(trim($request->getParameter('use_membrete')) ? 1 : 0);
     $plantillas_com->setUseHeaders(trim($request->getParameter('use_headers')) ? 1 : 0);
     $plantillas_com->setGeneraServicio(trim($request->getParameter('genera_servicio')) ? 1 : 0);
-    $plantillas_com->setUsaEditor(trim($request->getParameter('usa_editor')) ? 1 : 0);
+    // Fuera de los modulos que admiten Word el editor siempre queda habilitado (el checkbox ni se muestra)
+    $plantillas_com->setUsaEditor(!PlantillasCom::admiteWord($plantillas_com->getModuloId()) || trim($request->getParameter('usa_editor')) ? 1 : 0);
+    //**********************************************************************************************
+    $error_docx = $this->aplicarDocxPlantilla($plantillas_com, $request);
+    if ($error_docx !== null) {
+      $this->getUser()->setFlash('notice', $error_docx);
+      $this->redirect($plantillas_com->isNew() ? 'plantillas_com/create' : 'plantillas_com/edit?plantillascom_id=' . $plantillas_com->getPrimaryKey());
+    }
     //**********************************************************************************************
     $dir_membretes = 'images'.DIRECTORY_SEPARATOR.'encabezado_carta';
     $image_membrete = trim($this->getRequestParameter('image_membrete')) ? trim($this->getRequestParameter('image_membrete')) : null;
@@ -278,18 +313,16 @@ class plantillas_comActions extends sfActions
     return $this->renderText(json_encode(array_merge($extra, array('status' => $status, 'message' => $message))));
   }
 
+  /**
+   * Recibe el Word de la plantilla y lo deja en la carpeta temporal; se pasa a la definitiva al guardar la plantilla.
+   */
   public function executeUploadDocx($request)
   {
     $this->forward404Unless($request->isMethod(sfRequest::POST));
     //**********************************************************************************************************
-    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-    $plantilla = PlantillasComPeer::retrieveByPk($request->getParameter('plantillascom_id'));
-    if (!$plantilla) {
-      return $this->renderJsonDocx(404, 'Guarde la plantilla antes de cargar el documento Word.');
-    }
-    $modulo_id = (int) $plantilla->getModuloId();
-    if (!in_array($modulo_id, array(ModulesEnable::ComInterna, ModulesEnable::ComEnviada, ModulesEnable::ActosAdministrativos), true)) {
-      return $this->renderJsonDocx(400, 'El módulo de la plantilla no admite documentos Word.');
+    $modulo_id = (int) $request->getParameter('modulo_id');
+    if (!PlantillasCom::admiteWord($modulo_id)) {
+      return $this->renderJsonDocx(400, 'Seleccione un módulo que admita documentos Word.');
     }
     //**********************************************************************************************************
     $files = $request->getFiles();
@@ -314,33 +347,35 @@ class plantillas_comActions extends sfActions
     } catch (RuntimeException $e) {
       return $this->renderJsonDocx(400, $e->getMessage());
     }
-    if (count74($desconocidas) > 0) {
-      return $this->renderJsonDocx(422, 'El documento tiene etiquetas que no corresponden a las variables del módulo.', array('desconocidas' => $desconocidas));
-    }
     //**********************************************************************************************************
-    $directorio = PlantillasCom::getDocxStorageDir();
+    $directorio = PlantillasCom::getDocxTempDir();
     if (empty($directorio)) {
-      return $this->renderJsonDocx(500, 'No se pudo preparar la carpeta de almacenamiento.');
+      return $this->renderJsonDocx(500, 'No se pudo preparar la carpeta temporal.');
     }
-    $nuevo_path = $directorio . DIRECTORY_SEPARATOR . bin2hex(random_bytes(16)) . '.docx';
-    if (!move_uploaded_file($file['tmp_name'], $nuevo_path)) {
+    $token = bin2hex(random_bytes(16)) . '.docx';
+    if (!move_uploaded_file($file['tmp_name'], $directorio . DIRECTORY_SEPARATOR . $token)) {
       return $this->renderJsonDocx(500, 'No se pudo guardar el archivo.');
     }
-    //**********************************************************************************************************
-    $object_old = clone $plantilla;
-    $anterior = $plantilla->getDocxBasePath();
     $nombre = mb_substr(basename(str_replace('\\', '/', (string) $file['name'])), 0, 255);
-    $plantilla->setUrlDocx($nuevo_path);
-    $plantilla->setDocxNombre($nombre);
-    $plantilla->save();
-    if ($anterior !== null && is_file($anterior)) {
-      unlink($anterior);
-    }
-    AuditLogPeer::guardarAuditoriaLite("PlantillasCom", $object_old, $plantilla, ModulesEnable::Seguridad, $plantilla->getPrimaryKey(), $usuariologuiado);
     //**********************************************************************************************************
-    return $this->renderJsonDocx(200, 'Documento Word cargado correctamente.', array('nombre' => $nombre, 'etiquetas' => count74($etiquetas)));
+    // Las etiquetas desconocidas no bloquean: el usuario decide en pantalla si usa el documento o lo descarta
+    $mensaje = count74($desconocidas) > 0 ? 'El documento tiene etiquetas que no corresponden a las variables del módulo.' : 'Documento Word cargado. Guarde la plantilla para aplicarlo.';
+    return $this->renderJsonDocx(200, $mensaje, array('token' => $token, 'nombre' => $nombre, 'etiquetas' => count74($etiquetas), 'desconocidas' => array_values($desconocidas)));
   }
 
+  /**
+   * Borra el Word temporal que el usuario decidio descartar.
+   */
+  public function executeDiscardDocx($request)
+  {
+    $this->forward404Unless($request->isMethod(sfRequest::POST));
+    $temporal = PlantillasCom::getDocxTempPath($request->getParameter('docx_temp'));
+    if ($temporal !== null) {
+      unlink($temporal);
+    }
+
+    return $this->renderJsonDocx(200, 'Documento descartado.');
+  }
   public function executeDownloadDocx($request)
   {
     $plantilla = PlantillasComPeer::retrieveByPk($request->getParameter('plantillascom_id'));
@@ -365,29 +400,6 @@ class plantillas_comActions extends sfActions
     flush();
     readfile($path);
     exit;
-  }
-
-  public function executeRemoveDocx($request)
-  {
-    $this->forward404Unless($request->isMethod(sfRequest::POST));
-    //**********************************************************************************************************
-    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
-    $plantilla = PlantillasComPeer::retrieveByPk($request->getParameter('plantillascom_id'));
-    if (!$plantilla) {
-      return $this->renderJsonDocx(404, 'La plantilla no existe.');
-    }
-    //**********************************************************************************************************
-    $object_old = clone $plantilla;
-    $anterior = $plantilla->getDocxBasePath();
-    $plantilla->setUrlDocx(null);
-    $plantilla->setDocxNombre(null);
-    $plantilla->save();
-    if ($anterior !== null && is_file($anterior)) {
-      unlink($anterior);
-    }
-    AuditLogPeer::guardarAuditoriaLite("PlantillasCom", $object_old, $plantilla, ModulesEnable::Seguridad, $plantilla->getPrimaryKey(), $usuariologuiado);
-    //**********************************************************************************************************
-    return $this->renderJsonDocx(200, 'Documento Word eliminado.');
   }
 
   public function executeFile()
