@@ -3425,6 +3425,7 @@ jQuery(document).ready(function ($) {
 	}
 	if (jQuery('.tplcom-etiquetas-ayuda, .tplcom-word-section').length) {
 		mostrarEtiquetasPlantilla();
+		jQuery('.tplcom-ayuda').tooltip();
 		jQuery('body').on('change', 'form[name="form1"] #modulo_id', mostrarEtiquetasPlantilla);
 		jQuery('body').on('change ifChanged', '#usa_editor', aplicarModoWordPlantilla);
 	}

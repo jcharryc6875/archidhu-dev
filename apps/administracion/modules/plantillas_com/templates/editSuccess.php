@@ -39,6 +39,15 @@ use_helper('Object','jQuery');
         echo object_input_hidden_tag($plantillas_com, 'getPlantillascomId');
         ?>
 
+        <div class="form-group tplcom-word-upload">
+          <div class="col-sm-12">
+            <div class="alert alert-warning tplcom-banner-word">
+              <strong>Importante:</strong> al usar una plantilla en Word, el documento debe traer todas las etiquetas, el membrete y demás elementos institucionales (encabezado, pie de página, logos y estilos).
+              El sistema solo reemplaza las etiquetas por sus valores y no agrega nada más al documento.
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
           <!-- Dependencia -->
           <label for="lbgetDependenciaId" class="col-sm-1 control-label">Dependencia:</label>
@@ -85,6 +94,13 @@ use_helper('Object','jQuery');
         </div>
 
         <div class="form-group">
+          <!-- Habilitar editor de texto -->
+          <label for="usa_editor" class="col-sm-2 control-label tplcom-label-izq tplcom-word-section">Habilitar editor de texto:
+            <span class="tplcom-ayuda tooltip-primary" data-toggle="tooltip" data-placement="right" data-original-title="Si lo deshabilita, la plantilla se crea con un documento Word que usted debe tener elaborado."><i class="entypo-info-circled"></i></span>
+          </label>
+          <div class="col-sm-1 tplcom-word-section">
+            <?php echo checkbox_tag('usa_editor', 1, $plantillas_com->isNew() ? true : (bool) $plantillas_com->getUsaEditor(), array('class' => 'form-control input-sm icheck')); ?>
+          </div>
           <!-- Descripcion -->
           <label for="lbEsVisible" class="col-sm-1 control-label">Esta Activa:</label>
           <div class="col-sm-1">
@@ -115,24 +131,6 @@ use_helper('Object','jQuery');
         </div>
         </div>
 
-        <div class="form-group tplcom-word-section">
-          <label for="usa_editor" class="col-sm-2 control-label">Habilitar editor de texto:</label>
-          <div class="col-sm-1">
-            <?php echo checkbox_tag('usa_editor', 1, $plantillas_com->isNew() ? true : (bool) $plantillas_com->getUsaEditor(), array('class' => 'form-control input-sm icheck')); ?>
-          </div>
-          <div class="col-sm-9">
-            <p class="form-control-static text-muted">Si lo deshabilita, la plantilla se crea con un documento Word que usted debe tener elaborado.</p>
-          </div>
-        </div>
-
-        <div class="form-group tplcom-word-upload">
-          <div class="col-sm-offset-2 col-sm-9">
-            <div class="alert alert-warning tplcom-banner-word">
-              <strong>Importante:</strong> al usar una plantilla en Word, el documento debe traer todas las etiquetas, el membrete y demás elementos institucionales (encabezado, pie de página, logos y estilos).
-              El sistema solo reemplaza las etiquetas por sus valores y no agrega nada más al documento.
-            </div>
-          </div>
-        </div>
         <div class="form-group tplcom-word-upload">
           <?php $tiene_docx = !$plantillas_com->isNew() && trim($plantillas_com->getUrlDocx()) !== ''; ?>
           <label for="docx_file" class="col-sm-2 control-label">Plantilla Word (.docx)<span class="ctrlreq">(*)</span>:</label>
