@@ -46,7 +46,7 @@ class PlantillasComTableMap extends TableMap
         $this->addForeignKey('DEPENDENCIA_ID', 'DependenciaId', 'INTEGER', 'DEPENDENCIA', 'DEPENDENCIA_ID', false, 4, null);
         $this->addForeignKey('MODULO_ID', 'ModuloId', 'INTEGER', 'MODULO', 'MODULO_ID', true, 4, null);
         $this->addForeignKey('REGIONAL_ID', 'RegionalId', 'INTEGER', 'REGIONAL', 'REGIONAL_ID', false, 4, null);
-        $this->addColumn('DESCRIPCION', 'Descripcion', 'VARCHAR', false, 50, null);
+        $this->addColumn('DESCRIPCION', 'Descripcion', 'VARCHAR', false, 150, null);
         $this->addColumn('ES_ACTUAL', 'EsActual', 'BOOLEAN', false, 1, null);
         $this->addColumn('CODIGO', 'Codigo', 'VARCHAR', false, 30, null);
         $this->addColumn('CONTENTS', 'Contents', 'LONGVARCHAR', false, 2147483647, null);
