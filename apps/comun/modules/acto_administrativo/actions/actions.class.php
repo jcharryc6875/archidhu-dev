@@ -1730,6 +1730,13 @@ class acto_administrativoActions extends sfActions
     }
     //***************************************************************************************************
     $this->aprobacion_ulist = $aprob_urlist;
+    // Firmantes que aun deben aprobar (los de firma desatendida no cuentan), igual que en el detalle
+    $this->users_aprueban = array();
+    foreach ($acto_administrativo->getActoadministrativoUsuarios() as $ufirma) {
+      if ($ufirma->getRolusuarioactoadministvoId() == 2 && $ufirma->getEstaAprobado() == 0 && !$ufirma->getUsuario()->getFirmaDesatendida()) {
+        $this->users_aprueban[] = $ufirma->getUsuarioId();
+      }
+    }
     $this->hayAprobacionesPendientes = count74(ActoAdministrativoPeer::getAprobacionesPendientesPrevias($acto_administrativo->getPrimaryKey())) > 0;
     $this->intesadosIds = $list_inteIds;
     $this->intesadosNames = $listint_names;
