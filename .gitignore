@@ -50,6 +50,7 @@ Thumbs.db
 .claude/
 CLAUDE.md
 php82-count-fix.php
+php82_implode_fix_report.csv
 
 # Archivos comprimidos
 *.zip
