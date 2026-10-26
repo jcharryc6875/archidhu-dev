@@ -133,6 +133,17 @@ class PlantillasCom extends BasePlantillasCom {
 	/**
 	 * El Word base solo se usa cuando la plantilla tiene deshabilitado el editor de texto.
 	 */
+	/**
+	 * Texto corto con el tamano y la fecha de carga del Word guardado (vacio si no hay).
+	 */
+	public function getDocxResumen(){
+		$path = $this->getDocxBasePath();
+		if($path === null){
+			return '';
+		}
+		return sprintf('%s · cargado el %s', simad_util::formatBytes(filesize($path)), date('d/m/Y', filemtime($path)));
+	}
+
 	public function hasDocxBase(){
 		return !$this->getUsaEditor() && $this->getDocxBasePath() !== null;
 	}

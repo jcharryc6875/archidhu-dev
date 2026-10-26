@@ -3489,75 +3489,137 @@ jQuery(document).ready(function ($) {
 		});
 	});
 	// UARIV-202609: Word de la plantilla. Se carga a una carpeta temporal y se pasa a la definitiva al guardar.
-	function mostrarMensajeDocx(tipo, texto, lista) {
-		var caja = jQuery('#tplcom-docx-msg').removeClass('alert-success alert-danger tplcom-oculto').addClass(tipo).text(texto);
-		if (lista && lista.length) {
-			var ul = jQuery('<ul></ul>');
-			jQuery.each(lista, function (i, clave) { ul.append(jQuery('<li></li>').text('{[' + clave + ']}')); });
-			caja.append(ul);
+	// Estados del componente (#tplcom-docx[data-estado]): vacio, cargando, revisar, pendiente y guardado.
+	function estadoDocx(estado) {
+		jQuery('#tplcom-docx').attr('data-estado', estado);
+	}
+	function mostrarArchivoDocx(nombre, meta) {
+		jQuery('#tplcom-docx-nombre').text(nombre || '');
+		jQuery('#tplcom-docx-meta').text(meta || '');
+	}
+	function mostrarMensajeDocx(tipo, texto) {
+		jQuery('#tplcom-docx-msg').removeClass('alert-success alert-danger tplcom-oculto').addClass(tipo).text(texto);
+	}
+	function ocultarMensajesDocx() {
+		jQuery('#tplcom-docx-msg').addClass('tplcom-oculto');
+		jQuery('#tplcom-docx-confirm').addClass('tplcom-oculto').removeData('pendiente');
+	}
+	// Vuelve al estado que había antes de intentar una carga: un Word por guardar, el guardado o ninguno
+	function restaurarDocx() {
+		var cont = jQuery('#tplcom-docx');
+		if (jQuery('#docx_temp').val()) {
+			mostrarArchivoDocx(jQuery('#docx_nombre').val(), cont.data('meta-pendiente'));
+			estadoDocx('pendiente');
+		} else if (String(cont.data('tiene-docx')) === '1') {
+			mostrarArchivoDocx(cont.data('nombre-guardado'), cont.data('meta-guardada'));
+			estadoDocx('guardado');
+		} else {
+			estadoDocx('vacio');
 		}
 	}
-	function aplicarDocxCargado(token, nombre) {
-		// Si ya había otro documento temporal sin guardar, se descarta
+	function descartarDocxTemporal(token) {
+		if (token) { jQuery.post(jQuery('#tplcom-docx').data('url-discard'), { docx_temp: token }); }
+	}
+	function metaDocxCargado(r) {
+		var reconocidas = (r.etiquetas || 0) - ((r.desconocidas || []).length);
+		return r.tamano + ' · ' + reconocidas + (reconocidas === 1 ? ' etiqueta reconocida' : ' etiquetas reconocidas');
+	}
+	function aplicarDocxCargado(token, nombre, meta) {
 		var anterior = jQuery('#docx_temp').val();
-		if (anterior && anterior !== token) {
-			jQuery.post(jQuery('#tplcom-docx').data('url-discard'), { docx_temp: anterior });
-		}
+		if (anterior && anterior !== token) { descartarDocxTemporal(anterior); }
 		jQuery('#docx_temp').val(token);
 		jQuery('#docx_nombre').val(nombre);
-		jQuery('#tplcom-docx-nombre').text(nombre);
-		jQuery('.tplcom-docx-vacio').addClass('tplcom-oculto');
-		jQuery('.tplcom-docx-pendiente').removeClass('tplcom-oculto');
-		jQuery('.tplcom-docx-descargar').addClass('tplcom-oculto');
-		jQuery('#btn_docx_cargar').text('Cambiar documento');
+		jQuery('#tplcom-docx').data('meta-pendiente', meta);
+		mostrarArchivoDocx(nombre, meta);
+		estadoDocx('pendiente');
 	}
-	jQuery('body').on('click', '#btn_docx_confirmar', function () {
-		var caja = jQuery('#tplcom-docx-confirm');
-		var pendiente = caja.data('pendiente');
-		if (!pendiente) { return; }
-
-		aplicarDocxCargado(pendiente.token, pendiente.nombre);
-		caja.addClass('tplcom-oculto').removeData('pendiente');
-		mostrarMensajeDocx('alert-success', 'Documento Word cargado con etiquetas sin reconocer. Guarde la plantilla para aplicarlo.');
-	});
-	jQuery('body').on('click', '#btn_docx_descartar', function () {
-		var caja = jQuery('#tplcom-docx-confirm');
-		var pendiente = caja.data('pendiente');
-		if (pendiente) {
-			jQuery.post(jQuery('#tplcom-docx').data('url-discard'), { docx_temp: pendiente.token });
+	function enviarDocx(archivo) {
+		var cont = jQuery('#tplcom-docx');
+		ocultarMensajesDocx();
+		if (!/\.docx$/i.test(archivo.name)) {
+			mostrarMensajeDocx('alert-danger', 'Solo se permiten archivos Word con extensión .docx.');
+			return;
 		}
-		caja.addClass('tplcom-oculto').removeData('pendiente');
-		mostrarMensajeDocx('alert-success', 'Documento descartado.');
-	});	jQuery('body').on('click', '#btn_docx_cargar', function () {
+		if (archivo.size > Number(cont.data('max-bytes'))) {
+			mostrarMensajeDocx('alert-danger', 'El archivo supera el tamaño máximo permitido de ' + Math.round(Number(cont.data('max-bytes')) / 1048576) + ' MB.');
+			return;
+		}
+		var datos = new FormData();
+		datos.append('modulo_id', jQuery('form[name="form1"] #modulo_id').val());
+		datos.append('docx_file', archivo);
+		mostrarArchivoDocx(archivo.name, 'Subiendo… 0 %');
+		jQuery('.tplcom-progreso-barra').css('width', '0%');
+		estadoDocx('cargando');
+		jQuery.ajax({
+			url: cont.data('url-upload'), type: 'POST', data: datos, processData: false, contentType: false, dataType: 'json',
+			xhr: function () {
+				var xhr = jQuery.ajaxSettings.xhr();
+				if (xhr.upload) {
+					xhr.upload.addEventListener('progress', function (ev) {
+						if (!ev.lengthComputable) { return; }
+						var avance = Math.round(ev.loaded / ev.total * 100);
+						jQuery('.tplcom-progreso-barra').css('width', avance + '%');
+						jQuery('#tplcom-docx-meta').text(avance < 100 ? 'Subiendo… ' + avance + ' %' : 'Validando etiquetas…');
+					});
+				}
+				return xhr;
+			}
+		}).done(function (r) {
+			if (r.status !== 200) {
+				restaurarDocx();
+				mostrarMensajeDocx('alert-danger', r.message);
+			} else if (r.desconocidas && r.desconocidas.length) {
+				var lista = jQuery('#tplcom-docx-desconocidas').empty();
+				jQuery.each(r.desconocidas, function (i, clave) { lista.append(jQuery('<code></code>').text('{[' + clave + ']}')); });
+				jQuery('#tplcom-docx-confirm-titulo').text(r.desconocidas.length === 1 ? '1 etiqueta no existe en este módulo' : r.desconocidas.length + ' etiquetas no existen en este módulo');
+				jQuery('#tplcom-docx-confirm').data('pendiente', { token: r.token, nombre: r.nombre, meta: metaDocxCargado(r) }).removeClass('tplcom-oculto');
+				estadoDocx('revisar');
+			} else {
+				aplicarDocxCargado(r.token, r.nombre, metaDocxCargado(r));
+			}
+		}).fail(function () {
+			restaurarDocx();
+			mostrarMensajeDocx('alert-danger', 'No fue posible cargar el documento, intente nuevamente.');
+		});
+	}
+	jQuery('body').on('click', '#btn_docx_cargar, #btn_docx_cambiar', function () {
 		jQuery('#docx_file').trigger('click');
 	});
 	jQuery('body').on('change', '#docx_file', function () {
 		var input = this;
-		if (!input.files || !input.files.length) { return; }
-		var cont = jQuery('#tplcom-docx');
-		var datos = new FormData();
-		datos.append('modulo_id', jQuery('form[name="form1"] #modulo_id').val());
-		datos.append('docx_file', input.files[0]);
-		jQuery.ajax({
-			url: cont.data('url-upload'), type: 'POST', data: datos, processData: false, contentType: false, dataType: 'json'
-		}).done(function (r) {
-			if (r.status === 200 && r.desconocidas && r.desconocidas.length) {
-				// El usuario decide si usa el documento con etiquetas desconocidas o lo descarta
-				jQuery('#tplcom-docx-msg').addClass('tplcom-oculto');
-				var lista = jQuery('#tplcom-docx-desconocidas').empty();
-				jQuery.each(r.desconocidas, function (i, clave) { lista.append(jQuery('<li></li>').text('{[' + clave + ']}')); });
-				jQuery('#tplcom-docx-confirm').data('pendiente', { token: r.token, nombre: r.nombre }).removeClass('tplcom-oculto');
-			} else if (r.status === 200) {
-				aplicarDocxCargado(r.token, r.nombre);
-				mostrarMensajeDocx('alert-success', r.message);
-			} else {
-				mostrarMensajeDocx('alert-danger', r.message, r.desconocidas);
-			}
-		}).fail(function () {
-			mostrarMensajeDocx('alert-danger', 'No fue posible cargar el documento, intente nuevamente.');
-		}).always(function () {
-			jQuery(input).val('');
-		});
+		if (input.files && input.files.length) { enviarDocx(input.files[0]); }
+		jQuery(input).val('');
+	});
+	jQuery('body').on('dragenter dragover', '#tplcom-docx', function (event) {
+		event.preventDefault();
+		jQuery(this).addClass('tplcom-arrastrando');
+	});
+	jQuery('body').on('dragleave drop', '#tplcom-docx', function (event) {
+		event.preventDefault();
+		jQuery(this).removeClass('tplcom-arrastrando');
+		var archivos = event.originalEvent && event.originalEvent.dataTransfer ? event.originalEvent.dataTransfer.files : null;
+		if (event.type === 'drop' && archivos && archivos.length) { enviarDocx(archivos[0]); }
+	});
+	jQuery('body').on('click', '#btn_docx_confirmar', function () {
+		var pendiente = jQuery('#tplcom-docx-confirm').data('pendiente');
+		if (!pendiente) { return; }
+		ocultarMensajesDocx();
+		aplicarDocxCargado(pendiente.token, pendiente.nombre, pendiente.meta);
+		mostrarMensajeDocx('alert-success', 'Documento cargado con etiquetas sin reconocer. Guarde la plantilla para aplicarlo.');
+	});
+	jQuery('body').on('click', '#btn_docx_descartar', function () {
+		var pendiente = jQuery('#tplcom-docx-confirm').data('pendiente');
+		if (pendiente) { descartarDocxTemporal(pendiente.token); }
+		ocultarMensajesDocx();
+		restaurarDocx();
+	});
+	// Quita el Word recién cargado (aún sin guardar) y vuelve al que ya tenía la plantilla
+	jQuery('body').on('click', '#btn_docx_quitar', function () {
+		descartarDocxTemporal(jQuery('#docx_temp').val());
+		jQuery('#docx_temp').val('');
+		jQuery('#docx_nombre').val('');
+		ocultarMensajesDocx();
+		restaurarDocx();
 	});
 	// Con el editor deshabilitado es obligatorio tener un Word (el ya guardado o uno recién cargado)
 	jQuery('body').on('submit', 'form[name="form1"]', function (event) {

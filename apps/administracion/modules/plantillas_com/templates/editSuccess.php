@@ -134,30 +134,54 @@ use_helper('Object','jQuery');
         <div class="form-group tplcom-word-upload">
           <?php $tiene_docx = !$plantillas_com->isNew() && trim($plantillas_com->getUrlDocx()) !== ''; ?>
           <label for="docx_file" class="col-sm-2 control-label">Plantilla Word (.docx)<span class="ctrlreq">(*)</span>:</label>
-          <div class="col-sm-9" id="tplcom-docx"
-               data-url-upload="<?php echo url_for('plantillas_com/uploadDocx') ?>"
-               data-url-discard="<?php echo url_for('plantillas_com/discardDocx') ?>"
-               data-tiene-docx="<?php echo $tiene_docx ? 1 : 0 ?>">
-            <?php echo input_hidden_tag('docx_temp', ''); ?>
-            <?php echo input_hidden_tag('docx_nombre', ''); ?>
-            <input type="file" id="docx_file" class="hidden" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-            <p class="form-control-static">
-              <span id="tplcom-docx-nombre"><?php echo $tiene_docx ? $plantillas_com->getDocxNombre() : '' ?></span>
-              <span class="tplcom-docx-vacio text-muted<?php echo $tiene_docx ? ' tplcom-oculto' : '' ?>">Sin documento Word cargado.</span>
-              <span class="tplcom-docx-pendiente text-warning tplcom-oculto">(pendiente de guardar)</span>
-              <?php if ($tiene_docx): ?>
-                <a class="btn btn-default btn-xs tplcom-docx-descargar" href="<?php echo url_for('plantillas_com/downloadDocx?plantillascom_id=' . $plantillas_com->getPrimaryKey()) ?>">Descargar</a>
-              <?php endif; ?>
-              <button type="button" class="btn btn-primary btn-xs" id="btn_docx_cargar"><?php echo $tiene_docx ? 'Cambiar documento' : 'Cargar documento' ?></button>
-            </p>
-            <div id="tplcom-docx-confirm" class="alert alert-warning tplcom-oculto">
-              <p><strong>El documento tiene etiquetas que no existen en la configuración de este módulo:</strong></p>
-              <ul id="tplcom-docx-desconocidas"></ul>
-              <p>Esas etiquetas no se reemplazarán y quedarán tal cual en el documento final. ¿Desea usar el documento de todas formas?</p>
-              <button type="button" class="btn btn-warning btn-xs" id="btn_docx_confirmar">Usar de todas formas</button>
-              <button type="button" class="btn btn-default btn-xs" id="btn_docx_descartar">Descartar documento</button>
+          <div class="col-sm-9">
+            <div id="tplcom-docx" class="tplcom-docx" data-estado="<?php echo $tiene_docx ? 'guardado' : 'vacio' ?>"
+                 data-url-upload="<?php echo url_for('plantillas_com/uploadDocx') ?>"
+                 data-url-discard="<?php echo url_for('plantillas_com/discardDocx') ?>"
+                 data-tiene-docx="<?php echo $tiene_docx ? 1 : 0 ?>"
+                 data-max-bytes="<?php echo plantillas_comActions::DOCX_MAX_BYTES ?>"
+                 data-nombre-guardado="<?php echo $tiene_docx ? $plantillas_com->getDocxNombre() : '' ?>"
+                 data-meta-guardada="<?php echo $tiene_docx ? $plantillas_com->getDocxResumen() : '' ?>">
+              <?php echo input_hidden_tag('docx_temp', ''); ?>
+              <?php echo input_hidden_tag('docx_nombre', ''); ?>
+              <input type="file" id="docx_file" class="hidden" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+
+              <div class="tplcom-drop">
+                <i class="entypo-upload-cloud tplcom-drop-ico"></i>
+                <p class="tplcom-drop-titulo">Arrastre aqu&iacute; la plantilla en Word</p>
+                <p class="tplcom-drop-ayuda">o seleccione el archivo desde su equipo. Solo .docx, m&aacute;ximo <?php echo (int) (plantillas_comActions::DOCX_MAX_BYTES / 1048576) ?> MB.</p>
+                <button type="button" class="btn btn-default btn-sm" id="btn_docx_cargar"><i class="entypo-upload"></i> Seleccionar documento</button>
+              </div>
+
+              <div class="tplcom-archivo">
+                <div class="tplcom-archivo-ico"><i class="entypo-doc-text"></i></div>
+                <div class="tplcom-archivo-info">
+                  <p class="tplcom-archivo-nombre">
+                    <span id="tplcom-docx-nombre"><?php echo $tiene_docx ? $plantillas_com->getDocxNombre() : '' ?></span>
+                    <span class="tplcom-chip tplcom-chip-pendiente">Pendiente de guardar</span>
+                    <span class="tplcom-chip tplcom-chip-guardado">Guardado</span>
+                  </p>
+                  <div class="tplcom-progreso"><div class="tplcom-progreso-barra"></div></div>
+                  <p class="tplcom-archivo-meta" id="tplcom-docx-meta"><?php echo $tiene_docx ? $plantillas_com->getDocxResumen() : '' ?></p>
+                </div>
+                <div class="tplcom-archivo-acciones">
+                  <?php if ($tiene_docx): ?>
+                    <a class="btn btn-default btn-xs tplcom-btn-descargar" href="<?php echo url_for('plantillas_com/downloadDocx?plantillascom_id=' . $plantillas_com->getPrimaryKey()) ?>"><i class="entypo-download"></i> Descargar</a>
+                  <?php endif; ?>
+                  <button type="button" class="btn btn-default btn-xs tplcom-btn-quitar" id="btn_docx_quitar" aria-label="Quitar documento cargado"><i class="entypo-cancel"></i> Quitar</button>
+                  <button type="button" class="btn btn-default btn-xs tplcom-btn-cambiar" id="btn_docx_cambiar"><i class="entypo-arrows-ccw"></i> Cambiar</button>
+                </div>
+              </div>
+
+              <div id="tplcom-docx-confirm" class="tplcom-aviso tplcom-oculto">
+                <p class="tplcom-aviso-titulo"><i class="entypo-attention"></i> <span id="tplcom-docx-confirm-titulo">El documento tiene etiquetas que no existen en este m&oacute;dulo</span></p>
+                <p class="tplcom-aviso-texto" id="tplcom-docx-desconocidas"></p>
+                <p class="tplcom-aviso-texto">Quedar&aacute;n tal cual en el documento final, sin reemplazarse.</p>
+                <button type="button" class="btn btn-warning btn-xs" id="btn_docx_confirmar">Usar de todas formas</button>
+                <button type="button" class="btn btn-default btn-xs" id="btn_docx_descartar">Descartar documento</button>
+              </div>
+              <div id="tplcom-docx-msg" class="alert tplcom-oculto"></div>
             </div>
-            <div id="tplcom-docx-msg" class="alert tplcom-oculto"></div>
           </div>
         </div>
         <?php if(empty($plantillas_com->getGeneraServicio())) { ?>

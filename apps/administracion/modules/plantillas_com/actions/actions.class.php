@@ -367,7 +367,7 @@ class plantillas_comActions extends sfActions
     //**********************************************************************************************************
     // Las etiquetas desconocidas no bloquean: el usuario decide en pantalla si usa el documento o lo descarta
     $mensaje = count74($desconocidas) > 0 ? 'El documento tiene etiquetas que no corresponden a las variables del módulo.' : 'Documento Word cargado. Guarde la plantilla para aplicarlo.';
-    return $this->renderJsonDocx(200, $mensaje, array('token' => $token, 'nombre' => $nombre, 'etiquetas' => count74($etiquetas), 'desconocidas' => array_values($desconocidas)));
+    return $this->renderJsonDocx(200, $mensaje, array('token' => $token, 'nombre' => $nombre, 'etiquetas' => count74($etiquetas), 'desconocidas' => array_values($desconocidas), 'tamano' => simad_util::formatBytes((int) $file['size'])));
   }
 
   /**

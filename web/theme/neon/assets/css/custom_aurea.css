@@ -1744,3 +1744,37 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
 .tplcom-copiar { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; padding: 0; border: 1px solid #cfd8dc; border-radius: 3px; background: #fff; color: #5f7a89; font-size: 13px; line-height: 20px; text-align: center; cursor: pointer; }
 .tplcom-copiar:hover, .tplcom-copiar:focus { border-color: #1b6d8f; color: #1b6d8f; outline: none; }
 .tplcom-copiar.tplcom-copiado { border-color: #2e8b57; background: #2e8b57; color: #fff; }
+
+/* Componente de carga del Word de la plantilla: zona de arrastre y tarjeta por estados */
+.tplcom-docx { position: relative; }
+.tplcom-docx .tplcom-drop { padding: 22px 16px; border: 1.5px dashed #b6c2c9; border-radius: 12px; background: #f7f9fa; text-align: center; transition: border-color .15s, background .15s; }
+.tplcom-docx.tplcom-arrastrando .tplcom-drop { border-color: #1b6d8f; background: #e9f2f8; }
+.tplcom-drop-ico { display: block; margin-bottom: 4px; color: #5f7a89; font-size: 32px; }
+.tplcom-drop-titulo { margin: 0 0 2px; color: #333; font-size: 14px; font-weight: bold; }
+.tplcom-drop-ayuda { margin: 0 0 10px; color: #6b7a83; font-size: 12px; }
+.tplcom-docx .tplcom-archivo { display: none; align-items: center; padding: 12px 14px; border: 1px solid #dfe6ea; border-radius: 12px; background: #fff; }
+.tplcom-archivo-ico { display: flex; flex: none; align-items: center; justify-content: center; width: 40px; height: 40px; margin-right: 12px; border-radius: 8px; background: #e9f2f8; color: #1b6d8f; font-size: 22px; }
+.tplcom-archivo-info { flex: 1; min-width: 0; }
+.tplcom-archivo-nombre { margin: 0; color: #333; font-size: 14px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tplcom-archivo-meta { margin: 2px 0 0; color: #6b7a83; font-size: 12px; }
+.tplcom-archivo-acciones { flex: none; margin-left: 12px; white-space: nowrap; }
+.tplcom-chip { display: none; margin-left: 8px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: bold; vertical-align: middle; }
+.tplcom-chip-pendiente { background: #fcf3d6; color: #8a6d0b; }
+.tplcom-chip-guardado { background: #dff1e4; color: #1f6b3a; }
+.tplcom-progreso { display: none; height: 6px; margin-top: 8px; border-radius: 3px; background: #e6ecef; overflow: hidden; }
+.tplcom-progreso-barra { width: 0; height: 100%; background: #1b6d8f; transition: width .15s; }
+.tplcom-archivo-acciones .btn { display: none; }
+.tplcom-docx[data-estado="vacio"] .tplcom-archivo, .tplcom-docx[data-estado="revisar"] .tplcom-archivo { display: none; }
+.tplcom-docx[data-estado="cargando"] .tplcom-drop, .tplcom-docx[data-estado="pendiente"] .tplcom-drop, .tplcom-docx[data-estado="guardado"] .tplcom-drop, .tplcom-docx[data-estado="revisar"] .tplcom-drop { display: none; }
+.tplcom-docx[data-estado="cargando"] .tplcom-archivo, .tplcom-docx[data-estado="pendiente"] .tplcom-archivo, .tplcom-docx[data-estado="guardado"] .tplcom-archivo { display: flex; }
+.tplcom-docx[data-estado="cargando"] .tplcom-progreso { display: block; }
+.tplcom-docx[data-estado="pendiente"] .tplcom-archivo { border-color: #e6c75a; }
+.tplcom-docx[data-estado="pendiente"] .tplcom-archivo-ico { background: #fcf3d6; color: #8a6d0b; }
+.tplcom-docx[data-estado="pendiente"] .tplcom-chip-pendiente, .tplcom-docx[data-estado="guardado"] .tplcom-chip-guardado { display: inline-block; }
+.tplcom-docx[data-estado="pendiente"] .tplcom-btn-quitar, .tplcom-docx[data-estado="pendiente"] .tplcom-btn-cambiar, .tplcom-docx[data-estado="guardado"] .tplcom-btn-descargar, .tplcom-docx[data-estado="guardado"] .tplcom-btn-cambiar { display: inline-block; }
+.tplcom-docx[data-estado="guardado"] .tplcom-archivo-ico { background: #dff1e4; color: #1f6b3a; }
+.tplcom-docx .tplcom-aviso { margin-top: 0; padding: 12px 14px; border: 1px solid #e6c75a; border-radius: 12px; background: #fcf3d6; color: #6e560a; }
+.tplcom-aviso-titulo { margin: 0 0 6px; font-size: 14px; font-weight: bold; }
+.tplcom-aviso-texto { margin: 0 0 8px; font-size: 13px; }
+.tplcom-aviso-texto code { margin: 0 2px; background: #fff; }
+.tplcom-docx #tplcom-docx-msg { margin: 8px 0 0; }
