@@ -115,6 +115,35 @@ use_helper('Object','jQuery');
         </div>
         </div>
 
+        <div class="form-group tplcom-word-section">
+          <label for="lbUsaEditor" class="col-sm-2 control-label">Habilitar editor de texto:</label>
+          <div class="col-sm-1">
+            <?php echo object_checkbox_tag($plantillas_com, 'getUsaEditor', array('class' => 'form-control input-sm icheck')); ?>
+          </div>
+          <label for="lbDocxBase" class="col-sm-2 control-label">Plantilla Word (.docx):</label>
+          <div class="col-sm-6" id="tplcom-docx"
+               data-plantilla="<?php echo $plantillas_com->getPrimaryKey() ?>"
+               data-url-upload="<?php echo url_for('plantillas_com/uploadDocx') ?>"
+               data-url-remove="<?php echo url_for('plantillas_com/removeDocx') ?>">
+            <?php if (!$plantillas_com->getPrimaryKey()): ?>
+              <p class="form-control-static text-muted">Guarde la plantilla para poder cargar el documento Word.</p>
+            <?php else: ?>
+              <?php $tiene_docx = trim($plantillas_com->getUrlDocx()) !== ''; ?>
+              <input type="file" id="docx_file" class="hidden" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+              <p class="form-control-static">
+                <span class="tplcom-docx-tiene<?php echo $tiene_docx ? '' : ' tplcom-oculto' ?>">
+                  <span id="tplcom-docx-nombre"><?php echo $plantillas_com->getDocxNombre() ?></span>
+                  <a class="btn btn-default btn-xs" href="<?php echo url_for('plantillas_com/downloadDocx?plantillascom_id=' . $plantillas_com->getPrimaryKey()) ?>">Descargar</a>
+                  <button type="button" class="btn btn-danger btn-xs" id="btn_docx_quitar">Quitar</button>
+                </span>
+                <span class="tplcom-docx-vacio text-muted<?php echo $tiene_docx ? ' tplcom-oculto' : '' ?>">Sin documento Word cargado.</span>
+                <button type="button" class="btn btn-primary btn-xs" id="btn_docx_cargar">Cargar / reemplazar</button>
+              </p>
+              <div id="tplcom-docx-msg" class="alert tplcom-oculto"></div>
+            <?php endif; ?>
+          </div>
+        </div>
+
         <?php if(empty($plantillas_com->getGeneraServicio())) { ?>
           <div class="form-group servfieldstplcom" style="display: none;">
           </div>
@@ -175,89 +204,7 @@ use_helper('Object','jQuery');
           </div>
           <!-- Contents -->
           <div class="col-sm-3">
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <div class="panel-title">C&oacute;digos Etiquetas</div>
-              </div>
-              <div class="panel-body with-table">
-                <table class="table table-bordered table-hover table-striped responsive">
-                  <tbody>
-                    <tr>
-                      <td>{[FIRMAS_NOMBRE]}</td>
-                      <td>{[FIRMAS_CARGOS]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[FIRMAS_DEPENDENCIA]}</td>
-                      <td>{[FIRMA_MECANICA]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[FIRMAS_REGIONAL]}</td>
-                      <td>{[DESTINO_PREFIJO]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[DESTINO_NOMBRE]}</td>
-                      <td>{[DESTINO_FUNCIONARIO]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[DESTINO_EMAIL]}</td>
-                      <td>{[DESTINO_IDENTIFICACION]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[DESTINO_DIRECCION]}</td>
-                      <td>{[DESTINO_CIUDAD]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[RADICADOR_NOMBRE]}</td>
-                      <td>{[RADICADOR_CARGO]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[RADICADOR_AREA]}</td>
-                      <td>{[RADICADOR_FMECANICA]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[UPROYECTA_NOMBRE]}</td>
-                      <td>{[UPROYECTA_CARGO]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[UPROYECTA_AREA]}</td>
-                      <td>{[UPROYECTA_FMECANICA]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[REVISOR_NOMBRE]}</td>
-                      <td>{[REVISOR_CARGO]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[REVISOR_AREA]}</td>
-                      <td>{[REVISOR_FMECANICA]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[APROBADOR_NOMBRE]}</td>
-                      <td>{[APROBADOR_CARGO]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[APROBADOR_AREA]}</td>
-                      <td>{[APROBADOR_FMECANICA]}</td>
-                    </tr>                    
-                    <tr>
-                      <td>{[FECHA_COM]}</td>
-                      <td>{[ASUNTO_COM]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[RADICADO_COM]}</td>
-                      <td>{[ANEXOS_COM]}</td>
-                    </tr>
-                    <tr>
-                      <td>{[VIGENCIA_COM]}</td>
-                      <td>{[AREA_CODIGO_COM]}</td>
-                    </tr>
-					<tr>
-                      <td>{[DESTINO_CARGO]}</td>
-                      <td>{[CODEBAR_COM]}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <?php include_partial('plantillas_com/panel_etiquetas', array('etiquetas_por_modulo' => $etiquetas_por_modulo)); ?>
           </div>
         </div>
 

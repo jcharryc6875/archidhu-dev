@@ -66,8 +66,84 @@ class PlantillasCom extends BasePlantillasCom {
 		return $cantidad === false ? 0 : $cantidad;
 	}
 
+	/**
+	 * Carpeta (fuera de web/) donde se guardan los Word base de las plantillas.
+	 */
+	public static function getDocxStorageDir(){
+		$dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(75)->getValortexto() . 'uploads');
+		return simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . 'plantillas');
+	}
+
+	/**
+	 * Ruta real del Word base si existe y esta dentro de la carpeta de almacenamiento; null en otro caso.
+	 */
+	public function getDocxBasePath(){
+		$url = trim((string)$this->getUrlDocx());
+		if($url === ''){
+			return null;
+		}
+		$real = realpath($url);
+		$raiz = realpath(self::getDocxStorageDir());
+		if($real === false || $raiz === false || strpos($real, $raiz . DIRECTORY_SEPARATOR) !== 0 || !is_file($real)){
+			return null;
+		}
+		return $real;
+	}
+
+	public function hasDocxBase(){
+		return $this->getDocxBasePath() !== null;
+	}
+
+	/**
+	 * Propiedades que identifican al Word generado con esta plantilla; se validan al volver a cargarlo.
+	 */
+	private function buildWordCustomProps($metadatos){
+		//version original, permite cualquier documento sin importar que sea de la comunicacion
+		$uuid = $this->getPrimaryKey().'#'.$this->getModuloId();
+		$plantillaId = $this->getPrimaryKey();
+		$borradorId = $metadatos['comobject_id'];
+		$hmac = $this->makeHmac($uuid, $plantillaId, $metadatos['periodo_id'], $this->getModuloId());
+		return array(
+			'xd_uuid' => hash('sha256', (string)$uuid),
+			'xd_hmac' => $hmac,
+			'xd_borrador_id' => hash('sha256', (string)$borradorId),
+			'xd_plantilla_id' => hash('sha256', (string)$plantillaId),
+		);
+	}
+
+	private function buildWordFilename($metadatos){
+		$borradorId = $metadatos['comobject_id'];
+		if($this->getModuloId() == ModulesEnable::ComEnviada){
+			$tipo = 'ComEnviada';
+		}elseif($this->getModuloId() == ModulesEnable::ActosAdministrativos){
+			$tipo = 'ActoAdmin';
+		}elseif($this->getModuloId() == ModulesEnable::ComInterna){
+			$tipo = 'ComInterna';
+		}else{
+			$tipo = 'Generica';
+		}
+		return 'doc_'.uniqid()."_{$tipo}_{$borradorId}_".$metadatos['periodo_id'].'.docx';
+	}
+
+	/**
+	 * Copia el Word base tal cual (membrete, estilos, tablas, encabezados y pies) y le agrega las
+	 * propiedades de identificacion, para que el usuario lo descargue, edite y vuelva a cargar.
+	 */
+	private function generateWordFromDocxBase($savePath, $metadatos){
+		$fullpath = $savePath.DIRECTORY_SEPARATOR.$this->buildWordFilename($metadatos);
+		if(!copy($this->getDocxBasePath(), $fullpath)){
+			return array('isError' => true, 'message' => 'No se pudo copiar el documento Word de la plantilla');
+		}
+		simad_util::setCustomPropsInDocx($fullpath, $this->buildWordCustomProps($metadatos));
+		return array('isError' => false, 'message' => 'Plantilla generada exitosamente', 'path_plantilla' => $fullpath);
+	}
+
 	public function generateWordByPlantilla($savePath, $metadatos = array()){
 		try {
+			if($this->hasDocxBase()){
+				return $this->generateWordFromDocxBase($savePath, $metadatos);
+			}
+			//*********************************************************************************
 			$phpWord = new \PhpOffice\PhpWord\PhpWord();
 			//*********************************************************************************
 			// Adding Text element to the Section having font styled by default...
@@ -123,18 +199,7 @@ class PlantillasCom extends BasePlantillasCom {
 			$htmlLimpio = simad_util::sanitizeForPhpWord($this->getContents());
 			Html::addHtml($section, $htmlLimpio, false, false);
 			//*********************************************************************************
-			//version original, solo permite documento de la comunicacion
-			//$uuid = $metadatos['comobject_id'].'#'.$this->getPrimaryKey();
-			
-			//version original, permite cualquier documento sin importar que sea de la comunicacion
-			$uuid = $this->getPrimaryKey().'#'.$this->getModuloId();
-
-			$plantillaId = $this->getPrimaryKey();
-			$modulo_id = $this->getModuloId();
-			$borradorId = $metadatos['comobject_id'];
-			$periodoAt = $metadatos['periodo_id'];
-			//*********************************************************************************
-			$hmac = $this->makeHmac($uuid, $plantillaId, $periodoAt, $modulo_id);
+			$custom_props = $this->buildWordCustomProps($metadatos);
 			//*********************************************************************************
 			// Adding Text element with font customized inline...
 			$docInfo = $phpWord->getDocInfo();
@@ -144,22 +209,11 @@ class PlantillasCom extends BasePlantillasCom {
 			$docInfo->setCreated(time());
 			//*********************************************************************************
 			//add custom properties
-			$docInfo->setCustomProperty('xd_uuid', hash('sha256', (string)$uuid));
-			$docInfo->setCustomProperty('xd_hmac', $hmac);
-			$docInfo->setCustomProperty('xd_borrador_id', hash('sha256', (string)$borradorId));
-			$docInfo->setCustomProperty('xd_plantilla_id', hash('sha256', (string)$plantillaId));
-			//*********************************************************************************
-			if($this->getModuloId() == ModulesEnable::ComEnviada){
-				$filename = 'doc_'.uniqid()."_ComEnviada_{$borradorId}_".$metadatos['periodo_id'].'.docx';
-			}elseif($this->getModuloId() == ModulesEnable::ActosAdministrativos){
-				$filename = 'doc_'.uniqid()."_ActoAdmin_{$borradorId}_".$metadatos['periodo_id'].'.docx';
-			}elseif($this->getModuloId() == ModulesEnable::ComInterna){
-				$filename = 'doc_'.uniqid()."_ComInterna_{$borradorId}_".$metadatos['periodo_id'].'.docx';
-			}else{
-				$filename = 'doc_'.uniqid()."_Generica_{$borradorId}_".$metadatos['periodo_id'].'.docx';
+			foreach($custom_props as $prop_name => $prop_value){
+				$docInfo->setCustomProperty($prop_name, $prop_value);
 			}
 			//*********************************************************************************
-			$fullpath = $savePath.DIRECTORY_SEPARATOR.$filename;
+			$fullpath = $savePath.DIRECTORY_SEPARATOR.$this->buildWordFilename($metadatos);
 			IOFactory::createWriter($phpWord, 'Word2007')->save($fullpath);
 			//*********************************************************************************
 			if(file_exists($fullpath)){

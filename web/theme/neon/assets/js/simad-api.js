@@ -270,6 +270,7 @@ jQuery(document).ready(function ($) {
 		} else {
 			jQuery(".tmpresponse").show();
 			jQuery("#tplcomrad").hide();
+			aplicarModoEditorPlantilla();
 		}
 	});
 
@@ -795,6 +796,10 @@ jQuery(document).ready(function ($) {
 	};
 
 	$.setTplComContents = function (contents) {
+		// UARIV-202609: con una plantilla sin editor no se copia su contenido HTML al editor
+		if (jQuery('body').hasClass('tplcom-sin-editor-activo')) {
+			return;
+		}
 		if (CKEDITOR.instances.contenido.getData() == '') {
 			CKEDITOR.instances.contenido.setData(contents);
 		} else if (confirm("Si continua se remplazara el contenido de la comunicacion") == true) {
@@ -3403,6 +3408,102 @@ jQuery(document).ready(function ($) {
 		var version_a_id = $wrapper.find('select[name="version_a_id"]').val();
 		var version_b_id = $wrapper.find('select[name="version_b_id"]').val();
 		window.open(url + '?version_a_id=' + encodeURIComponent(version_a_id) + '&version_b_id=' + encodeURIComponent(version_b_id), '_blank');
+	});
+
+	// UARIV-202609: panel de etiquetas de la plantilla, filtrado por el módulo seleccionado
+	function mostrarEtiquetasPlantilla() {
+		var modulo = jQuery('form[name="form1"] #modulo_id').val();
+		var panel = jQuery('.tplcom-etiquetas').hide().filter('[data-modulo="' + modulo + '"]').show();
+		jQuery('.tplcom-etiquetas-ayuda').toggle(panel.length === 0);
+		// Editor y Word base solo aplican a interna (2), enviada (4) y actos administrativos (17)
+		jQuery('.tplcom-word-section').toggle(jQuery.inArray(String(modulo), ['2', '4', '17']) !== -1);
+	}
+	if (jQuery('.tplcom-etiquetas-ayuda, .tplcom-word-section').length) {
+		mostrarEtiquetasPlantilla();
+		jQuery('body').on('change', 'form[name="form1"] #modulo_id', mostrarEtiquetasPlantilla);
+	}
+
+	// UARIV-202609: plantillas sin editor de texto. Oculta el editor y fuerza "Respuesta Word" mientras
+	// la plantilla elegida (ids en #tplcom-sin-editor) tenga deshabilitado el editor.
+	function aplicarModoEditorPlantilla() {
+		var marca = jQuery('#tplcom-sin-editor');
+		if (!marca.length) { return; }
+		var seleccionada = parseInt(jQuery('#' + marca.data('select')).val(), 10);
+		var sinEditor = jQuery.inArray(seleccionada, marca.data('ids') || []) !== -1;
+		var interruptor = jQuery('.make-switch.tploptionset[data-endpoint*="fileTemplateWord"]');
+		jQuery('body').toggleClass('tplcom-sin-editor-activo', sinEditor);
+		if (!interruptor.length) { return; }
+		if (sinEditor) {
+			if (!interruptor.find('input:checkbox').prop('checked')) {
+				interruptor.data('forzado', true).bootstrapSwitch('setState', true);
+			}
+			interruptor.bootstrapSwitch('setActive', false);
+		} else {
+			interruptor.bootstrapSwitch('setActive', true);
+			if (interruptor.data('forzado')) {
+				interruptor.data('forzado', false).bootstrapSwitch('setState', false);
+			}
+		}
+	}
+	if (jQuery('#tplcom-sin-editor').length) {
+		aplicarModoEditorPlantilla();
+		jQuery(document).on('change', '#plantillascom_id, #tipocominterna_id', aplicarModoEditorPlantilla);
+	}
+
+	// UARIV-202609: carga, reemplazo y borrado del Word base de la plantilla
+	function mostrarMensajeDocx(tipo, texto, lista) {
+		var caja = jQuery('#tplcom-docx-msg').removeClass('alert-success alert-danger tplcom-oculto').addClass(tipo).text(texto);
+		if (lista && lista.length) {
+			var ul = jQuery('<ul></ul>');
+			jQuery.each(lista, function (i, clave) { ul.append(jQuery('<li></li>').text('{[' + clave + ']}')); });
+			caja.append(ul);
+		}
+	}
+	function actualizarEstadoDocx(nombre) {
+		jQuery('#tplcom-docx-nombre').text(nombre || '');
+		jQuery('.tplcom-docx-tiene').toggleClass('tplcom-oculto', !nombre);
+		jQuery('.tplcom-docx-vacio').toggleClass('tplcom-oculto', !!nombre);
+	}
+	jQuery('body').on('click', '#btn_docx_cargar', function () {
+		jQuery('#docx_file').trigger('click');
+	});
+	jQuery('body').on('change', '#docx_file', function () {
+		var input = this;
+		if (!input.files || !input.files.length) { return; }
+		var cont = jQuery('#tplcom-docx');
+		var datos = new FormData();
+		datos.append('plantillascom_id', cont.data('plantilla'));
+		datos.append('docx_file', input.files[0]);
+		jQuery.ajax({
+			url: cont.data('url-upload'), type: 'POST', data: datos, processData: false, contentType: false, dataType: 'json'
+		}).done(function (r) {
+			if (r.status === 200) {
+				actualizarEstadoDocx(r.nombre);
+				mostrarMensajeDocx('alert-success', r.message);
+			} else {
+				mostrarMensajeDocx('alert-danger', r.message, r.desconocidas);
+			}
+		}).fail(function () {
+			mostrarMensajeDocx('alert-danger', 'No fue posible cargar el documento, intente nuevamente.');
+		}).always(function () {
+			jQuery(input).val('');
+		});
+	});
+	jQuery('body').on('click', '#btn_docx_quitar', function () {
+		if (!window.confirm('¿Desea quitar el documento Word de esta plantilla?')) { return; }
+		var cont = jQuery('#tplcom-docx');
+		jQuery.ajax({
+			url: cont.data('url-remove'), type: 'POST', data: { plantillascom_id: cont.data('plantilla') }, dataType: 'json'
+		}).done(function (r) {
+			if (r.status === 200) {
+				actualizarEstadoDocx('');
+				mostrarMensajeDocx('alert-success', r.message);
+			} else {
+				mostrarMensajeDocx('alert-danger', r.message);
+			}
+		}).fail(function () {
+			mostrarMensajeDocx('alert-danger', 'No fue posible eliminar el documento, intente nuevamente.');
+		});
 	});
 });
 

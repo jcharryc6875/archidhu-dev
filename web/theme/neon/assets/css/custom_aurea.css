@@ -1700,3 +1700,14 @@ body .page-container .sidebar-menu #main-menu li ul > li ul > li ul > li > a:hov
     margin-bottom: 24px;
     color: #777;
 }
+
+/* UARIV-202609: panel de etiquetas de plantillas */
+.tplcom-etiquetas { display: none; max-height: 420px; overflow-y: auto; }
+.tplcom-etiquetas .table { margin-bottom: 0; font-size: 12px; }
+.tplcom-etiquetas-grupo th { background: #f5f5f5; }
+
+.tplcom-oculto { display: none; }
+.tplcom-word-section { display: none; }
+#tplcom-docx-msg ul { margin: 6px 0 0; padding-left: 18px; }
+
+.tplcom-sin-editor-activo .tmpresponse { display: none !important; }

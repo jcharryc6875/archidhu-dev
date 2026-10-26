@@ -2492,6 +2492,7 @@ class com_enviadaActions extends sfActions
     public function executeCreate()
     {
         $this->SetDataCreateOption();
+        $this->plantillas_sin_editor_json = json_encode(PlantillasComPeer::getIdsSinEditor(ModulesEnable::ComEnviada));
         $this->setTemplate('edit');
     }
 
@@ -4921,7 +4922,10 @@ class com_enviadaActions extends sfActions
         }
         //*********************************************************************************************************
         $contenido = trim($this->getRequestParameter('contenido'));
-        $com_enviada->setContenido($contenido);
+        // UARIV-202609: con una plantilla sin editor el documento sale solo del Word de la plantilla
+        $plantilla_com = $com_enviada->getPlantillascomId() ? $com_enviada->getPlantillasCom() : null;
+        $forzar_word = $isNewCom && $plantilla_com && !$plantilla_com->getUsaEditor();
+        $com_enviada->setContenido($forzar_word ? null : $contenido);
         //*********************************************************************************************************
         if ($this->getRequestParameter('fecha_prorrogra')) {
             $com_enviada->setFechaProrrogra($this->getRequestParameter('fecha_prorrogra'));
@@ -4960,7 +4964,7 @@ class com_enviadaActions extends sfActions
                     }
                 }
             }
-        } else if ($this->getRequestParameter(md5('radComByWord')) && !empty($com_enviada->getPlantillascomId())) {
+        } else if (($this->getRequestParameter(md5('radComByWord')) || $forzar_word) && !empty($com_enviada->getPlantillascomId())) {
             $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(29)->getValortexto() . 'uploads');
             $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
             //*****************************************************************************************************

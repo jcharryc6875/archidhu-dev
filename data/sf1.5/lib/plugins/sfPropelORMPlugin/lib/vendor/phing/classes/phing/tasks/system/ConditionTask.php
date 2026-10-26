@@ -1,7 +1,7 @@
 <?php
 /*
- *  $Id$  
- * 
+ *  $Id: 6c015291a1baa566c81811171f8dc3765d23ec83 $
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -32,43 +32,80 @@ require_once 'phing/tasks/system/condition/ConditionBase.php';
  *
  * @author    Andreas Aderhold <andi@binarycloud.com>
  * @copyright 2001,2002 THYRELL. All rights reserved
- * @version   $Id$
- * @access    public
+ * @version   $Id: 6c015291a1baa566c81811171f8dc3765d23ec83 $
  * @package   phing.tasks.system
  */
-class ConditionTask extends ConditionBase {
-
+class ConditionTask extends ConditionBase
+{
+    /** @var string $property */
     private $property;
+
+    /** @var string $value */
     private $value = "true";
 
+    /** @var string $alternative */
+    private $alternative;
+    
     /**
      * The name of the property to set. Required.
+     * @param string $p
+     * @return void
      */
-    function setProperty($p) {
+    public function setProperty($p)
+    {
         $this->property = $p;
     }
 
     /**
      * The value for the property to set. Defaults to "true".
+     * @param string $v
+     * @return void
      */
-    function setValue($v) {
+    public function setValue($v)
+    {
         $this->value = $v;
     }
 
     /**
-     * See whether our nested condition holds and set the property.
+     * The value for the property to set, if condition evaluates to false.
+     * If this attribute is not specified, the property will not be set.
+     *
+     * @param string $v 
      */
-    function main() {
-
+    public function setElse($v)
+    {
+        $this->alternative = $v;
+    }
+    
+    /**
+     * See whether our nested condition holds and set the property.
+     * @throws BuildException
+     * @return void
+     */
+    public function main()
+    {
         if ($this->countConditions() > 1) {
-            throw new BuildException("You must not nest more than one condition into <condition>");
+            throw new BuildException(
+                "You must not nest more than one condition into <condition>"
+            );
         }
         if ($this->countConditions() < 1) {
-            throw new BuildException("You must nest a condition into <condition>");
+            throw new BuildException(
+                "You must nest a condition into <condition>"
+            );
         }
-        $cs = $this->getIterator();        
+        if ($this->property === null) {
+            throw new BuildException('The property attribute is required.');
+        }
+        $cs = $this->getIterator();
         if ($cs->current()->evaluate()) {
-            $this->project->setProperty($this->property, $this->value);
+            $this->log("Condition true; setting " . $this->property . " to " . $this->value, Project::MSG_DEBUG);
+            $this->project->setNewProperty($this->property, $this->value);
+        } elseif ($this->alternative !== null) {
+            $this->log("Condition false; setting " . $this->property . " to " . $this->alternative, Project::MSG_DEBUG);
+            $this->project->setNewProperty($this->property, $this->alternative);
+        } else {
+            $this->log('Condition false; not setting ' . $this->property, Project::MSG_DEBUG);
         }
     }
 }

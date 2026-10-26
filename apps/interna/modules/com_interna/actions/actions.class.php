@@ -1865,6 +1865,7 @@ class com_internaActions extends sfActions
     public function executeCreate()
     {
         $this->SetDataCreationCom();
+        $this->plantillas_sin_editor_json = json_encode(TipoComInternaPeer::getIdsSinEditor());
         $this->setTemplate('edit');
     }
 
@@ -3719,7 +3720,10 @@ class com_internaActions extends sfActions
         $com_interna->setFechaCreacion(date("Y-m-d G:i:s"));
         $com_interna->setReferencia($this->getRequestParameter('referencia'));
         $contenido = $this->getRequestParameter('contenido');
-        $com_interna->setContenido($this->cleanStringTable($contenido));
+        // UARIV-202609: con una plantilla sin editor el documento sale solo del Word de la plantilla
+        $plantilla_com = $com_interna->getTipoComInterna() ? $com_interna->getTipoComInterna()->getPlantillasCom() : null;
+        $forzar_word = !$this->getRequestParameter('cominterna_id') && $plantilla_com && !$plantilla_com->getUsaEditor();
+        $com_interna->setContenido($forzar_word ? null : $this->cleanStringTable($contenido));
         $com_interna->setRadicado("Sin Radicar");
         $com_interna->setEsCopia(0);
         $com_interna->setFolios(trim($this->getRequestParameter('folios')) ? trim($this->getRequestParameter('folios')) : 1);
@@ -3776,7 +3780,7 @@ class com_internaActions extends sfActions
                     }
                 }
             }
-        } else if ($this->getRequestParameter(md5('radComByWord')) && !empty($com_interna->getTipoComInterna()->getPlantillascomId())) {
+        } else if (($this->getRequestParameter(md5('radComByWord')) || $forzar_word) && !empty($com_interna->getTipoComInterna()->getPlantillascomId())) {
             $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(25)->getValortexto() . 'uploads');
             $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
             //*****************************************************************************************************

@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id$
+ *  $Id: 4bcc38b1c101908945d7def7ddb3a8c41976c91c $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,7 +18,7 @@
  * and is licensed under the LGPL. For more information please see
  * <http://phing.info>.
  */
- 
+
 require_once 'phing/Task.php';
 require_once 'phing/tasks/ext/git/GitBaseTask.php';
 
@@ -26,7 +26,7 @@ require_once 'phing/tasks/ext/git/GitBaseTask.php';
  * Wrapper aroung git-branch
  *
  * @author Victor Farazdagi <simple.square@gmail.com>
- * @version $Id$
+ * @version $Id: 4bcc38b1c101908945d7def7ddb3a8c41976c91c $
  * @package phing.tasks.ext.git
  * @see VersionControl_Git
  * @since 2.4.3
@@ -88,6 +88,9 @@ class GitBranchTask extends GitBaseTask
         'M' => false,
     );
 
+    /** @var string $setUpstreamTo */
+    private $setUpstreamTo = '';
+
     /**
      * The main entry point for the task
      */
@@ -108,9 +111,16 @@ class GitBranchTask extends GitBaseTask
         }
 
         $client = $this->getGitClient(false, $this->getRepository());
+
         $command = $client->getCommand('branch');
+
+        if (version_compare($client->getGitVersion(), '2.15.0', '<')) {
+            $command->setOption('set-upstream', $this->isSetUpstream());
+        } elseif ($this->isSetUpstreamTo()) {
+            $command->setOption('set-upstream-to', $this->getSetUpstreamTo());
+        }
+
         $command
-            ->setOption('set-upstream', $this->isSetUpstream())
             ->setOption('no-track', $this->isNoTrack())
             ->setOption('force', $this->isForce());
         if ($this->isNoTrack() == false) {
@@ -139,100 +149,176 @@ class GitBranchTask extends GitBaseTask
         try {
             $output = $command->execute();
         } catch (Exception $e) {
-            throw new BuildException('Task execution failed.', $e);
+            throw new BuildException('Task execution failed with git command "' . $command->createCommandString() . '""', $e);
         }
 
         $this->log(
-            sprintf('git-branch: branch "%s" repository', $this->getRepository()), 
-            Project::MSG_INFO); 
-        $this->log('git-branch output: ' . trim($output), Project::MSG_INFO);
+            sprintf('git-branch: branch "%s" repository', $this->getRepository()),
+            Project::MSG_INFO
+        );
+        $this->log('git-branch output: ' . str_replace('\'', '', trim($output)), Project::MSG_INFO);
     }
 
+    /**
+     * @param $flag
+     */
     public function setSetUpstream($flag)
     {
         $this->setUpstream = $flag;
     }
 
+    /**
+     * @return bool
+     */
     public function getSetUpstream()
     {
         return $this->setUpstream;
     }
 
+    /**
+     * @return bool
+     */
     public function isSetUpstream()
     {
         return $this->getSetUpstream();
     }
 
+    /**
+     * @param string $branch
+     */
+    public function setSetUpstreamTo($branch)
+    {
+        $this->setUpstreamTo = $branch;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSetUpstreamTo()
+    {
+        return $this->setUpstreamTo;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSetUpstreamTo()
+    {
+        return $this->getSetUpstreamTo() !== '';
+    }
+
+    /**
+     * @param $flag
+     */
     public function setTrack($flag)
     {
         $this->track = $flag;
     }
 
+    /**
+     * @return bool
+     */
     public function getTrack()
     {
         return $this->track;
     }
 
+    /**
+     * @return bool
+     */
     public function isTrack()
     {
         return $this->getTrack();
     }
 
+    /**
+     * @param $flag
+     */
     public function setNoTrack($flag)
     {
         $this->noTrack = $flag;
     }
 
+    /**
+     * @return bool
+     */
     public function getNoTrack()
     {
         return $this->noTrack;
     }
 
+    /**
+     * @return bool
+     */
     public function isNoTrack()
     {
         return $this->getNoTrack();
     }
 
+    /**
+     * @param $flag
+     */
     public function setForce($flag)
     {
         $this->force = $flag;
     }
 
+    /**
+     * @return bool
+     */
     public function getForce()
     {
         return $this->force;
     }
 
+    /**
+     * @return bool
+     */
     public function isForce()
     {
         return $this->getForce();
     }
 
+    /**
+     * @param $branchname
+     */
     public function setBranchname($branchname)
     {
         $this->branchname = $branchname;
     }
 
+    /**
+     * @return string
+     */
     public function getBranchname()
     {
         return $this->branchname;
     }
 
+    /**
+     * @param $startPoint
+     */
     public function setStartPoint($startPoint)
     {
         $this->startPoint = $startPoint;
     }
 
+    /**
+     * @return string
+     */
     public function getStartPoint()
     {
         return $this->startPoint;
     }
 
+    /**
+     * @param $flag
+     */
     public function setDelete($flag)
     {
         $this->extraOptions['d'] = $flag;
     }
-    
+
     public function getDelete()
     {
         return $this->extraOptions['d'];
@@ -243,21 +329,27 @@ class GitBranchTask extends GitBaseTask
         return $this->getDelete();
     }
 
+    /**
+     * @param $flag
+     */
     public function setForceDelete($flag)
     {
         $this->extraOptions['D'] = $flag;
     }
-    
+
     public function getForceDelete()
     {
         return $this->extraOptions['D'];
     }
 
+    /**
+     * @param $flag
+     */
     public function setMove($flag)
     {
         $this->extraOptions['m'] = $flag;
     }
-    
+
     public function getMove()
     {
         return $this->extraOptions['m'];
@@ -268,11 +360,14 @@ class GitBranchTask extends GitBaseTask
         return $this->getMove();
     }
 
+    /**
+     * @param $flag
+     */
     public function setForceMove($flag)
     {
         $this->extraOptions['M'] = $flag;
     }
-    
+
     public function getForceMove()
     {
         return $this->extraOptions['M'];
@@ -283,14 +378,19 @@ class GitBranchTask extends GitBaseTask
         return $this->getForceMove();
     }
 
+    /**
+     * @param $name
+     */
     public function setNewBranch($name)
     {
         $this->newbranch = $name;
     }
 
+    /**
+     * @return string
+     */
     public function getNewBranch()
     {
         return $this->newbranch;
     }
-
 }

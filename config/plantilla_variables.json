@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "modulos": {
+    "2": "Comunicaciones internas",
+    "4": "Comunicaciones externas enviadas",
+    "17": "Actos administrativos"
+  },
+  "variables": [
+    { "clave": "FECHA_COM", "grupo": "Comunicación", "descripcion": "Fecha de creación (Y-m-d)", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "ASUNTO_COM", "grupo": "Comunicación", "descripcion": "Asunto o referencia", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "RADICADO_COM", "grupo": "Comunicación", "descripcion": "Número de radicado", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "ANEXOS_COM", "grupo": "Comunicación", "descripcion": "Anexos", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "VIGENCIA_COM", "grupo": "Comunicación", "descripcion": "Año de creación", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "AREA_CODIGO_COM", "grupo": "Comunicación", "descripcion": "Código de la dependencia", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "CODEBAR_COM", "grupo": "Comunicación", "descripcion": "Código de barras o QR del radicado", "tipo": "imagen", "modulos": [2, 4, 17] },
+
+    { "clave": "FIRMAS_NOMBRE", "grupo": "Firmantes", "descripcion": "Nombre del firmante", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "FIRMAS_CARGOS", "grupo": "Firmantes", "descripcion": "Cargo del firmante", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "FIRMAS_CARGO", "grupo": "Firmantes", "descripcion": "Cargo del firmante (alias de FIRMAS_CARGOS)", "tipo": "texto", "modulos": [2] },
+    { "clave": "FIRMAS_DEPENDENCIA", "grupo": "Firmantes", "descripcion": "Dependencia del firmante", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "FIRMAS_REGIONAL", "grupo": "Firmantes", "descripcion": "Regional del firmante", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "FIRMA_MECANICA", "grupo": "Firmantes", "descripcion": "Firma mecánica del firmante", "tipo": "imagen", "modulos": [2, 4, 17] },
+    { "clave": "BLOQUE_FIRMAS", "grupo": "Firmantes", "descripcion": "Marca de bloque que se repite por cada firmante cuando hay varios", "tipo": "bloque", "modulos": [17] },
+
+    { "clave": "DESTINO_PREFIJO", "grupo": "Destinatario", "descripcion": "Prefijo del destinatario", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "DESTINO_NOMBRE", "grupo": "Destinatario", "descripcion": "Nombre del destinatario", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "DESTINO_FUNCIONARIO", "grupo": "Destinatario", "descripcion": "Funcionario destinatario", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "DESTINO_EMAIL", "grupo": "Destinatario", "descripcion": "Correo electrónico del destinatario", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "DESTINO_IDENTIFICACION", "grupo": "Destinatario", "descripcion": "Identificación del destinatario", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "DESTINO_CARGO", "grupo": "Destinatario", "descripcion": "Cargo del destinatario", "tipo": "texto", "modulos": [2, 4] },
+    { "clave": "DESTINO_DIRECCION", "grupo": "Destinatario", "descripcion": "Dirección del destinatario", "tipo": "texto", "modulos": [4, 17] },
+    { "clave": "DESTINO_CIUDAD", "grupo": "Destinatario", "descripcion": "Ciudad del destinatario", "tipo": "texto", "modulos": [4, 17] },
+
+    { "clave": "RADICADOR_NOMBRE", "grupo": "Radicador", "descripcion": "Nombre de quien radica", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "RADICADOR_CARGO", "grupo": "Radicador", "descripcion": "Cargo de quien radica", "tipo": "texto", "modulos": [4, 17] },
+    { "clave": "RADICADOR_AREA", "grupo": "Radicador", "descripcion": "Dependencia de quien radica", "tipo": "texto", "modulos": [4, 17] },
+    { "clave": "RADICADOR_DEPENDENCIA", "grupo": "Radicador", "descripcion": "Dependencia de quien radica", "tipo": "texto", "modulos": [2] },
+    { "clave": "RADICADOR_FMECANICA", "grupo": "Radicador", "descripcion": "Firma mecánica de quien radica", "tipo": "imagen", "modulos": [2, 4, 17] },
+
+    { "clave": "UPROYECTA_NOMBRE", "grupo": "Proyecta", "descripcion": "Nombre de quien proyecta", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "UPROYECTA_CARGO", "grupo": "Proyecta", "descripcion": "Cargo de quien proyecta", "tipo": "texto", "modulos": [4, 17] },
+    { "clave": "UPROYECTA_AREA", "grupo": "Proyecta", "descripcion": "Dependencia de quien proyecta", "tipo": "texto", "modulos": [2, 4, 17] },
+    { "clave": "UPROYECTA_FMECANICA", "grupo": "Proyecta", "descripcion": "Firma mecánica de quien proyecta", "tipo": "imagen", "modulos": [2, 4, 17] },
+
+    { "clave": "REVISOR_NOMBRE", "grupo": "Revisor", "descripcion": "Nombre del revisor", "tipo": "texto", "modulos": [2, 4, 17], "repetible": true },
+    { "clave": "REVISOR_CARGO", "grupo": "Revisor", "descripcion": "Cargo del revisor", "tipo": "texto", "modulos": [2, 4, 17], "repetible": true },
+    { "clave": "REVISOR_AREA", "grupo": "Revisor", "descripcion": "Dependencia del revisor", "tipo": "texto", "modulos": [2, 4, 17], "repetible": true },
+    { "clave": "REVISOR_FMECANICA", "grupo": "Revisor", "descripcion": "Firma mecánica del revisor", "tipo": "imagen", "modulos": [2, 4, 17], "repetible": true },
+
+    { "clave": "APROBADOR_NOMBRE", "grupo": "Aprobador", "descripcion": "Nombre del aprobador", "tipo": "texto", "modulos": [4, 17], "repetible": true },
+    { "clave": "APROBADOR_CARGO", "grupo": "Aprobador", "descripcion": "Cargo del aprobador", "tipo": "texto", "modulos": [4, 17], "repetible": true },
+    { "clave": "APROBADOR_AREA", "grupo": "Aprobador", "descripcion": "Dependencia del aprobador", "tipo": "texto", "modulos": [4, 17], "repetible": true },
+    { "clave": "APROBADOR_REGIONAL", "grupo": "Aprobador", "descripcion": "Regional del aprobador", "tipo": "texto", "modulos": [4] },
+    { "clave": "APROBADOR_FMECANICA", "grupo": "Aprobador", "descripcion": "Firma mecánica del aprobador", "tipo": "imagen", "modulos": [4, 17], "repetible": true },
+
+    { "clave": "COPIAS_NOMBRE", "grupo": "Copias", "descripcion": "Nombre de quien recibe copia", "tipo": "texto", "modulos": [2, 4] },
+    { "clave": "COPIAS_CARGO", "grupo": "Copias", "descripcion": "Cargo de quien recibe copia", "tipo": "texto", "modulos": [2, 4] },
+    { "clave": "COPIAS_DEPENDENCIA", "grupo": "Copias", "descripcion": "Dependencia de quien recibe copia", "tipo": "texto", "modulos": [2, 4] }
+  ]
+}

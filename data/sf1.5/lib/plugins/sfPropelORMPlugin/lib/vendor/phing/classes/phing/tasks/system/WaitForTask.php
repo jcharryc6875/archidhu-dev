@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id$
+ * $Id: 139b0653bc863b536f2a2f488238c4e702c00c71 $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -20,6 +20,7 @@
  */
 
 require_once 'phing/Task.php';
+require_once 'phing/tasks/system/condition/ConditionBase.php';
 
 /**
  *  Based on Apache Ant Wait For:
@@ -40,29 +41,34 @@ require_once 'phing/Task.php';
  *  limitations under the License.
  *
  * @author    Michiel Rook <mrook@php.net>
- * @version   $Id$
+ * @version   $Id: 139b0653bc863b536f2a2f488238c4e702c00c71 $
  * @package   phing.tasks.system
  */
 class WaitForTask extends ConditionBase
 {
     const ONE_MILLISECOND = 1;
-    const ONE_SECOND      = 1000;
-    const ONE_MINUTE      = 60000;
-    const ONE_HOUR        = 3600000;
-    const ONE_DAY         = 86400000;
-    const ONE_WEEK        = 604800000;
-    
+    const ONE_SECOND = 1000;
+    const ONE_MINUTE = 60000;
+    const ONE_HOUR = 3600000;
+    const ONE_DAY = 86400000;
+    const ONE_WEEK = 604800000;
+
     const DEFAULT_MAX_WAIT_MILLIS = 180000;
-    const DEFAULT_CHECK_MILLIS    = 500;
-    
-    protected $maxWait           = self::DEFAULT_MAX_WAIT_MILLIS;
+    const DEFAULT_CHECK_MILLIS = 500;
+
+    protected $maxWait = self::DEFAULT_MAX_WAIT_MILLIS;
     protected $maxWaitMultiplier = self::ONE_MILLISECOND;
-    
-    protected $checkEvery           = self::DEFAULT_CHECK_MILLIS;
+
+    protected $checkEvery = self::DEFAULT_CHECK_MILLIS;
     protected $checkEveryMultiplier = self::ONE_MILLISECOND;
-    
+
     protected $timeoutProperty = null;
-    
+
+    public function __construct($taskName = 'waitfor')
+    {
+        parent::__construct($taskName);
+    }
+
     /**
      * Set the maximum length of time to wait.
      * @param int $maxWait
@@ -71,7 +77,7 @@ class WaitForTask extends ConditionBase
     {
         $this->maxWait = (int) $maxWait;
     }
-    
+
     /**
      * Set the max wait time unit
      * @param string $maxWaitUnit
@@ -80,7 +86,7 @@ class WaitForTask extends ConditionBase
     {
         $this->maxWaitMultiplier = $this->_convertUnit($maxWaitUnit);
     }
-    
+
     /**
      * Set the time between each check
      * @param int $checkEvery
@@ -89,62 +95,73 @@ class WaitForTask extends ConditionBase
     {
         $this->checkEvery = (int) $checkEvery;
     }
-    
+
     /**
      * Set the check every time unit
      * @param string $checkEveryUnit
+     * @return void
      */
     public function setCheckEveryUnit($checkEveryUnit)
     {
         $this->checkEveryMultiplier = $this->_convertUnit($checkEveryUnit);
     }
-    
+
     /**
      * Name of the property to set after a timeout.
      * @param string $timeoutProperty
+     * @return void
      */
     public function setTimeoutProperty($timeoutProperty)
     {
         $this->timeoutProperty = $timeoutProperty;
     }
-    
+
     /**
      * Convert the unit to a multipler.
      * @param string $unit
+     * @throws BuildException
+     * @return int
      */
     protected function _convertUnit($unit)
     {
         switch ($unit) {
-            case "week": {
+            case "week":
+            {
                 return self::ONE_WEEK;
             }
-            
-            case "day": {
+
+            case "day":
+            {
                 return self::ONE_DAY;
             }
-            
-            case "hour": {
+
+            case "hour":
+            {
                 return self::ONE_HOUR;
             }
-            
-            case "minute": {
+
+            case "minute":
+            {
                 return self::ONE_MINUTE;
             }
-            
-            case "second": {
+
+            case "second":
+            {
                 return self::ONE_SECOND;
             }
-            
-            case "millisecond": {
+
+            case "millisecond":
+            {
                 return self::ONE_MILLISECOND;
             }
-            
-            default: {
+
+            default:
+                {
                 throw new BuildException("Illegal unit '$unit'");
-            }
+                }
         }
     }
-    
+
     /**
      * Check repeatedly for the specified conditions until they become
      * true or the timeout expires.
@@ -155,32 +172,41 @@ class WaitForTask extends ConditionBase
         if ($this->countConditions() > 1) {
             throw new BuildException("You must not nest more than one condition into <waitfor>");
         }
-        
+
         if ($this->countConditions() < 1) {
             throw new BuildException("You must nest a condition into <waitfor>");
         }
-        
+
         $cs = $this->getIterator();
         $condition = $cs->current();
-        
+
         $maxWaitMillis = $this->maxWait * $this->maxWaitMultiplier;
         $checkEveryMillis = $this->checkEvery * $this->checkEveryMultiplier;
-        
+
         $start = microtime(true) * 1000;
         $end = $start + $maxWaitMillis;
-        
+
         while (microtime(true) * 1000 < $end) {
             if ($condition->evaluate()) {
-                $this->log("waitfor: condition was met", Project::MSG_VERBOSE);
-                
+                $this->processSuccess();
                 return;
             }
-            
+
             usleep($checkEveryMillis * 1000);
         }
-        
-        $this->log("waitfor: timeout", Project::MSG_VERBOSE);
-        
+
+        $this->processTimeout();
+    }
+
+    protected function processSuccess()
+    {
+        $this->log($this->getTaskName() . ": condition was met", Project::MSG_VERBOSE);
+    }
+
+    protected function processTimeout()
+    {
+        $this->log($this->getTaskName() . ": timeout", Project::MSG_VERBOSE);
+
         if ($this->timeoutProperty != null) {
             $this->project->setNewProperty($this->timeoutProperty, "true");
         }

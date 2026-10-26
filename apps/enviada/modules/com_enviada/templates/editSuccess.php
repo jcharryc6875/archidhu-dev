@@ -76,6 +76,7 @@ use_helper('Object','jQuery','UserComponent','InteresadosComponent','RemitentesC
             </div>
           <?php } ?>
 
+          <?php if (isset($plantillas_sin_editor_json)): ?><span id="tplcom-sin-editor" class="tplcom-oculto" data-select="plantillascom_id" data-ids="<?php echo $plantillas_sin_editor_json ?>"></span><?php endif; ?>
           <!-- Tipo Plantilla -->
           <?php //if(!$com_enviada->getIsCreateWord()){ ?>
             <label for="lbgetPlantillasCom" class="col-sm-1 control-label">Tipo Plantilla<span class="ctrlreq">(*)</span>:</label>

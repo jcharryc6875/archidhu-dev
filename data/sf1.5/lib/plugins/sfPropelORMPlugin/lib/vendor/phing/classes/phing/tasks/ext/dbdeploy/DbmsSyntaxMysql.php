@@ -1,6 +1,6 @@
 <?php
 /*
- *  $Id$
+ *  $Id: 2df6bddd9e2070c0cbc8d8eab2ee0a3caafb9b20 $
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -18,19 +18,21 @@
  * and is licensed under the LGPL. For more information please see
  * <http://phing.info>.
  */
- 
+
 /**
  * Utility class for generating necessary server-specific SQL commands
  *
  * @author   Luke Crouch at SourceForge (http://sourceforge.net)
- * @version  $Id$
+ * @version  $Id: 2df6bddd9e2070c0cbc8d8eab2ee0a3caafb9b20 $
  * @package  phing.tasks.ext.dbdeploy
  */
-class DbmsSyntaxMysql extends DbmsSyntax 
+class DbmsSyntaxMysql extends DbmsSyntax
 {
+    /**
+     * @return string
+     */
     public function generateTimestamp()
     {
         return "NOW()";
     }
 }
-

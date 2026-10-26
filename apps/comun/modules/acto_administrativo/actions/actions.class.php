@@ -856,6 +856,7 @@ class acto_administrativoActions extends sfActions
     }
     //***************************************************************************************************
     $this->setTemplate('edit');
+    $this->plantillas_sin_editor_json = json_encode(PlantillasComPeer::getIdsSinEditor(ModulesEnable::ActosAdministrativos));
     $this->acto_administrativo = new ActoAdministrativo();
     $this->expediente_id = null;
     $this->permisoFirmaOtroAutorizado = 0;
@@ -2374,6 +2375,12 @@ class acto_administrativoActions extends sfActions
       // Si el participante actual no puede editar, se conserva el
       // contenido ya almacenado en vez de aceptar lo que venga en el request.
       $current_content = $puedeEditarContenido ? trim($this->getRequestParameter('contenido')) : $acto_administrativo->getContenido();
+      // UARIV-202609: con una plantilla sin editor el documento sale solo del Word de la plantilla
+      $plantilla_com = $acto_administrativo->getPlantillascomId() ? $acto_administrativo->getPlantillasCom() : null;
+      $forzar_word = $isNewActoAdm && $plantilla_com && !$plantilla_com->getUsaEditor();
+      if ($forzar_word) {
+        $current_content = '';
+      }
       $acto_administrativo->setContenido($current_content);
       //*********************************************************************************************************
       $acto_administrativo->setFolios(trim($this->getRequestParameter('folios')) ? trim($this->getRequestParameter('folios')) : 1);
@@ -2456,7 +2463,7 @@ class acto_administrativoActions extends sfActions
             }
           }
         }
-      } else if ($puedeEditarContenido && $this->getRequestParameter(md5('radComByWord')) && !empty($acto_administrativo->getPlantillascomId())) {
+      } else if ($puedeEditarContenido && ($this->getRequestParameter(md5('radComByWord')) || $forzar_word) && !empty($acto_administrativo->getPlantillascomId())) {
         $dir_raiz = simad_util::NormalizePath(ParametroPeer::retrieveByPk(25)->getValortexto() . 'uploads');
         $filedir_upload = simad_util::createPath($dir_raiz . DIRECTORY_SEPARATOR . date("Ymd"));
         //*****************************************************************************************************

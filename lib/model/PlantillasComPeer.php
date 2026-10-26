@@ -35,6 +35,20 @@ class PlantillasComPeer extends BasePlantillasComPeer {
         return PlantillasComPeer::doSelect($c);
     }
 
+    /**
+     * Ids de las plantillas del modulo que no tienen habilitado el editor de texto.
+     */
+    public static function getIdsSinEditor($modulo_id){
+        $c = new Criteria();
+        $c->add(PlantillasComPeer::MODULO_ID,$modulo_id);
+        $c->add(PlantillasComPeer::USA_EDITOR,0);
+        $ids = array();
+        foreach(PlantillasComPeer::doSelect($c) as $plantilla){
+            $ids[] = (int)$plantilla->getPrimaryKey();
+        }
+        return $ids;
+    }
+
     public static function getPlantillasComListEnviada(){
         $c = new Criteria();
         $c->setDistinct();

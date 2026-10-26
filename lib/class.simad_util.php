@@ -3963,6 +3963,149 @@ class simad_util
     }
 
     /**
+     * Extrae las etiquetas {[CLAVE]} de un DOCX (cuerpo, encabezados, pies, notas),
+     * incluso cuando Word las parte en varios runs. No modifica el archivo.
+     * @param string $docxPath ruta absoluta al documento de word
+     * @return string[] claves sin repetir, en orden de aparición (el texto raro entre llaves
+     *                  se devuelve tal cual, recortado a 60 caracteres, para que la validación lo marque)
+     * @throws RuntimeException si el archivo no es un DOCX legible
+     */
+    public static function extractPlaceholdersFromDocx(string $docxPath): array
+    {
+        $zip = new ZipArchive();
+        if (!is_file($docxPath) || $zip->open($docxPath) !== true) {
+            throw new RuntimeException('No se pudo abrir el DOCX.');
+        }
+
+        $etiquetas = array();
+        try {
+            if ($zip->locateName('word/document.xml') === false) {
+                throw new RuntimeException('El archivo no es un documento Word válido.');
+            }
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $nombre = (string) $zip->getNameIndex($i);
+                if (!preg_match('#^word/(document|header\d*|footer\d*|footnotes|endnotes)\.xml$#', $nombre)) {
+                    continue;
+                }
+                $xml = $zip->getFromIndex($i);
+                if (!is_string($xml) || $xml === '') {
+                    continue;
+                }
+                $xml = simad_util::normalizeMarkers($xml);
+                if (preg_match_all('/\{\[(.*?)\]\}/s', $xml, $coincidencias)) {
+                    foreach ($coincidencias[1] as $clave) {
+                        $clave = mb_substr(trim(html_entity_decode(strip_tags($clave), ENT_QUOTES | ENT_XML1, 'UTF-8')), 0, 60);
+                        if ($clave !== '' && !in_array($clave, $etiquetas, true)) {
+                            $etiquetas[] = $clave;
+                        }
+                    }
+                }
+            }
+        } finally {
+            $zip->close();
+        }
+
+        return $etiquetas;
+    }
+
+    /**
+     * Crea o actualiza propiedades personalizadas (docProps/custom.xml) de un DOCX, registrando
+     * la parte en [Content_Types].xml y _rels/.rels cuando el documento aun no la tenia.
+     * Es la contraparte de readCustomPropsFromDocx para documentos que no pasaron por PhpWord.
+     * @param string $docxPath ruta absoluta al documento de word (se modifica en sitio)
+     * @param array $props nombre => valor
+     * @throws RuntimeException si el archivo no es un DOCX valido o no se puede escribir
+     */
+    public static function setCustomPropsInDocx(string $docxPath, array $props): void
+    {
+        $nsCp = 'http://schemas.openxmlformats.org/officeDocument/2006/custom-properties';
+        $nsVt = 'http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes';
+        $nsCt = 'http://schemas.openxmlformats.org/package/2006/content-types';
+        $nsRel = 'http://schemas.openxmlformats.org/package/2006/relationships';
+        $relType = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties';
+        $ctType = 'application/vnd.openxmlformats-officedocument.custom-properties+xml';
+
+        $cargar = function ($xml, $nombre) {
+            $dom = new DOMDocument('1.0', 'UTF-8');
+            if (!is_string($xml) || $xml === '' || !$dom->loadXML(preg_replace('/^\xEF\xBB\xBF/', '', $xml), LIBXML_NONET)) {
+                throw new RuntimeException($nombre . ' ilegible en el DOCX.');
+            }
+            return $dom;
+        };
+
+        $zip = new ZipArchive();
+        if (!is_file($docxPath) || $zip->open($docxPath) !== true) {
+            throw new RuntimeException('No se pudo abrir el DOCX.');
+        }
+        $erroresPrevios = libxml_use_internal_errors(true);
+        try {
+            $xmlCustom = $zip->getFromName('docProps/custom.xml');
+            if (is_string($xmlCustom) && $xmlCustom !== '') {
+                $dom = $cargar($xmlCustom, 'docProps/custom.xml');
+            } else {
+                $dom = $cargar('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="' . $nsCp . '" xmlns:vt="' . $nsVt . '"/>', 'custom.xml');
+            }
+            $root = $dom->documentElement;
+            $xp = new DOMXPath($dom);
+            $xp->registerNamespace('cp', $nsCp);
+            $maxPid = 1;
+            $existentes = array();
+            foreach ($xp->query('/cp:Properties/cp:property') as $nodo) {
+                $maxPid = max($maxPid, (int) $nodo->getAttribute('pid'));
+                $existentes[$nodo->getAttribute('name')] = $nodo;
+            }
+            foreach ($props as $nombre => $valor) {
+                if (isset($existentes[$nombre])) {
+                    $nodo = $existentes[$nombre];
+                    while ($nodo->firstChild) {
+                        $nodo->removeChild($nodo->firstChild);
+                    }
+                } else {
+                    $nodo = $dom->createElementNS($nsCp, 'property');
+                    $nodo->setAttribute('fmtid', '{D5CDD505-2E9C-101B-9397-08002B2CF9AE}');
+                    $nodo->setAttribute('pid', (string) (++$maxPid));
+                    $nodo->setAttribute('name', (string) $nombre);
+                    $root->appendChild($nodo);
+                }
+                $valorNodo = $dom->createElementNS($nsVt, 'vt:lpwstr');
+                $valorNodo->appendChild($dom->createTextNode((string) $valor));
+                $nodo->appendChild($valorNodo);
+            }
+            if (!$zip->addFromString('docProps/custom.xml', $dom->saveXML())) {
+                throw new RuntimeException('No se pudo escribir custom.xml en el DOCX.');
+            }
+            //******************************************************************************************
+            $domCt = $cargar($zip->getFromName('[Content_Types].xml'), '[Content_Types].xml');
+            $xpCt = new DOMXPath($domCt);
+            $xpCt->registerNamespace('ct', $nsCt);
+            if ($xpCt->query('/ct:Types/ct:Override[@PartName="/docProps/custom.xml"]')->length === 0) {
+                $override = $domCt->createElementNS($nsCt, 'Override');
+                $override->setAttribute('PartName', '/docProps/custom.xml');
+                $override->setAttribute('ContentType', $ctType);
+                $domCt->documentElement->appendChild($override);
+                $zip->addFromString('[Content_Types].xml', $domCt->saveXML());
+            }
+            //******************************************************************************************
+            $domRel = $cargar($zip->getFromName('_rels/.rels'), '_rels/.rels');
+            $xpRel = new DOMXPath($domRel);
+            $xpRel->registerNamespace('r', $nsRel);
+            if ($xpRel->query('/r:Relationships/r:Relationship[@Type="' . $relType . '"]')->length === 0) {
+                $id = 'rIdCustomProps';
+                $rel = $domRel->createElementNS($nsRel, 'Relationship');
+                $rel->setAttribute('Id', $id);
+                $rel->setAttribute('Type', $relType);
+                $rel->setAttribute('Target', 'docProps/custom.xml');
+                $domRel->documentElement->appendChild($rel);
+                $zip->addFromString('_rels/.rels', $domRel->saveXML());
+            }
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($erroresPrevios);
+            $zip->close();
+        }
+    }
+
+    /**
      * Lee custom properties de un DOCX (para validar HMAC/UUID)
      * @param string ruta absoluta al documento de word
      * @return mixed array con las propiedades del documento 

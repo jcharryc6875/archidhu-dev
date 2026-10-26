@@ -17,6 +17,21 @@ class TipoComInternaPeer extends BaseTipoComInternaPeer
 		return $rs;
 	}
 
+	/**
+	 * Ids de los tipos de comunicacion cuya plantilla no tiene habilitado el editor de texto.
+	 */
+	static public function getIdsSinEditor()
+	{
+		$c = new Criteria();
+		$c->addJoin(TipoComInternaPeer::PLANTILLASCOM_ID, PlantillasComPeer::PLANTILLASCOM_ID, Criteria::INNER_JOIN);
+		$c->add(PlantillasComPeer::USA_EDITOR, 0);
+		$ids = array();
+		foreach(TipoComInternaPeer::doSelect($c) as $tipo){
+			$ids[] = (int)$tipo->getPrimaryKey();
+		}
+		return $ids;
+	}
+
 	static public function getTipoComInternaShow()
 	{
 		$c = new Criteria();

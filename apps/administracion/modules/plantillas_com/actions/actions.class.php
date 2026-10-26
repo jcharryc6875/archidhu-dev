@@ -166,6 +166,7 @@ class plantillas_comActions extends sfActions
     //$this->verificaPrilegio("plantillas_com/create");
     $this->setTemplate('edit');
     $this->plantillas_com = new PlantillasCom();
+    $this->etiquetas_por_modulo = $this->getEtiquetasPorModulo();
     $this->directorio_header = "/images/encabezado_carta/";
     $this->filedir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR."images".DIRECTORY_SEPARATOR."encabezado_carta".DIRECTORY_SEPARATOR;
   }
@@ -174,6 +175,7 @@ class plantillas_comActions extends sfActions
   {
     //$this->verificaPrilegio("plantillas_com/edit");
     $this->plantillas_com = PlantillasComPeer::retrieveByPk($request->getParameter('plantillascom_id'));
+    $this->etiquetas_por_modulo = $this->getEtiquetasPorModulo();
     $this->directorio_header = "/images/encabezado_carta/";
     $this->filedir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR."images".DIRECTORY_SEPARATOR."encabezado_carta".DIRECTORY_SEPARATOR;
     $this->plantillacom_servicio = PlantillascomServicioPeer::getPlantillaComByTipoServicio($request->getParameter('plantillascom_id'));
@@ -209,6 +211,7 @@ class plantillas_comActions extends sfActions
     $plantillas_com->setUseMembrete(trim($request->getParameter('use_membrete')) ? 1 : 0);
     $plantillas_com->setUseHeaders(trim($request->getParameter('use_headers')) ? 1 : 0);
     $plantillas_com->setGeneraServicio(trim($request->getParameter('genera_servicio')) ? 1 : 0);
+    $plantillas_com->setUsaEditor(trim($request->getParameter('usa_editor')) ? 1 : 0);
     //**********************************************************************************************
     $dir_membretes = 'images'.DIRECTORY_SEPARATOR.'encabezado_carta';
     $image_membrete = trim($this->getRequestParameter('image_membrete')) ? trim($this->getRequestParameter('image_membrete')) : null;
@@ -241,6 +244,152 @@ class plantillas_comActions extends sfActions
     $this->redirect('plantillas_com/edit?plantillascom_id='.$plantillas_com->getPrimaryKey());
   }
   
+  /**
+   * Etiquetas disponibles por módulo, agrupadas, para el panel de ayuda de la plantilla.
+   */
+  private function getEtiquetasPorModulo()
+  {
+    $modulos = array(
+      ModulesEnable::ComInterna => 'Comunicaciones internas',
+      ModulesEnable::ComEnviada => 'Comunicaciones enviadas',
+      ModulesEnable::ActosAdministrativos => 'Actos administrativos',
+    );
+    $resultado = array();
+    try {
+      foreach ($modulos as $modulo_id => $nombre) {
+        $resultado[$modulo_id] = array(
+          'nombre' => $nombre,
+          'grupos' => PlantillaVariables::getAgrupadasByModulo($modulo_id),
+        );
+      }
+    } catch (RuntimeException $e) {
+      $this->logMessage($e->getMessage(), 'err');
+      $resultado = array();
+    }
+
+    return $resultado;
+  }
+
+  const DOCX_MAX_BYTES = 10485760;
+
+  private function renderJsonDocx($status, $message, array $extra = array())
+  {
+    $this->getResponse()->setContentType('application/json');
+    return $this->renderText(json_encode(array_merge($extra, array('status' => $status, 'message' => $message))));
+  }
+
+  public function executeUploadDocx($request)
+  {
+    $this->forward404Unless($request->isMethod(sfRequest::POST));
+    //**********************************************************************************************************
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    $plantilla = PlantillasComPeer::retrieveByPk($request->getParameter('plantillascom_id'));
+    if (!$plantilla) {
+      return $this->renderJsonDocx(404, 'Guarde la plantilla antes de cargar el documento Word.');
+    }
+    $modulo_id = (int) $plantilla->getModuloId();
+    if (!in_array($modulo_id, array(ModulesEnable::ComInterna, ModulesEnable::ComEnviada, ModulesEnable::ActosAdministrativos), true)) {
+      return $this->renderJsonDocx(400, 'El módulo de la plantilla no admite documentos Word.');
+    }
+    //**********************************************************************************************************
+    $files = $request->getFiles();
+    $file = isset($files['docx_file']) ? $files['docx_file'] : null;
+    if (!$file || (int) $file['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'])) {
+      return $this->renderJsonDocx(400, 'Debe seleccionar un archivo para cargar.');
+    }
+    if ((int) $file['size'] > self::DOCX_MAX_BYTES) {
+      return $this->renderJsonDocx(400, 'El archivo supera el tamaño máximo permitido de ' . (self::DOCX_MAX_BYTES / 1048576) . ' MB.');
+    }
+    if (strtolower(pathinfo((string) $file['name'], PATHINFO_EXTENSION)) !== 'docx') {
+      return $this->renderJsonDocx(400, 'Solo se permiten archivos Word con extensión .docx.');
+    }
+    $mime_trust = array('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip', 'application/x-zip-compressed');
+    if (!simad_util::CheckIsValidFormatFile($file['tmp_name'], $mime_trust)) {
+      return $this->renderJsonDocx(400, 'El tipo de archivo no es válido.');
+    }
+    //**********************************************************************************************************
+    try {
+      $etiquetas = simad_util::extractPlaceholdersFromDocx($file['tmp_name']);
+      $desconocidas = PlantillaVariables::getDesconocidas($etiquetas, $modulo_id);
+    } catch (RuntimeException $e) {
+      return $this->renderJsonDocx(400, $e->getMessage());
+    }
+    if (count74($desconocidas) > 0) {
+      return $this->renderJsonDocx(422, 'El documento tiene etiquetas que no corresponden a las variables del módulo.', array('desconocidas' => $desconocidas));
+    }
+    //**********************************************************************************************************
+    $directorio = PlantillasCom::getDocxStorageDir();
+    if (empty($directorio)) {
+      return $this->renderJsonDocx(500, 'No se pudo preparar la carpeta de almacenamiento.');
+    }
+    $nuevo_path = $directorio . DIRECTORY_SEPARATOR . bin2hex(random_bytes(16)) . '.docx';
+    if (!move_uploaded_file($file['tmp_name'], $nuevo_path)) {
+      return $this->renderJsonDocx(500, 'No se pudo guardar el archivo.');
+    }
+    //**********************************************************************************************************
+    $object_old = clone $plantilla;
+    $anterior = $plantilla->getDocxBasePath();
+    $nombre = mb_substr(basename(str_replace('\\', '/', (string) $file['name'])), 0, 255);
+    $plantilla->setUrlDocx($nuevo_path);
+    $plantilla->setDocxNombre($nombre);
+    $plantilla->save();
+    if ($anterior !== null && is_file($anterior)) {
+      unlink($anterior);
+    }
+    AuditLogPeer::guardarAuditoriaLite("PlantillasCom", $object_old, $plantilla, ModulesEnable::Seguridad, $plantilla->getPrimaryKey(), $usuariologuiado);
+    //**********************************************************************************************************
+    return $this->renderJsonDocx(200, 'Documento Word cargado correctamente.', array('nombre' => $nombre, 'etiquetas' => count74($etiquetas)));
+  }
+
+  public function executeDownloadDocx($request)
+  {
+    $plantilla = PlantillasComPeer::retrieveByPk($request->getParameter('plantillascom_id'));
+    $this->forward404Unless($plantilla);
+    $path = $plantilla->getDocxBasePath();
+    $this->forward404Unless($path);
+    //**********************************************************************************************************
+    $nombre = trim((string) $plantilla->getDocxNombre());
+    $nombre = $nombre !== '' ? preg_replace('/[^\w\.\- ]/u', '_', $nombre) : 'plantilla_' . $plantilla->getPrimaryKey() . '.docx';
+    //**********************************************************************************************************
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    header('Content-Disposition: attachment; filename="' . $nombre . '"');
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($path));
+    if (ob_get_level() > 0) {
+      ob_clean();
+    }
+    flush();
+    readfile($path);
+    exit;
+  }
+
+  public function executeRemoveDocx($request)
+  {
+    $this->forward404Unless($request->isMethod(sfRequest::POST));
+    //**********************************************************************************************************
+    $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
+    $plantilla = PlantillasComPeer::retrieveByPk($request->getParameter('plantillascom_id'));
+    if (!$plantilla) {
+      return $this->renderJsonDocx(404, 'La plantilla no existe.');
+    }
+    //**********************************************************************************************************
+    $object_old = clone $plantilla;
+    $anterior = $plantilla->getDocxBasePath();
+    $plantilla->setUrlDocx(null);
+    $plantilla->setDocxNombre(null);
+    $plantilla->save();
+    if ($anterior !== null && is_file($anterior)) {
+      unlink($anterior);
+    }
+    AuditLogPeer::guardarAuditoriaLite("PlantillasCom", $object_old, $plantilla, ModulesEnable::Seguridad, $plantilla->getPrimaryKey(), $usuariologuiado);
+    //**********************************************************************************************************
+    return $this->renderJsonDocx(200, 'Documento Word eliminado.');
+  }
+
   public function executeFile()
   {
   	$this->actionUpdate = 'plantillas_com/uploads';

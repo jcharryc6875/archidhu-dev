@@ -1,5 +1,4 @@
 <?php 
-use ZipArchive;
 
 class DocxPlaceholderUtil
 {

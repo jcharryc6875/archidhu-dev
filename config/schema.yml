@@ -1117,6 +1117,11 @@ propel:
     IMAGE_MEMBRETE: { phpName: ImageMembrete, type: VARCHAR, size: '80', required: false }
     USE_MEMBRETE: { phpName: UseMembrete, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
     DEPENDENCIA_ID: { phpName: DependenciaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: DEPENDENCIA, foreignReference: DEPENDENCIA_ID }
+    GENERA_SERVICIO: { phpName: GeneraServicio, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
+    FIRMA_DESATENDIDA: { phpName: FirmaDesatendida, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((0)) }
+    USA_EDITOR: { phpName: UsaEditor, type: TINYINT, size: '1', scale: '0', required: true, defaultValue: ((1)) }
+    URL_DOCX: { phpName: UrlDocx, type: VARCHAR, size: '500', required: false }
+    DOCX_NOMBRE: { phpName: DocxNombre, type: VARCHAR, size: '255', required: false }
     _indexes: { PK_PLANTILLAS_COM: [PLANTILLASCOM_ID] }
   EXPEDIENTE_REGLAS_METADATOS:
     _attributes: { phpName: ExpedienteReglasMetadatos, idMethod: native }

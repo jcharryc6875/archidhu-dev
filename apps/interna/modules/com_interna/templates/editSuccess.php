@@ -71,6 +71,7 @@ use_helper('Object', 'jQuery', 'UserComponent');
               </div>
             </div>
           <?php } ?>
+          <?php if (isset($plantillas_sin_editor_json)): ?><span id="tplcom-sin-editor" class="tplcom-oculto" data-select="tipocominterna_id" data-ids="<?php echo $plantillas_sin_editor_json ?>"></span><?php endif; ?>
           <!-- Tipo Com Interna -->
           <label for="lbgetTipocominternaId" class="col-sm-1 control-label">Plantilla<span class="ctrlreq">(*)</span>:</label>
           <div class="col-sm-4">
