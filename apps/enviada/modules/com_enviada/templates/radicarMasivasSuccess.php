@@ -291,7 +291,8 @@ jQuery(document).ready(function(){
         if (isValid) nextStepWizard.removeAttr('disabled').trigger('click');
     });
 
-    /*jQuery(".next").addClass("disabled");*/
+    //Siguiente queda bloqueado hasta que "Validar Registros" apruebe los datos (setInlineErrorMig lo habilita).
+    jQuery(".next").addClass("disabled");
 
     jQuery('.tabcontrol').on('click', function(e) {
         e.preventDefault();

@@ -41,7 +41,7 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
                 $listall_valid[] = ComMigmasivoPeer::getRecibidaRadComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getExpedienteCodComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getTipoDocCodComBatchIsValid($idLote);
-                $listall_valid[] = ComMigmasivoPeer::getInteresadosComBatchIsValid($idLote);
+                $listall_valid[] = ComMigmasivoPeer::getInteresadosExistentesComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getFirmasComBatchIsValid($idLote);
                 $listall_valid[] = ComMigmasivoPeer::getTipoServicioComBatchIsValid($idLote);
             } elseif ($modulo_id == ModulesEnable::ComRecibida) {
@@ -1038,6 +1038,36 @@ class ComMigmasivoPeer extends BaseComMigmasivoPeer
         } catch (\Throwable $th) {
             //throw $th;
             return array('isError' => TRUE, 'message' => 'Error interno del servidor, ' . $th->getMessage());
+        }
+    }
+
+    /**
+     * ComMigmasivoPeer::getInteresadosExistentesComBatchIsValid()
+     * Valida que los interesados de cada fila existan en el SGDEA usando la misma busqueda
+     * (nombre y numero de identificacion) con la que luego se radica, para que lo que pasa la
+     * validacion no falle al radicar.
+     * @return mixed array('isError' => true|false, 'message' => 'mensaje de error o exito')
+     * @param comlote_id mixed id del lote de migracion
+     */
+    public static function getInteresadosExistentesComBatchIsValid($comlote_id)
+    {
+        try {
+            $coll_error = array();
+            foreach (ComMigmasivoPeer::getListComByComLote($comlote_id) as $row) {
+                $nuids = preg_split("/[;]+/", trim((string) $row->getNuidInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $pnombres = preg_split("/[;]+/", trim((string) $row->getPnombreInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                $papellidos = preg_split("/[;]+/", trim((string) $row->getPapellidoInteresado()), -1, PREG_SPLIT_NO_EMPTY);
+                if (empty(InteresadosPeer::getInteresadosByInfoBatch($pnombres, $papellidos, $nuids))) {
+                    $coll_error[] = trim((string) $row->getNuidInteresado()) . ' (' . trim($row->getPnombreInteresado() . ' ' . $row->getPapellidoInteresado()) . ')';
+                }
+            }
+            //******************************************************************************
+            if (count($coll_error))
+                return array('isError' => true, 'message' => 'Los interesados con numero identificacion ' . implode(", ", array_unique($coll_error)) . ' no existen en el SGDEA con ese nombre y numero de identificacion');
+            else
+                return array('isError' => false, 'message' => 'Los interesados enviados son validos');
+        } catch (\Throwable $th) {
+            return array('isError' => true, 'message' => 'Error interno del servidor, ' . $th->getMessage());
         }
     }
 
