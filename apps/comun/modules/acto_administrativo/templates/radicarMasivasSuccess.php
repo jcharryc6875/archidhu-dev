@@ -287,6 +287,9 @@ $currentUser = $sf_user->getAttribute('username', '', 'subscriber');
             if (isValid) nextStepWizard.removeAttr('disabled').trigger('click');
         });
 
+        //Siguiente queda bloqueado hasta que "Validar Registros" apruebe los datos (setInlineErrorMig lo habilita).
+        jQuery(".next").addClass("disabled");
+
         jQuery('.tabcontrol').on('click', function(e) {
             e.preventDefault();
             return false;
