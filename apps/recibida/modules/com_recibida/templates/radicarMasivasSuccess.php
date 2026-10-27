@@ -268,6 +268,11 @@ jQuery(document).ready(function(){
             }
 
             var delement = jQuery(".form-wizard ul li.tabcontrol.active a").attr("href");
+            //El plugin del asistente no respeta la clase "disabled": se bloquea aqui hasta que la validacion apruebe (comIdLote).
+            if(delement == "#tab2-1" && !jQuery("#comIdLote").val()){
+                toastr.warning('Antes de continuar, debe validar los registros, Haga clic en el boton "Validar Registros"');
+                return false;
+            }
             if(delement == "#tab2-2"){
                 if(jQuery("#filedocsupload").length == 0){
                     toastr.warning('Antes de continuar, debe enviar el archivo con los documentos al servidor, Haga clic en el boton "Enviar Documentos"');
