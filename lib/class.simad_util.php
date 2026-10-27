@@ -2308,7 +2308,7 @@ class simad_util
 
     ];
 
-    public function simad_util() {}
+    public function __construct() {}
 
     public static function calcularHashPorChunks($filepath, $algorithm = 'sha256')
     {
@@ -3481,6 +3481,7 @@ class simad_util
     public static function download_file($url, $path)
     {
         $newfilename = $path;
+        $newfile = null;
         $file = fopen($url, "rb");
         if ($file) {
             $newfile = fopen($newfilename, "wb");
@@ -3511,65 +3512,26 @@ class simad_util
 
     /**
      * simad_util::formatBytes()
-     * metodo convertir bytes en otra unidad de medida   
-     * @return string
+     * Metodo para convertir bytes en otra unidad de medida
      */
-    public static function formatBytes($bytes)
+    public static function formatBytes($bytes): string
     {
         if ($bytes > 0) {
-            $i = floor(log($bytes) / log(1024));
-            $sizes = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-            return sprintf('%.02F', round($bytes / pow(1024, $i), 1)) * 1 . '' . @$sizes[$i];
-        } else {
-            return 0;
+            $i = (int) floor(log($bytes) / log(1024));
+            $sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+            // Obtenemos la unidad de forma segura. Si no existe, usamos 'B' o una cadena vacía.
+            $unidad = $sizes[$i] ?? 'B';
+
+            // Calculamos el valor sin hacer conversiones extrañas (* 1)
+            $valor = round($bytes / pow(1024, $i), 2);
+
+            return sprintf('%.02F', $valor) . ' ' . $unidad;
         }
+
+        // Devolvemos un string coherente con el tipo de retorno esperado
+        return '0 B';
     }
-
-    /*public function uploadVarios()    
-	{       
-        $mypath = unserialize($this->path);
-
-        foreach ($this->imagenes as $key => $value) {
-           
-            if ($value){
-           
-                //Definir un nombre valido para el archivo
-                //Gedmo es una de las extensiones de Doctrine para Sluggable, Timestampable, etc
-                $nombre = \Gedmo\Sluggable\Util\Urlizer::urlize($value->getClientOriginalName(), '-');
-
-                //Verificar la extension para guardar la imagen
-                $extension = $value->guessExtension();
-               
-                $extvalidas = array('JPG','JPEG','PNG','GIF');
-               
-                if ( !in_array(strtoupper($extension), $extvalidas)){
-                    return;
-                }
-               
-                //Quitar la extension del nombre generado
-                //caso contrario el nombre queda algo como:  miimagen-jpg
-                $nombre = str_replace('-'.$extension, '', $nombre);
-               
-                //Nombre final con extension
-                //Queda algo como: miimagen.jpg
-                $nombreFinal = $nombre.'.'.$extension;
-               
-                //Verificar si la imagen ya esta almacenada
-                if (@in_array($nombreFinal, $mypath)){
-                    //si la imagen ya esta almacenada, se continua con el siguiente item   
-                    continue;
-                }
-               
-                //Almacenar la imagen en el servidor
-                $value->move($this->getUploadRootDir(), $nombreFinal);
-               
-            //Agregar el nuevo nombre al final del Array
-                $mypath[]= $nombreFinal;
-            }
-        }
-        $this->path = serialize($mypath);
-        $this->imagenes = array();
-    }*/
 
     public static function create_guid($filename, $namespace = "filesystem")
     { // Create GUID (Globally Unique Identifier)

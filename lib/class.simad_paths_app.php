@@ -1,24 +1,22 @@
 <?php
 class simad_paths_app
 {
-    var $source_paths = array();
-    var $source_alias = array();
+    public array $source_paths = array();
+    public array $source_alias = array();
 
-    public function SimadPathsApp()
+    public function __construct()
     {
-        simad_paths_app::ReadConfigFileApp();
+        self::ReadConfigFileApp();
     }
 
     public static function readConfigFileApp()
     {
-        try
-        {
+        try {
             //config file app.ini
             $app_config = sfConfig::get('sf_config_dir') . DIRECTORY_SEPARATOR . 'app.ini';
             //*************************************************************** */
-            if(file_exists($app_config))
-            {
-                $ini_array = parse_ini_file(sfConfig::get('sf_config_dir')."/app.ini");
+            if (file_exists($app_config)) {
+                $ini_array = parse_ini_file(sfConfig::get('sf_config_dir') . "/app.ini");
 
                 $rutas_basicas = isset($ini_array['ruta_default']) ? $ini_array['ruta_default'] : null; // en la unidad solo son 5
                 $rutas_archivo = isset($ini_array['ruta_archivo']) ? $ini_array['ruta_archivo'] : null; // 
@@ -29,17 +27,12 @@ class simad_paths_app
                 $alias_archivo = isset($ini_array['alias_archivo']) ? $ini_array['alias_archivo'] : null; // 
                 $source_alias = array_unique(array_merge($alias_archivo, $alias_default));
 
-                $result = array( 'source_paths' => $source_paths, 'source_alias' => $source_alias );
+                $result = array('source_paths' => $source_paths, 'source_alias' => $source_alias);
                 return $result;
-            }   
-            else
-            {
-                throw new Exception( 'Error: El archivo de configuracion app.ini no existe en la ruta ' . $app_config);
-
+            } else {
+                throw new Exception('Error: El archivo de configuracion app.ini no existe en la ruta ' . $app_config);
             }
-        }
-        catch (\Exception $th) 
-        {
+        } catch (\Exception $th) {
             return null;
         }
     }
@@ -47,24 +40,22 @@ class simad_paths_app
     public static function resolveRelativePath($relativePath, $pathDefault = array())
     {
         try {
-            if(empty($relativePath)){
+            if (empty($relativePath)) {
                 return null;
             }
             //******************************************************************************************
-            if(empty($pathDefault)){
+            if (empty($pathDefault)) {
                 $pathDefault = self::readConfigFileApp();
             }
             //******************************************************************************************
             $cusource_alias = $pathDefault['source_alias'];
             $cusource_paths = $pathDefault['source_paths'];
             //******************************************************************************************
-            $furl = preg_replace('~//+~', '/', $relativePath);  
+            $furl = preg_replace('~//+~', '/', $relativePath);
             $p3url = str_replace($cusource_alias, '/', $furl);
             //******************************************************************************************
-            foreach ($cusource_paths as $fpath)  
-            {
-                if(file_exists($fpath . DIRECTORY_SEPARATOR . $p3url))
-                {
+            foreach ($cusource_paths as $fpath) {
+                if (file_exists($fpath . DIRECTORY_SEPARATOR . $p3url)) {
                     return simad_util::NormalizePath($fpath . DIRECTORY_SEPARATOR . $p3url);
                 }
             }
@@ -77,4 +68,3 @@ class simad_paths_app
         }
     }
 }
-?>

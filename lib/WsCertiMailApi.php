@@ -1,10 +1,11 @@
 <?php
+
 /**
  * @javier.charry@gmail.com
  * @copyright 2024
  */
 
-require_once(dirname(__FILE__).'/../config/ProjectConfiguration.class.php');
+require_once(dirname(__FILE__) . '/../config/ProjectConfiguration.class.php');
 $configuration = ProjectConfiguration::getApplicationConfiguration('backend', 'prod', false);
 sfContext::createInstance($configuration);
 
@@ -29,34 +30,34 @@ class WsApiAndes
     const SERVICE_USER = "unidaddevictimas@unidadvictimas.gov.co";
     const SERVICE_PASSW = "d7c678ad8d7b8f0c2955004047714e724856aeff";
     const SERVICE_APPUID = 0;
-    const CONTEXT_SOAP2 = array('http' => array( 'user_agent' => 'PHPSoapClient'),'ssl' => array('verify_peer' => false,'verify_peer_name' => false, 'allow_self_signed' => true));
+    const CONTEXT_SOAP2 = array('http' => array('user_agent' => 'PHPSoapClient'), 'ssl' => array('verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true));
 
     var $logfile;
     var $nulog;
     var $nudebug;
     var $instance;
 
-    public function WsApiAndes()
+    public function __construct()
     {
-        $this->logfile = sfConfig::get("sf_log_dir")."\WsCertiMailApi.log";
+        $this->logfile = sfConfig::get("sf_log_dir") . "\WsCertiMailApi.log";
         $this->nulog = 0;
         $this->nudebug = 0;
     }
 
     /**
-    * WsApiAndes::addCertiMailEnviada()
-    * funcion para consumir servicio web de andes para enviar un correo certificado
-    * @return array()
-    */
+     * WsApiAndes::addCertiMailEnviada()
+     * funcion para consumir servicio web de andes para enviar un correo certificado
+     * @return array()
+     */
     public function addCertiMailEnviada($params = array())
     {
         //***********************************************************************************
         $options = array(
-            "uri"=> WsApiAndes::SERVICE_URI,
-            "style"=> SOAP_DOCUMENT,
-            "use"=> SOAP_LITERAL,
-            "soap_version"=> SOAP_1_1,
-            "cache_wsdl"=> WSDL_CACHE_BOTH,
+            "uri" => WsApiAndes::SERVICE_URI,
+            "style" => SOAP_DOCUMENT,
+            "use" => SOAP_LITERAL,
+            "soap_version" => SOAP_1_1,
+            "cache_wsdl" => WSDL_CACHE_BOTH,
             "timeout" => 300,
             "connection_timeout" => 300,
             "trace" => true,
@@ -67,13 +68,13 @@ class WsApiAndes
             'stream_context' => stream_context_create(WsApiAndes::CONTEXT_SOAP2),
         );
         //************************************************************************************
-        $client = new SoapClientExtendedMail(WsApiAndes::SERVICE_URL,$options);
+        $client = new SoapClientExtendedMail(WsApiAndes::SERVICE_URL, $options);
         //$functions = $client->__getFunctions();
-        $client->__setSoapHeaders($this->soapClientWSSecurityHeader(WsApiAndes::SERVICE_USER,WsApiAndes::SERVICE_PASSW));
+        $client->__setSoapHeaders($this->soapClientWSSecurityHeader(WsApiAndes::SERVICE_USER, WsApiAndes::SERVICE_PASSW));
         //************************************************************************************
-        $tpl_email = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR.'tplBodyCertimail.txt';
-        if(!file_exists($tpl_email)){
-            return array('status' => 400,'message'=>'Error leyendo la plantilla del correo de certificación', 'idMensaje' => null);
+        $tpl_email = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'tplBodyCertimail.txt';
+        if (!file_exists($tpl_email)) {
+            return array('status' => 400, 'message' => 'Error leyendo la plantilla del correo de certificación', 'idMensaje' => null);
         }
         $bodyEmail = file_get_contents($tpl_email);
         //************************************************************************************
@@ -89,11 +90,15 @@ class WsApiAndes
         $activeAlertas = false;
         //************************************************************************************
         try {
-            $infoComplex = array('idUsuario' => WsApiAndes::SERVICE_USER,
-                'Asunto' => $params['ASUNTO_COM'],'Texto' => $econtents,
-                'NombreDestinatario' => sprintf("%s %s",$params['ENTIDAD_DESTINO'],$params['FUNCIONARIO_DESTINO']),
+            $infoComplex = array(
+                'idUsuario' => WsApiAndes::SERVICE_USER,
+                'Asunto' => $params['ASUNTO_COM'],
+                'Texto' => $econtents,
+                'NombreDestinatario' => sprintf("%s %s", $params['ENTIDAD_DESTINO'], $params['FUNCIONARIO_DESTINO']),
                 'CorreoDestinatario' => $params['EMAIL_DESTINO'],
-                'Adjunto' => $params['ARCHIVO_B64'],'NombreArchivo' => $params['FILENAME'],'Alertas' => $activeAlertas,
+                'Adjunto' => $params['ARCHIVO_B64'],
+                'NombreArchivo' => $params['FILENAME'],
+                'Alertas' => $activeAlertas,
             );
             //********************************************************************************
             $response = $client->RegistrarMensaje($infoComplex);
@@ -102,30 +107,30 @@ class WsApiAndes
             $aresp = (object)$response;
             //********************************************************************************
             $msgpost = strpos($aresp->hash, "Observacion");
-            $response_idmessage = explode("=", substr($aresp->hash,0,($msgpost-1)));
-            $response_obsvacion = explode("=", substr($aresp->hash,$msgpost,strlen($aresp->hash)));
+            $response_idmessage = explode("=", substr($aresp->hash, 0, ($msgpost - 1)));
+            $response_obsvacion = explode("=", substr($aresp->hash, $msgpost, strlen($aresp->hash)));
             //********************************************************************************
-            if($response_idmessage[0] == 'idMensaje' && $response_idmessage[1] > 0){
-                return array('status' => 200,'message' => $aresp->hash, 'idMensaje' => $response_idmessage[1]);
-            }elseif($response_obsvacion[0] == 'Observacion'){
-                return array('status' => 400,'message' => $response_obsvacion[1], 'idMensaje' => null);
-            }else{
-                return array('status' => 400,'message' => $aresp->hash, 'idMensaje' => null);
+            if ($response_idmessage[0] == 'idMensaje' && $response_idmessage[1] > 0) {
+                return array('status' => 200, 'message' => $aresp->hash, 'idMensaje' => $response_idmessage[1]);
+            } elseif ($response_obsvacion[0] == 'Observacion') {
+                return array('status' => 400, 'message' => $response_obsvacion[1], 'idMensaje' => null);
+            } else {
+                return array('status' => 400, 'message' => $aresp->hash, 'idMensaje' => null);
             }
-        }catch (SoapFault $e){
-            $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
-            return array('status' => 400,'message'=>'SOAP Error, Ocurrio un error al enviar los datos, error de integración con la herramienta externa', 'idMensaje' => null);
-        }catch (Exception $e) {
-            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
-            return array('status' => 400,'message'=>'Ocurrio un error al enviar la datos, error de servidor del aplicativo de gestión documental', 'idMensaje' => null);
+        } catch (SoapFault $e) {
+            $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />' . nl2br($e->faultstring) . '<br />';
+            return array('status' => 400, 'message' => 'SOAP Error, Ocurrio un error al enviar los datos, error de integración con la herramienta externa', 'idMensaje' => null);
+        } catch (Exception $e) {
+            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />' . nl2br($e->getMessage()) . '<br />';
+            return array('status' => 400, 'message' => 'Ocurrio un error al enviar la datos, error de servidor del aplicativo de gestión documental', 'idMensaje' => null);
         }
     }
 
     /**
-    * WsApiAndes::searchRegCertiMail()
-    * Permite consultar una lista de registros pendientes por descargar las pruebas de entrega
-    * @return array()
-    */
+     * WsApiAndes::searchRegCertiMail()
+     * Permite consultar una lista de registros pendientes por descargar las pruebas de entrega
+     * @return array()
+     */
     public function searchRegCertiMail()
     {
         try {
@@ -136,18 +141,17 @@ class WsApiAndes
             //******************************************************************************************
             $ilsit_objects = ServicioCertimailPeer::getListObjectsByProcess(ServicioAppExterna::CertiMail);
             //******************************************************************************************
-            foreach ($ilsit_objects as $object_info)            
-            {
+            foreach ($ilsit_objects as $object_info) {
                 $servicio_crtmail = ServicioCertimailPeer::retrieveByPK($object_info['SERVICIOCERTIMAIL_ID']);
-                $response = $this->getActaEntregaCertiMail($object_info['SERVICIO_ID'],$object_info['CERTIMAILMSG_ID'],$paramArchivarDoc);
+                $response = $this->getActaEntregaCertiMail($object_info['SERVICIO_ID'], $object_info['CERTIMAILMSG_ID'], $paramArchivarDoc);
                 //**************************************************************************************
                 try {
-                    if($response['status'] == 200){
+                    if ($response['status'] == 200) {
                         $servicio_crtmail->setEstaAbierta(0);
                         $servicio_crtmail->setFechaModificacion(date("Y-m-d G:i:s"));
                         $servicio_crtmail->setEstadoEjecucion("DescargaCertificadoExitoso");
                         $servicio_crtmail->save();
-                    }else{
+                    } else {
                         $servicio_crtmail->setEstaAbierta(1);
                         $servicio_crtmail->setEstadoEjecucion("ErrorDescargaCertificado");
                         $servicio_crtmail->setFechaModificacion(date("Y-m-d G:i:s"));
@@ -160,7 +164,7 @@ class WsApiAndes
                 } catch (\Throwable $th) {
                     //throw $th;
                 }
-            }            
+            }
         } catch (PropelException $th) {
             //throw $th;
             return null;
@@ -174,18 +178,18 @@ class WsApiAndes
     }
 
     /**
-    * WsApiAndes::addCertiMailEnviada()
-    * funcion para consumir servicio web de andes para enviar un correo certificado
-    * @return array()
-    */
+     * WsApiAndes::addCertiMailEnviada()
+     * funcion para consumir servicio web de andes para enviar un correo certificado
+     * @return array()
+     */
     public function getActaEntregaCertiMail($servicio_id, $idMensageCrtMail, $paramArchivarDoc = "servicio")
     {
         $options = array(
-            "uri"=> WsApiAndes::SERVICE_URI,
-            "style"=> SOAP_DOCUMENT,
-            "use"=> SOAP_LITERAL,
-            "soap_version"=> SOAP_1_1,
-            "cache_wsdl"=> WSDL_CACHE_BOTH,
+            "uri" => WsApiAndes::SERVICE_URI,
+            "style" => SOAP_DOCUMENT,
+            "use" => SOAP_LITERAL,
+            "soap_version" => SOAP_1_1,
+            "cache_wsdl" => WSDL_CACHE_BOTH,
             "timeout" => 300,
             "connection_timeout" => 300,
             "trace" => true,
@@ -196,12 +200,14 @@ class WsApiAndes
             'stream_context' => stream_context_create(WsApiAndes::CONTEXT_SOAP2),
         );
         //****************************************************************************************
-        $client = new SoapClientExtendedMail(WsApiAndes::SERVICE_URL,$options);
-        $client->__setSoapHeaders($this->soapClientWSSecurityHeader(WsApiAndes::SERVICE_USER,WsApiAndes::SERVICE_PASSW));
+        $client = new SoapClientExtendedMail(WsApiAndes::SERVICE_URL, $options);
+        $client->__setSoapHeaders($this->soapClientWSSecurityHeader(WsApiAndes::SERVICE_USER, WsApiAndes::SERVICE_PASSW));
         //****************************************************************************************
         try {
-            $infoComplex = array('idUsuario' => WsApiAndes::SERVICE_USER,
-                'idMensaje' => $idMensageCrtMail,'generarPDF' => true
+            $infoComplex = array(
+                'idUsuario' => WsApiAndes::SERVICE_USER,
+                'idMensaje' => $idMensageCrtMail,
+                'generarPDF' => true
             );
             //************************************************************************************
             $response = $client->ObtenerToken($infoComplex);
@@ -212,83 +218,83 @@ class WsApiAndes
             $msgpost = strpos($aresp->hash, "Observacion");
             $msgPdfToken = strpos($aresp->hash, "Token");
             //************************************************************************************
-            $response_idmessage = explode("=", substr($aresp->hash,0,($msgpost)));
-            $response_obsvacion = explode("=", substr($aresp->hash,$msgpost,($msgPdfToken-($msgpost+1))));
-            $fbase64 = substr($aresp->hash,($msgPdfToken+6),strlen($aresp->hash));            
+            $response_idmessage = explode("=", substr($aresp->hash, 0, ($msgpost)));
+            $response_obsvacion = explode("=", substr($aresp->hash, $msgpost, ($msgPdfToken - ($msgpost + 1))));
+            $fbase64 = substr($aresp->hash, ($msgPdfToken + 6), strlen($aresp->hash));
             //************************************************************************************
-            if($response_idmessage[0] == 'idMensaje' && in_array(trim($response_idmessage[1]),array(2,3,4,7,8))){
+            if ($response_idmessage[0] == 'idMensaje' && in_array(trim($response_idmessage[1]), array(2, 3, 4, 7, 8))) {
                 $servicio = ServicioPeer::retrieveByPK($servicio_id);
                 $servicioestado_id = $servicio->getServicioestadoId();
                 //********************************************************************************
-                if(!empty($fbase64)){
-                    $tmp_path = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.md5(time().$servicio->getPrimaryKey());
-                    $filename = sprintf("%s_%s_%s_ActaEnvio_y_EntregaCorreoElectronico.pdf",uniqid(),$servicio->getPrimaryKey(),$idMensageCrtMail);
-                    $file_target = $tmp_path.DIRECTORY_SEPARATOR.$filename;
+                if (!empty($fbase64)) {
+                    $tmp_path = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . md5(time() . $servicio->getPrimaryKey());
+                    $filename = sprintf("%s_%s_%s_ActaEnvio_y_EntregaCorreoElectronico.pdf", uniqid(), $servicio->getPrimaryKey(), $idMensageCrtMail);
+                    $file_target = $tmp_path . DIRECTORY_SEPARATOR . $filename;
                     simad_util::createPath($tmp_path);
-                    $isCreateFile = simad_util::getConvertB64ToFile($fbase64,$file_target);
+                    $isCreateFile = simad_util::getConvertB64ToFile($fbase64, $file_target);
                     //****************************************************************************
-                    if($isCreateFile && file_exists($file_target)){
+                    if ($isCreateFile && file_exists($file_target)) {
                         $isNotifiedTask = $paramArchivarDoc == "servicio" ? $servicio->attachNewDocumetBitacora($file_target) : true;
                         //************************************************************************
-                        if($isNotifiedTask){
+                        if ($isNotifiedTask) {
                             $desc_documento = "Acta de Envío y Entrega de Correo Electrónico";
                             //********************************************************************
-                            if($paramArchivarDoc == "expediente"){
-                                $contenido_doc = $servicio->archivarActaNotificacion($file_target,$desc_documento);
-                                if($contenido_doc != null){
-                                    $desc_documento = sprintf("%s / Documento indexado en el expediente ExpedienteId %s",$desc_documento, $contenido_doc->getUnidaddocumentalId());
-                                }else{
-                                    $desc_documento = sprintf("%s / Error al indexar el documento en el expediente",$desc_documento);
+                            if ($paramArchivarDoc == "expediente") {
+                                $contenido_doc = $servicio->archivarActaNotificacion($file_target, $desc_documento);
+                                if ($contenido_doc != null) {
+                                    $desc_documento = sprintf("%s / Documento indexado en el expediente ExpedienteId %s", $desc_documento, $contenido_doc->getUnidaddocumentalId());
+                                } else {
+                                    $desc_documento = sprintf("%s / Error al indexar el documento en el expediente", $desc_documento);
                                 }
                                 //*****************************************************************
-                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(),$servicioestado_id,$servicio->getUsuarioId(),$servicio->getUsuarioId(),$desc_documento,date("Y-m-d G:i:s"));
-                            }else if($paramArchivarDoc == "radicado"){
-                                $desc_documento = sprintf("%s / Indexado en el expediente",$desc_documento);
+                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicioestado_id, $servicio->getUsuarioId(), $servicio->getUsuarioId(), $desc_documento, date("Y-m-d G:i:s"));
+                            } else if ($paramArchivarDoc == "radicado") {
+                                $desc_documento = sprintf("%s / Indexado en el expediente", $desc_documento);
                                 $radicado_com = $servicio->addActaNotificacionToCom($file_target);
-                                if(!empty($radicado_com)){
-                                    $desc_documento = sprintf("%s / Documento indexado en el radicado %s",$desc_documento, $radicado_com);
-                                }else{
-                                    $desc_documento = sprintf("%s / Error al indexar el documento en el radicado",$desc_documento);
+                                if (!empty($radicado_com)) {
+                                    $desc_documento = sprintf("%s / Documento indexado en el radicado %s", $desc_documento, $radicado_com);
+                                } else {
+                                    $desc_documento = sprintf("%s / Error al indexar el documento en el radicado", $desc_documento);
                                 }
                                 //*****************************************************************
-                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(),$servicioestado_id,$servicio->getUsuarioId(),$servicio->getUsuarioId(),$desc_documento,date("Y-m-d G:i:s"));
+                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicioestado_id, $servicio->getUsuarioId(), $servicio->getUsuarioId(), $desc_documento, date("Y-m-d G:i:s"));
                             }
                             //********************************************************************
                             unlink($file_target);
                             //********************************************************************
-                            return array('status' => 200,'message' => 'El archivo fue almacenado correctamente en el Sgdea', 'idMensaje' => $idMensageCrtMail);
-                        }else{
-                            return array('status' => 400,'message' => 'Error creando el archivo en el repositorio del Sgdea', 'idMensaje' => $idMensageCrtMail);
+                            return array('status' => 200, 'message' => 'El archivo fue almacenado correctamente en el Sgdea', 'idMensaje' => $idMensageCrtMail);
+                        } else {
+                            return array('status' => 400, 'message' => 'Error creando el archivo en el repositorio del Sgdea', 'idMensaje' => $idMensageCrtMail);
                         }
-                    }else{
-                        return array('status' => 400,'message' => 'Error creando el archivo en el repositorio del Sgdea', 'idMensaje' => $idMensageCrtMail);
+                    } else {
+                        return array('status' => 400, 'message' => 'Error creando el archivo en el repositorio del Sgdea', 'idMensaje' => $idMensageCrtMail);
                     }
-                }else{
-                    return array('status' => 400,'message' => 'El archivo no existe', 'idMensaje' => $idMensageCrtMail);
+                } else {
+                    return array('status' => 400, 'message' => 'El archivo no existe', 'idMensaje' => $idMensageCrtMail);
                 }
-            }elseif($response_obsvacion[0] == 'Observacion'){
-                return array('status' => 400,'message' => $response_obsvacion[1], 'idMensaje' => $idMensageCrtMail);
-            }else{
-                return array('status' => 400,'message' => $aresp->hash, 'idMensaje' => $idMensageCrtMail);
+            } elseif ($response_obsvacion[0] == 'Observacion') {
+                return array('status' => 400, 'message' => $response_obsvacion[1], 'idMensaje' => $idMensageCrtMail);
+            } else {
+                return array('status' => 400, 'message' => $aresp->hash, 'idMensaje' => $idMensageCrtMail);
             }
-        }catch (SoapFault $e){
-            $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
-            return array('status' => 400,'message'=>'SOAP Error, Ocurrio un error al enviar los datos, error de integración con la herramienta externa', 'idMensaje' => $idMensageCrtMail);
-        }catch (\Exception $e) {
-            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
-            return array('status' => 400,'message'=>'Ocurrio un error al enviar la datos, error de servidor del aplicativo de gestión documental', 'idMensaje' => $idMensageCrtMail);
-        }catch (\Throwable $e) {
-            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
-            return array('status' => 400,'message'=>'Ocurrio un error al enviar la datos, error de servidor del aplicativo de gestión documental', 'idMensaje' => $idMensageCrtMail);
+        } catch (SoapFault $e) {
+            $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />' . nl2br($e->faultstring) . '<br />';
+            return array('status' => 400, 'message' => 'SOAP Error, Ocurrio un error al enviar los datos, error de integración con la herramienta externa', 'idMensaje' => $idMensageCrtMail);
+        } catch (\Exception $e) {
+            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />' . nl2br($e->getMessage()) . '<br />';
+            return array('status' => 400, 'message' => 'Ocurrio un error al enviar la datos, error de servidor del aplicativo de gestión documental', 'idMensaje' => $idMensageCrtMail);
+        } catch (\Throwable $e) {
+            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />' . nl2br($e->getMessage()) . '<br />';
+            return array('status' => 400, 'message' => 'Ocurrio un error al enviar la datos, error de servidor del aplicativo de gestión documental', 'idMensaje' => $idMensageCrtMail);
         }
     }
 
     /**
-    * WsApiAndes::searchRegCorreoCertFisico()
-    * Permite consultar una lista de registros pendientes por descargar las pruebas de entrega
-    * del servicio de correo nacional certificado con sipost
-    * @return array()
-    */
+     * WsApiAndes::searchRegCorreoCertFisico()
+     * Permite consultar una lista de registros pendientes por descargar las pruebas de entrega
+     * del servicio de correo nacional certificado con sipost
+     * @return array()
+     */
     public function searchRegCorreoCertFisico()
     {
         try {
@@ -299,18 +305,17 @@ class WsApiAndes
             //******************************************************************************************
             $ilsit_objects = ServicioCertimailPeer::getListObjectsByProcess(ServicioAppExterna::CorreoFisicoNacional);
             //******************************************************************************************
-            foreach ($ilsit_objects as $object_info)            
-            {
+            foreach ($ilsit_objects as $object_info) {
                 $servicio_crtmail = ServicioCertimailPeer::retrieveByPK($object_info['SERVICIOCERTIMAIL_ID']);
-                $response = $this->getActaEntregaCertiFisicoNal($object_info['SERVICIO_ID'],$object_info['CERTIMAILMSG_ID'],$paramArchivarDoc);
+                $response = $this->getActaEntregaCertiFisicoNal($object_info['SERVICIO_ID'], $object_info['CERTIMAILMSG_ID'], $paramArchivarDoc);
                 //**************************************************************************************
                 try {
-                    if($response['status'] == 200){
+                    if ($response['status'] == 200) {
                         $servicio_crtmail->setEstaAbierta(0);
                         $servicio_crtmail->setFechaModificacion(date("Y-m-d G:i:s"));
                         $servicio_crtmail->setEstadoEjecucion("DescargaCertificadoExitoso");
                         $servicio_crtmail->save();
-                    }else{
+                    } else {
                         $servicio_crtmail->setEstaAbierta(1);
                         $servicio_crtmail->setEstadoEjecucion("ErrorDescargaCertificado");
                         $servicio_crtmail->setFechaModificacion(date("Y-m-d G:i:s"));
@@ -323,7 +328,7 @@ class WsApiAndes
                 } catch (\Throwable $th) {
                     //throw $th;
                 }
-            }            
+            }
         } catch (PropelException $th) {
             //throw $th;
             return null;
@@ -337,18 +342,18 @@ class WsApiAndes
     }
 
     /**
-    * WsApiAndes::getActaEntregaCertiFisicoNal()
-    * funcion para consumir servicio web para descargar actas de entrega del correo fisico nacional
-    * @return array()
-    */
+     * WsApiAndes::getActaEntregaCertiFisicoNal()
+     * funcion para consumir servicio web para descargar actas de entrega del correo fisico nacional
+     * @return array()
+     */
     public function getActaEntregaCertiFisicoNal($servicio_id, $idMensageCrtMail, $paramArchivarDoc = "servicio")
     {
         $options = array(
-            "uri"=> WsApiAndes::SERVICE_URI,
-            "style"=> SOAP_DOCUMENT,
-            "use"=> SOAP_LITERAL,
-            "soap_version"=> SOAP_1_1,
-            "cache_wsdl"=> WSDL_CACHE_BOTH,
+            "uri" => WsApiAndes::SERVICE_URI,
+            "style" => SOAP_DOCUMENT,
+            "use" => SOAP_LITERAL,
+            "soap_version" => SOAP_1_1,
+            "cache_wsdl" => WSDL_CACHE_BOTH,
             "timeout" => 300,
             "connection_timeout" => 300,
             "trace" => true,
@@ -359,12 +364,14 @@ class WsApiAndes
             'stream_context' => stream_context_create(WsApiAndes::CONTEXT_SOAP2),
         );
         //****************************************************************************************
-        $client = new SoapClientExtendedMail(WsApiAndes::SERVICE_URL,$options);
-        $client->__setSoapHeaders($this->soapClientWSSecurityHeader(WsApiAndes::SERVICE_USER,WsApiAndes::SERVICE_PASSW));
+        $client = new SoapClientExtendedMail(WsApiAndes::SERVICE_URL, $options);
+        $client->__setSoapHeaders($this->soapClientWSSecurityHeader(WsApiAndes::SERVICE_USER, WsApiAndes::SERVICE_PASSW));
         //****************************************************************************************
         try {
-            $infoComplex = array('idUsuario' => WsApiAndes::SERVICE_USER,
-                'idMensaje' => $idMensageCrtMail,'generarPDF' => true
+            $infoComplex = array(
+                'idUsuario' => WsApiAndes::SERVICE_USER,
+                'idMensaje' => $idMensageCrtMail,
+                'generarPDF' => true
             );
             //************************************************************************************
             $response = $client->ObtenerToken($infoComplex);
@@ -375,85 +382,85 @@ class WsApiAndes
             $msgpost = strpos($aresp->hash, "Observacion");
             $msgPdfToken = strpos($aresp->hash, "Token");
             //************************************************************************************
-            $response_idmessage = explode("=", substr($aresp->hash,0,($msgpost)));
-            $response_obsvacion = explode("=", substr($aresp->hash,$msgpost,($msgPdfToken-($msgpost+1))));
-            $fbase64 = substr($aresp->hash,($msgPdfToken+6),strlen($aresp->hash));            
+            $response_idmessage = explode("=", substr($aresp->hash, 0, ($msgpost)));
+            $response_obsvacion = explode("=", substr($aresp->hash, $msgpost, ($msgPdfToken - ($msgpost + 1))));
+            $fbase64 = substr($aresp->hash, ($msgPdfToken + 6), strlen($aresp->hash));
             //************************************************************************************
-            if($response_idmessage[0] == 'idMensaje' && in_array(trim($response_idmessage[1]),array(2,3,4,7,8))){
+            if ($response_idmessage[0] == 'idMensaje' && in_array(trim($response_idmessage[1]), array(2, 3, 4, 7, 8))) {
                 $servicio = ServicioPeer::retrieveByPK($servicio_id);
                 $servicioestado_id = $servicio->getServicioestadoId();
                 //********************************************************************************
-                if(!empty($fbase64)){
-                    $tmp_path = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.md5(time().$servicio->getPrimaryKey());
-                    $filename = sprintf("%s_%s_%s_ActaEnvio_y_EntregaCertificadoFisico.pdf",uniqid(),$servicio->getPrimaryKey(),$idMensageCrtMail);
-                    $file_target = $tmp_path.DIRECTORY_SEPARATOR.$filename;
+                if (!empty($fbase64)) {
+                    $tmp_path = sfConfig::get('sf_web_dir') . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . md5(time() . $servicio->getPrimaryKey());
+                    $filename = sprintf("%s_%s_%s_ActaEnvio_y_EntregaCertificadoFisico.pdf", uniqid(), $servicio->getPrimaryKey(), $idMensageCrtMail);
+                    $file_target = $tmp_path . DIRECTORY_SEPARATOR . $filename;
                     simad_util::createPath($tmp_path);
-                    $isCreateFile = simad_util::getConvertB64ToFile($fbase64,$file_target);
+                    $isCreateFile = simad_util::getConvertB64ToFile($fbase64, $file_target);
                     //****************************************************************************
-                    if($isCreateFile && file_exists($file_target)){
+                    if ($isCreateFile && file_exists($file_target)) {
                         $isNotifiedTask = $paramArchivarDoc == "servicio" ? $servicio->attachNewDocumetBitacora($file_target) : true;
                         //************************************************************************
-                        if($isNotifiedTask){
+                        if ($isNotifiedTask) {
                             $desc_documento = "Prueba de entrega de correo fisico";
                             //********************************************************************
-                            if($paramArchivarDoc == "expediente"){
-                                $contenido_doc = $servicio->archivarActaNotificacion($file_target,$desc_documento);
-                                if($contenido_doc != null){
-                                    $desc_documento = sprintf("%s / Documento indexado en el expediente ExpedienteId %s",$desc_documento, $contenido_doc->getUnidaddocumentalId());
-                                }else{
-                                    $desc_documento = sprintf("%s / Error al indexar el documento en el expediente",$desc_documento);
+                            if ($paramArchivarDoc == "expediente") {
+                                $contenido_doc = $servicio->archivarActaNotificacion($file_target, $desc_documento);
+                                if ($contenido_doc != null) {
+                                    $desc_documento = sprintf("%s / Documento indexado en el expediente ExpedienteId %s", $desc_documento, $contenido_doc->getUnidaddocumentalId());
+                                } else {
+                                    $desc_documento = sprintf("%s / Error al indexar el documento en el expediente", $desc_documento);
                                 }
                                 //*****************************************************************
-                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(),$servicioestado_id,$servicio->getUsuarioId(),$servicio->getUsuarioId(),$desc_documento,date("Y-m-d G:i:s"));
-                            }else if($paramArchivarDoc == "radicado"){
-                                $desc_documento = sprintf("%s / Indexado en el expediente",$desc_documento);
+                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicioestado_id, $servicio->getUsuarioId(), $servicio->getUsuarioId(), $desc_documento, date("Y-m-d G:i:s"));
+                            } else if ($paramArchivarDoc == "radicado") {
+                                $desc_documento = sprintf("%s / Indexado en el expediente", $desc_documento);
                                 $radicado_com = $servicio->addActaNotificacionToCom($file_target);
-                                if(!empty($radicado_com)){
-                                    $desc_documento = sprintf("%s / Documento indexado en el radicado %s",$desc_documento, $radicado_com);
-                                }else{
-                                    $desc_documento = sprintf("%s / Error al indexar el documento en el radicado",$desc_documento);
+                                if (!empty($radicado_com)) {
+                                    $desc_documento = sprintf("%s / Documento indexado en el radicado %s", $desc_documento, $radicado_com);
+                                } else {
+                                    $desc_documento = sprintf("%s / Error al indexar el documento en el radicado", $desc_documento);
                                 }
                                 //*****************************************************************
-                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(),$servicioestado_id,$servicio->getUsuarioId(),$servicio->getUsuarioId(),$desc_documento,date("Y-m-d G:i:s"));
+                                ServicioPeer::insertBitacoraServicio($servicio->getPrimaryKey(), $servicioestado_id, $servicio->getUsuarioId(), $servicio->getUsuarioId(), $desc_documento, date("Y-m-d G:i:s"));
                             }
                             //********************************************************************
                             unlink($file_target);
                             //********************************************************************
-                            return array('status' => 200,'message' => 'El archivo fue almacenado correctamente en el Sgdea', 'idMensaje' => $idMensageCrtMail);
-                        }else{
-                            return array('status' => 400,'message' => 'Error creando el archivo en el repositorio del Sgdea', 'idMensaje' => $idMensageCrtMail);
+                            return array('status' => 200, 'message' => 'El archivo fue almacenado correctamente en el Sgdea', 'idMensaje' => $idMensageCrtMail);
+                        } else {
+                            return array('status' => 400, 'message' => 'Error creando el archivo en el repositorio del Sgdea', 'idMensaje' => $idMensageCrtMail);
                         }
-                    }else{
-                        return array('status' => 400,'message' => 'Error creando el archivo en el repositorio del Sgdea', 'idMensaje' => $idMensageCrtMail);
+                    } else {
+                        return array('status' => 400, 'message' => 'Error creando el archivo en el repositorio del Sgdea', 'idMensaje' => $idMensageCrtMail);
                     }
-                }else{
-                    return array('status' => 400,'message' => 'El archivo no existe', 'idMensaje' => $idMensageCrtMail);
+                } else {
+                    return array('status' => 400, 'message' => 'El archivo no existe', 'idMensaje' => $idMensageCrtMail);
                 }
-            }elseif($response_obsvacion[0] == 'Observacion'){
-                return array('status' => 400,'message' => $response_obsvacion[1], 'idMensaje' => $idMensageCrtMail);
-            }else{
-                return array('status' => 400,'message' => $aresp->hash, 'idMensaje' => $idMensageCrtMail);
+            } elseif ($response_obsvacion[0] == 'Observacion') {
+                return array('status' => 400, 'message' => $response_obsvacion[1], 'idMensaje' => $idMensageCrtMail);
+            } else {
+                return array('status' => 400, 'message' => $aresp->hash, 'idMensaje' => $idMensageCrtMail);
             }
-        }catch (SoapFault $e){
-            $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
-            return array('status' => 400,'message'=>'SOAP Error, Ocurrio un error al enviar los datos, error de integración con la herramienta externa', 'idMensaje' => $idMensageCrtMail);
-        }catch (\Exception $e) {
-            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
-            return array('status' => 400,'message'=>'Ocurrio un error al enviar la datos, error de servidor del aplicativo de gestión documental', 'idMensaje' => $idMensageCrtMail);
-        }catch (\Throwable $e) {
-            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
-            return array('status' => 400,'message'=>'Ocurrio un error al enviar la datos, error de servidor del aplicativo de gestión documental', 'idMensaje' => $idMensageCrtMail);
+        } catch (SoapFault $e) {
+            $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />' . nl2br($e->faultstring) . '<br />';
+            return array('status' => 400, 'message' => 'SOAP Error, Ocurrio un error al enviar los datos, error de integración con la herramienta externa', 'idMensaje' => $idMensageCrtMail);
+        } catch (\Exception $e) {
+            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />' . nl2br($e->getMessage()) . '<br />';
+            return array('status' => 400, 'message' => 'Ocurrio un error al enviar la datos, error de servidor del aplicativo de gestión documental', 'idMensaje' => $idMensageCrtMail);
+        } catch (\Throwable $e) {
+            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />' . nl2br($e->getMessage()) . '<br />';
+            return array('status' => 400, 'message' => 'Ocurrio un error al enviar la datos, error de servidor del aplicativo de gestión documental', 'idMensaje' => $idMensageCrtMail);
         }
     }
 
     /**
-    * This function implements a WS-Security digest authentification for PHP.
-    *
-    * @access private
-    * @param string $user
-    * @param string $password
-    * @return SoapHeader
-    */
+     * This function implements a WS-Security digest authentification for PHP.
+     *
+     * @access private
+     * @param string $user
+     * @param string $password
+     * @return SoapHeader
+     */
     public function soapClientWSSecurityHeader($user, $password)
     {
         // Creating date using yyyy-mm-ddThh:mm:ssZ format
@@ -466,7 +473,7 @@ class WsApiAndes
         $pw_encrypt = $password;
 
         // Compiling WSS string
-        $passdigest = base64_encode(sha1($simple_nonce . $tm_created .$pw_encrypt , true));
+        $passdigest = base64_encode(sha1($simple_nonce . $tm_created . $pw_encrypt, true));
 
         // Initializing namespaces
         $ns_wsse = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd';
@@ -487,7 +494,7 @@ class WsApiAndes
 
         $usernameToken = $security->addChild('wsse:UsernameToken', null, $ns_wsse);
         $usernameToken->addChild('wsse:Username', $user, $ns_wsse);
-        $usernameToken->addChild('wsse:Password',$passdigest, $ns_wsse)->addAttribute('Type', $password_type);
+        $usernameToken->addChild('wsse:Password', $passdigest, $ns_wsse)->addAttribute('Type', $password_type);
         $usernameToken->addChild('wsse:Nonce', $encoded_nonce, $ns_wsse)->addAttribute('EncodingType', $encoding_type);
         $usernameToken->addChild('wsu:Created', $tm_created, $ns_wsu);
 
@@ -835,43 +842,43 @@ class SoapClientExtendedMail extends SoapClient
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
-        try{
+        try {
             $current_size_message = strlen($request);
             $result = null;
-            file_put_contents("C:/temp/wsdl/soapmsf.txt",$request);
+            file_put_contents("C:/temp/wsdl/soapmsf.txt", $request);
             //if($current_size_message <= self::MAX_FILE_SIZE_MESSAGE){
-			$result = parent::__doRequest($request, $location, $action, $version, $one_way);
-			$headers = $this->__getLastResponseHeaders();
+            $result = parent::__doRequest($request, $location, $action, $version, $one_way);
+            $headers = $this->__getLastResponseHeaders();
 
-			// Do we have a multipart request?
-			if (preg_match('#^Content-Type:.*multipart\/.*#mi', $headers) !== 0) {
-				// Make all line breaks even.
-				$result = str_replace("\r\n", "\n", $result);
+            // Do we have a multipart request?
+            if (preg_match('#^Content-Type:.*multipart\/.*#mi', $headers) !== 0) {
+                // Make all line breaks even.
+                $result = str_replace("\r\n", "\n", $result);
 
-				// Split between headers and content.
-				list(, $content) = preg_split("#\n\n#", $result);
-				// Split again for multipart boundary.
-				list($result, ) = preg_split("#\n--#", $content);
-			}
+                // Split between headers and content.
+                list(, $content) = preg_split("#\n\n#", $result);
+                // Split again for multipart boundary.
+                list($result,) = preg_split("#\n--#", $content);
+            }
 
             //}else{
-                //$this->doRequestCurlCustom($request, $location, $action, $version, $one_way = 0);
-                //$this->doRequestClientCli($request, $location, $action, $version, $one_way = 0);
+            //$this->doRequestCurlCustom($request, $location, $action, $version, $one_way = 0);
+            //$this->doRequestClientCli($request, $location, $action, $version, $one_way = 0);
             //}
             //**********************************************************************************
             return $result;
-        }catch (SoapFault $e){
-            $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />'. nl2br($e->faultstring) . '<br />';
+        } catch (SoapFault $e) {
+            $msgerror =  "SoapFault Error:<br />" . nl2br($e->faultcode) . '<br /><br />Error Details:<br />' . nl2br($e->faultstring) . '<br />';
             //echo "<br />";
             //echo "REQUEST SoapFault:\n" . htmlspecialchars($client->__getLastRequest()) . "\n";
             //echo "<br />";
             //echo "RESPONSE SoapFault:\n" . htmlspecialchars($client->__getLastResponse()) . "\n";
-            return array('status'=>400,'message'=>'Ocurrio un error al enviar la informaci&oacute;n, error de protocolo => ' . $msgerror);
+            return array('status' => 400, 'message' => 'Ocurrio un error al enviar la informaci&oacute;n, error de protocolo => ' . $msgerror);
         } catch (Exception $e) {
-            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />'. nl2br($e->getMessage()) . '<br />';
+            $msgerror = "Error Exception:<br />" . nl2br($e->getMessage()) . '<br /><br />Error Details:<br />' . nl2br($e->getMessage()) . '<br />';
             //var_dump($client->__getLastResponseHeaders());
             //var_dump(htmlspecialchars($client->__getLastResponse()));
-            return array('status'=>400,'message'=>'Ocurrio un error al enviar la informaci&oacute;n, error de servidor => ' . $msgerror);
+            return array('status' => 400, 'message' => 'Ocurrio un error al enviar la informaci&oacute;n, error de servidor => ' . $msgerror);
         }
     }
 }
