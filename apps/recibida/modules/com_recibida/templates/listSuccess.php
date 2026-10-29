@@ -144,48 +144,48 @@ $cantidad_registros = $pager->getNbResults();
                 </td>
 
                 <td class="text-center">
-					<div id="thubmfixed">
-	                  <?php
-						$fullpath = $com_recibida->getPathImageDigitByCom();
-						$digit_fdocu = $fullpath;
-						$existe_file = !empty($fullpath) ? true : false;
-						//******************************************************************************************************
-					  if ($com_recibida->getEstadodigitalizacionId() == 1) {
-					    if ($existe_file) {
-					      $com_recibida->setEstadodigitalizacionId(2);
-					      $com_recibida->save();
-					    }
-					  } elseif ($com_recibida->getEstadodigitalizacionId() == 2) {
-					    if (!$existe_file) {
-					      $com_recibida->setEstadodigitalizacionId(1);
-					      $com_recibida->save();
-					    }
-					  }
-					  //******************************************************************************************************
-	                  if ($com_recibida->getEstadodigitalizacionId() == 2) {
-	                    $extension_digit = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-	                    if (LINKTYPE == 'MODAL' && $extension_digit == "pdf") {
-	                      $url_params = "?comindex_pk=" . $com_recibida->getPrimaryKey() . "&q_vars=" . base64_encode($com_recibida->getPrimaryKey()) . "&vtoken=" . md5(base64_encode($com_recibida->getRadicado()) . base64_encode($com_recibida->getFechaCreacion()));
-	                      $uview_modal = url_for('com_recibida/viewerLiteModal') . $url_params;
-	                      echo show_modal_single($uview_modal, "ico_ver_adj", array('ndoc_text' => $com_recibida->getRadicado(), 'endpoint' => 'com_recibida/imageThumbData' . $url_params, 'qthumb' => SED::encryption($digit_fdocu), 'qsource' => SED::encryption($com_recibida->getRadicado())));
-	                    } else {
-	                      echo jq_link_to_remote(
-	                        image_tag('simad/ico_ver_adj.png', array('id' => "feedcheck", 'border' => "0", 'width' => "25", 'height' => "25", 'align' => "middle")),
-	                        array(
-	                          'update'  => null,
-	                          'url'     => url_for('com_recibida/viewImageDigit'),
-	                          'with'    => "'q_vars=" . base64_encode($com_recibida->getPrimaryKey()) . "&vtoken=" . md5($com_recibida->getRadicado() . $usuariologuiado . $com_recibida->getFechaCreacion()) . "'",
-	                          'loading' => "javascript:jQuery.LoadingStructData();",
-	                          'complete' => "javascript:jQuery.CloseLoadingStructData(); try{ var response_value = JSON.parse(XMLHttpRequest.responseText); if(response_value.status == 200){ toastr.success(response_value.message); window.open(response_value.url_file, 'MyWindow'); }else{ toastr.error(response_value.message); } }catch(err) { toastr.error(err.message); }",
-	                        ),
-	                        array('data-ndoc_text' => $com_recibida->getRadicado(),'data-qsource' => SED::encryption($com_recibida->getRadicado()),'data-qthumb' => SED::encryption($digit_fdocu),'data-endpoint' => url_for('com_recibida/imageThumbData'), 'data-original-title' => $com_recibida->getEstadodigitalizacion()->getDescripcion(), 'class' => 'popover-toggle tooltip-primary gsthumbimg', 'data-toggle' => 'tooltip', 'data-placement' => 'top')
-	                      );
-	                    }
-	                  } else {
-	                    echo image_tag('/images/simad/ico_not_digital.png', array('class' => 'tooltip-primary', 'data-toggle' => 'tooltip', 'data-original-title' => $com_recibida->getEstadodigitalizacion()->getDescripcion(), 'border' => "0", 'width' => "30", 'height' => "30", 'align' => "middle"));
-	                  }
-	                  ?>
-					</div>
+                  <div id="thubmfixed">
+                    <?php
+                    $fullpath = $com_recibida->getPathImageDigitByCom();
+                    $digit_fdocu = $fullpath;
+                    $existe_file = !empty($fullpath) ? true : false;
+                    //******************************************************************************************************
+                    if ($com_recibida->getEstadodigitalizacionId() == 1) {
+                      if ($existe_file) {
+                        $com_recibida->setEstadodigitalizacionId(2);
+                        $com_recibida->save();
+                      }
+                    } elseif ($com_recibida->getEstadodigitalizacionId() == 2) {
+                      if (!$existe_file) {
+                        $com_recibida->setEstadodigitalizacionId(1);
+                        $com_recibida->save();
+                      }
+                    }
+                    //******************************************************************************************************
+                    if ($com_recibida->getEstadodigitalizacionId() == 2) {
+                      $extension_digit = strtolower(pathinfo($fullpath, PATHINFO_EXTENSION));
+                      if (LINKTYPE == 'MODAL' && $extension_digit == "pdf") {
+                        $url_params = "?comindex_pk=" . $com_recibida->getPrimaryKey() . "&q_vars=" . base64_encode($com_recibida->getPrimaryKey()) . "&vtoken=" . md5(base64_encode($com_recibida->getRadicado()) . base64_encode($com_recibida->getFechaCreacion()));
+                        $uview_modal = url_for('com_recibida/viewerLiteModal') . $url_params;
+                        echo show_modal_single($uview_modal, "ico_ver_adj", array('ndoc_text' => $com_recibida->getRadicado(), 'endpoint' => 'com_recibida/imageThumbData' . $url_params, 'qthumb' => SED::encryption($digit_fdocu), 'qsource' => SED::encryption($com_recibida->getRadicado())));
+                      } else {
+                        echo jq_link_to_remote(
+                          image_tag('simad/ico_ver_adj.png', array('id' => "feedcheck", 'border' => "0", 'width' => "25", 'height' => "25", 'align' => "middle")),
+                          array(
+                            'update'  => null,
+                            'url'     => url_for('com_recibida/viewImageDigit'),
+                            'with'    => "'q_vars=" . base64_encode($com_recibida->getPrimaryKey()) . "&vtoken=" . md5($com_recibida->getRadicado() . $usuariologuiado . $com_recibida->getFechaCreacion()) . "'",
+                            'loading' => "javascript:jQuery.LoadingStructData();",
+                            'complete' => "javascript:jQuery.CloseLoadingStructData(); try{ var response_value = JSON.parse(XMLHttpRequest.responseText); if(response_value.status == 200){ toastr.success(response_value.message); window.open(response_value.url_file, 'MyWindow'); }else{ toastr.error(response_value.message); } }catch(err) { toastr.error(err.message); }",
+                          ),
+                          array('data-ndoc_text' => $com_recibida->getRadicado(), 'data-qsource' => SED::encryption($com_recibida->getRadicado()), 'data-qthumb' => SED::encryption($digit_fdocu), 'data-endpoint' => url_for('com_recibida/imageThumbData'), 'data-original-title' => $com_recibida->getEstadodigitalizacion()->getDescripcion(), 'class' => 'popover-toggle tooltip-primary gsthumbimg', 'data-toggle' => 'tooltip', 'data-placement' => 'top')
+                        );
+                      }
+                    } else {
+                      echo image_tag('/images/simad/ico_not_digital.png', array('class' => 'tooltip-primary', 'data-toggle' => 'tooltip', 'data-original-title' => $com_recibida->getEstadodigitalizacion()->getDescripcion(), 'border' => "0", 'width' => "30", 'height' => "30", 'align' => "middle"));
+                    }
+                    ?>
+                  </div>
                 </td>
                 <td>
                   <?php

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__).'/FormHelper.php';
+require_once dirname(__FILE__) . '/FormHelper.php';
 
 /*
  * This file is part of the symfony package.
@@ -69,19 +69,16 @@ function object_textarea_tag($object, $method, $options = array(), $default_valu
 function objects_for_select($options, $value_method, $text_method = null, $selected = null, $html_options = array())
 {
   $select_options = array();
-  foreach ($options as $option)
-  {
+  foreach ($options as $option) {
     // text method exists?
     $method_exists = ($text_method == '__toString') ? method_exists($option, $text_method) : is_callable(array($option, $text_method));
-    if ($text_method && !$method_exists)
-    {
+    if ($text_method && !$method_exists) {
       throw new sfViewException(sprintf('Method "%s" doesn\'t exist for object of class "%s".', $text_method, _get_class_decorated($option)));
     }
 
     // value method exists?
     $method_exists = ($value_method == '__toString') ? method_exists($option, $value_method) : is_callable(array($option, $value_method));
-    if (!$method_exists)
-    {
+    if (!$method_exists) {
       throw new sfViewException(sprintf('Method "%s" doesn\'t exist for object of class "%s".', $value_method, _get_class_decorated($option)));
     }
 
@@ -110,8 +107,7 @@ function object_select_tag($object, $method, $options = array(), $default_value 
   $options = _parse_attributes($options);
 
   $related_class = _get_option($options, 'related_class', false);
-  if (false === $related_class && preg_match('/^get(.+?)Id$/', $method, $match))
-  {
+  if (false === $related_class && preg_match('/^get(.+?)Id$/', $method, $match)) {
     $related_class = $match[1];
   }
 
@@ -123,25 +119,17 @@ function object_select_tag($object, $method, $options = array(), $default_value 
 
   $select_options = _get_options_from_objects(sfContext::getInstance()->retrieveObjects($related_class, $peer_method), $text_method, $key_method);
 
-  if ($value = _get_option($options, 'include_custom'))
-  {
+  if ($value = _get_option($options, 'include_custom')) {
     $select_options = array('' => $value) + $select_options;
-  }
-  else if (_get_option($options, 'include_title'))
-  {
-    $select_options = array('' => '-- '._convert_method_to_name($method, $options).' --') + $select_options;
-  }
-  else if (_get_option($options, 'include_blank'))
-  {
+  } else if (_get_option($options, 'include_title')) {
+    $select_options = array('' => '-- ' . _convert_method_to_name($method, $options) . ' --') + $select_options;
+  } else if (_get_option($options, 'include_blank')) {
     $select_options = array('' => '') + $select_options;
   }
 
-  if (is_object($object))
-  {
+  if (is_object($object)) {
     $value = _get_object_value($object, $method, $default_value);
-  }
-  else
-  {
+  } else {
     $value = $object;
   }
 
@@ -154,23 +142,22 @@ function _get_options_from_objects($objects, $text_method = null, $key_method = 
 {
   $select_options = array();
 
-  if ($objects)
-  {
+  if ($objects) {
     // construct select option list
     $first = true;
-    foreach ($objects as $tmp_object)
-    {
-      if ($first)
-      {
+    $multi_primary_keys = "";
+    foreach ($objects as $tmp_object) {
+      if ($first) {
         // multi primary keys handling
         $multi_primary_keys = is_array($tmp_object->$key_method()) ? true : false;
 
         // which method to call?
         $methodToCall = '';
-        foreach (array($text_method, '__toString', 'toString', $key_method) as $method)
-        {
-          if (method_exists($tmp_object, $method))
-          {
+        foreach (array($text_method, '__toString', 'toString', $key_method) as $method) {
+          if (empty($method)) {
+            continue;
+          }
+          if (method_exists($tmp_object, $method)) {
             $methodToCall = $method;
             break;
           }
@@ -262,7 +249,7 @@ function object_checkbox_tag($object, $method, $options = array(), $default_valu
 {
   $options = _parse_attributes($options);
 
-  $checked = (boolean) _get_object_value($object, $method, $default_value);
+  $checked = (bool) _get_object_value($object, $method, $default_value);
 
   return checkbox_tag(_convert_method_to_name($method, $options), isset($options['value']) ? $options['value'] : 1, $checked, $options);
 }
@@ -271,14 +258,10 @@ function _convert_method_to_name($method, &$options)
 {
   $name = _get_option($options, 'control_name');
 
-  if (!$name)
-  {
-    if (is_array($method))
-    {
-      $name = implode74('-',$method[1]);
-    }
-    else
-    {
+  if (!$name) {
+    if (is_array($method)) {
+      $name = implode74('-', $method[1]);
+    } else {
       $name = sfInflector::underscore($method);
       $name = preg_replace('/^get_?/', '', $name);
     }
@@ -292,15 +275,13 @@ function _convert_method_to_name($method, &$options)
 function _get_object_value($object, $method, $default_value = null, $param = null)
 {
   // compatibility with the array syntax
-  if (is_string($method))
-  {
+  if (is_string($method)) {
     $param = ($param == null ? array() : array($param));
     $method = array($method, $param);
   }
 
   // method exists?
-  if (!is_callable(array($object, $method[0])))
-  {
+  if (!is_callable(array($object, $method[0]))) {
     throw new sfViewException(sprintf('Method "%s" doesn\'t exist for object of class "%s".', $method[0], _get_class_decorated($object)));
   }
 
@@ -318,13 +299,9 @@ function _get_object_value($object, $method, $default_value = null, $param = nul
  */
 function _get_class_decorated($object)
 {
-  if ($object instanceof sfOutputEscaperObjectDecorator)
-  {
+  if ($object instanceof sfOutputEscaperObjectDecorator) {
     return sprintf('%s (decorated with %s)', get_class($object->getRawValue()), get_class($object));
-  }
-  else
-  {
+  } else {
     return get_class($object);
   }
 }
-

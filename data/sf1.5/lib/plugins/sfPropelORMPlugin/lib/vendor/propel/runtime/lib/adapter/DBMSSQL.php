@@ -128,7 +128,44 @@ class DBMSSQL extends DBAdapter
     {
         return 'RAND(' . ((int) $seed) . ')';
     }
-
+	
+	/**
+    * Simulated Limit/Offset
+    * This rewrites the $sql query to apply the offset and limit.
+    * @see        DBAdapter::applyLimit()
+	* use OFFSET %s ROWS FETCH NEXT %s ROWS ONLY
+    */
+    public function applyLimitOnly(&$sql, $offset, $limit)
+	{
+		// make sure offset and limit are numeric
+		if (!is_numeric($offset) || !is_numeric($limit)){
+			throw new Exception("DBMSSQL ::applyLimit() expects a number for argument 2 and 3");
+		}
+		
+		// make sure offset and limit are numeric
+		if ($limit <= 1){
+			return;
+		}
+		
+		// obtain the original select statement
+		preg_match('/\A(.*)select(.*)from/si',$sql,$select_segment);
+		if (count($select_segment)<=0)
+		{
+			throw new Exception("DBMSSQL ::applyLimit() could not locate the select statement at the start of the query. ");
+		}
+		
+		// obtain the original order by clause, or create one if there isn't one
+		preg_match('/order by(.*)\Z/si',$sql,$order_segment);
+		if (count($order_segment)<=0)
+		{
+			$sql .= ' ORDER BY 1 ASC';
+		}		
+		// build the limit query
+		//$offset = ($limit+$offset);
+		$pagination_sql = sprintf(' OFFSET %s ROWS FETCH NEXT %s ROWS ONLY',$offset,$limit);		
+		$sql .= $pagination_sql;
+	}
+	
     /**
      * Simulated Limit/Offset
      *
