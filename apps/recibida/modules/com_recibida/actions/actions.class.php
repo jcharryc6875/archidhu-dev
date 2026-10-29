@@ -1605,8 +1605,6 @@ class com_recibidaActions extends sfActions
     $sql_custom3 .= " AND CRUEST.COMRECIBIDA_ID = " . ComRecibidaPeer::COMRECIBIDA_ID . ")";
     $c->addAsColumn("ESTADO_COMREC", $sql_custom3); //33
     //******************************************************************************************************
-    $c->addSelectColumn(ComRecibidaPeer::FECHA_RECIBIDO); //34
-    //******************************************************************************************************
     //$c->add(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID,2);
     //if($por_rol == 0 )
     //    $c->add(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID,2);

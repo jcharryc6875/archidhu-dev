@@ -33,7 +33,6 @@ header("Content-disposition: attachment; filename=resultado.xls");
     <th>Radicado</th>
     <th>Asunto</th>
     <th>Fecha Radicaci&oacute;n</th>
-    <th>Fecha Llegada</th>
     <th>Usuario Destino</th>
     <th>Medio Recepci&oacute;n</th>
     <th>Tipo Recibida</th>
@@ -63,7 +62,6 @@ header("Content-disposition: attachment; filename=resultado.xls");
       <td><?php echo $object[2] ?></td>
       <td><?php echo htmlentities($object[3]) ?></td>
       <td><?php echo date("Y-m-d G:i:s", strtotime($object[5])) ?></td>
-      <td><?php echo date("Y-m-d G:i:s", strtotime($object['FECHA_RECIBIDO'])) ?></td>
       <td><?php echo htmlentities($object['NOMBRE_DESTINATARIO']) ?></td>
       <td><?php echo htmlentities($object[10]) ?></td>
       <td><?php echo htmlentities($object[11]) ?></td>
@@ -75,7 +73,7 @@ header("Content-disposition: attachment; filename=resultado.xls");
       <td><?php echo htmlentities(sprintf('%s %s %s %s', $object[13], $object[14], $object[15], $object[16])) ?></td>
       <td><?php echo $object[17] ?></td>
       <td><?php echo $object[18] ?></td>
-      <td><?php echo $object[19] ?></td>
+      <td><?php echo date("Y-m-d G:i:s", strtotime($object['FECHA_RECIBIDO'])) ?></td>
       <td><?php echo $object[20] ?></td>
       <td><?php echo htmlentities($object[21]) ?></td>
       <td><?php echo htmlentities($object[22]) ?></td>
