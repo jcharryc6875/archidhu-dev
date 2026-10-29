@@ -982,9 +982,6 @@ class com_recibidaActions extends sfActions
   public function executeMarcarTodos()
   {
     $currentForm = "com_recibida/list";
-    /***************************************************************************************************/
-    $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
-    $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
     $usuariologuiado = $this->getUser()->getAttribute('usuario_id', '', 'subscriber');
     /***************************************************************************************************/
     $this->usuariologuiado = $usuariologuiado;
@@ -992,19 +989,18 @@ class com_recibidaActions extends sfActions
     $this->parametros = "&a=1";
     $this->papelera = false;
     $c = new Criteria();
-    //$c->setDistinct();
     $c = $this->getCriteriaBasic($c);
     /**************************************************************************************************/
     $c->clearSelectColumns();
     $c->addSelectColumn(ComRecibidaPeer::COMRECIBIDA_ID);
     //*************************************************************************************************/	
-    $resultset =  ComRecibidaPeer::doSelectStmt($c);
+    $resultset =  ComRecibidaPeer::doSelectStmt($c)->fetchAll();
     $conexion = Propel::getConnection();
-    while ($object = $resultset->fetch()) {
+    foreach ($resultset as $object) {
       $set = "UPDATE %s  SET  %s =" . $usuariologuiado . " WHERE COMRECIBIDA_ID=" . $object[0];
       $query = sprintf($set, ComRecibidaPeer::TABLE_NAME, ComRecibidaPeer::MARCA);
       $stmt = $conexion->prepare($query);
-      $res = $stmt->execute();
+      $stmt->execute();
     }
   }
 

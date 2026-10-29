@@ -29,6 +29,8 @@
 # Archivos de configuración de entornos (.env local)
 .env
 .env.local
+.gitignore
+.graphifyignore
 
 # ==========================================
 # Archivos del Sistema Operativo e IDEs
