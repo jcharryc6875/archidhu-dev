@@ -16,6 +16,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent', 'Remiten
 <script src="<?php echo $path_theme; ?>assets/js/icheck/icheck.min.js"></script>
 <script src="<?php echo $path_theme; ?>assets/js/icheck/icheck.min.js"></script>
 <script src="<?php echo $path_theme; ?>assets/js/flatpickr/flatpickr.min.js"></script>
+<script src="<?php echo $path_theme; ?>assets/js/flatpickr/l10n/es.js"></script>
 <link rel="stylesheet" href="<?php echo $path_theme; ?>assets/css/flatpickr.min.css">
 
 <div class="row">
@@ -249,26 +250,12 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent', 'Remiten
               echo object_input_tag($com_recibida, 'getNumeroFud',  array('class' => 'form-control input-sm', 'placeholder' => 'Digite Numero fud'));
               ?>
             </div>
-            <label for="lbfecharecibido" class="col-sm-1 control-label">Fecha Llegada<span class="ctrlreq">(*)</span>:</label>
-            <div class="col-sm-3">
-              <div class="flatpickr">
-                <input type="text" placeholder="Select Date.." data-input>
-
-                <a class="input-button" title="toggle" data-toggle>
-                  <i class="icon-calendar"></i>
-                </a>
-
-                <a class="input-button" title="clear" data-clear>
-                  <i class="icon-close"></i>
-                </a>
-              </div>
-            </div>
             <!-- Fecha recibido documento -->
             <label for="lbfecharecibido" class="col-sm-1 control-label">Fecha Llegada<span class="ctrlreq">(*)</span>:</label>
             <div class="col-sm-3">
               <div class="input-group">
                 <?php
-                echo object_input_tag($com_recibida, 'getFechaRecibido',  array('class' => 'form-control input-sm datepicker required', 'data-format' => 'yyyy-mm-dd', 'placeholder' => 'AAAA-MM-DD'));
+                echo object_input_tag($com_recibida, 'getFechaRecibido',  array('class' => 'form-control input-sm flatpickr required', 'placeholder' => 'AAAA-MM-DD HH:MM'));
                 ?>
                 <div class="input-group-addon"><a href="#"><i class="entypo-calendar"></i></a></div>
               </div>
@@ -293,38 +280,36 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent', 'Remiten
 <?php echo javascript_tag("
 function disableCombos()
 {
-     oComboRecibida = document.getElementById('tipo_com_recibida_id');
-     oComboWf = document.getElementById('wf_tipo_com_recibida_id');     
-     //Asumo que esa opcion tiene value 3
-     if (oComboRecibida.options[oComboRecibida.selectedIndex].value != '')
-     {      
+    oComboRecibida = document.getElementById('tipo_com_recibida_id');
+    oComboWf = document.getElementById('wf_tipo_com_recibida_id');     
+    //Asumo que esa opcion tiene value 3
+    if (oComboRecibida.options[oComboRecibida.selectedIndex].value != '')
+    {      
+    //Deshabilita
+    oComboWf.disabled = true;
+    //quitamos la validacion del classname
+    oComboWf.className = 'form-control input-sm';
+    oComboRecibida.className = 'form-control input-sm required';
+    }else if(oComboRecibida.options[oComboRecibida.selectedIndex].value == ''){
+      //Habilita
+      oComboWf.disabled = false;
+    }
+    
+    if (oComboWf.options[oComboWf.selectedIndex].value != '')
+    {      
+    //Deshabilita
+    oComboRecibida.disabled = true;
+    //quitamos la validacion del classname
+    oComboRecibida.className = 'form-control input-sm';
+    oComboWf.className = 'form-control input-sm required';
+    }else if(oComboWf.options[oComboWf.selectedIndex].value == ''){
       //Deshabilita
-      oComboWf.disabled = true;
-      //quitamos la validacion del classname
-      oComboWf.className = 'form-control input-sm';
-      oComboRecibida.className = 'form-control input-sm required';
-     }else if(oComboRecibida.options[oComboRecibida.selectedIndex].value == ''){
-        //Habilita
-        oComboWf.disabled = false;
-     }
-     
-     if (oComboWf.options[oComboWf.selectedIndex].value != '')
-     {      
-      //Deshabilita
-      oComboRecibida.disabled = true;
-      //quitamos la validacion del classname
-      oComboRecibida.className = 'form-control input-sm';
-      oComboWf.className = 'form-control input-sm required';
-     }else if(oComboWf.options[oComboWf.selectedIndex].value == ''){
-        //Deshabilita
-        oComboRecibida.disabled = false;
-     }     
+      oComboRecibida.disabled = false;
+    }     
 }
 
 jQuery(document).ready(function () {
     jQuery('#form1').validate({
-      //errorLabelContainer: '#messageBox',
-      //wrapper: 'li',
       submitHandler: function() { jQuery('#btnsave.btn').prop('disabled', true); }
     });
 
@@ -333,14 +318,6 @@ jQuery(document).ready(function () {
       checkboxClass: 'icheckbox_square-blue',
       radioClass: 'iradio_square-red'
     });
-
-    /*jQuery('#btnsave input').on('keyup blur', function () { // fires on every keyup & blur
-        if (jQuery('#ccSelectForm').valid()) {                   // checks form for validity
-            jQuery('button.btn').prop('disabled', false);        // enables button
-        } else {
-            jQuery('button.btn').prop('disabled', 'disabled');   // disables button
-        }
-    });*/
 });
     
 ") ?>

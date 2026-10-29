@@ -3677,3 +3677,154 @@ jQuery(document).ready(function ($) {
 		});
 	};
 })(jQuery);
+
+/**
+ * Inicializa los controles Flatpickr del SGDEA.
+ * Formato: YYYY-MM-DD HH:mm
+ */
+function initFlatpickrSgdea() {
+
+	if (typeof jQuery.fn.flatpickr !== 'function') {
+		return;
+	}
+
+	jQuery('.flatpickr').each(function () {
+
+		const input = this;
+
+		if (input._flatpickr) {
+			return;
+		}
+
+		function mostrarError() {
+			jQuery(input).addClass('sgdea-fecha-invalida')
+				.attr('aria-invalid', 'true')
+				.attr('title', 'La fecha y/o hora no es válida');
+		}
+
+		function limpiarError() {
+			/*jQuery(input).removeClass('sgdea-fecha-invalida')
+				.removeAttr('aria-invalid')
+				.removeAttr('title');*/
+		}
+
+		function validarCampo() {
+			const valor = input.value.trim();
+
+			if (valor === '') {
+				limpiarError();
+				return true;
+			}
+
+			const fecha = validateDateFlatpickrSgdea(valor);
+
+			if (!fecha) {
+				mostrarError();
+				return false;
+			}
+
+			limpiarError();
+			return true;
+		}
+
+		jQuery(input).flatpickr({
+			locale: 'es',
+			enableTime: true,
+			dateFormat: 'Y-m-d H:i',
+			time_24hr: true,
+			allowInput: true,
+			maxDate: new Date(),
+
+			parseDate: function (dateStr, format) {
+				return validateDateFlatpickrSgdea(dateStr);
+			},
+
+			errorHandler: function (error) {
+				console.warn('Flatpickr:', error.message);
+				mostrarError();
+			},
+
+			onChange: function (selectedDates, dateStr, instance) {
+				if (selectedDates.length > 0) {
+					limpiarError();
+
+					const $form = jQuery(input).closest('form');
+
+					if ($form.data('validator')) {
+						jQuery(input).valid();
+					}
+				}
+			}
+		});
+
+		// Validar cuando el usuario escribe.
+		jQuery(input).on('input', function () {
+			validarCampo();
+		});
+
+		// Capturar blur antes del procesamiento de Flatpickr.
+		input.addEventListener('blur', function () {
+			if (!validarCampo()) {
+				if (typeof toastr !== 'undefined') {
+					jQuery(input).addClass('sgdea-fecha-invalida')
+						.attr('aria-invalid', 'true')
+						.attr('title', 'La fecha y/o hora no es válida');
+					toastr.error(
+						'La fecha y/o hora ingresada no es válida'
+					);
+				}
+			} else {
+				jQuery(input).removeClass('sgdea-fecha-invalida')
+					.removeAttr('aria-invalid')
+					.removeAttr('title');
+			}
+		}, true);
+	});
+}
+
+/**
+ * Convierte exclusivamente fechas con formato YYYY-MM-DD HH:mm.
+ * No permite normalizaciones automáticas.
+ */
+function validateDateFlatpickrSgdea(valor) {
+
+	const match = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/.exec(valor);
+
+	if (!match) {
+		return undefined;
+	}
+
+	const anio = Number(match[1]);
+	const mes = Number(match[2]);
+	const dia = Number(match[3]);
+	const hora = Number(match[4]);
+	const minuto = Number(match[5]);
+
+	if (anio < 1000 || anio > 9999 ||
+		hora > 23 || minuto > 59) {
+		return undefined;
+	}
+
+	const fecha = new Date(anio, mes - 1, dia, hora, minuto);
+
+	if (
+		fecha.getFullYear() !== anio ||
+		fecha.getMonth() !== mes - 1 ||
+		fecha.getDate() !== dia ||
+		fecha.getHours() !== hora ||
+		fecha.getMinutes() !== minuto
+	) {
+		return undefined;
+	}
+
+	if (fecha > new Date()) {
+		return undefined;
+	}
+
+	return fecha;
+}
+
+// Inicialización automática
+jQuery(function () {
+	initFlatpickrSgdea();
+});
