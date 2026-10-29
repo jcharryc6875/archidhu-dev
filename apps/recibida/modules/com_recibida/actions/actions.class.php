@@ -1605,6 +1605,8 @@ class com_recibidaActions extends sfActions
     $sql_custom3 .= " AND CRUEST.COMRECIBIDA_ID = " . ComRecibidaPeer::COMRECIBIDA_ID . ")";
     $c->addAsColumn("ESTADO_COMREC", $sql_custom3); //33
     //******************************************************************************************************
+    $c->addSelectColumn(ComRecibidaPeer::FECHA_RECIBIDO); //34
+    //******************************************************************************************************
     //$c->add(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID,2);
     //if($por_rol == 0 )
     //    $c->add(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID,2);
@@ -1691,6 +1693,7 @@ class com_recibidaActions extends sfActions
     $c->addAsColumn("NOMBRE_DESTINATARIO", $sql_custom2); //19
     //******************************************************************************************************
     $c->addSelectColumn(ComRecibidaPeer::COMRECIBIDA_ID); //20
+    $c->addSelectColumn(ComRecibidaPeer::FECHA_RECIBIDO); //21
     //******************************************************************************************************
     //$c->add(ComrecibidaUsuarioPeer::ESTA_ASIGNADA,1);
     //******************************************************************************************************
@@ -4122,6 +4125,20 @@ class com_recibidaActions extends sfActions
       } else {
         $c->add(ComRecibidaPeer::FECHA_DE_ANULACION, $this->getRequestParameter('fechaCierre') . ' 00:00:00', Criteria::GREATER_THAN);
         $this->parametros .= "&fechaCierre=" . str_replace("/", "-", $this->getRequestParameter('fechaCierre'));
+      }
+    }
+    /**************************************************************************************/
+    $fecha_llegada_desde = trim($this->getRequestParameter('fecha_llegada_desde'));
+    $fecha_llegada_hasta = trim($this->getRequestParameter('fecha_llegada_hasta'));
+    if ($fecha_llegada_desde) {
+      if ($fecha_llegada_hasta) {
+        $c->add(ComRecibidaPeer::FECHA_RECIBIDO, $fecha_llegada_desde, Criteria::GREATER_THAN);
+        $c->addAnd(ComRecibidaPeer::FECHA_RECIBIDO, $fecha_llegada_hasta, Criteria::LESS_THAN);
+        $this->parametros .= "&fecha_llegada_desde=" . str_replace("/", "-", $fecha_llegada_desde);
+        $this->parametros .= "&fecha_llegada_hasta=" . str_replace("/", "-", $fecha_llegada_hasta);
+      } else {
+        $c->add(ComRecibidaPeer::FECHA_RECIBIDO, $fecha_llegada_desde, Criteria::GREATER_THAN);
+        $this->parametros .= "&fecha_llegada_desde=" . str_replace("/", "-", $fecha_llegada_desde);
       }
     }
     /**************************************************************************************/

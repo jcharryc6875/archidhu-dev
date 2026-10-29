@@ -255,7 +255,7 @@ use_helper('Object', 'jQuery', 'UserComponent', 'InteresadosComponent', 'Remiten
             <div class="col-sm-3">
               <div class="input-group">
                 <?php
-                echo object_input_tag($com_recibida, 'getFechaRecibido',  array('class' => 'form-control input-sm flatpickr required', 'placeholder' => 'AAAA-MM-DD HH:MM'));
+                echo object_input_tag($com_recibida, 'getFechaRecibido',  array('data-maxDate' => date('Y-m-d G:i'), 'class' => 'form-control input-sm flatpickr required', 'placeholder' => 'AAAA-MM-DD HH:MM'));
                 ?>
                 <div class="input-group-addon"><a href="#"><i class="entypo-calendar"></i></a></div>
               </div>

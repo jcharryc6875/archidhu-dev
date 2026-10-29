@@ -8,6 +8,12 @@ $currentUserId = $sf_user->getAttribute('usuario_id', '', 'subscriber');
 
 use_helper('Object', 'jQuery', 'UserComponent');
 ?>
+<?php //Imported scripts on this page 
+?>
+<script src="<?php echo $path_theme; ?>assets/js/flatpickr/flatpickr.min.js"></script>
+<script src="<?php echo $path_theme; ?>assets/js/flatpickr/l10n/es.js"></script>
+<link rel="stylesheet" href="<?php echo $path_theme; ?>assets/css/flatpickr.min.css">
+
 <?php
 // Include Navbar
 include_partial("navbar_recibida");
@@ -207,6 +213,26 @@ include_partial("navbar_recibida");
         <?php
         echo input_tag('observaciones', '', array('class' => 'form-control input-sm'));
         ?>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <!-- Fecha Llegada -->
+      <label for="lbFechaLlegada" class="col-sm-1 control-label">Fecha Llegada:</label>
+      <div class="col-sm-2">
+        <div class="input-group">
+          <?php
+          echo input_tag('fecha_llegada', '', array(
+            'class' => 'form-control input-sm flatpickr-range',
+            'placeholder' => 'AAAA-MM-DD HH:MM',
+            'data-sgdea-date-from' => '#fecha_llegada_desde',
+            'data-sgdea-date-to' => '#fecha_llegada_hasta'
+          ));
+          echo input_hidden_tag('fecha_llegada_desde');
+          echo input_hidden_tag('fecha_llegada_hasta');
+          ?>
+          <div class="input-group-addon"><a href="#"><i class="entypo-calendar"></i></a></div>
+        </div>
       </div>
     </div>
 

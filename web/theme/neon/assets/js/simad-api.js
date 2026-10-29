@@ -3782,6 +3782,7 @@ function initFlatpickrSgdea() {
 	});
 }
 
+
 /**
  * Convierte exclusivamente fechas con formato YYYY-MM-DD HH:mm.
  * No permite normalizaciones automáticas.
@@ -3824,7 +3825,80 @@ function validateDateFlatpickrSgdea(valor) {
 	return fecha;
 }
 
+/**
+ * Inicializa controles Flatpickr para consultas por rangos.
+ * Formato: YYYY-MM-DD HH:mm
+ */
+function initFlatpickrRangeSgdea() {
+
+	if (typeof jQuery.fn.flatpickr !== 'function') {
+		return;
+	}
+
+	jQuery('.flatpickr-range').each(function () {
+
+		const input = this;
+
+		if (input._flatpickr) {
+			return;
+		}
+
+		const $input = jQuery(input);
+		const $desde = jQuery($input.attr('data-sgdea-date-from'));
+		const $hasta = jQuery($input.attr('data-sgdea-date-to'));
+
+		$input.flatpickr({
+			locale: 'es',
+			mode: 'range',
+			enableTime: true,
+			dateFormat: 'Y-m-d H:i',
+			time_24hr: true,
+			allowInput: false,
+			maxDate: new Date(),
+			disableMobile: true,
+
+			// Separador para mostrar ambas fechas.
+			// La locale española puede definir el suyo.
+			locale: {
+				...flatpickr.l10ns.es,
+				rangeSeparator: ' a '
+			},
+
+			onChange: function (selectedDates, dateStr, instance) {
+
+				if (selectedDates.length === 2) {
+
+					const fechaDesde = instance.formatDate(
+						selectedDates[0], 'Y-m-d H:i'
+					);
+
+					const fechaHasta = instance.formatDate(
+						selectedDates[1], 'Y-m-d H:i'
+					);
+
+					$desde.val(fechaDesde);
+					$hasta.val(fechaHasta);
+
+					$input.removeClass('sgdea-fecha-invalida');
+
+				} else {
+					// No consultar con un rango incompleto.
+					$desde.val('');
+					$hasta.val('');
+				}
+			},
+
+			onClose: function (selectedDates) {
+				if (selectedDates.length === 1) {
+					$input.addClass('sgdea-fecha-invalida');
+				}
+			}
+		});
+	});
+}
+
 // Inicialización automática
 jQuery(function () {
 	initFlatpickrSgdea();
+	initFlatpickrRangeSgdea();
 });
