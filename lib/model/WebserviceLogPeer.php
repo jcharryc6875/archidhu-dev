@@ -26,8 +26,8 @@ class WebserviceLogPeer extends BaseWebserviceLogPeer
 			$ws_log->setUsuarioId($usuario_id);
 			$ws_log->setNombreMetodo($nmetodo);
 			$ws_log->setFechaCreacion(date('Y-m-d G:i:s'));
-			$ws_log->setRequestInfo($request);
-			$ws_log->setResponseInfo($response);
+			$ws_log->setRequestInfo(self::depurarContenidoAuditoria($request));
+			$ws_log->setResponseInfo(self::depurarContenidoAuditoria($response));
 			$ws_log->setRequestValid($isValid);
 			$ws_log->setTipoOperacion($toperation);
 			$ws_log->setMensaje($message);
@@ -56,25 +56,136 @@ class WebserviceLogPeer extends BaseWebserviceLogPeer
 			//$fp = fopen(@"Z:\\123\\e955df29d832f08de9a33f40f0218e6c.pdf", 'rb');
 			//$b64f = simad_util::getConvertFileToB64(@"Z:\\123\\383950_wsinfoentrada.xml");
 
-			$stmt->bindParam(1, $usuario_id, PDO::PARAM_INT);
-			$stmt->bindParam(2, $nmetodo, PDO::PARAM_STR);
-			$stmt->bindParam(3, date("Y-m-d G:i:s"), PDO::PARAM_STR);
+			$fechaCreacion = date("Y-m-d G:i:s");
+			$requestLog = self::depurarContenidoAuditoria($request);
+			$responseLog = self::depurarContenidoAuditoria($response);
+
+			$stmt->bindValue(1, $usuario_id, PDO::PARAM_INT);
+			$stmt->bindValue(2, $nmetodo, PDO::PARAM_STR);
+			$stmt->bindValue(3, $fechaCreacion, PDO::PARAM_STR);
 			//$stmt->bindParam(4, $b64f, PDO::PARAM_LOB);
-			$stmt->bindParam(4, $request, PDO::PARAM_STR);
-			$stmt->bindParam(5, $isValid, PDO::PARAM_INT);
-			$stmt->bindParam(6, $toperation, PDO::PARAM_STR);
-			$stmt->bindParam(7, $message, PDO::PARAM_STR);
-			$stmt->bindParam(8, $response, PDO::PARAM_STR);
+			$stmt->bindValue(4, $requestLog, PDO::PARAM_STR);
+			$stmt->bindValue(5, $isValid, PDO::PARAM_INT);
+			$stmt->bindValue(6, $toperation, PDO::PARAM_STR);
+			$stmt->bindValue(7, $message, PDO::PARAM_STR);
+			$stmt->bindValue(8, $responseLog, PDO::PARAM_STR);
 
 			$conexion->beginTransaction();
 			$stmt->execute();
 			$conexion->commit();
-		} catch (PropelException $th) {
-			return null;
-		} catch (\Exception $th) {
-			return null;
 		} catch (\Throwable $th) {
+			if (isset($conexion) && $conexion->inTransaction()) {
+				$conexion->rollBack();
+			}
 			return null;
 		}
     }
+
+	// Campos que transportan documentos Base64 (normalizados: minúsculas, sin "_" ni "-").
+	// Inventario: ARCHIVO_DIGIT/ARCHIVO_DATA/ARCHIVO_ANEXO (WS entrantes), ARCHIVO/DocumentoAsociado (cliente saliente a fachada).
+	private static $camposArchivoBase64 = array('archivodigit', 'archivodata', 'archivoanexo', 'archivo', 'documentoasociado');
+
+	/**
+	 * Devuelve una copia del payload apta para auditoría, sin el contenido Base64 de los campos documentales.
+	 * El payload original nunca se modifica; ante cualquier fallo se retorna tal cual.
+	 */
+	private static function depurarContenidoAuditoria($contenido)
+	{
+		if (!is_string($contenido) || strlen($contenido) < 256) {
+			return $contenido;
+		}
+		try {
+			$trim = ltrim($contenido);
+			$inicio = substr($trim, 0, 1);
+			if ($inicio === '{' || $inicio === '[') {
+				$datos = json_decode($contenido, true);
+				if (json_last_error() !== JSON_ERROR_NONE || !is_array($datos)) {
+					return $contenido;
+				}
+				return json_encode(self::depurarArrayAuditoria($datos), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+			}
+			if ($inicio === '<') {
+				$xml = self::depurarXmlAuditoria($contenido);
+				return $xml === null ? $contenido : $xml;
+			}
+			// El cliente saliente guarda el XML escapado con htmlspecialchars()
+			if (substr($trim, 0, 4) === '&lt;') {
+				$xml = self::depurarXmlAuditoria(htmlspecialchars_decode($contenido));
+				return $xml === null ? $contenido : htmlspecialchars($xml);
+			}
+		} catch (\Throwable $th) {
+		}
+		return $contenido;
+	}
+
+	private static function depurarArrayAuditoria(array $datos)
+	{
+		foreach ($datos as $clave => $valor) {
+			if (is_array($valor)) {
+				$datos[$clave] = self::depurarArrayAuditoria($valor);
+			} elseif (is_string($valor) && self::esCampoArchivoBase64($clave) && self::pareceBase64($valor)) {
+				$datos[$clave] = self::generarMarcadorArchivo($valor);
+			}
+		}
+		return $datos;
+	}
+
+	// Retorna null si el XML no es válido o no se pudo procesar.
+	private static function depurarXmlAuditoria($contenido)
+	{
+		$previo = libxml_use_internal_errors(true);
+		try {
+			$dom = new DOMDocument();
+			// PARSEHUGE: sin él libxml rechaza nodos de texto > 10MB (archivos Base64 grandes)
+			if (!$dom->loadXML($contenido, LIBXML_NONET | LIBXML_PARSEHUGE)) {
+				return null;
+			}
+			foreach ($dom->getElementsByTagName('*') as $nodo) {
+				if (!self::esCampoArchivoBase64($nodo->localName)) {
+					continue;
+				}
+				$esHoja = true;
+				foreach ($nodo->childNodes as $hijo) {
+					if ($hijo->nodeType === XML_ELEMENT_NODE) {
+						$esHoja = false;
+						break;
+					}
+				}
+				if ($esHoja && self::pareceBase64($nodo->textContent)) {
+					$nodo->nodeValue = self::generarMarcadorArchivo($nodo->textContent);
+				}
+			}
+			return $dom->saveXML($dom->documentElement);
+		} catch (\Throwable $th) {
+			return null;
+		} finally {
+			libxml_clear_errors();
+			libxml_use_internal_errors($previo);
+		}
+	}
+
+	private static function esCampoArchivoBase64($nombre)
+	{
+		return in_array(str_replace(array('_', '-'), '', strtolower((string)$nombre)), self::$camposArchivoBase64, true);
+	}
+
+	// Validación conservadora y sin regex ni base64_decode, para no duplicar archivos grandes en memoria.
+	private static function pareceBase64($valor)
+	{
+		$valor = preg_replace('/\s+/', '', (string)$valor);
+		$len = strlen($valor);
+		if ($len < 256 || $len % 4 !== 0) {
+			return false;
+		}
+		$util = strspn($valor, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/');
+		return $util === $len || ($len - $util <= 2 && rtrim(substr($valor, $util), '=') === '');
+	}
+
+	private static function generarMarcadorArchivo($valor)
+	{
+		$valor = preg_replace('/\s+/', '', $valor);
+		$len = strlen($valor);
+		$padding = strlen($valor) - strlen(rtrim($valor, '='));
+		return sprintf('[CONTENIDO_DOCUMENTAL_EXCLUIDO_DEL_LOG; BASE64_CARACTERES=%d; TAMANO_APROX_BYTES=%d]', $len, intval($len * 3 / 4) - $padding);
+	}
 }
