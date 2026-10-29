@@ -63,7 +63,7 @@ header("Content-disposition: attachment; filename=resultado.xls");
       <td><?php echo $object[2] ?></td>
       <td><?php echo htmlentities($object[3]) ?></td>
       <td><?php echo date("Y-m-d G:i:s", strtotime($object[5])) ?></td>
-      <td><?php echo date("Y-m-d G:i:s", strtotime($object[34])) ?></td>
+      <td><?php echo date("Y-m-d G:i:s", strtotime($object['FECHA_RECIBIDO'])) ?></td>
       <td><?php echo htmlentities($object['NOMBRE_DESTINATARIO']) ?></td>
       <td><?php echo htmlentities($object[10]) ?></td>
       <td><?php echo htmlentities($object[11]) ?></td>

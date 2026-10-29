@@ -53,15 +53,15 @@ header("Content-disposition: attachment; filename=resultado.xls");
       <td><?php echo $object[2] ?></td>
       <td><?php echo htmlentities($object[3]) ?></td>
       <td><?php echo date("Y-m-d G:i:s", strtotime($object[5])) ?></td>
-      <td><?php echo date("Y-m-d G:i:s", strtotime($object[21])) ?></td>
-      <td><?php echo htmlentities($object[16]) ?></td>
+      <td><?php echo date("Y-m-d G:i:s", strtotime($object['FECHA_RECIBIDO'])) ?></td>
+      <td><?php echo htmlentities($object['NOMBRE_DESTINATARIO']) ?></td>
       <td><?php echo htmlentities($object[10]) ?></td>
       <td><?php echo htmlentities($object[11]) ?></td>
       <td><?php echo htmlentities($object[7]) ?></td>
       <td><?php echo $object[9] ?></td>
       <td><?php echo htmlentities($object[8]) ?></td>
       <td><?php echo trim($object[12]) ? date("Y-m-d", strtotime($object[12])) : ""; ?></td>
-      <td><?php echo htmlentities($object[15]) ?></td>
+      <td><?php echo htmlentities($object['NOMBRE_RADICADOR']) ?></td>
       <td><?php echo htmlentities($object[13]) ?></td>
       <td><?php echo $object[14] ?></td>
     </tr>
