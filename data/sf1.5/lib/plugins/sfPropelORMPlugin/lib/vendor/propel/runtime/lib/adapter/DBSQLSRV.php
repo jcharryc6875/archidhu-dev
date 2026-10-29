@@ -24,9 +24,11 @@ class DBSQLSRV extends DBMSSQL
      * @param array $settings
      */
     public function initConnection(PDO $con, array $settings)
-    {
-        $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    {	
+		$con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $con->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
+        $con->setAttribute(PDO::SQLSRV_ATTR_ENCODING, PDO::SQLSRV_ENCODING_SYSTEM);
+		$con->setAttribute(PDO::SQLSRV_ATTR_FETCHES_NUMERIC_TYPE, true);
 
         parent::initConnection($con, $settings);
     }
@@ -110,6 +112,38 @@ class DBSQLSRV extends DBMSSQL
             return $stmt->bindParam($parameter, ${$blob}, PDO::PARAM_LOB, 0, PDO::SQLSRV_ENCODING_BINARY);
         }
 
-        return $stmt->bindValue($parameter, $value, $cMap->getPdoType());
+        $pdoType = $cMap->getPdoType();
+        
+        // OPTIMIZACIÓN 1: Si en SQL Server es INTEGER, forzamos el tipado nativo a int de PHP
+        if ($pdoType === PDO::PARAM_INT) {
+            if ($value !== null && $value !== '') {
+                // Validamos de forma segura si el string contiene un número válido (ej: "123" o "45")
+                if (is_numeric($value)) {
+                    $value = (int) $value; // Casteo seguro: "123" -> 123
+                    return $stmt->bindValue($parameter, $value, $pdoType);
+                }
+                
+                // SEGURIDAD: Si envían texto ("ABC"), NO lo convertimos a 0.
+                // Lo enviamos como PARAM_STR en modo SYSTEM (VARCHAR) para que SQL Server
+                // gestione la conversión o el error de tipo de forma nativa y controlada.
+                $pdoType = PDO::PARAM_STR; 
+            } else {
+                $value = null;
+                return $stmt->bindValue($parameter, $value, $pdoType);
+            }
+        }
+        
+        // OPTIMIZACIÓN 2: Si en SQL Server es VARCHAR (PARAM_STR), forzamos codificación ANSI (SYSTEM)
+        if ($pdoType === PDO::PARAM_STR) {
+            $queryString = isset($stmt->queryString) ? strtoupper($stmt->queryString) : '';
+            // Si la consulta es de escritura (INSERT o UPDATE), preservamos UTF-8 para salvar los acentos
+            if (strpos($queryString, 'INSERT') !== false || strpos($queryString, 'UPDATE') !== false) {
+                return $stmt->bindValue($parameter, $value , $pdoType);
+            }
+            
+            return $stmt->bindParam($parameter, $value , $pdoType, 0, PDO::SQLSRV_ENCODING_SYSTEM);
+        }
+        
+        return $stmt->bindValue($parameter, $value , $pdoType);
     }
 }

@@ -834,8 +834,17 @@ class BasePeer
         } else {
             $from .= implode(", ", $fromClause);
         }
-
-        $from .= $joinClause ? ' ' . implode(' ', $joinClause) : '';
+		
+		$config = Propel::getConfiguration();
+        $propel = $config['datasources']['propel'];
+        $withnolock = ' ';
+		
+        if(isset($propel['adapter'])){
+            if($propel['adapter'] == "sqlsrv"){ $withnolock = ' WITH (NOLOCK) '; }
+        }
+		
+		$from .= $joinClause ? $withnolock . implode(' ', $joinClause) : $withnolock;
+        //$from .= $joinClause ? ' ' . implode(' ', $joinClause) : '';
 
         // Build the SQL from the arrays we compiled
         $sql =  $selectSql

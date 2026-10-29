@@ -564,7 +564,9 @@ abstract class DBAdapter
                 continue;
             }
             $cMap = $dbMap->getTable($tableName)->getColumn($param['column']);
-            $this->bindValue($stmt, $parameter, $value, $cMap, $position);
+            $isColText = $dbMap->getTable($tableName)->getColumn($param['column'])->isText();
+
+            $this->bindValue($stmt, $parameter, $value, $cMap, $position, $isColText);
         }
     }
 
@@ -582,7 +584,7 @@ abstract class DBAdapter
      *
      * @return boolean
      */
-    public function bindValue(PDOStatement $stmt, $parameter, $value, ColumnMap $cMap, $position = null): bool
+    public function bindValue(PDOStatement $stmt, $parameter, $value, ColumnMap $cMap, $position = null, $isColText = null): bool
     {
         if ($cMap->isTemporal()) {
             $value = $this->formatTemporalValue($value, $cMap);
