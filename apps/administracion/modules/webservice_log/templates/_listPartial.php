@@ -1,6 +1,6 @@
 <?php
 $base_path = sfConfig::get('base_simad');
-use_helper('Pagination');
+use_helper('jQuery', 'Pagination');
 ?>
 <div class="panel-heading">
   <div class="panel-title">Log de Servicios Web</div>
