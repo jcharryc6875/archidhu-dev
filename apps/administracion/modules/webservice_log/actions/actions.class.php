@@ -28,76 +28,17 @@ class webservice_logActions extends sfActions
   public function executeIndex(sfWebRequest $request)
   {
     $this->verificaPrilegio('webservice_log/index');
+    $this->initPager($request);
   }
 
   /**
-   * Respuesta JSON paginada. No selecciona REQUEST_INFO/RESPONSE_INFO: pueden ser muy grandes.
+   * Listado paginado asíncrono: devuelve solo el HTML de la tabla y el paginador.
    */
   public function executeList(sfWebRequest $request)
   {
     $this->verificaPrilegio('webservice_log/index');
-    //*****************************************************************************
-    $c = new Criteria();
-    $c->addJoin(WebserviceLogPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID);
-
-    if ($metodo = trim($request->getParameter('nombre_metodo'))) {
-      $c->add(WebserviceLogPeer::NOMBRE_METODO, '%' . $metodo . '%', Criteria::LIKE);
-    }
-    if ($operacion = trim($request->getParameter('tipo_operacion'))) {
-      $c->add(WebserviceLogPeer::TIPO_OPERACION, '%' . $operacion . '%', Criteria::LIKE);
-    }
-    if ($usuario = trim($request->getParameter('user_name'))) {
-      $c->add(UsuarioPeer::USER_NAME, '%' . $usuario . '%', Criteria::LIKE);
-    }
-    if ($request->getParameter('request_valid') !== null && $request->getParameter('request_valid') !== '') {
-      $c->add(WebserviceLogPeer::REQUEST_VALID, (int) $request->getParameter('request_valid'));
-    }
-    // FECHA_CREACION es VARCHAR 'Y-m-d G:i:s' (hora sin cero a la izquierda): el límite final es el día siguiente
-    $desde = $request->getParameter('fecha_inicial');
-    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $desde)) {
-      $c->add(WebserviceLogPeer::FECHA_CREACION, $desde, Criteria::GREATER_EQUAL);
-    }
-    $hasta = $request->getParameter('fecha_final');
-    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $hasta)) {
-      $c->addAnd(WebserviceLogPeer::FECHA_CREACION, date('Y-m-d', strtotime($hasta . ' +1 day')), Criteria::LESS_THAN);
-    }
-    //*****************************************************************************
-    $total = WebserviceLogPeer::doCount($c);
-    $page = max(1, (int) $request->getParameter('page', 1));
-
-    $c->clearSelectColumns();
-    $c->addSelectColumn(WebserviceLogPeer::WEBSERVICELOG_ID);
-    $c->addSelectColumn(WebserviceLogPeer::FECHA_CREACION);
-    $c->addSelectColumn(WebserviceLogPeer::NOMBRE_METODO);
-    $c->addSelectColumn(UsuarioPeer::USER_NAME);
-    $c->addSelectColumn(WebserviceLogPeer::REQUEST_VALID);
-    $c->addSelectColumn(WebserviceLogPeer::TIPO_OPERACION);
-    $c->addSelectColumn(WebserviceLogPeer::MENSAJE);
-    $c->addDescendingOrderByColumn(WebserviceLogPeer::WEBSERVICELOG_ID);
-    $c->setLimit(self::PAGE_SIZE);
-    $c->setOffset(($page - 1) * self::PAGE_SIZE);
-
-    $rows = array();
-    $stmt = WebserviceLogPeer::doSelectStmt($c);
-    while ($r = $stmt->fetch(PDO::FETCH_NUM)) {
-      $rows[] = array(
-        'id' => (int) $r[0],
-        'fecha' => $r[1],
-        'metodo' => $r[2],
-        'usuario' => $r[3],
-        'valido' => (int) $r[4],
-        'operacion' => $r[5],
-        'mensaje' => $r[6],
-      );
-    }
-
-    $this->getResponse()->setContentType('application/json');
-    return $this->renderText(json_encode(array(
-      'total' => $total,
-      'page' => $page,
-      'pages' => (int) ceil($total / self::PAGE_SIZE),
-      'rows' => $rows,
-    )));
+    $this->initPager($request);
+    $this->setLayout(false);
   }
 
   /**
@@ -122,5 +63,49 @@ class webservice_logActions extends sfActions
     $response->setHttpHeader('Content-Disposition', sprintf('attachment; filename="ws_log_%d_%s.%s"', $log->getPrimaryKey(), $tipo, $esJson ? 'json' : 'xml'));
     $this->setLayout(false);
     return $this->renderText($contenido);
+  }
+
+  private function initPager(sfWebRequest $request)
+  {
+    $c = new Criteria();
+    $c->addJoin(WebserviceLogPeer::USUARIO_ID, UsuarioPeer::USUARIO_ID);
+    $this->parametros = "&a=1";
+
+    if ($metodo = trim($request->getParameter('nombre_metodo'))) {
+      $c->add(WebserviceLogPeer::NOMBRE_METODO, '%' . $metodo . '%', Criteria::LIKE);
+      $this->parametros .= "&nombre_metodo=" . urlencode($metodo);
+    }
+    if ($operacion = trim($request->getParameter('tipo_operacion'))) {
+      $c->add(WebserviceLogPeer::TIPO_OPERACION, '%' . $operacion . '%', Criteria::LIKE);
+      $this->parametros .= "&tipo_operacion=" . urlencode($operacion);
+    }
+    if ($usuario = trim($request->getParameter('user_name'))) {
+      $c->add(UsuarioPeer::USER_NAME, '%' . $usuario . '%', Criteria::LIKE);
+      $this->parametros .= "&user_name=" . urlencode($usuario);
+    }
+    $valido = $request->getParameter('request_valid');
+    if ($valido === '0' || $valido === '1') {
+      $c->add(WebserviceLogPeer::REQUEST_VALID, (int) $valido);
+      $this->parametros .= "&request_valid=" . $valido;
+    }
+    // FECHA_CREACION es VARCHAR 'Y-m-d G:i:s' (hora sin cero a la izquierda): el límite final es el día siguiente
+    $desde = $request->getParameter('fecha_inicial');
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $desde)) {
+      $c->add(WebserviceLogPeer::FECHA_CREACION, $desde, Criteria::GREATER_EQUAL);
+      $this->parametros .= "&fecha_inicial=" . $desde;
+    }
+    $hasta = $request->getParameter('fecha_final');
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $hasta)) {
+      $c->addAnd(WebserviceLogPeer::FECHA_CREACION, date('Y-m-d', strtotime($hasta . ' +1 day')), Criteria::LESS_THAN);
+      $this->parametros .= "&fecha_final=" . $hasta;
+    }
+    $c->addDescendingOrderByColumn(WebserviceLogPeer::WEBSERVICELOG_ID);
+
+    $pager = new sfPropelPager('WebserviceLog', self::PAGE_SIZE);
+    $pager->setPeerMethod('doSelectResumen');
+    $pager->setCriteria($c);
+    $pager->setPage($request->getParameter('page', 1));
+    $pager->init();
+    $this->pager = $pager;
   }
 }

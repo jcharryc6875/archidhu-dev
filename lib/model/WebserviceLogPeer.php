@@ -81,6 +81,24 @@ class WebserviceLogPeer extends BaseWebserviceLogPeer
 		}
     }
 
+	/**
+	 * Listado liviano para paginadores: filas (arrays numéricos) sin REQUEST_INFO/RESPONSE_INFO, que pueden ser muy grandes.
+	 * Orden de columnas: id, fecha, método, usuario, válido, operación, mensaje.
+	 */
+	public static function doSelectResumen(Criteria $c, $con = null)
+	{
+		$c = clone $c;
+		$c->clearSelectColumns();
+		$c->addSelectColumn(self::WEBSERVICELOG_ID);
+		$c->addSelectColumn(self::FECHA_CREACION);
+		$c->addSelectColumn(self::NOMBRE_METODO);
+		$c->addSelectColumn(UsuarioPeer::USER_NAME);
+		$c->addSelectColumn(self::REQUEST_VALID);
+		$c->addSelectColumn(self::TIPO_OPERACION);
+		$c->addSelectColumn(self::MENSAJE);
+		return self::doSelectStmt($c, $con)->fetchAll(PDO::FETCH_NUM);
+	}
+
 	// Campos que transportan documentos Base64 (normalizados: minúsculas, sin "_" ni "-").
 	// Inventario: ARCHIVO_DIGIT/ARCHIVO_DATA/ARCHIVO_ANEXO (WS entrantes), ARCHIVO/DocumentoAsociado (cliente saliente a fachada).
 	private static $camposArchivoBase64 = array('archivodigit', 'archivodata', 'archivoanexo', 'archivo', 'documentoasociado');
