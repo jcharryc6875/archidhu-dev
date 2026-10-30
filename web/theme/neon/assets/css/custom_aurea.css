@@ -2371,3 +2371,9 @@ body .page-container .sidebar-menu #main-menu li ul>li ul>li ul>li>a:hover {
 .tplcom-pop-item .tplcom-copiar {
   top: 6px;
 }
+/* Consulta de log de servicios web */
+.wslog-estado { font-size: 22px; line-height: 1; vertical-align: middle; }
+.wslog-estado.ok { color: #00a65a; }
+.wslog-estado.error { color: #d42a29; }
+.wslog-fecha { white-space: nowrap; }
+.wslog-acciones .btn { margin: 0 2px; }
