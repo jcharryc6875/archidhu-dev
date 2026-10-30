@@ -9,6 +9,7 @@
 class webservice_logActions extends sfActions
 {
   const PAGE_SIZE = 25;
+  const VIEW_MAX_BYTES = 512000;
 
   public function preExecute()
   {
@@ -42,7 +43,7 @@ class webservice_logActions extends sfActions
   }
 
   /**
-   * Descarga el request o el response de un log como archivo XML (o JSON si el contenido lo es).
+   * Descarga el request o el response de un log como archivo XML (o JSON si el contenido lo es), sin credenciales.
    */
   public function executeDownload(sfWebRequest $request)
   {
@@ -50,12 +51,8 @@ class webservice_logActions extends sfActions
     //*****************************************************************************
     $log = WebserviceLogPeer::retrieveByPk($request->getParameter('id'));
     $this->forward404Unless($log);
-    $tipo = $request->getParameter('tipo') === 'response' ? 'response' : 'request';
-    $contenido = (string) ($tipo === 'response' ? $log->getResponseInfo() : $log->getRequestInfo());
-    // El cliente saliente guarda el XML escapado con htmlspecialchars()
-    if (substr(ltrim($contenido), 0, 4) === '&lt;') {
-      $contenido = htmlspecialchars_decode($contenido);
-    }
+    $tipo = $this->getTipo($request);
+    $contenido = $this->getContenidoLog($log, $tipo);
     $esJson = in_array(substr(ltrim($contenido), 0, 1), array('{', '['), true);
     //*****************************************************************************
     $response = $this->getResponse();
@@ -63,6 +60,55 @@ class webservice_logActions extends sfActions
     $response->setHttpHeader('Content-Disposition', sprintf('attachment; filename="ws_log_%d_%s.%s"', $log->getPrimaryKey(), $tipo, $esJson ? 'json' : 'xml'));
     $this->setLayout(false);
     return $this->renderText($contenido);
+  }
+
+  /**
+   * Visualiza el request o el response de un log en pantalla (modal), sin credenciales.
+   */
+  public function executeView(sfWebRequest $request)
+  {
+    $this->verificaPrilegio('webservice_log/download');
+    //*****************************************************************************
+    $log = WebserviceLogPeer::retrieveByPk($request->getParameter('id'));
+    $this->forward404Unless($log);
+    $this->log_id = $log->getPrimaryKey();
+    $this->tipo = $this->getTipo($request);
+    $contenido = $this->getContenidoLog($log, $this->tipo);
+    $this->truncado = strlen($contenido) > self::VIEW_MAX_BYTES;
+    if ($this->truncado) {
+      $contenido = substr($contenido, 0, self::VIEW_MAX_BYTES);
+    } elseif (substr(ltrim($contenido), 0, 1) === '<') {
+      $contenido = $this->formatearXml($contenido);
+    }
+    $this->contenido = $contenido;
+  }
+
+  private function getTipo(sfWebRequest $request)
+  {
+    return $request->getParameter('tipo') === 'response' ? 'response' : 'request';
+  }
+
+  private function getContenidoLog(WebserviceLog $log, $tipo)
+  {
+    $contenido = (string) ($tipo === 'response' ? $log->getResponseInfo() : $log->getRequestInfo());
+    // El cliente saliente guarda el XML escapado con htmlspecialchars()
+    if (substr(ltrim($contenido), 0, 4) === '&lt;') {
+      $contenido = htmlspecialchars_decode($contenido);
+    }
+    return WebserviceLogPeer::enmascararCredenciales($contenido);
+  }
+
+  private function formatearXml($xml)
+  {
+    $previo = libxml_use_internal_errors(true);
+    $dom = new DOMDocument();
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput = true;
+    $ok = $dom->loadXML($xml, LIBXML_NONET);
+    $salida = $ok ? $dom->saveXML() : $xml;
+    libxml_clear_errors();
+    libxml_use_internal_errors($previo);
+    return $salida;
   }
 
   private function initPager(sfWebRequest $request)

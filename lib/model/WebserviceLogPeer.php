@@ -204,6 +204,23 @@ class WebserviceLogPeer extends BaseWebserviceLogPeer
 		$valor = preg_replace('/\s+/', '', $valor);
 		$len = strlen($valor);
 		$padding = strlen($valor) - strlen(rtrim($valor, '='));
-		return sprintf('[CONTENIDO_DOCUMENTAL_EXCLUIDO_DEL_LOG; BASE64_CARACTERES=%d; TAMANO_APROX_BYTES=%d]', $len, intval($len * 3 / 4) - $padding);
+		// Hash del archivo original decodificando por bloques (múltiplo de 4) para no duplicar el archivo en memoria
+		$ctx = hash_init('sha256');
+		for ($i = 0; $i < $len; $i += 1048576) {
+			hash_update($ctx, base64_decode(substr($valor, $i, 1048576)));
+		}
+		return sprintf('[CONTENIDO_DOCUMENTAL_EXCLUIDO_DEL_LOG; BASE64_CARACTERES=%d; TAMANO_APROX_BYTES=%d; SHA256=%s]', $len, intval($len * 3 / 4) - $padding, hash_final($ctx));
+	}
+
+	/**
+	 * Oculta usuario y clave del nodo de seguridad de los servicios (WSSimadSecurity) al mostrar o descargar un log.
+	 * Cubre XML, XML escapado con htmlspecialchars() y JSON; los registros históricos pueden tenerlas en claro.
+	 */
+	public static function enmascararCredenciales($contenido)
+	{
+		$campos = 'SimadUserWs|SimadPassWs';
+		$contenido = preg_replace('#(<(?:[\w.-]+:)?(?:' . $campos . ')\b[^>]*>)[^<]*(</)#i', '$1********$2', $contenido);
+		$contenido = preg_replace('#(&lt;(?:[\w.-]+:)?(?:' . $campos . ')\b.*?&gt;)(?:(?!&lt;).)*(&lt;/)#i', '$1********$2', $contenido);
+		return preg_replace('#("(?:' . $campos . ')"\s*:\s*")[^"]*(")#i', '$1********$2', $contenido);
 	}
 }

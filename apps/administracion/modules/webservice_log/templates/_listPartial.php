@@ -14,12 +14,12 @@ use_helper('jQuery', 'Pagination');
     <table class="table table-bordered table-hover table-striped responsive">
       <thead>
         <tr>
-          <th class="text-center">Consecutivo</th>
-          <th class="text-center">Fecha</th>
+          <th class="text-center col-xsm-1">Consecutivo</th>
+          <th class=" text-center col-xsm-2">Fecha</th>
           <th class="text-center">M&eacute;todo</th>
-          <th class="text-center">Usuario</th>
-          <th class="text-center">Resultado</th>
-          <th class="text-center">Operaci&oacute;n</th>
+          <th class="text-center col-xsm-1">Usuario</th>
+          <th class="text-center col-xsm-1">Resultado</th>
+          <th class=" text-center">Operaci&oacute;n</th>
           <th class="text-center">Mensaje</th>
           <th class="text-center">Descargar</th>
         </tr>
@@ -41,11 +41,16 @@ use_helper('jQuery', 'Pagination');
             <td><?php echo htmlspecialchars($row[5]) ?></td>
             <td><?php echo htmlspecialchars($row[6]) ?></td>
             <td class="text-center wslog-acciones">
-              <a class="btn btn-blue btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Descargar request" href="<?php echo $base_path ?>/administracion.php/webservice_log/download?id=<?php echo $row[0] ?>&tipo=request"><i class="entypo-download"></i> Request</a>
-              <a class="btn btn-green btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Descargar response" href="<?php echo $base_path ?>/administracion.php/webservice_log/download?id=<?php echo $row[0] ?>&tipo=response"><i class="entypo-download"></i> Response</a>
+              <?php foreach (array('request' => 'Request', 'response' => 'Response') as $tipo => $etiqueta) : ?>
+                <?php $url = $base_path . '/administracion.php/webservice_log/%s?id=' . $row[0] . '&tipo=' . $tipo ?>
+                <div class="btn-group">
+                  <a class="btn btn-<?php echo $tipo === 'request' ? 'blue' : 'green' ?> btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Ver <?php echo $tipo ?>" href="javascript:jQuery.OpenModalSIMAD('<?php echo sprintf($url, 'view') ?>', 1000, 600)"><i class="entypo-eye"></i> <?php echo $etiqueta ?></a>
+                  <a class="btn btn-<?php echo $tipo === 'request' ? 'blue' : 'green' ?> btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Descargar <?php echo $tipo ?>" href="<?php echo sprintf($url, 'download') ?>"><i class="entypo-download"></i></a>
+                </div>
+              <?php endforeach; ?>
             </td>
-          </tr>
-        <?php endforeach; ?>
+            </tr>
+          <?php endforeach; ?>
       </tbody>
     </table>
     <hr />
