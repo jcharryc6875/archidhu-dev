@@ -21,7 +21,7 @@ use_helper('jQuery', 'Pagination');
           <th class="text-center col-xsm-1">Resultado</th>
           <th class=" text-center">Operaci&oacute;n</th>
           <th class="text-center">Mensaje</th>
-          <th class="text-center">Descargar</th>
+          <th class="text-center">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -41,11 +41,11 @@ use_helper('jQuery', 'Pagination');
             <td><?php echo htmlspecialchars($row[5]) ?></td>
             <td><?php echo htmlspecialchars($row[6]) ?></td>
             <td class="text-center wslog-acciones">
-              <?php foreach (array('request' => 'Request', 'response' => 'Response') as $tipo => $etiqueta) : ?>
+              <?php foreach (array('request' => 'blue', 'response' => 'green') as $tipo => $color) : ?>
                 <?php $url = $base_path . '/administracion.php/webservice_log/%s?id=' . $row[0] . '&tipo=' . $tipo ?>
                 <div class="btn-group">
-                  <a class="btn btn-<?php echo $tipo === 'request' ? 'blue' : 'green' ?> btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Ver <?php echo $tipo ?>" href="javascript:jQuery.OpenModalSIMAD('<?php echo sprintf($url, 'view') ?>', 1000, 600)"><i class="entypo-eye"></i> <?php echo $etiqueta ?></a>
-                  <a class="btn btn-<?php echo $tipo === 'request' ? 'blue' : 'green' ?> btn-sm tooltip-primary" data-toggle="tooltip" data-original-title="Descargar <?php echo $tipo ?>" href="<?php echo sprintf($url, 'download') ?>"><i class="entypo-download"></i></a>
+                  <a class="btn btn-<?php echo $color ?> btn-xs tooltip-primary" data-toggle="tooltip" data-original-title="Ver <?php echo $tipo ?>" href="javascript:jQuery.OpenModalSIMAD('<?php echo sprintf($url, 'view') ?>', 1000, 600)"><i class="entypo-eye"></i></a>
+                  <a class="btn btn-<?php echo $color ?> btn-xs tooltip-primary" data-toggle="tooltip" data-original-title="Descargar <?php echo $tipo ?>" href="<?php echo sprintf($url, 'download') ?>"><i class="entypo-download"></i></a>
                 </div>
               <?php endforeach; ?>
             </td>

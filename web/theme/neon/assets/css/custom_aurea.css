@@ -2391,7 +2391,11 @@ body .page-container .sidebar-menu #main-menu li ul>li ul>li ul>li>a:hover {
   white-space: nowrap;
 }
 
-.wslog-acciones .btn {
+.wslog-acciones {
+  white-space: nowrap;
+}
+
+.wslog-acciones .btn-group {
   margin: 0 2px;
 }
 
