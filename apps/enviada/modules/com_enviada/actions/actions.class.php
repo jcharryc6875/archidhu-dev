@@ -884,6 +884,9 @@ class com_enviadaActions extends sfActions
         if ($this->getUser()->checkPerm('COM_ENVIADA_LISTAR_TODAS', $usuario_id)) {
             return true;
         }
+        if ($this->tieneAccesoPorDependencia($com_enviada, $usuario_id)) {
+            return true;
+        }
         $arrIds = $this->getAutorizaciones();
         $arrIds[] = $usuario_id;
         $c = new Criteria();
@@ -903,6 +906,38 @@ class com_enviadaActions extends sfActions
         }
 
         return false;
+    }
+
+    /**
+     * Acceso por area: con COM_ENVIADA_ACCESO_DEPENDENCIA el usuario ve las comunicaciones de su
+     * propia dependencia, pero no mientras estan en borrador.
+     */
+    private function tieneAccesoPorDependencia(ComEnviada $com_enviada, $usuario_id)
+    {
+        if ($com_enviada->getEstadocomenviadaId() == 1 || !$this->getUser()->checkPerm('COM_ENVIADA_ACCESO_DEPENDENCIA', $usuario_id)) {
+            return false;
+        }
+        $usuario = UsuarioPeer::retrieveByPk($usuario_id);
+
+        return $usuario && $usuario->getDependenciaId() && $usuario->getDependenciaId() == $com_enviada->getDependenciaId();
+    }
+
+    /**
+     * Mismo acceso por area que tieneAccesoPorDependencia(), como condicion para la lista (null si no aplica).
+     */
+    private function getCriterioAccesoDependencia(Criteria $c, $usuario_id)
+    {
+        if (!$this->getUser()->checkPerm('COM_ENVIADA_ACCESO_DEPENDENCIA', $usuario_id)) {
+            return null;
+        }
+        $usuario = UsuarioPeer::retrieveByPk($usuario_id);
+        if (!$usuario || !$usuario->getDependenciaId()) {
+            return null;
+        }
+        $cton = $c->getNewCriterion(ComEnviadaPeer::DEPENDENCIA_ID, $usuario->getDependenciaId());
+        $cton->addAnd($c->getNewCriterion(ComEnviadaPeer::ESTADOCOMENVIADA_ID, 1, Criteria::NOT_EQUAL));
+
+        return $cton;
     }
 
     private function getCriteriaBasic(Criteria $c)
@@ -981,10 +1016,15 @@ class com_enviadaActions extends sfActions
             $perm_list_all = $this->getUser()->checkPerm('COM_ENVIADA_LISTAR_TODAS', $usuariologuiado);
             if (!$perm_list_all) {
                 $arrIds = $this->getAutorizaciones();
+                $cDependencia = $this->getCriterioAccesoDependencia($c, $usuariologuiado);
                 if ($arrIds) {
                     $arrIds[] = $usuariologuiado;
                     $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
-                    $c->add(EnviadaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN);
+                    $cUsuario = $c->getNewCriterion(EnviadaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN);
+                    if ($cDependencia) {
+                        $cUsuario->addOr($cDependencia);
+                    }
+                    $c->add($cUsuario);
                     //$c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,array(2,3),Criteria::IN);
                     //*******************************************************************************
                     $cton0 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 2);
@@ -993,7 +1033,11 @@ class com_enviadaActions extends sfActions
                     $c->add($cton0);
                 } else {
                     $c->addJoin(ComEnviadaPeer::COMENVIADA_ID, EnviadaUsuarioPeer::COMENVIADA_ID);
-                    $c->add(EnviadaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+                    $cUsuario = $c->getNewCriterion(EnviadaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+                    if ($cDependencia) {
+                        $cUsuario->addOr($cDependencia);
+                    }
+                    $c->add($cUsuario);
                     //$c->add(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID,array(1,2,3),Criteria::IN);
                     //*******************************************************************************
                     $cton0 = $c->getNewCriterion(EnviadaUsuarioPeer::ROLUSCOMENVIADA_ID, 1);

@@ -3875,6 +3875,9 @@ class com_recibidaActions extends sfActions
     if ($this->getUser()->checkPerm('COM_RECIBIDA_LISTAR_TODAS', $usuario_id)) {
       return true;
     }
+    if ($this->tieneAccesoPorDependencia($com_recibida, $usuario_id)) {
+      return true;
+    }
     $entidad_conectado = $this->getUser()->getAttribute('entidad_id', '', 'subscriber');
     $regional_conectado = $this->getUser()->getAttribute('regional_id', '', 'subscriber');
     //*********************************************************************************
@@ -3895,6 +3898,35 @@ class com_recibidaActions extends sfActions
     $c->add(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID, array(1, 2, 3), Criteria::IN);
 
     return ComrecibidaUsuarioPeer::doCount($c) > 0;
+  }
+
+  /**
+   * Acceso por area: con COM_RECIBIDA_ACCESO_DEPENDENCIA el usuario ve las comunicaciones de su propia dependencia.
+   */
+  private function tieneAccesoPorDependencia(ComRecibida $com_recibida, $usuario_id)
+  {
+    if (!$this->getUser()->checkPerm('COM_RECIBIDA_ACCESO_DEPENDENCIA', $usuario_id)) {
+      return false;
+    }
+    $usuario = UsuarioPeer::retrieveByPk($usuario_id);
+
+    return $usuario && $usuario->getDependenciaId() && $usuario->getDependenciaId() == $com_recibida->getDependenciaId();
+  }
+
+  /**
+   * Mismo acceso por area que tieneAccesoPorDependencia(), como condicion para la lista (null si no aplica).
+   */
+  private function getCriterioAccesoDependencia(Criteria $c, $usuario_id)
+  {
+    if (!$this->getUser()->checkPerm('COM_RECIBIDA_ACCESO_DEPENDENCIA', $usuario_id)) {
+      return null;
+    }
+    $usuario = UsuarioPeer::retrieveByPk($usuario_id);
+    if (!$usuario || !$usuario->getDependenciaId()) {
+      return null;
+    }
+
+    return $c->getNewCriterion(ComRecibidaPeer::DEPENDENCIA_ID, $usuario->getDependenciaId());
   }
 
   private function getCriteriaBasic(Criteria $c)
@@ -4126,12 +4158,12 @@ class com_recibidaActions extends sfActions
     $fecha_llegada_hasta = trim($this->getRequestParameter('fecha_llegada_hasta'));
     if ($fecha_llegada_desde) {
       if ($fecha_llegada_hasta) {
-        $c->add(ComRecibidaPeer::FECHA_RECIBIDO, $fecha_llegada_desde, Criteria::GREATER_THAN);
-        $c->addAnd(ComRecibidaPeer::FECHA_RECIBIDO, $fecha_llegada_hasta, Criteria::LESS_THAN);
+        $c->add(ComRecibidaPeer::FECHA_RECIBIDO, $fecha_llegada_desde, Criteria::GREATER_EQUAL);
+        $c->addAnd(ComRecibidaPeer::FECHA_RECIBIDO, $fecha_llegada_hasta, Criteria::LESS_EQUAL);
         $this->parametros .= "&fecha_llegada_desde=" . str_replace("/", "-", $fecha_llegada_desde);
         $this->parametros .= "&fecha_llegada_hasta=" . str_replace("/", "-", $fecha_llegada_hasta);
       } else {
-        $c->add(ComRecibidaPeer::FECHA_RECIBIDO, $fecha_llegada_desde, Criteria::GREATER_THAN);
+        $c->add(ComRecibidaPeer::FECHA_RECIBIDO, $fecha_llegada_desde, Criteria::GREATER_EQUAL);
         $this->parametros .= "&fecha_llegada_desde=" . str_replace("/", "-", $fecha_llegada_desde);
       }
     }
@@ -4391,7 +4423,12 @@ class com_recibidaActions extends sfActions
           $c->add(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID, 2);
           $c->addOr(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID, 3);
           $c->addOr(ComrecibidaUsuarioPeer::ROLUSUARIORECIBIDAID, 1);
-          $c->add(ComrecibidaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+          $cUsuario = $c->getNewCriterion(ComrecibidaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+          $cDependencia = $this->getCriterioAccesoDependencia($c, $usuariologuiado);
+          if ($cDependencia) {
+            $cUsuario->addOr($cDependencia);
+          }
+          $c->add($cUsuario);
         }
         //***********************************************************************************
         $user_id = implode74(",", $arrIds);

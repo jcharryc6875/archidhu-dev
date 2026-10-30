@@ -4691,6 +4691,9 @@ class com_internaActions extends sfActions
         if ($this->getUser()->checkPerm('COM_INTERNA_LISTAR_TODAS', $usuario_id)) {
             return true;
         }
+        if ($this->tieneAccesoPorDependencia($com_interna, $usuario_id)) {
+            return true;
+        }
         $arrIds = $this->getAutorizaciones();
         $arrIds[] = $usuario_id;
         $c = new Criteria();
@@ -4710,6 +4713,38 @@ class com_internaActions extends sfActions
         }
 
         return false;
+    }
+
+    /**
+     * Acceso por area: con COM_INTERNA_ACCESO_DEPENDENCIA el usuario ve las comunicaciones de su
+     * propia dependencia, pero no mientras estan en borrador.
+     */
+    private function tieneAccesoPorDependencia(ComInterna $com_interna, $usuario_id)
+    {
+        if ($com_interna->getEstadocominternaId() == 1 || !$this->getUser()->checkPerm('COM_INTERNA_ACCESO_DEPENDENCIA', $usuario_id)) {
+            return false;
+        }
+        $usuario = UsuarioPeer::retrieveByPk($usuario_id);
+
+        return $usuario && $usuario->getDependenciaId() && $usuario->getDependenciaId() == $com_interna->getDependenciaId();
+    }
+
+    /**
+     * Mismo acceso por area que tieneAccesoPorDependencia(), como condicion para la lista (null si no aplica).
+     */
+    private function getCriterioAccesoDependencia(Criteria $c, $usuario_id)
+    {
+        if (!$this->getUser()->checkPerm('COM_INTERNA_ACCESO_DEPENDENCIA', $usuario_id)) {
+            return null;
+        }
+        $usuario = UsuarioPeer::retrieveByPk($usuario_id);
+        if (!$usuario || !$usuario->getDependenciaId()) {
+            return null;
+        }
+        $cton = $c->getNewCriterion(ComInternaPeer::DEPENDENCIA_ID, $usuario->getDependenciaId());
+        $cton->addAnd($c->getNewCriterion(ComInternaPeer::ESTADOCOMINTERNA_ID, 1, Criteria::NOT_EQUAL));
+
+        return $cton;
     }
 
     private function getCriteriaBasic(Criteria $c)
@@ -4806,16 +4841,25 @@ class com_internaActions extends sfActions
             if (!$perm_list_all) {
                 //si tiene autorizaciones hace un in() incluyendo a el mismo sino como esta
                 $arrIds = $this->getAutorizaciones();
+                $cDependencia = $this->getCriterioAccesoDependencia($c, $usuariologuiado);
                 if ($arrIds) {
                     $arrIds[] = $usuariologuiado;
                     $c->addJoin(ComInternaPeer::COMINTERNA_ID, CominternaUsuarioPeer::COMINTERNA_ID);
-                    $c->add(CominternaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN); //in	
+                    $cUsuario = $c->getNewCriterion(CominternaUsuarioPeer::USUARIO_ID, $arrIds, Criteria::IN);
+                    if ($cDependencia) {
+                        $cUsuario->addOr($cDependencia);
+                    }
+                    $c->add($cUsuario); //in	
                     $c->add(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, 4);
                     $c->addor(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, 3);
                     $c->addor(CominternaUsuarioPeer::ROLUSUARIOCOMINTERNA_ID, 2);
                 } else {
                     $c->addJoin(ComInternaPeer::COMINTERNA_ID, CominternaUsuarioPeer::COMINTERNA_ID);
-                    $c->add(CominternaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+                    $cUsuario = $c->getNewCriterion(CominternaUsuarioPeer::USUARIO_ID, $usuariologuiado);
+                    if ($cDependencia) {
+                        $cUsuario->addOr($cDependencia);
+                    }
+                    $c->add($cUsuario);
                 }
                 $this->user_id = implode74(",", $arrIds);
             } else {
