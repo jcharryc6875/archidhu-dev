@@ -1571,6 +1571,43 @@ propel:
     CERTIMAIL: { phpName: Certimail, type: VARCHAR, size: '80', required: false }
     EMAIL_BODY: { phpName: EmailBody, type: LONGVARCHAR, size: '2147483647', required: false }
     _indexes: { PK_NOTIFICACION_EMAIL: [NOTIFICACIONEMAIL_ID] }
+  NOTIFICACION_CUENTA:
+    _attributes: { phpName: NotificacionCuenta, idMethod: native }
+    NOTIFICACIONCUENTA_ID: { phpName: NotificacioncuentaId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }
+    NOMBRE: { phpName: Nombre, type: VARCHAR, size: '100', required: true }
+    TIPO: { phpName: Tipo, type: VARCHAR, size: '10', required: true }
+    EMAIL_REMITENTE: { phpName: EmailRemitente, type: VARCHAR, size: '150', required: true }
+    NOMBRE_REMITENTE: { phpName: NombreRemitente, type: VARCHAR, size: '150', required: false }
+    HOST_SMTP: { phpName: HostSmtp, type: VARCHAR, size: '150', required: true }
+    PUERTO: { phpName: Puerto, type: INTEGER, size: '4', scale: '0', required: true }
+    SECURE_SMTP: { phpName: SecureSmtp, type: VARCHAR, size: '10', required: false }
+    AUTH_SMTP: { phpName: AuthSmtp, type: TINYINT, size: '1', scale: '0', required: true }
+    USUARIO_SMTP: { phpName: UsuarioSmtp, type: VARCHAR, size: '150', required: false }
+    PASS_SMTP: { phpName: PassSmtp, type: VARCHAR, size: '500', required: false }
+    TENANT_ID: { phpName: TenantId, type: VARCHAR, size: '80', required: false }
+    CLIENT_ID: { phpName: ClientId, type: VARCHAR, size: '80', required: false }
+    CLIENT_SECRET: { phpName: ClientSecret, type: VARCHAR, size: '500', required: false }
+    SCOPE: { phpName: Scope, type: VARCHAR, size: '200', required: false }
+    ES_PRINCIPAL: { phpName: EsPrincipal, type: TINYINT, size: '1', scale: '0', required: true }
+    PRIORIDAD: { phpName: Prioridad, type: INTEGER, size: '4', scale: '0', required: true }
+    ACTIVO: { phpName: Activo, type: TINYINT, size: '1', scale: '0', required: true }
+    ESTADO_OPERATIVO: { phpName: EstadoOperativo, type: VARCHAR, size: '15', required: true }
+    ULTIMO_ERROR: { phpName: UltimoError, type: VARCHAR, size: '500', required: false }
+    FECHA_ULTIMA_PRUEBA: { phpName: FechaUltimaPrueba, type: TIMESTAMP, size: '16', scale: '3', required: false }
+    FECHA_ULTIMO_ENVIO_OK: { phpName: FechaUltimoEnvioOk, type: TIMESTAMP, size: '16', scale: '3', required: false }
+    FECHA_CREACION: { phpName: FechaCreacion, type: TIMESTAMP, size: '16', scale: '3', required: false }
+    _indexes: { PK_NOTIFICACION_CUENTA: [NOTIFICACIONCUENTA_ID] }
+  NOTIFICACION_ENVIO_LOG:
+    _attributes: { phpName: NotificacionEnvioLog, idMethod: native }
+    NOTIFICACIONENVIOLOG_ID: { phpName: NotificacionenviologId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }
+    NOTIFICACIONCUENTA_ID: { phpName: NotificacioncuentaId, type: INTEGER, size: '4', scale: '0', required: false, foreignTable: NOTIFICACION_CUENTA, foreignReference: NOTIFICACIONCUENTA_ID }
+    FECHA: { phpName: Fecha, type: TIMESTAMP, size: '16', scale: '3', required: true }
+    DESTINATARIOS: { phpName: Destinatarios, type: VARCHAR, size: '500', required: false }
+    ASUNTO: { phpName: Asunto, type: VARCHAR, size: '250', required: false }
+    RESULTADO: { phpName: Resultado, type: VARCHAR, size: '10', required: true }
+    ERROR: { phpName: Error, type: VARCHAR, size: '1000', required: false }
+    NOTIFICADO: { phpName: Notificado, type: TINYINT, size: '1', scale: '0', required: true }
+    _indexes: { PK_NOTIFICACION_ENVIO_LOG: [NOTIFICACIONENVIOLOG_ID], IX_NOTIFICACION_ENVIO_LOG_FECHA: [FECHA], IX_NOTIFICACION_ENVIO_LOG_NOTIF: [RESULTADO, NOTIFICADO] }
   CL_DETALLE_PRESTAMO:
     _attributes: { phpName: ClDetallePrestamo, idMethod: native }
     CLDETALLEPRESTAMO_ID: { phpName: CldetalleprestamoId, type: INTEGER, size: '4', scale: '0', primaryKey: true, autoIncrement: true, required: true }

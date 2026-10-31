@@ -2410,3 +2410,10 @@ body .page-container .sidebar-menu #main-menu li ul>li ul>li ul>li>a:hover {
 .table th.col-xsm-2 {
   width: 20%;
 }.wslog-visor { max-height: 480px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+
+/* Cuentas de notificacion por correo */
+.nc-acciones .btn { margin: 0 1px; }
+.nc-pasos li { margin-bottom: 8px; }
+.nc-paso-detalle { margin-left: 22px; word-break: break-word; }
+.nc-trazas { max-height: 220px; overflow: auto; white-space: pre-wrap; word-break: break-all; margin-top: 8px; }
+.nelog-fecha { white-space: nowrap; }

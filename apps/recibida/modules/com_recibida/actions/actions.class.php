@@ -3508,6 +3508,7 @@ class com_recibidaActions extends sfActions
   {
     $currentForm = "com_recibida/create";
     $this->verificaPrilegio($currentForm);
+    session_write_close();
     //******************************************************************************************
     if (!$this->getRequestParameter('comrecibida_id')) {
       $com_recibida = new ComRecibida();
